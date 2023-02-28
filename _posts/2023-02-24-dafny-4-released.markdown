@@ -3,7 +3,7 @@ layout: post
 title:  "Dafny 4 is released!"
 date:   2023-02-08 00:00:01 +0100
 ---
-After 13 years of research and development, 5400+ commits made by [72 contributors](https://github.com/dafny-lang/dafny/graphs/contributors), the Dafny team is grateful to annouce [the release of Dafny 4](https://github.com/dafny-lang/dafny/releases)!
+After 13 years of research and development, 5400+ commits made by [72 contributors](https://github.com/dafny-lang/dafny/graphs/contributors), the Dafny team is excited to announce [the release of Dafny 4](https://github.com/dafny-lang/dafny/releases)!
 
 Dafny is a programming language with verification integrated.
 Dafny lets you write both high-performing code and high-level mathematical specifications in a unique unified syntax that seems familiar for both professional developers and mathematicians.
