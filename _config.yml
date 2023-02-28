@@ -21,7 +21,7 @@
 title: Dafny Blog
 email: blog@dafny.org
 description: >- # this means to ignore newlines until "baseurl:"
-  News and education material from the Dafny maintainers.
+  News and education materials from the Dafny maintainers.
 domain: dafny.org
 baseurl: /blog # the subpath of your site, e.g. /blog
 url: https://dafny.org # the base hostname & protocol for your site, e.g. http://example.com
@@ -31,6 +31,8 @@ github_username:  dafny-lang
 theme: minima
 plugins:
   - jekyll-feed
+
+permalink: pretty
 
 # Exclude from processing.
 # The following items will not be processed, by default.

@@ -4,15 +4,4 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
-
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+[Dafny](https://dafny.org/) is a verification-aware programming language that has native support for capturing specifications and is equipped with a static program verifier. By blending sophisticated automated reasoning with familiar programming idioms and tools, Dafny empowers you to write provably correct code w.r.t. its specifications. In addition to a verification engine to check implementations against specifications, the Dafny ecosystem includes several compilers (C#, Java, JavaScript, Go, Python) that help you integrate Dafny into your existing workflows. The Dafny ecosystem also supports you with a Visual Studio Code [extension](https://marketplace.visualstudio.com/items?itemName=dafny-lang.ide-vscode), a Language Server with support for the LSP, and a code formatter. Dafny is used in academia for teaching and research, as well as in industry, such as by teams at Amazon (e.g., [AWS Encryption SDK](https://github.com/aws/aws-encryption-sdk-dafny)).
