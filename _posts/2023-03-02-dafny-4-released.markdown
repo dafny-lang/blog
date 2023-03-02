@@ -25,8 +25,8 @@ In the animated screenshot, where we repair a performant but incorrect implement
 * [Gutter icons](https://dafny.org/latest/DafnyRef/DafnyRef#sec-gutter-highlights) to indicate per-line verification status.
   They help understanding what's next without having to look at the diagnostic window. When it turns green, you know you're done.
 * [Hover widget](https://github.com/dafny-lang/dafny/pull/1946) that contain the following information:
-  * Error link: Link to documentation about how to fix verification errors (on `Error`)
-  * Resource usage: How much resources Dafny used to verify the [assertion batch](https://dafny.org/latest/DafnyRef/DafnyRef#sec-assertion-batches)
+  * Link to documentation about how to fix verification errors (on `Error`)
+  * Measurement of the resources Dafny used to verify the [assertion batch](https://dafny.org/latest/DafnyRef/DafnyRef#sec-assertion-batches)
   * How many assertions there are in the current function
   * Positive feedback messages to indicate you what Dafny proved under the hood
   * And much more not shown here (help when verification is slow, slowest batches when hovering the function name)
@@ -34,7 +34,7 @@ In the animated screenshot, where we repair a performant but incorrect implement
 ![Fixing a performant part of a function-by-method in Dafny, using visual verification feedback](/blog/assets/images/Dafny4IDEFeatures.gif)
 
 ### Command Line Interface enhancements
-Dafny’s command line interface (CLI) has been fully revamped. The CLI is now POSIX compliant. Many of the existing options have been simplified and their names and values have been made more intuitive. Options related to common use cases are now grouped under commands. For example, `dafny run MyProgram.dfy` will verify, compile, and run `MyProgram`. The number of relevant options per command is small making it easy for users to get an overview of what a command can do, and preventing users from applying invalid combinations of options. Options that are only useful for debugging the internals of the Dafny language are hidden by default.
+Dafny’s command line interface (CLI) has been fully revamped. The CLI is now POSIX compliant. Many of the existing options have been simplified and their names and values have been made more intuitive. Options related to common use cases are now grouped under commands. For example, `dafny run MyProgram.dfy` will verify, compile, and run `MyProgram`. The number of relevant options per command is small making it easy for users to get an overview of what a command can do, and preventing users from applying invalid combinations of options. Options that are only useful for debugging the internals of the Dafny language are hidden by default (but easily shown by supplying an additional option).
 
 ### Code formatter
 The Dafny CLI and IDE are now able to automatically format Dafny code. Use `dafny format` to try this out on the CLI. The CLI has an option to check whether any automatic formatting can be applied, which is useful for gating against merging incorrectly formatted code. This first version of automatic formatting will correct indentation style mistakes but leaves line breaks untouched.
@@ -75,7 +75,7 @@ Compared to Dafny 3.0, Dafny 4.0 includes the following language improvements:
 * `<-` syntax for quantified variables,
 * disjunctive `case ... | ... =>` patterns,
 * opaque constants, and
-* command-line arguments access from `Main`.
+* command-line argument access from `Main`.
 
 ### Documentation
 The language reference manual has been updated for all features in version 4.0. We have also improved the wording of error messages, and we added an [error catalog](https://dafny.org/latest/HowToFAQ/Errors) where you can get more information and helpful hints about error messages.
@@ -83,7 +83,7 @@ The language reference manual has been updated for all features in version 4.0. 
 ## Backward compatibility considerations
 
 ### Functions compiled by default
-If you’ve used Dafny before, the first change you’ll notice is how functions are declared in Dafny 4.0. Dafny distinguishes *methods*, which consist of code with possible side effects, from *functions*, which, unlike the “functions” in C or JavaScript, are like mathematical functions without side effects—you evaluate a function twice in Dafny and you’ll get the same value. Functions in Dafny were first used mostly in specifications, so they were by default *ghost*, which means the compiler erases them. However, because so many Dafny programs find functions to be useful also in compiled code, we have simplified how functions are declared. In Dafny 4.0, use the keyword `function` to declare a compiled function and use the keywords `ghost function` to declare a ghost function.
+If you’ve used Dafny before, the first change you’ll notice is how functions are declared in Dafny 4.0. Dafny distinguishes *methods*, which consist of code with possible side effects, from *functions*, which, unlike the “functions” in C or JavaScript, are like mathematical functions without side effects -- you evaluate a function twice in Dafny and you’ll get the same value. Functions in Dafny were first used mostly in specifications, so they were by default *ghost*, which means the compiler erases them. However, because so many Dafny programs find functions to be useful also in compiled code, we have simplified how functions are declared. In Dafny 4.0, use the keyword `function` to declare a compiled function and use the keywords `ghost function` to declare a ghost function.
 
 ### Z3 version upgrade
 In some cases, code that verifies with Dafny 3.x and Z3 4.8.5 (the previous default) may fail to verify with Dafny 4.0 and Z3 4.12.1. If you encounter this issue, you can consider temporarily switching to using Z3 4.8.5 until you are ready to modify your proofs to make them less sensitive to solver changes. To improve the long-term maintainability of proofs, and compatibility with this and future solver upgrades, please see the [section on verification debugging in the reference manual](https://dafny.org/latest/DafnyRef/DafnyRef#sec-verification-debugging).
