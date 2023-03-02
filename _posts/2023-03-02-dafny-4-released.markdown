@@ -17,7 +17,7 @@ For additional information on Dafny, please see:
 * [Dafny on GitHub](https://github.com/dafny-lang/dafny)
 
 ## Dafny 4.0 Release Highlights
-If you haven’t had a look at Dafny since 3.0, you’re missing out on a ton of exciting new features and enhancements! Here are some of the recent highlights since Dafny 3.0. Some of these features have been available in prior releases, but are now enabled by default in 4.0.
+We have added a lot of exciting new features and enhancements to the Dafny language and ecosystem since Dafny 3.0. Here are some of the recent highlights. Some of these features have been available in prior releases, but are now enabled by default in 4.0.
 
 ### Better visual verification feedback
 Dafny has always fused together programming and verification, placing both of them in the IDE. In Dafny 4.0, we have added a large number of visual enhancements to the IDE, giving you more feedback than ever, without you having to search through menus to get it.
