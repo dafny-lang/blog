@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Dafny 4 is released"
-date:   2023-03-02 00:59:59 +0000
+date:   2023-03-03 18:00:00 +0100
 ---
 ![Dafny Logo](/blog/assets/images/logo.jpg)
 
