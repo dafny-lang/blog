@@ -3,7 +3,7 @@ layout: post
 title:  "Dafny 4 is released"
 date:   2023-03-03 18:00:00 +0100
 ---
-![Dafny Logo](/blog/assets/images/logo.jpg)
+![Dafny Logo](/blog/assets/images/logo_upscaled.jpg)
 
 Today, we are excited to announce the release of Dafny [4.0](https://github.com/dafny-lang/dafny/releases/tag/v4.0.0), a major release for the Dafny open-source programming language and automated reasoning tool!
 
