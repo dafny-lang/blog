@@ -64,21 +64,21 @@ Dafny supports an experimental feature for automatic test generation for stateme
 
 ### New language features
 Compared to Dafny 3.0, Dafny 4.0 includes the following language improvements:
-* `for` loops,
-* `continue` statements,
-* parameter passing via name bindings,
-* parameter default values,
-* `function by method` declarations,
-* ghost tuples,
-* ghost allocation of class instances,
-* ghost datatype constructors,
-* `<-` syntax for quantified variables,
-* disjunctive `case ... | ... =>` patterns,
-* opaque constants, and
-* command-line argument access from `Main`.
+* [`for` loops](/latest/DafnyRef/DafnyRef#sec-for-statement),
+* [`continue` statements](/latest/DafnyRef/DafnyRef#sec-break-continue-statement),
+* [parameter passing via name bindings](/latest/DafnyRef/DafnyRef#sec-parameter-bindings),
+* [parameter default values](/latest/DafnyRef/DafnyRef#937-formal-parameters-and-default-value-expressions),
+* [`function by method` declarations](/latest/DafnyRef/DafnyRef#sec-function-by-method),
+* [ghost tuples](/latest/DafnyRef/DafnyRef#sec-tuple-types),
+* [ghost allocation of class instances](/latest/DafnyRef/DafnyRef#sec-constructor-methods),
+* [ghost datatype constructors](/latest/DafnyRef/DafnyRef#sec-inductive-datatypes),
+* [`<-` syntax for quantified variables](/latest/DafnyRef/DafnyRef#sec-quantifier-domains),
+* [disjunctive `case ... | ... =>` patterns](/latest/DafnyRef/DafnyRef#sec-case-pattern),
+* [opaque constants](/latest/DafnyRef/DafnyRef#sec-constant-field-declaration), and
+* [command-line argument access from `Main`](/latest/DafnyRef/DafnyRef#sec-user-guide-main).
 
 ### Documentation
-The language reference manual has been updated for all features in version 4.0. We have also improved the wording of error messages, and we added an [error catalog](https://dafny.org/latest/HowToFAQ/Errors) where you can get more information and helpful hints about error messages.
+The language reference manual has been updated for all features in version 4.0. We have also improved the wording of error messages, and we added an [error catalog](/latest/HowToFAQ/Errors) where you can get more information and helpful hints about error messages.
 
 ## Backward compatibility considerations
 
@@ -86,7 +86,7 @@ The language reference manual has been updated for all features in version 4.0. 
 If you’ve used Dafny before, the first change you’ll notice is how functions are declared in Dafny 4.0. Dafny distinguishes *methods*, which consist of code with possible side effects, from *functions*, which, unlike the “functions” in C or JavaScript, are like mathematical functions without side effects -- you evaluate a function twice in Dafny and you’ll get the same value. Functions in Dafny were first used mostly in specifications, so they were by default *ghost*, which means the compiler erases them. However, because so many Dafny programs find functions to be useful also in compiled code, we have simplified how functions are declared. In Dafny 4.0, use the keyword `function` to declare a compiled function and use the keywords `ghost function` to declare a ghost function.
 
 ### Z3 version upgrade
-In some cases, code that verifies with Dafny 3.x and Z3 4.8.5 (the previous default) may fail to verify with Dafny 4.0 and Z3 4.12.1. If you encounter this issue, you can consider temporarily switching to using Z3 4.8.5 until you are ready to modify your proofs to make them less sensitive to solver changes. To improve the long-term maintainability of proofs, and compatibility with this and future solver upgrades, please see the [section on verification debugging in the reference manual](https://dafny.org/latest/DafnyRef/DafnyRef#sec-verification-debugging).
+In some cases, code that verifies with Dafny 3.x and Z3 4.8.5 (the previous default) may fail to verify with Dafny 4.0 and Z3 4.12.1. If you encounter this issue, you can consider temporarily switching to using Z3 4.8.5 until you are ready to modify your proofs to make them less sensitive to solver changes. To improve the long-term maintainability of proofs, and compatibility with this and future solver upgrades, please see the [section on verification debugging in the reference manual](/latest/DafnyRef/DafnyRef#sec-verification-debugging).
 
 For the full list of backward compatibility changes with Dafny 4.0, visit the [migration guide](https://github.com/dafny-lang/ide-vscode/wiki/Quick-migration-guide-from-Dafny-3.X-to-Dafny-4.0).
 
