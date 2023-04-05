@@ -45,3 +45,20 @@ Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most ou
 [jekyll-docs]: https://jekyllrb.com/docs/home
 [jekyll-gh]:   https://github.com/jekyll/jekyll
 [jekyll-talk]: https://talk.jekyllrb.com/
+
+# CI
+
+Run the following test to ensure it passes CI
+
+`make check`
+
+If `make check` does not work, `make generate` might be able to fix things up if run locally, committed an pushed.
+
+# Local development
+
+We encourage post authors setting up custom pipeline to continuously generate a single post, to make that pipeline accessible via
+
+`make watch-X`
+
+where X is a label that refers to the post, for example `make watch-addictive`;
+
