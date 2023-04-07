@@ -15,8 +15,14 @@ div.step-through {
 div.file {
   margin-top: 0.5em;
 }
+
 div.step:not(.current) {
   display: none;
+}
+@media print {
+  div.step:not(.current) {
+    display: block;
+  }
 }
 span.progress {
   padding-left: 3px;
