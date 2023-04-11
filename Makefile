@@ -9,10 +9,10 @@
 default: check
 
 check:
-	node builders/addictive-verification-verify.js _posts/2023-04-12-making-verification-addictive-visual-verification-feedback-for-dafny.markdown
+	node builders/verification-compelling-verification-verify.js _posts/2023-04-12-making-verification-compelling-visual-verification-feedback-for-dafny.markdown
 
 generate:
-	node builders/addictive-verification-verify.js --regenerate _posts/2023-04-12-making-verification-addictive-visual-verification-feedback-for-dafny.markdown
+	node builders/verification-compelling-verification-verify.js --regenerate _posts/2023-04-12-making-verification-compelling-visual-verification-feedback-for-dafny.markdown
 
-watch-addictive:
-	node builders/addictive-verification-verify.js --watch _posts/2023-04-12-making-verification-addictive-visual-verification-feedback-for-dafny.markdown
+watch-compelling:
+	node builders/verification-compelling-verification-verify.js --watch _posts/2023-04-12-making-verification-compelling-visual-verification-feedback-for-dafny.markdown

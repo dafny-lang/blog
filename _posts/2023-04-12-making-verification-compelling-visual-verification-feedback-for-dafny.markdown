@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Making Verification Addictive: Visual Verification Feedback for Dafny"
+title:  "Making Verification Compelling: Visual Verification Feedback for Dafny"
 date:   2023-04-12 18:00:00 +0100
 author: Mikael Mayer
 ---
@@ -70,7 +70,7 @@ And then, a dreaded thought reappears: "Well, despite all these efforts, how can
   only that senior mathematician on another specialized team can understand and maintain it, and they are retiring soon..."
 - "My developers have tried using modeling tools themselves but it's like... manipulating mathematics is discouraging..."
 
-If only it doing mathematics at the software level was engaging ... or even better, addictive... and then you remember Dafny and its new features you will have read about in this blog post.
+If only it doing mathematics at the software level was engaging and compelling... and then you remember Dafny and its new features you will have read about in this blog post.
 
 ### What?
 
@@ -452,7 +452,7 @@ While thinking about how to display verification feedback in the gutter, I estab
 See below these icons in the current version of Dafny, on Visual Studio Code, when other gutter icon features are disabled.
 
 <div id="fig_static_icons_dark_light"></div>
-[<img src="/blog/assets/images/addictive-example1.png" alt="Dafny gutter icons on dark theme" width="45%"/>](/blog/assets/images/addictive-example1.png) [<img src="/blog/assets/images/addictive-example2.png" alt="Dafny gutter icons on light theme" width="45%"/>](/blog/assets/images/addictive-example2.png)
+[<img src="/blog/assets/images/verification-compelling-example1.png" alt="Dafny gutter icons on dark theme" width="45%"/>](/blog/assets/images/verification-compelling-example1.png) [<img src="/blog/assets/images/verification-compelling-example2.png" alt="Dafny gutter icons on light theme" width="45%"/>](/blog/assets/images/verification-compelling-example2.png)
 <div style="text-align:center;font-style:italic">
 Fig 1. The new verification gutter icons on the left of each screenshot, when Dafny finished verifying the file, in dark and light theme respectively. The error underlines come from diagnostics and were already there before.
 </div>
@@ -471,17 +471,17 @@ In general, a declaration can be a method or a function with or without a body, 
 
 The first four icons that Dafny displays in the gutter are illustrated in [Figure 1](#fig_static_icons_dark_light):
 
-* **A green thin vertical bar for verified code.** [Figure 1](#fig_static_icons_dark_light), lines 1 to 9. Green was the obvious color of choice for verified code. <img src="/blog/assets/images/addictive-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:120px;object-fit:none;object-position:-6px 0;margin:3px"/> However, it was not obvious how to represent the notion of "verified". In test frameworks, there is usually a check in front of passing tests.
+* **A green thin vertical bar for verified code.** [Figure 1](#fig_static_icons_dark_light), lines 1 to 9. Green was the obvious color of choice for verified code. <img src="/blog/assets/images/verification-compelling-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:120px;object-fit:none;object-position:-6px 0;margin:3px"/> However, it was not obvious how to represent the notion of "verified". In test frameworks, there is usually a check in front of passing tests.
 In Dafny, the equivalent of a test is the verification of an entire declaration. Therefore, I decided to have an icon that could help form a vertical gap-free line through the declaration. Because eyes are sensitive to pattern breaks, I also decided to fill empty lines adjacent to green vertical icons (lines 1, 5, 9) also with the same green vertical icons. That way, verified code is the least distracting of all, brings a sense of _relief_ when an entire error context goes away (see next points), and it conveys the idea that the default, or the goal, is to have verified icons.
 
 * **A red rectangle for errors.** [Figure 1](#fig_static_icons_dark_light), line 13 and line 17. Red is the typical color for errors, so I used it for verification errors.
- <img src="/blog/assets/images/addictive-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:48px;object-fit:none;object-position:-7px -409px;margin:3px"/> Similar to the choice of green, I used a less saturated red to avoid being too bright. The rectangle was one way to provide a prominent indication that there is at least one error on the line. The width of this rectangle is greater than the width of the verified icon, because it has to catch the eye when scrolling. If you look at it closely, you will also see that it is surrounded by two thin yellow lines (see the next point).
+ <img src="/blog/assets/images/verification-compelling-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:48px;object-fit:none;object-position:-7px -409px;margin:3px"/> Similar to the choice of green, I used a less saturated red to avoid being too bright. The rectangle was one way to provide a prominent indication that there is at least one error on the line. The width of this rectangle is greater than the width of the verified icon, because it has to catch the eye when scrolling. If you look at it closely, you will also see that it is surrounded by two thin yellow lines (see the next point).
 
 * **Two vertical yellow lines for error context.** [Figure 1](#fig_static_icons_dark_light), lines 10-14 and 16-19. I wanted users to immediately recognize declarations that have errors.
- <img src="/blog/assets/images/addictive-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:48px;object-fit:none;object-position:-7px -370px;margin:3px"/> That way, even if declarations span more than one screen and there are no more single-line errors on the screen, users would still know that work needs to be done in the surrounding declaration. I chose the color yellow for that, as it is the typical color for warnings. For the choice of shape, I used the _clogged pipe_ metaphor, as if the context was a pipe in which errors were preventing the flow. This is how I ended up using two vertical yellow lines that were separated by the same width as the red rectangle.
+ <img src="/blog/assets/images/verification-compelling-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:48px;object-fit:none;object-position:-7px -370px;margin:3px"/> That way, even if declarations span more than one screen and there are no more single-line errors on the screen, users would still know that work needs to be done in the surrounding declaration. I chose the color yellow for that, as it is the typical color for warnings. For the choice of shape, I used the _clogged pipe_ metaphor, as if the context was a pipe in which errors were preventing the flow. This is how I ended up using two vertical yellow lines that were separated by the same width as the red rectangle.
 
 * **A circle with a check mark for partially proved assertions.** [Figure 1](#fig_static_icons_dark_light), line 11 and line 18.
-    While designing the icons, we got access to not only errors and declarations, <img src="/blog/assets/images/addictive-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:35px;object-fit:none;object-position:-7px -588px;margin:3px"/>  but also to all the individual assertions. When Dafny finds an assertion it cannot prove, it will report it, assume it, and relaunch the verification process, up to five times per declaration. Therefore if, before the fifth time, it was able to prove that a declaration is correct, it means that every assertion not tagged with an error is partially proved.
+    While designing the icons, we got access to not only errors and declarations, <img src="/blog/assets/images/verification-compelling-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:35px;object-fit:none;object-position:-7px -588px;margin:3px"/>  but also to all the individual assertions. When Dafny finds an assertion it cannot prove, it will report it, assume it, and relaunch the verification process, up to five times per declaration. Therefore if, before the fifth time, it was able to prove that a declaration is correct, it means that every assertion not tagged with an error is partially proved.
     This is especially useful in the context of verification debugging, when one tries to copy and rewrite assertions towards the top of the declaration, manually applying the [weakest precondition calculus](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging).
     Not surprisingly, it solved the issue of users wondering if Dafny stopped at the first error or was able to prove the remaining. I also decided to not create an equivalent of this icon in a verified context, to keep the fully verified feedback as simple as possible.
 
@@ -492,7 +492,7 @@ Having icons for describing the verification status statically is great, but I f
 I could just have removed verification icons while Dafny is verifying declarations. You can thank me, I did not chose this easy path, because I think that this would cause not only a disturbing blinking effect when verification is fast, but also make the user not benefit from immediate comparison with the previous status. In the [weakest precondition calculus](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging), I found it is helpful to see the red rectangle to "move up", as it often means that someone is bringing an error closer to the hypotheses. Erasing the intermediate feedback would put more strain on vision processing because users would have to visually re-align the icons and the (usually indented) code.
 
 <div id="fig_dynamic_gutter_icons"></div>
-[<img src="/blog/assets/images/addictive-example-dynamic.png" alt="Dafny dynamic gutter icons" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog/assets/images/addictive-example-dynamic.png)
+[<img src="/blog/assets/images/verification-compelling-example-dynamic.png" alt="Dafny dynamic gutter icons" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog/assets/images/verification-compelling-example-dynamic.png)
 <div style="text-align:center;font-style:italic">
 Fig 2. Dynamic icons in chronological order.
 The user first opens a file and goes through A, B and C. The user makes a typo in D on line 10. Then, the user fixes the typo and the error on line 11,
@@ -529,7 +529,7 @@ In [Figure 2](#fig_dynamic_gutter_icons), verification being done on more than 2
 <!--Things get deep now. Feel free to take a break if you really want to read this, or [skip to the next section](#enhancing-positive-and-negative-feedback) to learn more about things other than gutter icons.-->
 
 To render static and dynamic icons, I used a z-buffer mechanism with clever codes for each icons.
-I also have had special icons designed for the start and end of declarations with errors so that if flows nicely with verified code (for example <img src="/blog/assets/images/addictive-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="width:25px;height:24px;object-fit:none;object-position:-7px -307px;margin:3px"/>)
+I also have had special icons designed for the start and end of declarations with errors so that if flows nicely with verified code (for example <img src="/blog/assets/images/verification-compelling-example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="width:25px;height:24px;object-fit:none;object-position:-7px -307px;margin:3px"/>)
 In real-time feedback, I also delayed the display of gutter icons by 2 seconds in the presence of parse or resolution errors, to avoid icons blinking when typing fast.
 Finally, I ensured that the scroll bar itself reflects gutter icons, so that it's possible to see at a glance if the entire file is verified, and if not, where to scroll.
 
@@ -542,19 +542,19 @@ Congratulations for reading until here! So far, you already have a sense on how 
 The gutter icons enhanced the user experience, but this was not enough. I found that I could further enhance the existing hover messages to provide useful insights and shortcuts. Let's compare before/after:
 
 <div id="fig_previous_diagnostics"></div>
-[<img src="/blog/assets/images/addictive-hover-a.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/addictive-hover-a.png)
+[<img src="/blog/assets/images/verification-compelling-hover-a.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/verification-compelling-hover-a.png)
 <div style="text-align:center;font-style:italic;margin-bottom:2em;">
 Fig 3a. Previous diagnostics, highlighting and hovering. Although diagnostics are clickable, often users only need to get the failing related code immediately without changing context, so this is distracting.
 Moreover, no further help is available to solve verification issues.
 </div>
 <div id="fig_new_diagnostics"></div>
-[<img src="/blog/assets/images/addictive-hover-b.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/addictive-hover-b.png)
+[<img src="/blog/assets/images/verification-compelling-hover-b.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/verification-compelling-hover-b.png)
 <div style="text-align:center;font-style:italic;margin-bottom:2em;">
 Fig 3b. New diagnostics, highlighting and hovering. Note that now failing postconditions are underlined as well (in reddish orange) and have a specific error message complementary to the error message at the return path.
 The word "<b style="color:blue">Error</b>" points to the very useful page of <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging">verification debugging when verification fails</a>. All related code snippets are visible and copyable on hover. The assertion number and number of resources are given.
 </div>
 <div id="fig_method_summary"></div>
-[<img src="/blog/assets/images/addictive-hover-c.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/addictive-hover-c.png)
+[<img src="/blog/assets/images/verification-compelling-hover-c.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/verification-compelling-hover-c.png)
 <div style="text-align:center;font-style:italic;margin-bottom:2em;">
 Fig 4. Method summary on hover. Note the icon that points to <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow">verification debugging when verification is slow</a> if the number of resource units exceeds a threshold (currently 10M). The costlier assertion batch's first line is given, which is useful if all assertions are verified separatedly using <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-vcs_split_on_every_assert"><code>{:vcs_split_on_every_assert}</code></a>
 </div>
@@ -588,4 +588,4 @@ Rustan Leino, who I owe most of the content of the sections of Verification Debu
 Cody Roux, for the test and the first user quote.
 
 --_Mikael Mayer_
-<script src="/blog/assets/js/addictive-verification-steps.js"></script>
+<script src="/blog/assets/js/verification-compelling-verification-steps.js"></script>
