@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Making Verification Compelling: Visual Verification Feedback for Dafny"
-date:   2023-04-12 18:00:00 +0100
+date:   2023-04-19 18:00:00 +0100
 author: Mikael Mayer
 ---
 If, one day, one of your developers introduced a bug that ends up costing your company millions,
