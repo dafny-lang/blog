@@ -46,19 +46,19 @@ Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most ou
 [jekyll-gh]:   https://github.com/jekyll/jekyll
 [jekyll-talk]: https://talk.jekyllrb.com/
 
-# CI
+# Test the blog
 
-Run the following test to ensure it passes CI
+To test the blog posts, run:
 
 `make check`
 
-If `make check` does not work, `make generate` might be able to fix things up if run locally, committed an pushed.
+If `make check` does not work, `make generate` might be able to fix things if ran locally, committed and pushed.
 
 # Local development
 
-We encourage post authors setting up custom pipeline to continuously generate a single post, to make that pipeline accessible via
+We encourage post authors to set up a custom pipeline, which continuously generates a single post. Make that pipeline accessible via
 
 `make watch-X`
 
-where X is a label that refers to the post, for example `make watch-addictive`;
+where X is a label that refers to the post, for example `make watch-compelling`.
 

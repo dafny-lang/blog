@@ -1,0 +1,52 @@
+.quote {
+  text-align:center;
+  height:2.2em;
+  font-style:italic
+}
+
+html {
+  scroll-behavior: smooth;
+}
+div.step-through {
+  padding: 0.5em;
+  border: 1px gray solid;
+}
+div.file {
+  margin-top: 0.5em;
+}
+
+div.step:not(.current) {
+  display: none;
+}
+@media print {
+  div.step:not(.current) {
+    display: block;
+  }
+}
+span.progress {
+  padding-left: 3px;
+}
+pre.output {
+  margin-top: 1em;
+}
+div.step-through button {
+  padding: 1em;
+}
+
+/* Override */
+table {
+  margin-bottom: 0px;
+}
+table th, table td {
+    padding: 0px 0px;
+}
+pre.lineno {
+  padding: 0px 0px;
+  margin-bottom: 0px;
+}
+
+.code > pre {
+  padding: 0px 0px;
+  padding-left: 5px;
+  margin-bottom: 0px;
+}

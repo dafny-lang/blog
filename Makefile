@@ -5,7 +5,7 @@
 #   Steps to regenerate blog posts so that they are not broken
 #
 # make watch-X: (there can be multiple similar)
-#   Continuously rebuilds the blog post labelled X for development.
+#   Continuously rebuilds the blog post labelled X for development
 default: check
 
 check:
