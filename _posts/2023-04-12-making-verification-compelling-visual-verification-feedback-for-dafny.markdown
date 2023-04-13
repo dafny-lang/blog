@@ -4,7 +4,6 @@ title:  "Making Verification Compelling: Visual Verification Feedback for Dafny"
 date:   2023-04-12 18:00:00 +0100
 author: Mikael Mayer
 ---
-<link rel="stylesheet" href="/blog/assets/css/verification-compelling.css"></link>
 If, one day, one of your developers introduced a bug that ends up costing your company millions,
 as it happens occasionally, what would be your first thought, as the manager? Probably
 
@@ -250,4 +249,5 @@ Rustan Leino, who inspired most of the content of the sections of Verification D
 Cody Roux, for the test and the first user quote.
 Fabio Madge, for providing feedback on this post.
 
+<link rel="stylesheet" href="/blog/assets/css/verification-compelling.css">
 <script src="/blog/assets/js/verification-compelling-verification-steps.js"></script>
