@@ -9,10 +9,10 @@
 default: check
 
 check:
-	node builders/verification-compelling-verification-verify.js _posts/2023-04-12-making-verification-compelling-visual-verification-feedback-for-dafny.markdown
+	node builders/verification-compelling-verify.js _includes/verification-compelling-intro.html
 
 generate:
-	node builders/verification-compelling-verification-verify.js --regenerate _posts/2023-04-12-making-verification-compelling-visual-verification-feedback-for-dafny.markdown
+	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
 
 watch-compelling:
-	node builders/verification-compelling-verification-verify.js --watch _posts/2023-04-12-making-verification-compelling-visual-verification-feedback-for-dafny.markdown
+	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
