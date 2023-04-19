@@ -234,7 +234,7 @@ Moreover, because hovering is one of first way users can discover features, I ad
 
 # Summary
 
-I explained why Dafny, how Dafny works, how gutter icons enhance the verification experience, how I designed the icons, and how I enhanced verification feedback using suitable hover messages. This, I believe, made the Dafny verification experience more accessible, more positive, and more enjoyable, for both new and existing users.
+I explained what can make someone need Dafny, how Dafny works, how gutter icons enhance the verification experience, how I designed the icons, and how I enhanced verification feedback using suitable hover messages. This, I believe, made the Dafny verification experience more accessible, more positive, and more enjoyable, for both new and existing users.
 The story is not finished, but I hope that you enjoyed this first chapter!
 
 # Acknowledgments
