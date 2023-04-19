@@ -92,7 +92,7 @@ You might remember the animated screenshot of [our previous blog post](/blog/202
 
 ![Dafny 4 IDE features](/blog/assets/images/Dafny4IDEFeatures.gif)
 
-I'm now going to explain in detail what is happening on the left of the code (the _gutter_), and how I designed it and especially how it answered many of the questions users were asking, sometimes unconciously.
+I'm now going to explain in detail what is happening on the left of the code (the _gutter_), and how I designed it and especially how it answered many of the questions users were asking, sometimes unconsciously.
 
 Numerous test engines also display feedback in the gutter next to the methods themselves, or next to the method calls if they are tests (e.g. [Wallaby.js](https://wallabyjs.com/), [xUnit](https://xunit.net/docs/getting-started/netfx/jetbrains-rider)...).
 Such feedback is contextual, meaning it can be associated to the line of code it is attached to, as opposed to diagnostics that are listed in a separate window.
