@@ -82,7 +82,7 @@ function setUpStepContainer(stepContainer) {
           }
           if(scrollTop) {
             stepContainer.scrollIntoView();
-            setTimeout(doSwitch, 1000);
+            setTimeout(doSwitch, 600);
           } else {
             doSwitch();
           }

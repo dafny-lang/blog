@@ -205,7 +205,6 @@ function RunCommands(steps, regenerate, fileName, fileContent) {
   var exit_code = 0;
   // Run only the commands that might have changed.
   var {startIndex, postIndex, postIndexPrev} = GetContentChanged(fileName, fileContent);
-  console.log({startIndex, postIndex, postIndexPrev});
   console.log("Running commands that might have changed...");
   console.log("");
   console.log("");

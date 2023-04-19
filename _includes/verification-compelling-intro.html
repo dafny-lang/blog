@@ -20,7 +20,7 @@ method Main() {
 }
 {% endhighlight %}
 </div><!--.file-->
-If your run <code><span class="command">dafny run --no-verify euclidian.dfy</span><!--.command--></code>, you get the following output:
+If you run <code><span class="command">dafny run --no-verify euclidian.dfy</span><!--.command--></code>, you get the following output:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 Dafny program verifier did not attempt verification
@@ -74,7 +74,7 @@ Dafny program verifier finished with 1 verified, 2 errors
 </pre><!--.output-->
 <p>Dafny could not prove that the method <em>terminates</em>. Wait a second, does it?
 You think for a second, reasons like "Well, 'a' decreases, and once it's smaller
-than 'b', it terminates. And 'a' is always greater or equal to zero, but how to tell Dafny?
+than 'b', it terminates. And 'a' is always greater or equal to zero, but how do we tell Dafny?
 Let's revisit the code. Click <button class="top">Next</button>.</p>
 </div><!--.step-->
 <div class="step">
@@ -82,7 +82,7 @@ Let's revisit the code. Click <button class="top">Next</button>.</p>
 {% highlight javascript linenos mark_lines="2 3" %}
 method euclidianDiv(a: int, b: int) returns (q: int, r: int)
   requires 0 <= a && b != 0  // Just added
-  decreases a                // Just aded
+  decreases a                // Just added
 {
   if a <= b {
     q := 0;
@@ -102,13 +102,13 @@ method Main() {
 </div><!--.file-->
 <div class="explanation">
 You added a <code>requires</code> clause to your method to ensure that
-<code>euclidiantDiv</code> is not called with a negative <code>a</code>.
+<code>euclidianDiv</code> is not called with a negative <code>a</code>.
 and also that <code>b</code> is not zero.
 You also add a <code>decreases a</code> clause, and Dafny verifies that the expression <code>a</code> decreases when calling itself recursively, and is greater or equal to zero.
 Clauses are checked statically by Dafny but not compiled nor executed, like a clever
 type check, which is pretty nice.
 </div>
-If your run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following output:
+If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following output:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 euclidian.dfy(9,15): Error: decreases clause might not decrease
@@ -120,7 +120,7 @@ euclidian.dfy(9,15): Error: decreases clause might not decrease
 Dafny program verifier finished with 1 verified, 1 error
 </pre><!--.output-->
 <p>Well, it seems that Dafny does not believe that <code>a - b</code> is less than <code>a</code>. Time for an assertion.
-Assertions are like clauses, they are not compiled nor executed, Dafny will just check them. Click <button class="top">Next</button>.
+Assertions are like clauses, they are not compiled nor executed, Dafny will just check them during verification. Click <button class="top">Next</button>.
 </p>
 </div><!--.step-->
 <div class="step">
@@ -147,7 +147,7 @@ method Main() {
 }
 {% endhighlight %}
 </div><!--.file-->
-If your run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following output:
+If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following output:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 euclidian.dfy(9,11): Error: assertion might not hold
@@ -158,8 +158,8 @@ euclidian.dfy(9,11): Error: assertion might not hold
 
 Dafny program verifier finished with 1 verified, 1 error
 </pre><!--.output-->
-<p>You start to realize that something is wrong. In your head, you transform it to
-"a - b < a" is the same as "- b < 0" which is "b > 0". Surprise! You just found out that,
+<p>You start to realize that something is wrong. In your head, you see that
+"a - b &lt; a" is the same as "-b &lt; 0", which is the same as "b > 0". Surprise! You just found out that,
 if you accidentally called the function with a negative 'b', the function would loop forever! Click <button class="top">Next</button> to correct that.
 </p>
 </div><!--.step-->
@@ -189,16 +189,17 @@ method Main() {
 </div><!--.file-->
 <div class="explanation">
 You modified the <code>requires</code> clause to your method to ensure that
-<code>euclidiantDiv</code> is not called with a negative <code>b</code>
+<code>euclidianDiv</code> is not called with a negative <code>b</code>
 </div>
-If your run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you finally get it working:
+If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you finally get it working:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 Dafny program verifier finished with 2 verified, 0 errors
 47 = 3*13 + 8
 </pre><!--.output-->
 <p>By turning on verification, you were able to fix a bug that your test coverage would not have spotted.
-But Dafny does not stop here. Can you prove that you did the right thing? Let's figure out. We can add one <code>ensures</code> clause to verify a relationship between inputs and outputs. Click  <button class="top">Next</button> to proceed.
+But Dafny does not stop here. Can you prove that you did the right thing, which is computing the quotient and remainder?
+Let's figure out. We can add one <code>ensures</code> clause to verify a relationship between inputs and outputs. Click  <button class="top">Next</button> to proceed.
 </p>
 </div><!--.step-->
 <div class="step">
@@ -229,7 +230,7 @@ method Main() {
 </div><!--.file-->
 <div class="explanation">
 You added one <code>ensures</code> clause to your method to ensure that
-<code>euclidiantDiv</code> actually returns what it is supposed to compute,
+<code>euclidianDiv</code> actually returns what it is supposed to compute,
 given some properties you know of Euclidian division.
 Note that Dafny lets you write chaining comparisons. How many languages allow that?
 </div>
@@ -249,9 +250,9 @@ euclidian.dfy(5,15): Related location: this is the postcondition that could not 
 
 Dafny program verifier finished with 1 verified, 1 error
 </pre><!--.output-->
-<p>From this, you see that Dafny was not able to prove that <code>r < a</code> might not hold.
-To identify why it is the case, you would apply techniques of <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging">verification debugging</a>. For now, you just realize your mistake:
-It's only if <code>a &lt; b</code> that you should take the first path. When <code>a = b</code>, you should
+<p>From this, you see that Dafny was not able to prove that <code>r &lt; a</code> always hold.
+To identify why it is the case, you could apply techniques of <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging">verification debugging</a>. For now, you just realize your mistake:
+It's only if <code>a &lt; b</code> that you should take the <codee>if</codee> branch. When <code>a = b</code>, you should
 take one more step recursively. Click <button class="top">Next</button> to fix the code.
 </p>
 </div><!--.step-->
@@ -282,9 +283,9 @@ method Main() {
 {% endhighlight %}
 </div><!--.file-->
 <div class="explanation">
-You modified your condition to ensure only that <code>a &lt; b</code>:
+You modified your condition to stop recursing only if <code>a &lt; b</code>.
 </div>
-If your run <code><span class="command">dafny run euclidian.dfy</span><!--.command--></code>, you get the following result:
+If you run <code><span class="command">dafny run euclidian.dfy</span><!--.command--></code>, you get the following result:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 Dafny program verifier finished with 2 verified, 0 errors

@@ -26,8 +26,8 @@ If only doing mathematics at the software level was engaging and compelling... a
 
 ### What?
 
-I'll explain how mathematical reasoning of programs can be made _more_ engaging by increasing the amount of negative, contextual and especially positive feedback in Dafny,
-The success was to the point point where a user spontaneously said:
+I'll explain how mathematical reasoning of programs can be made _more_ engaging by increasing the amount of negative, contextual and especially positive feedback in Dafny.
+The success was to the point where a user spontaneously said:
 <div class="quote">
 "It's ridiculous how good all green gutter feels"
 </div>
@@ -43,24 +43,24 @@ Isn't that a super cute testimony?
 
 ### Quick story of Dafny
 
-Dafny started as an imperative programming language with built-in support for verification in 2009, but you probably haven't heard a lot about it in the news. It's because it's in a special niche: It is meant for programmers, but designed with verification as the first goal in mind.
+Dafny started as an imperative programming language with built-in support for verification in 2009, but you probably haven't heard a lot about it in the news. That's because it's in a special niche: It's meant for programmers, but designed with verification as the first goal in mind.
 
-Dafny has been successfully used in several industrial and academics settings.
-With its Java-like syntax and good type inference, Dafny has [2k stars on GitHub](https://github.com/dafny-lang/dafny).
-Dafny is being used both academic circles to [teach formal reasoning](http://www.doc.ic.ac.uk/~scd/Dafny_Material/Lectures.pdf), as well as in industrial projects like [IronFleet](https://github.com/microsoft/Ironclad/blob/main/ironfleet/README.md) and [IronClad projects](https://github.com/microsoft/Ironclad/blob/main/ironfleet/README.md), as part of the [AWS Encryption SDK](https://github.com/aws/aws-encryption-sdk-dafny) and as the model for the [Amazon Verified Permissions](https://aws.amazon.com/verified-permissions/).
+Dafny has been successfully used in several industrial and academic settings.
+With its Java-like syntax and good type inference, Dafny has [over 2k stars on GitHub](https://github.com/dafny-lang/dafny).
+Dafny is being used both in academic circles to [teach formal reasoning](http://www.doc.ic.ac.uk/~scd/Dafny_Material/Lectures.pdf), as well as in industrial projects like [IronFleet](https://github.com/microsoft/Ironclad/blob/main/ironfleet/README.md) and [IronClad projects](https://github.com/microsoft/Ironclad/blob/main/ironfleet/README.md), as part of the [AWS Encryption SDK](https://github.com/aws/aws-encryption-sdk-dafny) and as the model for the [Amazon Verified Permissions](https://aws.amazon.com/verified-permissions/).
 
 Under the hood, Dafny reasons about programs, and can not only prove the absence of run-time exceptions, but also invariants and specific properties relating inputs and outputs.
 
 ### A quick introduction to Dafny
 
-By now, you might want to know what does it mean to reason about programs _mathematically_ to avoid bugs that tests might not cover. It's your lucky day, I made an animation to explain the process. Here is an example of an unoptimized program that computes the euclidian division in Dafny. To go to the next step, click "Next".
+By now, you might want to know what it means to reason about programs _mathematically_ to avoid bugs that tests might not cover. It's your lucky day, I made an animation to explain the process. Here is an example of an unoptimized program that computes the Euclidian division in Dafny. The Euclidian is the regular division you learned at school, and the result are the quotient and the remainder.
 
 {% include verification-compelling-intro.html %}
 
 If you want to know how Dafny translates these programs into mathematical formulas, [have a look at this discussion](https://github.com/dafny-lang/dafny/discussions/1898#discussioncomment-2344533).
 
 Ok, so now you know how Dafny works if it was run on the command line.
-For now, let's focus on the most interesting part that changed since the last year: The IDE.
+For now, let's focus on the most interesting part that changed since the last year: the [Dafny IDE for VS Code](https://github.com/dafny-lang/ide-vscode).
 
 ## Users feel the lack of feedback on the IDE
 
@@ -72,13 +72,13 @@ Users frequently had questions such as:
 * **Are verification diagnostics obsolete?**
   If a file verified in 30 seconds, it meant users had to wait all this time before getting feedback about the line they were working on. Diagnostics used to be published only once, after Dafny checked everything. Imagine the frustration of waiting 30 seconds to know if what you wrote made sense for Dafny, 50 times per day...
 * **Is Dafny actually stuck?**
-  Not long ago, the Dafny extension had numerous problems requiring regular restarts, so it was even more frustrating. Users were ditching the "verification on change" mode and used "verification on save" to minimize the number of restarts, which impacted their experience a lot. The biggest problem was, there was no way to differentiate between "Dafny is stuck" and "Dafny is thinking".
+  Not long ago, the Dafny extension had numerous problems requiring frequent restarts, so it was even more frustrating. Users were ditching the "verification on change" mode and used "verification on save" to minimize the number of restarts, which impacted their experience a lot. The biggest problem was, there was no way to differentiate between "Dafny is stuck" and "Dafny is thinking".
 * **Can we not verify a single method at a time?**
-  Users often commented out code, adding `{:verify false}` or `assume false;` statements in the code to force Dafny to ignore already proved code. When they wanted to verify a single method, I've seen users go back to the command line (sigh).
+  In order to get feedback faster, users often commented out code, adding `{:verify false}` or `assume false;` statements in the code to force Dafny to ignore already proved code. When they wanted to verify a single method, I've seen users go back to the command line (sigh).
 * **Where are the hidden assertions? What are they proving?**
   Dafny proves a ton of assertions that were never explicitly asserted by the user, such as preconditions, divisions by zero, or memory reading/writing conditions. If the program was verified, the users would usually have no idea of how much complex verification was performed, which did not provide as much assurance as if users knew all the work Dafny did.
 * **Is there no error on this assertion because it's verified, or because Dafny has no information about it?**
-  Dafny made it clear where it found errors, but the absence of errors in some portions of a method could be due to Dafny not investigating further, because it has a default limit of 5 errors reported per method.
+  Dafny made it clear where it found errors, but the absence of errors in some portions of a method could be due to Dafny not investigating further, because it had a default limit of 5 errors reported per method.
   So basically, it was impossible to know things about assertions that are not underlined in red as errors.
 * **Are there still assertions to prove in my current method?**
   Professional programmers often wrote methods longer than could be displayed on the screen at once. Because postconditions are written at the beginning of a method, such users often needed to scroll back up to see if they finally proved it. Having no contextual information about the entire method verification status was painful.
@@ -108,7 +108,7 @@ While thinking about how to display verification feedback in the gutter, I estab
 * **Compatibility with modes:** The icons should work both if the user triggers verification on save, or if verification is triggered each time users type something
 * **Context-awareness:** The icons should not just convey the verification status of a single line, but, where appropriate, they may also convey verification feedback about the surrounding context.
 * **Past-awareness:** Icons indicating ongoing computation should still display previous verification status, so that it is not lost.
-* **No ambiguity:** The icons should be simple, straightforward, and not be ambiguous when looked from the side of the field of vision, so that users can focus on their code.
+* **Clarity:** The icons should be simple, straightforward, and unambiguous even in users' peripheral vision, so that users can focus on their code.
 
 See below these icons in the current version of Dafny, on Visual Studio Code, when other gutter icon features are disabled.
 
@@ -144,11 +144,11 @@ In Dafny, the equivalent of a test is the verification of an entire declaration.
 * **A circle with a check mark for partially proved assertions.** [Figure 1](#fig_static_icons_dark_light), line 11 and line 18.
     While designing the icons, we got access to not only errors and declarations, <img src="/blog/assets/images/verification-compelling/example1.png" alt="Dafny gutter icons on dark theme" width="45%" style="float:left;width:25px;height:35px;object-fit:none;object-position:-7px -588px;margin:3px"/>  but also to all the individual assertions. When Dafny finds an assertion it cannot prove, it will report it, assume it, and relaunch the verification process, up to five times per declaration. Therefore if, before the fifth time, it was able to prove that a declaration is correct, it means that every assertion not tagged with an error is partially proved.
     This is especially useful in the context of verification debugging, when one tries to copy and rewrite assertions towards the top of the declaration, manually applying the [weakest precondition calculus](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging).
-    Not surprisingly, it solved the issue of users wondering if Dafny stopped at the first error or was able to prove the remaining. I also decided to not create an equivalent of this icon in a verified context, to keep the fully verified feedback as simple as possible.
+    As expected, it solved the issue of users wondering if Dafny stopped at the first error or was able to prove the remaining. I also decided to not create an equivalent of this icon in a verified context, to keep the fully verified feedback as simple as possible.
 
 #### Dynamic icons
 
-Having icons for describing the verification status statically is great, but I found a clear benefit of using dynamic icons when displaying feedback. Typically, after looking at the verification diagnostics, users write more code or specifications, and then wait for verification to happen again. Verification can sometimes take dozens of seconds for a single file. so waiting for the entire verification of a file before updating icons would definitely not provide a good user experience...
+Having icons for describing the verification status statically is great, but I found a clear benefit of using dynamic icons when displaying feedback. Typically, after looking at the verification diagnostics, users write more code or specifications, and then wait for verification to happen again. Verification can sometimes take dozens of seconds for a single file, so waiting for the entire verification of a file before updating icons would definitely not provide a good user experience...
 
 I could just have removed verification icons while Dafny is verifying declarations. You can thank me, I did not chose this easy path, because I think that this would cause not only a disturbing blinking effect when verification is fast, but also make the user not benefit from immediate comparison with the previous status. In the [weakest precondition calculus](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging), I found it is helpful to see the red rectangle to "move up", as it often means that someone is bringing an error closer to the hypotheses. Erasing the intermediate feedback would put more strain on vision processing because users would have to visually re-align the icons and the (usually indented) code.
 
@@ -174,11 +174,11 @@ I had to solve many challenges to ensure these icons provide the most adequate f
 For example, as soon as some input is entered, before parsing even occurs,
 Dafny already migrates those icons according to string edits.
 I also found the lightning metaphor to be adequate to provide the sense of "verification" on the side of the vision field without hiding the previous verification status.
-However, I observed that if we just took the rectangle for error and put a lightning on it (yellow or transparent), it would just not be visible to the side of the vision field.
-This is especially more important given that I modified Dafny to give per-method feedback.
+However, I observed that if we just took the rectangle for error and put a lightning on it (yellow or transparent), it became hard-to-see in peripheral vision.
+This is especially important given that I had modified Dafny to give per-method feedback.
 This is why the red rectangle is split in screenshots E and F of [Figure 2](#fig_dynamic_gutter_icons), as if the error was about to "go away".
 
-Among all the dynamic icons, note that the topmost part of [Figure 2](#fig_dynamic_gutter_icons) is less distinct than for code in error context. Without more information about the new code, I preferred the dynamic icons to reflect a kind of default hypothesis that previously verified code will probably also be verified.
+Among all the dynamic icons, note that lines 1 to 8 of [Figure 2](#fig_dynamic_gutter_icons) is less distinct than for code in error context. Without more information about the new code, I preferred the dynamic icons to reflect a kind of default hypothesis that previously verified code will probably also be verified.
 I wanted Dafny to feel **more helpful than inquisitive**, i.e. **optimistic about the ability for the user to write correct code**.
 
 I found it was appropriate to refresh these icons every time a declaration changes its verification status, in real-time. Moreover, in the current absence of a reliable caching mechanism, I added an edit detection mechanism to ensure that the last methods being edited are verified first.
@@ -198,38 +198,38 @@ Finally, I ensured that the scroll bar itself reflects gutter icons, so that it'
 
 ## Enhanced positive and negative hover feedback
 
-Congratulations for reading until here! So far, you already have a sense on how the interface of Dafny is almost gamified with its on heads-up display or HUD, which contributes to making it delightful.
+Congratulations for reading until here! So far, you already have a sense on how the interface of Dafny is almost gamified with its immersive UI experience, which contributes to making it delightful.
 
 The gutter icons enhanced the user experience, but this was not enough. I found that I could further enhance the existing hover messages to provide useful insights and shortcuts. Let's compare before/after:
 
 <div id="fig_previous_diagnostics"></div>
 [<img src="/blog/assets/images/verification-compelling/hover-a.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/verification-compelling/hover-a.png)
 <div style="text-align:center;font-style:italic;margin-bottom:2em;">
-Fig 3a. Previous diagnostics, highlighting and hovering. Although diagnostics are clickable, often users only need to get the failing related code immediately without changing context, so this is distracting.
+Fig 3a. Previous diagnostics, highlighting and hovering. By clicking on a diagnostic to get more information, the failing related code would be scrolled into view, distracting the user with an unnecessary context change. 
 Moreover, no further help is available to solve verification issues.
 </div>
 <div id="fig_new_diagnostics"></div>
 [<img src="/blog/assets/images/verification-compelling/hover-b.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/verification-compelling/hover-b.png)
 <div style="text-align:center;font-style:italic;margin-bottom:2em;">
 Fig 3b. New diagnostics, highlighting and hovering. Note that now failing postconditions are underlined as well (in reddish orange) and have a specific error message complementary to the error message at the return path.
-The word "<b style="color:#3794ff">Error</b>" points to the very useful page of <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging">verification debugging when verification fails</a>. All related code snippets are visible and copyable on hover. The assertion number and number of resources are given.
+The word "<b style="color:#3794ff">Error</b>" points to the very useful page of <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging">verification debugging when verification fails</a>. All related code snippets are visible and copyable on hover. The assertion number and number of resource units are given.
 </div>
 <div id="fig_method_summary"></div>
 [<img src="/blog/assets/images/verification-compelling/hover-c.png" alt="Dafny previous hover messages" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>](/blog//blog/assets/images/verification-compelling/hover-c.png)
 <div style="text-align:center;font-style:italic;margin-bottom:2em;">
-Fig 4. Method summary on hover. Note the icon that points to <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow">verification debugging when verification is slow</a> if the number of resource units exceeds a threshold (currently 10M). The costlier assertion batch's first line is given, which is useful if all assertions are verified separatedly using <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-vcs_split_on_every_assert"><code>{:vcs_split_on_every_assert}</code></a>
+Fig 4. Method summary on hover. Note the icon that links to <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow">verification debugging section of the Dafny manual</a> if the number of resource units exceeds a threshold (currently 10M). The costlier assertion batch's first line number is given, which is useful if all assertions are verified separately using <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-vcs_split_on_every_assert"><code>{:vcs_split_on_every_assert}</code></a>
 </div>
 
 One aspect of program verification is that a single error might cover two or more places in the code. For example, post-conditions are asserted at every exit point of a declaration. Therefore, if this assertion fails, it fails on an exit point, and for the particular post-condition.
 [Figure 3a](#fig_previous_diagnostics) shows that the error was never reported on the post-condition itself before (top image). Following user feedback, on [Figure 3b](#fig_new_diagnostics) I made the error visible on post-conditions, using a red-orange squiggly line in-code &mdash; to indicate it is a secondary error &mdash; and using the regular error icon in the gutter.
 Moreover, because hovering is one of first way users can discover features, I added the following improvements to the hover experience, as shown in the bottom of [Figure 3b](#fig_new_diagnostics):
 
-* We quote the exact code portions that Dafny could not prove
+* We quote the exact code portions that Dafny could not prove.
 * On the <b style="color:#3794ff">Error</b> keyword, the usual color for links, I added a link to documentation we also wrote about how to [fix failing assertions](https://dafny.org/latest/DafnyRef/DafnyRef\#sec-verification-debugging).
 * "This is assertion #1 of 2" explains how many assertions there are and where is this assertion roughly located in verification, which proved to be useful for [splitting verification in smaller tasks using annotations](https://dafny.org/latest/DafnyRef/DafnyRef\#sec-assertion-batches).
-* "Resource usage: 9K RU" provides a deterministic metric on how many _resource units_ (RU) the solver used to reach this verification result. Resource units do not fluctuate like time would on multiple iterations, or when running on a different computer, although we found that both are correlated.
-* Hovering a _proved_ assertion reveals similar insights, with a positive message instead of an error, such as "Success: The divisior is never zero".
-* On hovering the line containing the method, if there are no other hovered assertions, I display a summary of verification as in [Figure 4](#fig_method_summary). This summary provides a link to the notion of [assertion batches]((https://dafny.org/latest/DafnyRef/DafnyRef\#sec-assertion-batches)) that helps splitting verification in smaller tasks, as well as a unicode warning icon `/!\` with a link to documentation to [fix verification when verification uses more than 10 million RU](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow), a threshold I set by experience.
+* "Resource usage: 9K RU" provides a metric on how many _resource units_ (RU) the solver used to reach this verification result, which is more deterministic than elapsed verification time.
+* Hovering over a _proved_ assertion reveals similar insights, with a positive message instead of an error, such as "Success: The division is never zero".
+* On hovering the line containing the method name, if there are no other hovered assertions, I display a summary of verification as in [Figure 4](#fig_method_summary). This summary provides a link to the notion of [assertion batches]((https://dafny.org/latest/DafnyRef/DafnyRef\#sec-assertion-batches)) that helps splitting verification in smaller tasks, as well as a unicode warning icon `/!\` with a link to documentation to [fix verification when verification uses more than 10 million RU](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow), a threshold I set by experience.
 * To identify which assertion batches are the slowest and need more work, especially when using the annotation [`{:vcs_split_on_every_assert}`](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-vcs_split_on_every_assert), I displayed the top 3 most expensive assertion batches and line numbers.
 
 # Summary
@@ -239,7 +239,7 @@ The story is not finished, but I hope that you enjoyed this first chapter!
 
 # Acknowledgments
 
-Adrianna Corona, for co-designing the icons and the user experience, while keeping the user needs in mind.
+Adrianna Corona, for co-designing the icons and the user experience, while keeping the users' needs in mind.
 Aaron Tomb, for making positive versions of every error message and providing feedback on this post.
 Ryan Emery, for being the first to ask me for gutter feedback à la [Wallaby.js](https://wallabyjs.com/).
 Remy Willems, for restructuring the back-end of the language server and for the numerous code reviews.
@@ -247,7 +247,7 @@ Clément Pit-Claudel, for reviewing the wording of the hover messages.
 Robin Salkeld, for the discussion about displaying resource units and the design of [`{:vcs_split_on_every_assert}`](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-vcs_split_on_every_assert).
 Rustan Leino, who inspired most of the content of the sections of Verification Debugging, which I wrote gradually after participating in sessions where he helped professional programmers.
 Cody Roux, for the test and the first user quote.
-Fabio Madge, for providing feedback on this post.
+Fabio Madge and Alex Chew, for providing feedback on this post.
 
 <link rel="stylesheet" href="/blog/assets/css/verification-compelling.css">
 <script src="/blog/assets/js/verification-compelling-verification-steps.js"></script>
