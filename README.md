@@ -3,9 +3,12 @@ The Dafny blog
 
 # Running the blog locally
 
-If it's the first time, run in the directory:
+If it's the first time make sure you have [Bundler](https://jekyllrb.com/tutorials/using-jekyll-with-bundler/) installed.
+Then, run in the directory:
 
 > bundle install
+
+If this fails, you might have an old Ruby version installed. Consider installing a Ruby version manager like [asdf](https://asdf-vm.com/), or [rbenv](https://github.com/rbenv/rbenv) to ensure you install the latest Ruby version through that version manager.
 
 To run the server,
 
@@ -45,3 +48,20 @@ Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most ou
 [jekyll-docs]: https://jekyllrb.com/docs/home
 [jekyll-gh]:   https://github.com/jekyll/jekyll
 [jekyll-talk]: https://talk.jekyllrb.com/
+
+# Test the blog
+
+To test the blog posts, run:
+
+`make check`
+
+If `make check` does not work, `make generate` might be able to fix things if ran locally, committed and pushed.
+
+# Local development
+
+We encourage post authors to set up a custom pipeline, which continuously generates a single post. Make that pipeline accessible via
+
+`make watch-X`
+
+where X is a label that refers to the post, for example `make watch-compelling`.
+
