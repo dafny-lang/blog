@@ -3,19 +3,19 @@
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int) {
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int) {
   if a <= b {
     q := 0;
     r := a;
   } else {
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
@@ -31,19 +31,19 @@ Dafny program verifier did not attempt verification
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int) {
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int) {
   if a <= b {
     q := 0;
     r := a;
   } else {
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
@@ -56,17 +56,17 @@ By running <code><span class="command">dafny run --show-snippets euclidian.dfy</
 <pre class="output">
 euclidian.dfy(6,15): Error: cannot prove termination; try supplying a decreases clause
   |
-6 |     var q', r' := euclidianDiv(a - b, b);
+6 |     var q', r' := EuclidianDiv(a - b, b);
   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 euclidian.dfy(6,15): Error: decreases expression at index 0 must be bounded below by 0
   |
-6 |     var q', r' := euclidianDiv(a - b, b);
+6 |     var q', r' := EuclidianDiv(a - b, b);
   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 euclidian.dfy(1,20): Related location
   |
-1 | method euclidianDiv(a: int, b: int) returns (q: int, r: int) {
+1 | method EuclidianDiv(a: int, b: int) returns (q: int, r: int) {
   |                     ^
 
 
@@ -80,7 +80,7 @@ Let's revisit the code. Click <button class="top">Next</button>.</p>
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos mark_lines="2 3" %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int)
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int)
   requires 0 <= a && b != 0  // Just added
   decreases a                // Just added
 {
@@ -88,21 +88,21 @@ method euclidianDiv(a: int, b: int) returns (q: int, r: int)
     q := 0;
     r := a;
   } else {
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
 </div><!--.file-->
 <div class="explanation">
 You added a <code>requires</code> clause to your method to ensure that
-<code>euclidianDiv</code> is not called with a negative <code>a</code>.
+<code>EuclidianDiv</code> is not called with a negative <code>a</code>.
 and also that <code>b</code> is not zero.
 You also add a <code>decreases a</code> clause, and Dafny verifies that the expression <code>a</code> decreases when calling itself recursively, and is greater or equal to zero.
 Clauses are checked statically by Dafny but not compiled nor executed, like a clever
@@ -113,7 +113,7 @@ If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</
 <pre class="output">
 euclidian.dfy(9,15): Error: decreases clause might not decrease
   |
-9 |     var q', r' := euclidianDiv(a - b, b);
+9 |     var q', r' := EuclidianDiv(a - b, b);
   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -126,7 +126,7 @@ Assertions are like clauses, they are not compiled nor executed, Dafny will just
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos mark_lines="9" %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int)
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int)
   requires 0 <= a && b != 0
   decreases a
 {
@@ -135,14 +135,14 @@ method euclidianDiv(a: int, b: int) returns (q: int, r: int)
     r := a;
   } else {
     assert a - b < a;        // Just added
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
@@ -166,7 +166,7 @@ if you accidentally called the function with a negative 'b', the function would 
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos mark_lines="2" %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int)
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int)
   requires 0 <= a && 0 < b    // Just modified to use '<' instead of '!='
   decreases a
 {
@@ -175,21 +175,21 @@ method euclidianDiv(a: int, b: int) returns (q: int, r: int)
     r := a;
   } else {
     assert a - b < a;
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
 </div><!--.file-->
 <div class="explanation">
 You modified the <code>requires</code> clause to your method to ensure that
-<code>euclidianDiv</code> is not called with a negative <code>b</code>
+<code>EuclidianDiv</code> is not called with a negative <code>b</code>
 </div>
 If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you finally get it working:
 <!--The following is tested, and can also be overriden -->
@@ -205,7 +205,7 @@ Let's figure out. We can add one <code>ensures</code> clause to verify a relatio
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos mark_lines="4 5" %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int)
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int)
   requires 0 <= a && 0 < b
   decreases a
   ensures a == b * q + r  // Just added
@@ -216,25 +216,25 @@ method euclidianDiv(a: int, b: int) returns (q: int, r: int)
     r := a;
   } else {
     assert a - b < a;
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
 </div><!--.file-->
 <div class="explanation">
 You added one <code>ensures</code> clause to your method to ensure that
-<code>euclidianDiv</code> actually returns what it is supposed to compute,
+<code>EuclidianDiv</code> actually returns what it is supposed to compute,
 given some properties you know of Euclidian division.
 Note that Dafny lets you write chaining comparisons. How many languages allow that?
 </div>
-If your now run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following result:
+If you now run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following result:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 euclidian.dfy(6,0): Error: a postcondition could not be proved on this return path
@@ -259,7 +259,7 @@ take one more step recursively. Click <button class="top">Next</button> to fix t
 <div class="step">
 <div class="file" name="euclidian.dfy">
 {% highlight javascript linenos mark_lines="7" %}
-method euclidianDiv(a: int, b: int) returns (q: int, r: int)
+method EuclidianDiv(a: int, b: int) returns (q: int, r: int)
   requires 0 <= a && 0 < b
   decreases a
   ensures a == b * q + r
@@ -270,14 +270,14 @@ method euclidianDiv(a: int, b: int) returns (q: int, r: int)
     r := a;
   } else {
     assert a - b < a;
-    var q', r' := euclidianDiv(a - b, b);
+    var q', r' := EuclidianDiv(a - b, b);
     q := q' + 1;
     r := r';
   }
 }
 method Main() {
   var a, b := 47, 13;
-  var q, r := euclidianDiv(a, b);
+  var q, r := EuclidianDiv(a, b);
   print a, " = ", q, "*", b, " + ", r;
 }
 {% endhighlight %}
