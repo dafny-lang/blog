@@ -43,7 +43,7 @@ Isn't that a super cute testimony?
 
 ### Quick story of Dafny
 
-Dafny started as an imperative programming language with built-in support for verification in 2009, but you probably haven't heard a lot about it in the news. That's because it's in a special niche: It's meant for programmers, but designed with verification as the first goal in mind.
+Dafny started as an imperative programming language with built-in support for verification in 2008, but you probably haven't heard a lot about it in the news. That's because it's in a special niche: It's meant for programmers, but designed with verification as the first goal in mind.
 
 Dafny has been successfully used in several industrial and academic settings.
 With its Java-like syntax and good type inference, Dafny has [over 2k stars on GitHub](https://github.com/dafny-lang/dafny).
@@ -198,7 +198,7 @@ Finally, I ensured that the scroll bar itself reflects gutter icons, so that it'
 
 ## Enhanced positive and negative hover feedback
 
-Congratulations for reading until here! So far, you already have a sense on how the interface of Dafny is almost gamified with its immersive UI experience, which contributes to making it delightful.
+Congratulations on reading until here! So far, you already have a sense of how the interface of Dafny is almost gamified with its immersive UI experience, which contributes to making it delightful.
 
 The gutter icons enhanced the user experience, but this was not enough. I found that I could further enhance the existing hover messages to provide useful insights and shortcuts. Let's compare before/after:
 
