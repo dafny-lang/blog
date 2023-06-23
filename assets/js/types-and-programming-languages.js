@@ -123,6 +123,62 @@ Blockly.JavaScript['tpl_iszero'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 }
 
+Blockly.Blocks['tpl_double'] = {
+  init: function() {
+    this.jsonInit({
+      "message0": 'Double %1',
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "VALUE",
+          "check": "Expr"
+        }
+      ],
+      "output": "Expr",
+      "colour": 160,
+      "tooltip": "An expression whose meaning is to double its argument"
+    });
+  }
+};
+
+Blockly.JavaScript['tpl_double'] = function(block) {
+  var value_value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = value_value == "" ? "" :
+    '_module.Term.create_Double(' + value_value + ')';
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['tpl_add'] = {
+  init: function() {
+    this.jsonInit({
+      "message0": 'Add %1 %2',
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "LEFT",
+          "check": "Expr"
+        },
+        {
+          "type": "input_value",
+          "name": "RIGHT",
+          "check": "Expr"
+        }
+      ],
+      "output": "Expr",
+      "colour": 180,
+      "tooltip": "An expression whose meaning is to add both arguments"
+    });
+  }
+};
+
+Blockly.JavaScript['tpl_add'] = function(block) {
+  var value_left = Blockly.JavaScript.valueToCode(block, 'LEFT', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_right = Blockly.JavaScript.valueToCode(block, 'RIGHT', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = value_left == "" || value_right == "" ? "" :
+    '_module.Term.create_Add(' + value_left + ', ' + value_right + ')';
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+}
+
 Blockly.Blocks['tpl_ifthenelse'] = {
   init: function() {
     this.jsonInit({
@@ -211,31 +267,9 @@ Blockly.JavaScript['tpl_evaluate'] = function(block) {
   var code = 'evaluate(' + value_prog + ', "' + block_id + '")';
   return code;
 }
-/*Blockly.Blocks['tpl_controls_repeat_ext'] = {
-  init: function() {
-    this.jsonInit(
-{
-  "message0": "repeat %1 times",
-  "args0": [
-    {"type": "input_value", "name": "TIMES", "check": "Expr"}
-  ],
-  "message1": "do %1",
-  "args1": [
-    {"type": "input_statement", "name": "DO"}
-  ],
-  "previousStatement": null,
-  "nextStatement": null,
-  "colour": 120
-});
-}
-};*/
   const toolbox = {
   "kind": "flyoutToolbox",
   "contents": [
-    /*{
-      "kind": "block",
-      "type": "tpl_controls_repeat_ext"
-    },*/
     {
       "kind": "block",
       "type": "tpl_typecheck"
@@ -270,6 +304,14 @@ Blockly.JavaScript['tpl_evaluate'] = function(block) {
     },
     {
       "kind": "block",
+      "type": "tpl_double"
+    },
+    {
+      "kind": "block",
+      "type": "tpl_add"
+    },
+    {
+      "kind": "block",
       "type": "tpl_ifthenelse"
     }
   ]
@@ -279,33 +321,45 @@ const workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox});
 // paste the JSON obtained by
 // copy(JSON.stringify(Blockly.serialization.workspaces.save(workspace)))
 const saves = {
-  "img-intro":  {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_typecheck","id":"g[R@z-}PCuS^Y?5zH=Ms","x":61,"y":109,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"ZWLi_~J,DIp1f*Nq9(sj","inputs":{"COND":{"block":{"type":"tpl_pred","id":"_F3vx.z_#:ML)J}X:7;t","inputs":{"VALUE":{"block":{"type":"tpl_false","id":"3cV;]X%;!C=8hIM-jvNw"}}}}},"THEN":{"block":{"type":"tpl_zero","id":"%/0xQ~W.z!ss!D{|lA3^"}},"ELSE":{"block":{"type":"tpl_iszero","id":"koB,vwdW]eVDIe,+1f!;","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"#mLOw6)QZ.EJ^Gr;S!0,","inputs":{"VALUE":{"block":{"type":"tpl_true","id":"3F4?/@wX2Q|NGLYMho.%"}}}}}}}}}}}}}]}}
-
+  "img-intro":  {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_typecheck","id":"g[R@z-}PCuS^Y?5zH=Ms","x":61,"y":109,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"ZWLi_~J,DIp1f*Nq9(sj","inputs":{"COND":{"block":{"type":"tpl_pred","id":"_F3vx.z_#:ML)J}X:7;t","inputs":{"VALUE":{"block":{"type":"tpl_false","id":"3cV;]X%;!C=8hIM-jvNw"}}}}},"THEN":{"block":{"type":"tpl_zero","id":"%/0xQ~W.z!ss!D{|lA3^"}},"ELSE":{"block":{"type":"tpl_iszero","id":"koB,vwdW]eVDIe,+1f!;","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"#mLOw6)QZ.EJ^Gr;S!0,","inputs":{"VALUE":{"block":{"type":"tpl_true","id":"3F4?/@wX2Q|NGLYMho.%"}}}}}}}}}}}}}]}},
+  "example1": {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_evaluate","id":"0!AojB:vPD;(VTk4PZ[;","x":36,"y":36,"inputs":{"PROG":{"block":{"type":"tpl_double","id":"k~vQB/7{99jlBaP~C|:0","inputs":{"VALUE":{"block":{"type":"tpl_double","id":"2XfG2m[+0$1NGk;q;THc","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":":Rp*[o2%YV:)!Iq3cl=x","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"K,Zsn!RDuHfg#wQnHua="}}}}}}}}}}}}}]}},
+  "example2": {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_evaluate","id":"0!AojB:vPD;(VTk4PZ[;","x":0,"y":23,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"x|}Yla-?nfhKP270$LBL","inputs":{"COND":{"block":{"type":"tpl_iszero","id":"vCWaJokC_JWP+p0erZ:{","inputs":{"VALUE":{"block":{"type":"tpl_add","id":";NAvze[|j)qn5HYN./XZ","inputs":{"LEFT":{"block":{"type":"tpl_succ","id":"Kwys.Q:D=X,_[?wZJ4!7","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"j9qZd98o`U3+3dZ@vw$Y","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"LED^,.$czD^^mPegb90n"}}}}}}}},"RIGHT":{"block":{"type":"tpl_double","id":"zvhJ+*KLuMD}eqp/lZsw","inputs":{"VALUE":{"block":{"type":"tpl_pred","id":"=YmUnfmCQWnoYW_wo1MC","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"=bCPeW#Ld7mgX*{I^C+l"}}}}}}}}}}}}}},"THEN":{"block":{"type":"tpl_ifthenelse","id":".3@VoN.Pg,$wgsV51:[x","inputs":{"COND":{"block":{"type":"tpl_ifthenelse","id":"i7C+x;_0C6;~@=:LET,+","inputs":{"COND":{"block":{"type":"tpl_false","id":"h3rgWtQq`@!3X4m=^=T7"}},"THEN":{"block":{"type":"tpl_true","id":"lRUMJlJEfBxw[_IW+o_*"}},"ELSE":{"block":{"type":"tpl_false","id":"tnL-!9:}Y:=Y31^Cru}9"}}}}},"THEN":{"block":{"type":"tpl_zero","id":"5ugQ}yI,uM!4[iTw%8a_"}},"ELSE":{"block":{"type":"tpl_double","id":"Q]H!J3Q7[|*2y/~7v`}k","inputs":{"VALUE":{"block":{"type":"tpl_double","id":"m)lKgc+%NmD5B9Les~fB","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"8c%{E|,jNhaJ1::k-I$n","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"V#+2o_Bod^YbsW72cM#|"}}}}}}}}}}}}}},"ELSE":{"block":{"type":"tpl_zero","id":"zK-:p#at1Ay=+I2CD*A3"}}}}}}}]}}
 };
 
-const clickableImages = document.querySelectorAll(".clickable");
+function loadExamples() {
+  const clickableImages = document.querySelectorAll(".clickable");
 
-for(var i = 0; i < clickableImages.length; i++) {
-  let clickableImage = clickableImages[i];
-  clickableImage.onclick = function() {
-    let id = this.getAttribute("id");
-    let state = saves[id];
-    Blockly.serialization.workspaces.load(state, workspace);
-    document.getElementById("blocklyDiv").scrollIntoView();
+  for(var i = 0; i < clickableImages.length; i++) {
+    let clickableImage = clickableImages[i];
+    clickableImage.onclick = function() {
+      let id = this.getAttribute("id");
+      let state = saves[id];
+      Blockly.serialization.workspaces.load(state, workspace);
+      document.getElementById("blocklyDiv").scrollIntoView();
+    }
   }
 }
+// Run loadExamples when the page finished loading
+document.addEventListener("DOMContentLoaded", loadExamples);
 
 function require() {
   // No op
   return globalThis.BigNumber;
 }
 
+function SelectRenderedBlock(block_id) {
+  var selector = "[data-id='"+block_id+"']";
+  return document.querySelector(selector);
+}
+
 function typecheck(expr, block_id) {
   var outline;
+  var result = false;
   if(expr == null) {
     outline = "";
   } else {
     if(_module.__default.WellTyped(expr)) {
+      result = true;
       outline = "3px solid #00ff00";
     } else {
       outline = "3px solid #ff0000";
@@ -313,12 +367,12 @@ function typecheck(expr, block_id) {
     // TODO: Run the type checker on it!
   }
   console.log("Typechecker ran on " + expr + " with block id " + block_id);
-  var selector = "[data-id='"+block_id+"']";
-  console.log("selector:", selector);
-  document.querySelector(selector).style.outline = outline;
+  SelectRenderedBlock(block_id).style.outline = outline;
+  return result;
 }
 function evaluate(expr, block_id) {
   console.log("Evaluator ran on " + expr + " with block id " + block_id);
+  return expr;
 }
 
 function BlocklyEvent(event) {
@@ -334,3 +388,78 @@ function BlocklyEvent(event) {
   eval(code);
 }
 workspace.addChangeListener(BlocklyEvent);
+
+// Let's build the block Succ(Zero) programmatically
+function SuccZero() {
+  var block = workspace.newBlock('tpl_succ');
+  var input = block.getInput('VALUE');
+  input.connection.connect(workspace.newBlock('tpl_zero').outputConnection);
+  return block;
+}
+// Let's display this block in the workspace
+function DisplaySuccZero() {
+  //workspace.getTopBlocks()
+}
+
+function ExpressionToBlock(input, expr) {
+  var block;
+  var create_block = function(type) {
+    block = workspace.newBlock(type);
+    input.connection.connect(block.outputConnection);
+    block.initSvg();
+    block.render();
+    return block;
+  }
+  if(expr.is_True) {
+    block = create_block('tpl_true');
+  } else if(expr.is_False) {
+    block = create_block('tpl_false');
+  } else if(expr.is_Zero) {
+    block = create_block('tpl_zero');
+  } else if(expr.is_Succ) {
+    block = create_block('tpl_succ');
+    ExpressionToBlock(block.getInput('VALUE'), expr.dtor_e);
+  } else if(expr.is_Pred) {
+    block = create_block('tpl_pred');
+    ExpressionToBlock(block.getInput('VALUE'), expr.dtor_e);
+  } else if(expr.is_IsZero) {
+    block = create_block('tpl_iszero');
+    ExpressionToBlock(block.getInput('VALUE'), expr.dtor_e);
+  } else if(expr.is_Double) {
+    block = create_block('tpl_double');
+    ExpressionToBlock(block.getInput('VALUE'), expr.dtor_e);
+  } else if(expr.is_Add) {
+    block = create_block('tpl_add');
+    ExpressionToBlock(block.getInput('LEFT'), expr.dtor_left);
+    ExpressionToBlock(block.getInput('RIGHT'), expr.dtor_right);
+  } else if(expr.is_If) {
+    block = create_block('tpl_ifthenelse');
+    ExpressionToBlock(block.getInput('COND'), expr.dtor_cond);
+    ExpressionToBlock(block.getInput('THEN'), expr.dtor_thn);
+    ExpressionToBlock(block.getInput('ELSE'), expr.dtor_els);
+  } else {
+    throw "Unknown expression type";
+  }
+}
+
+document.querySelector("#Evaluate").onclick = function() {
+  var x = workspace.getTopBlocks();
+  for(var i = 0; i < x.length; i++) {
+    if(x[i].type == "tpl_evaluate") {
+      var expr = eval(Blockly.JavaScript.blockToCode(x[i]));
+      if(typecheck(expr, x[i].id) && !_module.__default.IsFinalValue(expr)) {
+        //Delete the previous PROG input
+        var input = x[i].getInput('PROG');
+        if(input.connection.isConnected()) {
+          var oldBlock = input.connection.targetBlock();
+          oldBlock.dispose();
+        }
+
+        var oneStep = _module.__default.OneStepEvaluate(expr);
+        var input = x[i].getInput('PROG');
+        var newBlock = ExpressionToBlock(input, oneStep);
+        console.log("Added ", newBlock);
+      }
+    }
+  }
+}

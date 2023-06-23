@@ -1160,16 +1160,27 @@ let _module = (function() {
       $dt.e = e;
       return $dt;
     }
-    static create_If(cond, thn, els) {
+    static create_IsZero(e) {
       let $dt = new Term(5);
+      $dt.e = e;
+      return $dt;
+    }
+    static create_Double(e) {
+      let $dt = new Term(6);
+      $dt.e = e;
+      return $dt;
+    }
+    static create_Add(left, right) {
+      let $dt = new Term(7);
+      $dt.left = left;
+      $dt.right = right;
+      return $dt;
+    }
+    static create_If(cond, thn, els) {
+      let $dt = new Term(8);
       $dt.cond = cond;
       $dt.thn = thn;
       $dt.els = els;
-      return $dt;
-    }
-    static create_IsZero(e) {
-      let $dt = new Term(6);
-      $dt.e = e;
       return $dt;
     }
     get is_True() { return this.$tag === 0; }
@@ -1177,9 +1188,13 @@ let _module = (function() {
     get is_Zero() { return this.$tag === 2; }
     get is_Succ() { return this.$tag === 3; }
     get is_Pred() { return this.$tag === 4; }
-    get is_If() { return this.$tag === 5; }
-    get is_IsZero() { return this.$tag === 6; }
+    get is_IsZero() { return this.$tag === 5; }
+    get is_Double() { return this.$tag === 6; }
+    get is_Add() { return this.$tag === 7; }
+    get is_If() { return this.$tag === 8; }
     get dtor_e() { return this.e; }
+    get dtor_left() { return this.left; }
+    get dtor_right() { return this.right; }
     get dtor_cond() { return this.cond; }
     get dtor_thn() { return this.thn; }
     get dtor_els() { return this.els; }
@@ -1195,9 +1210,13 @@ let _module = (function() {
       } else if (this.$tag === 4) {
         return "Term.Pred" + "(" + _dafny.toString(this.e) + ")";
       } else if (this.$tag === 5) {
-        return "Term.If" + "(" + _dafny.toString(this.cond) + ", " + _dafny.toString(this.thn) + ", " + _dafny.toString(this.els) + ")";
-      } else if (this.$tag === 6) {
         return "Term.IsZero" + "(" + _dafny.toString(this.e) + ")";
+      } else if (this.$tag === 6) {
+        return "Term.Double" + "(" + _dafny.toString(this.e) + ")";
+      } else if (this.$tag === 7) {
+        return "Term.Add" + "(" + _dafny.toString(this.left) + ", " + _dafny.toString(this.right) + ")";
+      } else if (this.$tag === 8) {
+        return "Term.If" + "(" + _dafny.toString(this.cond) + ", " + _dafny.toString(this.thn) + ", " + _dafny.toString(this.els) + ")";
       } else  {
         return "<unexpected>";
       }
@@ -1216,9 +1235,13 @@ let _module = (function() {
       } else if (this.$tag === 4) {
         return other.$tag === 4 && _dafny.areEqual(this.e, other.e);
       } else if (this.$tag === 5) {
-        return other.$tag === 5 && _dafny.areEqual(this.cond, other.cond) && _dafny.areEqual(this.thn, other.thn) && _dafny.areEqual(this.els, other.els);
+        return other.$tag === 5 && _dafny.areEqual(this.e, other.e);
       } else if (this.$tag === 6) {
         return other.$tag === 6 && _dafny.areEqual(this.e, other.e);
+      } else if (this.$tag === 7) {
+        return other.$tag === 7 && _dafny.areEqual(this.left, other.left) && _dafny.areEqual(this.right, other.right);
+      } else if (this.$tag === 8) {
+        return other.$tag === 8 && _dafny.areEqual(this.cond, other.cond) && _dafny.areEqual(this.thn, other.thn) && _dafny.areEqual(this.els, other.els);
       } else  {
         return false; // unexpected
       }
@@ -1363,25 +1386,43 @@ let _module = (function() {
         } else {
           return _module.Option.create_None();
         }
-      } else if (_source0.is_If) {
-        let _4___mcc_h2 = (_source0).cond;
-        let _5___mcc_h3 = (_source0).thn;
-        let _6___mcc_h4 = (_source0).els;
-        let _7_els = _6___mcc_h4;
-        let _8_thn = _5___mcc_h3;
-        let _9_cond = _4___mcc_h2;
-        let _10_t = _module.__default.GetType(_8_thn);
-        let _11_e = _module.__default.GetType(_7_els);
-        if ((_dafny.areEqual(_module.__default.GetType(_9_cond), _module.Option.create_Some(_module.Type.create_Bool()))) && (_dafny.areEqual(_10_t, _11_e))) {
-          return _10_t;
+      } else if (_source0.is_IsZero) {
+        let _4___mcc_h2 = (_source0).e;
+        let _5_e = _4___mcc_h2;
+        if (_dafny.areEqual(_module.__default.GetType(_5_e), _module.Option.create_Some(_module.Type.create_Int()))) {
+          return _module.Option.create_Some(_module.Type.create_Bool());
+        } else {
+          return _module.Option.create_None();
+        }
+      } else if (_source0.is_Double) {
+        let _6___mcc_h3 = (_source0).e;
+        let _7_e = _6___mcc_h3;
+        if (_dafny.areEqual(_module.__default.GetType(_7_e), _module.Option.create_Some(_module.Type.create_Int()))) {
+          return _module.Option.create_Some(_module.Type.create_Int());
+        } else {
+          return _module.Option.create_None();
+        }
+      } else if (_source0.is_Add) {
+        let _8___mcc_h4 = (_source0).left;
+        let _9___mcc_h5 = (_source0).right;
+        let _10_right = _9___mcc_h5;
+        let _11_left = _8___mcc_h4;
+        if ((_dafny.areEqual(_module.__default.GetType(_11_left), _module.Option.create_Some(_module.Type.create_Int()))) && (_dafny.areEqual(_module.Option.create_Some(_module.Type.create_Int()), _module.__default.GetType(_10_right)))) {
+          return _module.Option.create_Some(_module.Type.create_Int());
         } else {
           return _module.Option.create_None();
         }
       } else {
-        let _12___mcc_h5 = (_source0).e;
-        let _13_e = _12___mcc_h5;
-        if (_dafny.areEqual(_module.__default.GetType(_13_e), _module.Option.create_Some(_module.Type.create_Int()))) {
-          return _module.Option.create_Some(_module.Type.create_Bool());
+        let _12___mcc_h6 = (_source0).cond;
+        let _13___mcc_h7 = (_source0).thn;
+        let _14___mcc_h8 = (_source0).els;
+        let _15_els = _14___mcc_h8;
+        let _16_thn = _13___mcc_h7;
+        let _17_cond = _12___mcc_h6;
+        let _18_t = _module.__default.GetType(_16_thn);
+        let _19_e = _module.__default.GetType(_15_els);
+        if ((_dafny.areEqual(_module.__default.GetType(_17_cond), _module.Option.create_Some(_module.Type.create_Bool()))) && (_dafny.areEqual(_18_t, _19_e))) {
+          return _18_t;
         } else {
           return _module.Option.create_None();
         }
@@ -1402,136 +1443,197 @@ let _module = (function() {
     static OneStepEvaluate(e) {
       let _source1 = e;
       if (_source1.is_Succ) {
-        let _14___mcc_h0 = (_source1).e;
-        let _source2 = _14___mcc_h0;
+        let _20___mcc_h0 = (_source1).e;
+        let _source2 = _20___mcc_h0;
         if (_source2.is_True) {
-          let _15_succ = _14___mcc_h0;
-          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_15_succ));
+          let _21_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_21_succ));
         } else if (_source2.is_False) {
-          let _16_succ = _14___mcc_h0;
-          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_16_succ));
+          let _22_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_22_succ));
         } else if (_source2.is_Zero) {
-          let _17_succ = _14___mcc_h0;
-          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_17_succ));
+          let _23_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_23_succ));
         } else if (_source2.is_Succ) {
-          let _18___mcc_h1 = (_source2).e;
-          let _19_succ = _14___mcc_h0;
-          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_19_succ));
-        } else if (_source2.is_Pred) {
-          let _20___mcc_h3 = (_source2).e;
-          let _21_x = _20___mcc_h3;
-          return _21_x;
-        } else if (_source2.is_If) {
-          let _22___mcc_h5 = (_source2).cond;
-          let _23___mcc_h6 = (_source2).thn;
-          let _24___mcc_h7 = (_source2).els;
-          let _25_succ = _14___mcc_h0;
+          let _24___mcc_h1 = (_source2).e;
+          let _25_succ = _20___mcc_h0;
           return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_25_succ));
+        } else if (_source2.is_Pred) {
+          let _26___mcc_h3 = (_source2).e;
+          let _27_x = _26___mcc_h3;
+          return _27_x;
+        } else if (_source2.is_IsZero) {
+          let _28___mcc_h5 = (_source2).e;
+          let _29_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_29_succ));
+        } else if (_source2.is_Double) {
+          let _30___mcc_h7 = (_source2).e;
+          let _31_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_31_succ));
+        } else if (_source2.is_Add) {
+          let _32___mcc_h9 = (_source2).left;
+          let _33___mcc_h10 = (_source2).right;
+          let _34_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_34_succ));
         } else {
-          let _26___mcc_h11 = (_source2).e;
-          let _27_succ = _14___mcc_h0;
-          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_27_succ));
+          let _35___mcc_h13 = (_source2).cond;
+          let _36___mcc_h14 = (_source2).thn;
+          let _37___mcc_h15 = (_source2).els;
+          let _38_succ = _20___mcc_h0;
+          return _module.Term.create_Succ(_module.__default.OneStepEvaluate(_38_succ));
         }
       } else if (_source1.is_Pred) {
-        let _28___mcc_h13 = (_source1).e;
-        let _source3 = _28___mcc_h13;
+        let _39___mcc_h19 = (_source1).e;
+        let _source3 = _39___mcc_h19;
         if (_source3.is_True) {
-          let _29_pred = _28___mcc_h13;
-          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_29_pred));
+          let _40_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_40_pred));
         } else if (_source3.is_False) {
-          let _30_pred = _28___mcc_h13;
-          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_30_pred));
-        } else if (_source3.is_Zero) {
-          let _31_pred = _28___mcc_h13;
-          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_31_pred));
-        } else if (_source3.is_Succ) {
-          let _32___mcc_h14 = (_source3).e;
-          let _33_x = _32___mcc_h14;
-          return _33_x;
-        } else if (_source3.is_Pred) {
-          let _34___mcc_h16 = (_source3).e;
-          let _35_pred = _28___mcc_h13;
-          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_35_pred));
-        } else if (_source3.is_If) {
-          let _36___mcc_h18 = (_source3).cond;
-          let _37___mcc_h19 = (_source3).thn;
-          let _38___mcc_h20 = (_source3).els;
-          let _39_pred = _28___mcc_h13;
-          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_39_pred));
-        } else {
-          let _40___mcc_h24 = (_source3).e;
-          let _41_pred = _28___mcc_h13;
+          let _41_pred = _39___mcc_h19;
           return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_41_pred));
-        }
-      } else if (_source1.is_If) {
-        let _42___mcc_h26 = (_source1).cond;
-        let _43___mcc_h27 = (_source1).thn;
-        let _44___mcc_h28 = (_source1).els;
-        let _45_els = _44___mcc_h28;
-        let _46_thn = _43___mcc_h27;
-        let _47_cond = _42___mcc_h26;
-        if (_module.__default.IsFinalValue(_47_cond)) {
-          if (_dafny.areEqual(_47_cond, _module.Term.create_True())) {
-            return _46_thn;
-          } else {
-            return _45_els;
-          }
+        } else if (_source3.is_Zero) {
+          let _42_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_42_pred));
+        } else if (_source3.is_Succ) {
+          let _43___mcc_h20 = (_source3).e;
+          let _44_x = _43___mcc_h20;
+          return _44_x;
+        } else if (_source3.is_Pred) {
+          let _45___mcc_h22 = (_source3).e;
+          let _46_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_46_pred));
+        } else if (_source3.is_IsZero) {
+          let _47___mcc_h24 = (_source3).e;
+          let _48_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_48_pred));
+        } else if (_source3.is_Double) {
+          let _49___mcc_h26 = (_source3).e;
+          let _50_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_50_pred));
+        } else if (_source3.is_Add) {
+          let _51___mcc_h28 = (_source3).left;
+          let _52___mcc_h29 = (_source3).right;
+          let _53_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_53_pred));
         } else {
-          return _module.Term.create_If(_module.__default.OneStepEvaluate(_47_cond), _46_thn, _45_els);
+          let _54___mcc_h32 = (_source3).cond;
+          let _55___mcc_h33 = (_source3).thn;
+          let _56___mcc_h34 = (_source3).els;
+          let _57_pred = _39___mcc_h19;
+          return _module.Term.create_Pred(_module.__default.OneStepEvaluate(_57_pred));
         }
-      } else {
-        let _48___mcc_h29 = (_source1).e;
-        let _source4 = _48___mcc_h29;
+      } else if (_source1.is_IsZero) {
+        let _58___mcc_h38 = (_source1).e;
+        let _source4 = _58___mcc_h38;
         if (_source4.is_True) {
-          let _49_e = _48___mcc_h29;
-          if (_module.__default.IsFinalValue(_49_e)) {
+          let _59_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_59_e)) {
             return _module.Term.create_False();
           } else {
-            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_49_e));
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_59_e));
           }
         } else if (_source4.is_False) {
-          let _50_e = _48___mcc_h29;
-          if (_module.__default.IsFinalValue(_50_e)) {
-            return _module.Term.create_False();
-          } else {
-            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_50_e));
-          }
-        } else if (_source4.is_Zero) {
-          return _module.Term.create_True();
-        } else if (_source4.is_Succ) {
-          let _51___mcc_h30 = (_source4).e;
-          let _52_e = _48___mcc_h29;
-          if (_module.__default.IsFinalValue(_52_e)) {
-            return _module.Term.create_False();
-          } else {
-            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_52_e));
-          }
-        } else if (_source4.is_Pred) {
-          let _53___mcc_h32 = (_source4).e;
-          let _54_e = _48___mcc_h29;
-          if (_module.__default.IsFinalValue(_54_e)) {
-            return _module.Term.create_False();
-          } else {
-            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_54_e));
-          }
-        } else if (_source4.is_If) {
-          let _55___mcc_h34 = (_source4).cond;
-          let _56___mcc_h35 = (_source4).thn;
-          let _57___mcc_h36 = (_source4).els;
-          let _58_e = _48___mcc_h29;
-          if (_module.__default.IsFinalValue(_58_e)) {
-            return _module.Term.create_False();
-          } else {
-            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_58_e));
-          }
-        } else {
-          let _59___mcc_h40 = (_source4).e;
-          let _60_e = _48___mcc_h29;
+          let _60_e = _58___mcc_h38;
           if (_module.__default.IsFinalValue(_60_e)) {
             return _module.Term.create_False();
           } else {
             return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_60_e));
           }
+        } else if (_source4.is_Zero) {
+          return _module.Term.create_True();
+        } else if (_source4.is_Succ) {
+          let _61___mcc_h39 = (_source4).e;
+          let _62_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_62_e)) {
+            return _module.Term.create_False();
+          } else {
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_62_e));
+          }
+        } else if (_source4.is_Pred) {
+          let _63___mcc_h41 = (_source4).e;
+          let _64_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_64_e)) {
+            return _module.Term.create_False();
+          } else {
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_64_e));
+          }
+        } else if (_source4.is_IsZero) {
+          let _65___mcc_h43 = (_source4).e;
+          let _66_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_66_e)) {
+            return _module.Term.create_False();
+          } else {
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_66_e));
+          }
+        } else if (_source4.is_Double) {
+          let _67___mcc_h45 = (_source4).e;
+          let _68_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_68_e)) {
+            return _module.Term.create_False();
+          } else {
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_68_e));
+          }
+        } else if (_source4.is_Add) {
+          let _69___mcc_h47 = (_source4).left;
+          let _70___mcc_h48 = (_source4).right;
+          let _71_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_71_e)) {
+            return _module.Term.create_False();
+          } else {
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_71_e));
+          }
+        } else {
+          let _72___mcc_h51 = (_source4).cond;
+          let _73___mcc_h52 = (_source4).thn;
+          let _74___mcc_h53 = (_source4).els;
+          let _75_e = _58___mcc_h38;
+          if (_module.__default.IsFinalValue(_75_e)) {
+            return _module.Term.create_False();
+          } else {
+            return _module.Term.create_IsZero(_module.__default.OneStepEvaluate(_75_e));
+          }
+        }
+      } else if (_source1.is_Double) {
+        let _76___mcc_h57 = (_source1).e;
+        let _77_a = _76___mcc_h57;
+        if (_module.__default.IsFinalValue(_77_a)) {
+          return _module.Term.create_Add(_77_a, _77_a);
+        } else {
+          return _module.Term.create_Double(_module.__default.OneStepEvaluate(_77_a));
+        }
+      } else if (_source1.is_Add) {
+        let _78___mcc_h58 = (_source1).left;
+        let _79___mcc_h59 = (_source1).right;
+        let _80_b = _79___mcc_h59;
+        let _81_a = _78___mcc_h58;
+        if (!(_module.__default.IsFinalValue(_81_a))) {
+          return _module.Term.create_Add(_module.__default.OneStepEvaluate(_81_a), _80_b);
+        } else if (!(_module.__default.IsFinalValue(_80_b))) {
+          return _module.Term.create_Add(_81_a, _module.__default.OneStepEvaluate(_80_b));
+        } else if ((_81_a).is_Zero) {
+          return _80_b;
+        } else if ((_80_b).is_Zero) {
+          return _81_a;
+        } else if ((_81_a).is_Succ) {
+          return _module.Term.create_Succ(_module.Term.create_Add((_81_a).dtor_e, _80_b));
+        } else {
+          return _module.Term.create_Pred(_module.Term.create_Add((_81_a).dtor_e, _80_b));
+        }
+      } else {
+        let _82___mcc_h60 = (_source1).cond;
+        let _83___mcc_h61 = (_source1).thn;
+        let _84___mcc_h62 = (_source1).els;
+        let _85_els = _84___mcc_h62;
+        let _86_thn = _83___mcc_h61;
+        let _87_cond = _82___mcc_h60;
+        if (_module.__default.IsFinalValue(_87_cond)) {
+          if (_dafny.areEqual(_87_cond, _module.Term.create_True())) {
+            return _86_thn;
+          } else {
+            return _85_els;
+          }
+        } else {
+          return _module.Term.create_If(_module.__default.OneStepEvaluate(_87_cond), _86_thn, _85_els);
         }
       }
     };

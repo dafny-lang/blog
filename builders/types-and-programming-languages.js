@@ -172,7 +172,7 @@ function RunCommands(code, regenerate, fileTarget) {
     exit_code = 2; // Error
     console.log(e.stdout.toString().trim());
   } finally {
-    //fs.unlinkSync(tmpFile); // Put it back afterwards
+    fs.unlinkSync(tmpFile);
   }
 
   var buildContent = fs.readFileSync(buildFile, "utf-8");
@@ -181,7 +181,7 @@ function RunCommands(code, regenerate, fileTarget) {
   } else {
     var outContent = "";
   }
-  //fs.unlinkSync(buildFile); // Put it back afterwards
+  fs.unlinkSync(buildFile);
 
   if (buildContent != outContent) {
     exit_code = 1;
