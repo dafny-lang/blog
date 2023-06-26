@@ -13,14 +13,15 @@ the last thing you want in a software business is that the program written by yo
 
 This blog post takes a deep dive... take a deep breath... on how to write _terms of a programming language_, and both a _type-checker_ and an _evaluator_ on such terms, such that the following _soundness property_ holds:
 
-> If a type checker accepts a term, then the evaluator will _not get stuck_ on that term.
+> 1. [Progress] If a type checker accepts a term, then the evaluator will _not get stuck_ on that term.
+> 2. [Preservation] If a term has a type T, then the evaluator will also return a term of type T
 
 We will illustrate this using the infrastructure of the following Blockly workspace.
 If you build a full term and pass it to "Type check", if the type checker succeeds, the block is surrounded with green, otherwise with red.
-If surrounded with green, then attaching the term to "Evaluate" and clicking on "Evaluate" will always return a value.
+If surrounded with green, then attaching the term to "Evaluate" and clicking on "Evaluate" will always do something, except if the term is a final value. "Evaluate" is also surrounded in red if its term does not type check.
 
 # Play with the evaluator and the type checker
-<button id="Evaluate">Evaluate</button>
+<button id="Evaluate" style="padding: 1em;">Evaluate</button>
 <script src="https://unpkg.com/blockly/blockly.min.js"></script>
 <script src="https://unpkg.com/blockly/javascript_compressed"></script>
 <div id="blocklyDiv" style="height: 520px; width: 600px;"></div>
@@ -28,25 +29,19 @@ If surrounded with green, then attaching the term to "Evaluate" and clicking on 
 <script src="/blog/assets/js/bignumber.js"></script>
 <script src="/blog/assets/js/types-and-programming-languages.dfy.js"></script>
 
-# Examples (click to load)
+# Examples
+Feel free to click on the examples below to load them in the Blockly workspace above.
 
 <img class="clickable" id="example1" src="/blog/assets/images/type-and-programming-languages/example1.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
 <img class="clickable" id="example2" src="/blog/assets/images/type-and-programming-languages/example2.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
 
-# The journey to a type-based soundness checker.
+# Writing a type checker in Dafny
 
-Writing a type-checker that guarantees that evaluation of an term won't get stuck is not an easy task if we dive into maths, but it's a rewarding experience, and today I want to share with you that experience.
+Writing a type-checker that guarantees that evaluation of an term won't get stuck is not an easy task if we dive into maths, but fortunately, Dafny makes it easy to define it.
 
-We will follow the following path:
+#### The term language
 
-1. Model the small-step evaluation of terms as a _relation_ that satisfy some given _rules_.
-2. Model the type-checking system also as a relation that satisfies some given rules
-3. Write a small-step evaluator that is proven to be unstuck on typing relations
-4. Take the shortcut Dafny provides to write this very quickly and without hassle.
-
-## Writing a type checker in Dafny
-
-First, let's define the term language used in the Blockly interface above:
+First, let's define the term language used in the Blockly interface above. Note that the logic of the Blockly workspace above uses that exact code written on this page, yeah, Dafny compiles to JavaScript too!
 
 {% highlight javascript %}
 datatype Term  =
@@ -61,6 +56,8 @@ datatype Term  =
   | If(cond: Term, thn: Term, els: Term)
 {% endhighlight %}
 
+#### The type language
+
 Let's also add the two types our expressions can have.
 
 {% highlight javascript %}
@@ -69,15 +66,19 @@ datatype Type =
   | Int
 {% endhighlight %}
 
-We can now write a type checker for the expressions above. First, an expression might or might not have a type, so we need a `Option<A>` type like this;
+#### The type checker
+
+We can now write a _type checker_ for the terms above. In our case, a type checker will take a term, and decide wether it has a type or not, and return it if it's the former. We will not dive into error reporting in this blog post.
+First, because a term might or might not have a type, so we need a `Option<A>` type like this;
 
 {% highlight javascript %}
 datatype Option<A> = Some(value: A) | None
 {% endhighlight %}
 
-Now we can define a function to compute the possible type of an expression.
-Note that, for a conditional expression, the condition has to be a boolean,
+Now we can define a function to compute the possible type of a term.
+For example, for a conditional term, the condition has to be a boolean,
 while we only require the "then" and "else" part to have the same, defined type.
+In general, computing types is a task linear in the size of the code, whereas evaluating the code could have any complexity. This is why type checking can be so useful to prevent silly mistakes, very quickly.
 
 {% highlight javascript %}
 function GetType(term: Term): Option<Type> {
@@ -133,6 +134,8 @@ predicate WellTyped(term: Term) {
   GetType(term) != None
 }
 {% endhighlight %}
+
+#### The evaluator and the progress check
 
 At first, we can define the notion of evaluating a term. We can evaluate a term using small-step semantics, meaning we only replace a term or a subterm by another one.
 **Not being stuck** means that we will always be able to find a term to "replace" or to "compute", it's a bit of a synonym here.
@@ -218,17 +221,19 @@ function OneStepEvaluate(e: Term): (r: Term)
 }
 {% endhighlight %}
 
-The interesting points are the following:
+The interesting points to note on the function above, in a language like Dafny where every pattern must be exhaustive, are the following:
 
-* Every call consist either of OneStepEvaluate on one sub-argument, or a transformation that reduces the size of the tree. So something is always happening here.
+* Every call consist either of `OneStepEvaluate` on one sub-argument, or a transformation that reduces the size of the tree. So something is always happening here.
 * All the cases are covered, Dafny does not complain!
-  * For example, when encountering the case `IsZero(e)`, if `e` is a final value, we know it's either `Pred` or `Succ`, not `True` or `False`, so we can conclude
-  * Similarly, if the condition is a final Value, because of type-checking, Dafny knows it's either True or False.
+  * For example, when encountering the case `IsZero(e)`, if `e` is a final value, we know it's either `Pred` or `Succ`. It cannot be `True` or `False` due to type checking, so we can conclude.
+  * Similarly, if the condition of an if term is a final value, because of type-checking, Dafny knows it's either True or False.
 
-That concludes the progress part: Whenever a term type-checks, it small step evaluation rule is never stuck until it reaches a final value.
+That concludes the _progress_ part on soundness checking: Whenever a term type-checks, it small step evaluation rule is never stuck until it reaches a final value.
 
-Soundness also contains another part. It says that, if we evaluate a typed term, not only it's not going to get stuck, but the result will have the same type.
-Dafny can also prove it!
+#### The preservation check
+
+Soundness also contains another part, the preservation, as stated in the intro. It says that, if we evaluate a typed term, not only the evaluator is not going to get stuck, but the result will have the same type.
+Dafny can also prove it for our language, out of the box. Well done, that means our language and evaluator make sense together!
 
 {% highlight javascript %}
 lemma OneStepEvaluateWellTyped(e: Term)
@@ -239,19 +244,24 @@ lemma OneStepEvaluateWellTyped(e: Term)
 }
 {% endhighlight %}
 
-This is the end of the blog post. I hope you enjoyed it so far, but if you are looking for some advanced concepts, feel free to continue reading!
+#### Conclusion
+
+All the code above powers this page, so that why I can guarantee you that you won't be able to find a term that the type checker accepts and that won't result in a final value. Of course, in a real programming language term, you might add some infinite loops here, but the soundness property above is not about termination, it's about constant progress, which you also want in embedded systems to ensure they never need reboot.
+
+Now that you know what a type checker is and how to implement one in Dafny, perhaps you will feel much better prepared to model and experiment your new programming language, like recently the [Cedar team did](https://aws.amazon.com/about-aws/whats-new/2023/05/cedar-open-source-language-access-control/)?
+
+This is the end of the blog post. I hope you enjoyed it so far, but if you are looking for some advanced concepts, feel free to continue reading! Beware, math ahead!
 
 ## Bonus: More advanced modeling
 
 Sometimes, modeling evaluator and type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation does not matter for the final result.
 
-In the rest of this blog post largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, we will illustrate one element of the proof: the one that inductive and constructive versions of the set of Terms are equivalent.
-Once this proof trick is gained, it becomes possible to do the same for,
+In the rest of this blog post largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, I will illustrate one element of the proof: the one that inductive and constructive versions of the set of Terms are equivalent. Having equivalence enables to conclude other results out of the scope of this blog post, including that the order of evaluation does not matter.
+
+Once this proof trick is gained, it becomes possible to prove similar equivalences for different inductive and constructive definitions of:
 - The set of `(Expr, Expr)` of small-step evaluations
 - The set of `(Expr, Type)` of type checking
 but I leave these as an exercise for the interested reader.
-
-In Dafny, we can define the infinite set of all terms, which obviously cannot be represented at compile-time so we use the keywords "ghost" and "iset" for potentially infinite set:
 
 In Types and Programming Languages, chapter 3.2, we discover that there are two other mathematical definitions of the "set of all terms".
 The first one in definition 3.2.1 states that the set of _terms_ is the smallest set 𝒯 such that:
@@ -267,7 +277,7 @@ We can write the inductive definition above in Dafny too:
 {% highlight javascript %}
 ghost const AllTermsInductively: iset<Term>
 
-ghost predicate SatisfyInductionCriteria(terms: iset<Term>) {
+ghost predicate InductionCriteria(terms: iset<Term>) {
   && iset{True, False, Zero} <= terms
   && (forall t1 <- terms
         :: iset{Succ(t1), Pred(t1), IsZero(t1)} <= terms)
@@ -275,8 +285,8 @@ ghost predicate SatisfyInductionCriteria(terms: iset<Term>) {
         :: If(t1, t2, t3) in terms)
 }
 lemma {:axiom} InductiveAxioms()
-  ensures SatisfyInductionCriteria(AllTermsInductively)
-  ensures forall setOfTerms: iset<Term> | SatisfyInductionCriteria(setOfTerms)
+  ensures InductionCriteria(AllTermsInductively)
+  ensures forall setOfTerms: iset<Term> | InductionCriteria(setOfTerms)
             :: AllTermsInductively <= setOfTerms
 {% endhighlight %}
 
@@ -304,5 +314,221 @@ ghost const AllTermsConstructively: iset<Term> := iset i: nat, t <- S(i) :: t
 But now, we are left with the existential question: Are these two sets the same?
 We rush in Dafny and write a lemma ensuring `AllTermsConstructively == AllTermsInductively` by invoking the lemma `InductiveAxioms()`, but... Dafny can't prove it.
 
-If you think deeply about it, how do you know that the two are the same? It seems obvious but why? Its obvious to show that `AllTermsInductively <= AllTermsConstructively` because by definition, `AllTermsConstructively` obeys induction rules. But is it the smallest of such sets? But what if there was an element of `AllTermsConstructively` that is not in `AllTermsInductively`? It could actually happen if, instead of a datatype, we only had a trait, and some external user could implement new terms yet unknown to us.
+If you think deeply about it, how do you know that the two are the same? It seems obvious but why? It seems straightforward to prove that `AllTermsInductively <= AllTermsConstructively` because by definition, `AllTermsConstructively` obeys induction rules. But is it the smallest of such sets? But what if there was an element of `AllTermsConstructively` that is not in `AllTermsInductively`? It could actually happen if, instead of a datatype, we only had a trait, and some external user could implement new terms yet unknown to us.
 
+Here is Benjamin Pierce's proof sketch, then translated and verified in Dafny.
+
+1. First, prove `AllTermsInductively <= AllTermsConstructively` by showing that `AllTermsConstructively` satisfies the predicate `InductionCriteria`.
+2. Second, for any set `someset` satisfying the induction criteria, for every `i`, we prove by induction that *every set of terms `S(i)` is inside `someset`*.
+3. `AllTermsConstructively` being the *union* of all these `S(i)`, it is also contained
+in any set satisfying the induction criteria, including `AllTermsInductively` which is the smallest one, so `AllTermsConstructively <= AllTermsInductively`
+4. From 1. and 3. we obtain `AllTermsConstructively == AllTermsInductively`.
+
+Let's prove it in Dafny!
+
+## 0. Intermediate sets are cumulative
+
+First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)`. We do this in two steps: First we show this cumulative effect between two consecutive sets, and then
+between any two sets.
+
+{% highlight javascript %}
+lemma {:vcs_split_on_every_assert} {:induction false} SiAreCumulative(i: nat)
+  ensures S(i) <= S(i+1)
+{
+  forall t <- S(i) ensures t in S(i+1) {
+    match t {
+      case True | False | Zero  => assert t in S(i+1);
+      case Pred(term) =>
+         assert term in S(i-1);
+         assert term in S(i) by {
+           SiAreCumulative(i-1);
+         }
+         assert t in S(i+1);
+      case Succ(term) =>
+         assert term in S(i-1);
+         assert term in S(i) by {
+           SiAreCumulative(i-1);
+         }
+         assert t in S(i+1);
+        
+      case IsZero(term) =>
+         assert term in S(i-1);
+         assert term in S(i) by {
+           SiAreCumulative(i-1);
+         }
+         assert t in S(i+1);
+
+      case If(cond, thn, els) =>
+        assert cond in S(i-1) && thn  in S(i-1) && els in S(i-1);
+        assert cond in S(i) && thn in S(i) && els in S(i) by {
+          SiAreCumulative(i-1);
+        }
+        assert t in S(i+1);
+    }
+  }
+}
+
+lemma SiAreIncreasing(i: nat, j: nat)
+  decreases j - i
+  requires i <= j
+  ensures S(i) <= S(j)
+{
+  if i == j {
+    // Trivial
+  } else {
+    assert S(i) <= S(i+1) by {
+      SiAreCumulative(i);
+    }
+    assert S(i+1) <= S(j) by {
+      SiAreIncreasing(i + 1, j);
+    }
+  }
+}
+{% endhighlight %}
+
+
+## 1. Smallest inductive set contained in constructive set
+
+{% highlight javascript %}
+lemma {:rlimit 5000} {:vcs_split_on_every_assert}
+  AllTermsConstructivelySatisfiesInductionCriteria()
+  ensures InductionCriteria(AllTermsConstructively)
+  ensures AllTermsInductively <= AllTermsConstructively
+{
+  assert iset{True, False, Zero} <= AllTermsConstructively by {
+    assert S(1) <= AllTermsConstructively;
+  }
+  forall t1 <- AllTermsConstructively
+    ensures iset{Succ(t1), Pred(t1), IsZero(t1)} <= AllTermsConstructively {
+    var i: nat :| t1 in S(i);
+    assert Succ(t1) in S(i+1);
+    assert Pred(t1) in S(i+1);
+    assert IsZero(t1) in S(i+1);
+    assert iset{Succ(t1), Pred(t1), IsZero(t1)} <= S(i+1);
+    assert S(i+1) <= AllTermsConstructively;
+  }
+  forall t1 <- AllTermsConstructively,
+         t2 <- AllTermsConstructively, 
+         t3 <- AllTermsConstructively
+    ensures If(t1, t2, t3) in AllTermsConstructively
+  {
+    var i :| t1 in S(i);
+    var j :| t2 in S(j);
+    var k :| t3 in S(k);
+    var max := if i <= j && k <= j then j else if i <= k then k else i;
+    SiAreIncreasing(i, max);
+    SiAreIncreasing(j, max);
+    SiAreIncreasing(k, max);
+    assert t1 in S(max) && t2 in S(max) && t3 in S(max);
+    assert If(t1, t2, t3) in S(max + 1);
+  }
+  InductiveAxioms();
+}
+{% endhighlight %}
+
+## 2. Intermediate constructive sets are included in every set that satisfy the induction criteria
+
+{% highlight javascript %}
+lemma {:rlimit 10000} {:vcs_split_on_every_assert} {:induction false}
+  InductionCriteriaHasConcreteIAsSubset(
+    i: nat, someset: iset<Term>
+)
+  requires InductionCriteria(someset)
+  ensures S(i) <= someset
+{
+  if i == 0 {
+    // The empty set is always a subset of anything
+  } else {
+    InductionCriteriaHasConcreteIAsSubset(i-1, someset);
+    assert S(i-1) <= someset;
+    forall elem <- S(i) ensures elem in someset {
+      var bases := iset{True, False, Zero};
+      var succs := iset t1 <- S(i-1) :: Succ(t1);
+      var preds := iset t1 <- S(i-1) :: Pred(t1);
+      var iszeros := iset t1 <- S(i-1) :: IsZero(t1);
+      var ifs := iset t1 <- S(i-1), t2 <- S(i-1), t3 <- S(i-1) :: If(t1, t2, t3);
+      assert S(i) == bases + succs + preds + iszeros + ifs;
+      if elem in bases {
+        assert elem.True? || elem.False? || elem.Zero? by {
+          var trues := iset{True};
+          var falses := iset{False};
+          var zeros := iset{Zero};
+          assert bases == trues + falses + zeros;
+          if elem in trues {
+            assert elem.True?;
+          } else if elem in falses {
+            assert elem.False?;
+          } else {
+            assert elem in zeros;
+            assert elem.Zero?;
+          }
+        }
+        assert elem in someset;
+      } else if elem in succs {
+        assert elem in someset by {
+          assert elem.Succ?;
+          assert elem.e in S(i-1);
+          assert elem.e in someset;
+          assert Succ(elem.e) in someset;
+        }
+      } else if elem in preds {
+        assert elem in someset by {
+          assert elem.Pred?;
+          assert elem.e in S(i-1);
+          assert elem.e in someset;
+          assert Pred(elem.e) in someset;
+        }
+      } else if elem in iszeros {
+        assert elem in someset by {
+          assert elem.IsZero?;
+          assert elem.e in S(i-1);
+          assert elem.e in someset;
+          assert IsZero(elem.e) in someset;
+        }
+      } else {
+        assert elem in ifs;
+        assert elem in someset by {
+          assert elem.cond in S(i-1) && elem.thn in S(i-1) && elem.els in S(i-1);
+          assert elem.cond in someset && elem.thn in someset && elem.els in someset;
+          assert If(elem.cond, elem.thn, elem.els) in someset;
+        }
+      }
+    }
+  }
+}
+{% endhighlight %}
+
+## 3. The constructive set is included in the smallest inductive set that satisfies the induction criteria
+
+{% highlight javascript %}
+// 3.2.6.b.1 AllTermsConstructively is a subset of any set satisfying the induction criteria (hence AllTermsConstructively <= AllTermsInductively)
+lemma AllTermsConstructivelyIncludedInSetsSatisfyingInductionCriteria(
+  terms: iset<Term>
+)
+  requires InductionCriteria(terms)
+  ensures AllTermsConstructively <= terms
+{
+  forall i: nat ensures S(i) <= terms {
+    InductionCriteriaHasConcreteIAsSubset(i, terms);
+  }
+}
+
+lemma AllTermsConstructivelyIncludedInAllTermsInductively()
+  ensures AllTermsConstructively <= AllTermsInductively
+{
+  InductiveAxioms();
+  AllTermsConstructivelyIncludedInSetsSatisfyingInductionCriteria(AllTermsInductively);
+}
+{% endhighlight %}
+
+## 4. Conclusion with the equality
+
+{% highlight javascript %}
+lemma InductionAndConcreteAreTheSame()
+  ensures AllTermsConstructively == AllTermsInductively
+{
+  InductiveAxioms();
+  AllTermsConstructivelySatisfiesInductionCriteria();
+  AllTermsConstructivelyIncludedInAllTermsInductively();
+}
+{% endhighlight %}

@@ -61,6 +61,7 @@ function ProcessOneFile(fileName, fileTarget, regenerate,) {
     return;
   }
   var dafnyEquivalent = DafnyEquivalent(fileName, fileContent);
+  console.log("Verifying and building...");
   var exit_code = RunCommands(dafnyEquivalent, regenerate, fileTarget);
   if(!regenerate || exit_code == 2) {
     if(regenerate) {
@@ -174,7 +175,11 @@ function RunCommands(code, regenerate, fileTarget) {
   } finally {
     fs.unlinkSync(tmpFile);
   }
-
+  if(!fs.existsSync(buildFile)) {
+    console.log(`Build file ${buildFile} does not exist`);
+    exit_code = 2;
+    return exit_code;
+  }
   var buildContent = fs.readFileSync(buildFile, "utf-8");
   if(fs.existsSync(outFile)) {
     var outContent = fs.readFileSync(outFile, "utf-8");

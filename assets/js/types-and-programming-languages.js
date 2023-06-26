@@ -321,8 +321,9 @@ const workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox});
 // paste the JSON obtained by
 // copy(JSON.stringify(Blockly.serialization.workspaces.save(workspace)))
 const saves = {
+  "load": {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_typecheck","id":"f!{vc~S?{oN/AN9#-WEd","x":36,"y":43,"inputs":{"PROG":{"block":{"type":"tpl_false","id":"27/Ta`n|}V*B)s7Zr}^V"}}}},{"type":"tpl_typecheck","id":"}jBAI,)Z[-h9^YMj`d.C","x":40,"y":89,"inputs":{"PROG":{"block":{"type":"tpl_succ","id":"Wg.KkAfKbDnbO*$Ju_w)","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"/lso.r/,iQDh6r/5gmvL"}}}}}}},{"type":"tpl_typecheck","id":"Hp}wuF~]hWLt;*KEhl`?","x":35,"y":137,"inputs":{"PROG":{"block":{"type":"tpl_pred","id":"Kk1[+NpaH;A}IuOQ-KX,","inputs":{"VALUE":{"block":{"type":"tpl_false","id":"eE26RO)YKHQ%Y^MKIx};"}}}}}}},{"type":"tpl_typecheck","id":"/Jw^Q4s6;dX_E%4Mi68P","x":36,"y":189,"inputs":{"PROG":{"block":{"type":"tpl_add","id":"o#6QF^=-D2A2YL[%!+$.","inputs":{"LEFT":{"block":{"type":"tpl_true","id":"w9=@wIVtNi,B=,F7Z:Gy"}},"RIGHT":{"block":{"type":"tpl_zero","id":"|]:[g[PLex#-:KZ(ipHC"}}}}}}},{"type":"tpl_typecheck","id":"I}e~5o62(l[|9{Mo{6~N","x":36,"y":265,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"7@@Kk/))h*cE=X9cPt?z","inputs":{"COND":{"block":{"type":"tpl_iszero","id":"@.?y9L(p(syKv6@{p$In","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":",%8_]Q-:eG}?RBI2-Mv8"}}}}},"THEN":{"block":{"type":"tpl_true","id":"O.%EqhW=guWa/}_@VgdO"}},"ELSE":{"block":{"type":"tpl_false","id":"v2HUJJ6V;vD.mXgM@Q6R"}}}}}}},{"type":"tpl_typecheck","id":"fGln6C:MQ^KV,q6^aP-*","x":36,"y":370,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"$F%f0%9qx7ZuzYXGNo|m","inputs":{"COND":{"block":{"type":"tpl_pred","id":"rcf`:vl8:5muZ/`Z2R6/","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"{{*~+KyR_oj(QcEe~DQx"}}}}},"THEN":{"block":{"type":"tpl_zero","id":"+?LdO~Y-p/tJ{aUIk?vf"}},"ELSE":{"block":{"type":"tpl_zero","id":"s(%_?Jh+wkF`7vAV-PBQ"}}}}}}}]}},
   "img-intro":  {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_typecheck","id":"g[R@z-}PCuS^Y?5zH=Ms","x":61,"y":109,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"ZWLi_~J,DIp1f*Nq9(sj","inputs":{"COND":{"block":{"type":"tpl_pred","id":"_F3vx.z_#:ML)J}X:7;t","inputs":{"VALUE":{"block":{"type":"tpl_false","id":"3cV;]X%;!C=8hIM-jvNw"}}}}},"THEN":{"block":{"type":"tpl_zero","id":"%/0xQ~W.z!ss!D{|lA3^"}},"ELSE":{"block":{"type":"tpl_iszero","id":"koB,vwdW]eVDIe,+1f!;","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"#mLOw6)QZ.EJ^Gr;S!0,","inputs":{"VALUE":{"block":{"type":"tpl_true","id":"3F4?/@wX2Q|NGLYMho.%"}}}}}}}}}}}}}]}},
-  "example1": {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_evaluate","id":"0!AojB:vPD;(VTk4PZ[;","x":36,"y":36,"inputs":{"PROG":{"block":{"type":"tpl_double","id":"k~vQB/7{99jlBaP~C|:0","inputs":{"VALUE":{"block":{"type":"tpl_double","id":"2XfG2m[+0$1NGk;q;THc","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":":Rp*[o2%YV:)!Iq3cl=x","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"K,Zsn!RDuHfg#wQnHua="}}}}}}}}}}}}}]}},
+  "example1": {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_evaluate","id":"0!AojB:vPD;(VTk4PZ[;","x":24,"y":43,"inputs":{"PROG":{"block":{"type":"tpl_add","id":"61[SIVubQGcX@RGbL._R","inputs":{"LEFT":{"block":{"type":"tpl_double","id":"l%@5QGn|nri?cs^q{tv;","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"ZxJpdCbE7{r!|El=imB2","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"?(vrZcaCNhCJ]Gk=[TB9","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":":Gb~|QCi|;d492Y,BR^-"}}}}}}}}}}},"RIGHT":{"block":{"type":"tpl_pred","id":"FBfIe_k_Xef4(R!HrJ8V","inputs":{"VALUE":{"block":{"type":"tpl_double","id":"LntSNH-w9-Szt)!aR..)","inputs":{"VALUE":{"block":{"type":"tpl_pred","id":"$U7*B}XkZT$hh,A)A`.o","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"WB~nD/066xffC|4krL5?"}}}}}}}}}}}}}}}}]}},
   "example2": {"blocks":{"languageVersion":0,"blocks":[{"type":"tpl_evaluate","id":"0!AojB:vPD;(VTk4PZ[;","x":0,"y":23,"inputs":{"PROG":{"block":{"type":"tpl_ifthenelse","id":"x|}Yla-?nfhKP270$LBL","inputs":{"COND":{"block":{"type":"tpl_iszero","id":"vCWaJokC_JWP+p0erZ:{","inputs":{"VALUE":{"block":{"type":"tpl_add","id":";NAvze[|j)qn5HYN./XZ","inputs":{"LEFT":{"block":{"type":"tpl_succ","id":"Kwys.Q:D=X,_[?wZJ4!7","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"j9qZd98o`U3+3dZ@vw$Y","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"LED^,.$czD^^mPegb90n"}}}}}}}},"RIGHT":{"block":{"type":"tpl_double","id":"zvhJ+*KLuMD}eqp/lZsw","inputs":{"VALUE":{"block":{"type":"tpl_pred","id":"=YmUnfmCQWnoYW_wo1MC","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"=bCPeW#Ld7mgX*{I^C+l"}}}}}}}}}}}}}},"THEN":{"block":{"type":"tpl_ifthenelse","id":".3@VoN.Pg,$wgsV51:[x","inputs":{"COND":{"block":{"type":"tpl_ifthenelse","id":"i7C+x;_0C6;~@=:LET,+","inputs":{"COND":{"block":{"type":"tpl_false","id":"h3rgWtQq`@!3X4m=^=T7"}},"THEN":{"block":{"type":"tpl_true","id":"lRUMJlJEfBxw[_IW+o_*"}},"ELSE":{"block":{"type":"tpl_false","id":"tnL-!9:}Y:=Y31^Cru}9"}}}}},"THEN":{"block":{"type":"tpl_zero","id":"5ugQ}yI,uM!4[iTw%8a_"}},"ELSE":{"block":{"type":"tpl_double","id":"Q]H!J3Q7[|*2y/~7v`}k","inputs":{"VALUE":{"block":{"type":"tpl_double","id":"m)lKgc+%NmD5B9Les~fB","inputs":{"VALUE":{"block":{"type":"tpl_succ","id":"8c%{E|,jNhaJ1::k-I$n","inputs":{"VALUE":{"block":{"type":"tpl_zero","id":"V#+2o_Bod^YbsW72cM#|"}}}}}}}}}}}}}},"ELSE":{"block":{"type":"tpl_zero","id":"zK-:p#at1Ay=+I2CD*A3"}}}}}}}]}}
 };
 
@@ -338,6 +339,7 @@ function loadExamples() {
       document.getElementById("blocklyDiv").scrollIntoView();
     }
   }
+  Blockly.serialization.workspaces.load(saves["load"], workspace);
 }
 // Run loadExamples when the page finished loading
 document.addEventListener("DOMContentLoaded", loadExamples);
@@ -444,10 +446,16 @@ function ExpressionToBlock(input, expr) {
 
 document.querySelector("#Evaluate").onclick = function() {
   var x = workspace.getTopBlocks();
+  var evaluated = false;
+  var hasEvaluateBlock = false;
+  var evaluateBlockAreFinal = true;
   for(var i = 0; i < x.length; i++) {
     if(x[i].type == "tpl_evaluate") {
+      hasEvaluateBlock = true;
       var expr = eval(Blockly.JavaScript.blockToCode(x[i]));
       if(typecheck(expr, x[i].id) && !_module.__default.IsFinalValue(expr)) {
+        evaluateBlockAreFinal = false;
+        evaluated = true;
         //Delete the previous PROG input
         var input = x[i].getInput('PROG');
         if(input.connection.isConnected()) {
@@ -460,6 +468,13 @@ document.querySelector("#Evaluate").onclick = function() {
         var newBlock = ExpressionToBlock(input, oneStep);
         console.log("Added ", newBlock);
       }
+    }
+  }
+  if(!evaluated) {
+    if(!hasEvaluateBlock) {
+      alert("No program to evaluate! Add a 'Evaluate' block or click on one example below.");
+    } else {
+      alert("All evaluate blocks either don't type check or have final values!");
     }
   }
 }
