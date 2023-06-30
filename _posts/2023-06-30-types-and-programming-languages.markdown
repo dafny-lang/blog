@@ -8,7 +8,7 @@ usemathjax: true
 <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" href="/blog/assets/css/types-and-programming-languages.css">
 <img class="clickable" id="img-intro" src="/blog/assets/images/type-and-programming-languages/introimage.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
-As recalled in the [last blog post](2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny.html),
+As recalled in the [last blog post]({{ site.baseurl }}{% post_url 2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny %}),
 the last thing you want in a software business is that the program written by your developers goes wrong. And there are many ways programs can go wrong. One of these ways is of using a value in a way it was not intended to be used, and for that, static typing often solves entirely the problem.
 
 This blog post takes a deep dive... take a deep breath... on how to write _terms of a programming language_, and both a _type-checker_ and an _evaluator_ on such terms, such that the following _soundness property_ holds:
