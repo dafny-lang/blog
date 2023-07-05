@@ -3,7 +3,6 @@ layout: post
 title:  "Types and Programming Languages"
 date:   2023-06-30 18:00:00 +0100
 author: Mikael Mayer
-usemathjax: true
 ---
 <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" href="/blog/assets/css/types-and-programming-languages.css">
