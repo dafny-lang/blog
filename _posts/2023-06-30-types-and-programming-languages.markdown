@@ -7,8 +7,8 @@ author: Mikael Mayer
 <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" href="/blog/assets/css/types-and-programming-languages.css">
 <img class="clickable" id="img-intro" src="/blog/assets/images/type-and-programming-languages/introimage.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
-As recalled in the [last blog post]({{ site.baseurl }}{% post_url 2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny %}),
-the last thing you want in a software business is that the program written by your developers goes wrong. And there are many ways programs can go wrong. One of these ways is of using a value in a way it was not intended to be used, and for that, static typing often solves entirely the problem.
+As mentioned in the [last blog post]({{ site.baseurl }}{% post_url 2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny %}),
+the last thing you want in a software business is that the program written by your developers goes wrong. And there are many ways programs can go wrong. One of these ways is of using a value in a way it was not intended to be used, and for that, static typing often solves the problem entirely.
 
 This blog post takes a deep dive... take a deep breath... on how to write _terms of a programming language_, and both a _type-checker_ and an _evaluator_ on such terms, such that the following _soundness property_ holds:
 
@@ -36,11 +36,11 @@ Feel free to click on the examples below to load them in the Blockly workspace a
 
 # Writing a type checker in Dafny
 
-Writing a type-checker that guarantees that evaluation of an term won't get stuck is not an easy task if we dive into maths, but fortunately, Dafny makes it easy to define it.
+Writing a type-checker that guarantees that evaluation of an term won't get stuck is not an easy task as we must dive into maths, but fortunately, Dafny makes it easier.
 
 #### The term language
 
-First, let's define the term language used in the Blockly interface above. Note that the logic of the Blockly workspace above uses that exact code written on this page, yeah, Dafny compiles to JavaScript too!
+First, let's define the term language used in the Blockly interface above. Note that the logic of the Blockly workspace above uses that exact code written on this page. Yeah, Dafny compiles to JavaScript too!
 
 {% highlight javascript %}
 datatype Term  =
@@ -68,16 +68,16 @@ datatype Type =
 #### The type checker
 
 We can now write a _type checker_ for the terms above. In our case, a type checker will take a term, and decide wether it has a type or not, and return it if it's the former. We will not dive into error reporting in this blog post.
-First, because a term might or might not have a type, so we need a `Option<A>` type like this;
+First, because a term may or may not have a type, we want an `Option<A>` type like this:
 
 {% highlight javascript %}
 datatype Option<A> = Some(value: A) | None
 {% endhighlight %}
 
-Now we can define a function to compute the possible type of a term.
-For example, for a conditional term, the condition has to be a boolean,
+Now we can define a function that computes the type of a term, if it has one.
+For example, in a conditional term, the condition has to be a boolean,
 while we only require the "then" and "else" part to have the same, defined type.
-In general, computing types is a task linear in the size of the code, whereas evaluating the code could have any complexity. This is why type checking can be so useful to prevent silly mistakes, very quickly.
+In general, computing types is a task linear in the size of the code, whereas evaluating the code could have any complexity. This is why type checking is an efficient way of preventing obvious mistakes.
 
 {% highlight javascript %}
 function GetType(term: Term): Option<Type> {
@@ -126,7 +126,7 @@ function GetType(term: Term): Option<Type> {
 }
 {% endhighlight %}
 
-Now, a term to be well-typed just means it has a type.
+A well-typed term is one for which a type exists.
 
 {% highlight javascript %}
 predicate WellTyped(term: Term) {
@@ -139,8 +139,8 @@ predicate WellTyped(term: Term) {
 At first, we can define the notion of evaluating a term. We can evaluate a term using small-step semantics, meaning we only replace a term or a subterm by another one.
 **Not being stuck** means that we will always be able to find a term to "replace" or to "compute", it's a bit of a synonym here.
 
-There are terms that we know we won't be able to do any replacement on them: Value terms.
-Here is what we want them to look like: Either Positive numbers, zero, negative numbers, or booleans.
+There are terms where no replacement is possible: Value terms.
+Here is what we want them to look like: Either booleans, zero, positive integers, or negative integers.
 
 {% highlight javascript %}
 predicate IsSuccs(term: Term) {
@@ -155,7 +155,7 @@ predicate IsFinalValue(term: Term) {
 }
 {% endhighlight %}
 
-Now, we can write our one-step evaluation method. As a requirement, we add that the term must be well-typed and is not a final value.
+Now, we can write our one-step evaluation method. As a requirement, we add that the term must be well-typed and nonfinal.
 
 {% highlight javascript %}
 function OneStepEvaluate(e: Term): (r: Term)
@@ -220,18 +220,18 @@ function OneStepEvaluate(e: Term): (r: Term)
 }
 {% endhighlight %}
 
-The interesting points to note on the function above, in a language like Dafny where every pattern must be exhaustive, are the following:
+The interesting points to note about the function above, in a language like Dafny where every pattern must be exhaustive, are the following:
 
-* Every call consist either of `OneStepEvaluate` on one sub-argument, or a transformation that reduces the size of the tree. So something is always happening here.
+* Every call consists either of `OneStepEvaluate` on one sub-argument, or a transformation that reduces the size of the tree. So something is always happening here.
 * All the cases are covered, Dafny does not complain!
-  * For example, when encountering the case `IsZero(e)`, if `e` is a final value, we know it's either `Pred` or `Succ`. It cannot be `True` or `False` due to type checking, so we can conclude.
-  * Similarly, if the condition of an if term is a final value, because of type-checking, Dafny knows it's either True or False.
+  * For example, when encountering the case `IsZero(e)`, if `e` is a final value, it must be either `Pred` or `Succ`. It cannot be `True` or `False` as it's well-typed and the previous pattern precludes `Zero`.
+  * Similarly, if the condition of an if term is a final value, because it's well-typed, Dafny knows it's either `True` or `False`.
 
-That concludes the _progress_ part on soundness checking: Whenever a term type-checks, it small step evaluation rule is never stuck until it reaches a final value.
+That concludes the _progress_ part of soundness checking: Whenever a term type-checks, there is always an applicable small step evaluation rule unless it's a final value.
 
 #### The preservation check
 
-Soundness also contains another part, the preservation, as stated in the intro. It says that, if we evaluate a typed term, not only the evaluator is not going to get stuck, but the result will have the same type.
+Soundness has another aspect, preservation, as stated in the intro. It says that, when evaluating a well-typed term, the evaluator will not get stuck and the result will have the same type as the original term.
 Dafny can also prove it for our language, out of the box. Well done, that means our language and evaluator make sense together!
 
 {% highlight javascript %}
@@ -245,19 +245,19 @@ lemma OneStepEvaluateWellTyped(e: Term)
 
 #### Conclusion
 
-All the code above powers this page, so that why I can guarantee you that you won't be able to find a term that the type checker accepts and that won't result in a final value. Of course, in a real programming language term, you might add some infinite loops here, but the soundness property above is not about termination, it's about constant progress, which you also want in embedded systems to ensure they never need reboot.
+All the code above powers this page, which is why I can guarantee you that you won't be able to find a term that the type checker accepts and that won't result in a final value. Of course, in a real programming language term, you might add some infinite loops, but the soundness property above is not about termination, it's about constant progress, which you also want in embedded systems to ensure they never need reboot.
 
-Now that you know what a type checker is and how to implement one in Dafny, perhaps you will feel much better prepared to model and experiment your new programming language, like recently the [Cedar team did](https://aws.amazon.com/about-aws/whats-new/2023/05/cedar-open-source-language-access-control/)?
+Now that you know what a type checker is and how to implement one in Dafny, perhaps you will feel much better prepared to model and experiment on your new programming language, like recently the [Cedar team did](https://github.com/cedar-policy/cedar-spec)?
 
 This is the end of the blog post. I hope you enjoyed it so far, but if you are looking for some advanced concepts, feel free to continue reading! Beware, math ahead!
 
 ## Bonus: More advanced modeling
 
-Sometimes, modeling evaluator and type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation does not matter for the final result.
+Sometimes, modelling the evaluator and the type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation being irrelevant for the final result.
 
-In the rest of this blog post largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, I will illustrate one element of the proof: the one that inductive and constructive versions of the set of Terms are equivalent. Having equivalence enables to conclude other results out of the scope of this blog post, including that the order of evaluation does not matter.
+In the rest of this blog post, largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, I will illustrate one element of the proof: the one that inductive and constructive versions of the set of Terms are equivalent. Having equivalence enables obtaining other results out of the scope of this blog post, including that the order of evaluation does not matter.
 
-Once this proof trick is gained, it becomes possible to prove similar equivalences for different inductive and constructive definitions of:
+With the help of this trick, it becomes possible to prove similar equivalences for different inductive and constructive definitions of:
 - The set of `(Expr, Expr)` of small-step evaluations
 - The set of `(Expr, Type)` of type checking
 but I leave these as an exercise for the interested reader.
@@ -269,7 +269,7 @@ The first one in definition 3.2.1 states that the set of _terms_ is the smallest
 2. if $$t_1 \in 𝒯$$, then $$\{\texttt{succ}\;t_1, \texttt{pred}\;t_1, \texttt{is_zero}\;t_1\} \subseteq 𝒯$$;
 3. if $$t_1 \in 𝒯$$, $$\;\; t_2 \in 𝒯$$ and $$t_3 \in 𝒯$$, then $$\texttt{if}\;t_1\;\texttt{then}\;t_2\;\texttt{else}\;t_3 \in 𝒯$$.
 
-Note that these terms omit `Double` and `Add` above. This means we cannot state that this set is the same as `set t: Term | true` as one would like to write. But let's continue.
+Note that these terms omit `Double` and `Add` above. This means we cannot state that this set is the same as `set t: Term | true` as one would like to write, but let's continue.
 
 We can write the inductive definition above in Dafny too:
 
