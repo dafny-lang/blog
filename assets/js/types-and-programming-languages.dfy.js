@@ -1637,6 +1637,43 @@ let _module = (function() {
         }
       }
     };
+    static IsAdmissible(t) {
+      let _source5 = t;
+      if (_source5.is_True) {
+        return true;
+      } else if (_source5.is_False) {
+        return true;
+      } else if (_source5.is_Zero) {
+        return true;
+      } else if (_source5.is_Succ) {
+        let _88___mcc_h0 = (_source5).e;
+        let _89_v = _88___mcc_h0;
+        return _module.__default.IsAdmissible(_89_v);
+      } else if (_source5.is_Pred) {
+        let _90___mcc_h2 = (_source5).e;
+        let _91_v = _90___mcc_h2;
+        return _module.__default.IsAdmissible(_91_v);
+      } else if (_source5.is_IsZero) {
+        let _92___mcc_h4 = (_source5).e;
+        let _93_v = _92___mcc_h4;
+        return _module.__default.IsAdmissible(_93_v);
+      } else if (_source5.is_Double) {
+        let _94___mcc_h6 = (_source5).e;
+        return false;
+      } else if (_source5.is_Add) {
+        let _95___mcc_h8 = (_source5).left;
+        let _96___mcc_h9 = (_source5).right;
+        return false;
+      } else {
+        let _97___mcc_h12 = (_source5).cond;
+        let _98___mcc_h13 = (_source5).thn;
+        let _99___mcc_h14 = (_source5).els;
+        let _100_e = _99___mcc_h14;
+        let _101_t = _98___mcc_h13;
+        let _102_c = _97___mcc_h12;
+        return ((_module.__default.IsAdmissible(_102_c)) && (_module.__default.IsAdmissible(_101_t))) && (_module.__default.IsAdmissible(_100_e));
+      }
+    };
   };
   return $module;
 })(); // end of module _module

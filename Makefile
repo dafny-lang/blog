@@ -18,4 +18,4 @@ watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
 
 watch-types:
-	node builders/types-and-programming-languages.js --watch _posts/2023-06-30-types-and-programming-languages.markdown assets/js/types-and-programming-languages.dfy.js
+	node builders/types-and-programming-languages.js --watch _posts/2023-07-14-types-and-programming-languages.markdown assets/js/types-and-programming-languages.dfy.js

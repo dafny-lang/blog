@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Types and Programming Languages"
-date:   2023-06-30 18:00:00 +0100
+date:   2023-07-14 18:00:00 +0100
 author: Mikael Mayer
 ---
 <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -74,7 +74,7 @@ First, because a term may or may not have a type, we want an `Option<A>` type li
 datatype Option<A> = Some(value: A) | None
 {% endhighlight %}
 
-Now we can define a function that computes the type of a term, if it has one.
+Now, we can define a function that computes the type of a term, if it has one.
 For example, in a conditional term, the condition has to be a boolean,
 while we only require the "then" and "else" part to have the same, defined type.
 In general, computing types is a task linear in the size of the code, whereas evaluating the code could have any complexity. This is why type checking is an efficient way of preventing obvious mistakes.
@@ -249,17 +249,20 @@ All the code above powers this page, which is why I can guarantee you that you w
 
 Now that you know what a type checker is and how to implement one in Dafny, perhaps you will feel much better prepared to model and experiment on your new programming language, like recently the [Cedar team did](https://github.com/cedar-policy/cedar-spec)?
 
-This is the end of the blog post. I hope you enjoyed it so far, but if you are looking for some advanced concepts, feel free to continue reading! Beware, math ahead!
+This is the end of the blog post. I hope you enjoyed it!
+<hr>
 
 ## Bonus: More advanced modeling
+If you are looking for some advanced concepts, feel free to continue reading! Beware, math ahead!
 
-Sometimes, modelling the evaluator and the type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation being irrelevant for the final result.
+Sometimes, modeling the evaluator and the type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation being irrelevant for the final result.
 
 In the rest of this blog post, largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, I will illustrate one element of the proof: the one that inductive and constructive versions of the set of Terms are equivalent. Having equivalence enables obtaining other results out of the scope of this blog post, including that the order of evaluation does not matter.
 
 With the help of this trick, it becomes possible to prove similar equivalences for different inductive and constructive definitions of:
 - The set of `(Expr, Expr)` of small-step evaluations
 - The set of `(Expr, Type)` of type checking
+
 but I leave these as an exercise for the interested reader.
 
 In Types and Programming Languages, chapter 3.2, we discover that there are two other mathematical definitions of the "set of all terms".
@@ -277,9 +280,10 @@ We can write the inductive definition above in Dafny too:
 ghost const AllTermsInductively: iset<Term>
 
 ghost predicate InductionCriteria(terms: iset<Term>) {
-  && iset{True, False, Zero} <= terms
-  && (forall t1 <- terms
-        :: iset{Succ(t1), Pred(t1), IsZero(t1)} <= terms)
+  && True in terms && False in terms && Zero in terms
+  && (forall t1 <- terms :: Succ(t1) in terms)
+  && (forall t1 <- terms :: Pred(t1) in terms)
+  && (forall t1 <- terms :: IsZero(t1) in terms)
   && (forall t1 <- terms, t2 <- terms, t3 <- terms
         :: If(t1, t2, t3) in terms)
 }
@@ -327,8 +331,11 @@ Let's prove it in Dafny!
 
 ## 0. Intermediate sets are cumulative
 
-First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)`. We do this in two steps: First we show this cumulative effect between two consecutive sets, and then
+First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)` (set inclusion). We do this in two steps: First we show this cumulative effect between two consecutive sets, and then
 between any two sets.
+
+We use the annotation `{:vcs_split_on_every_assert}` which gives Dafny the ability to verify each assertion separatedly, which, in this example, helps the verifier. Yes, [helping the verifier](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow) is something we must occasionally do in Dafny.
+To futher control the situation, we use the annotation `{:induction false}` to ensure Dafny does not try to prove induction hypotheses by itself, so that we have control over the proof. Otherwise, Dafny can both automate the proof a lot (which is great!) and sometimes time out because automation is stuck (which is less great!). I let assertions in the code so that not only Dafny, but you too can understand the proof.
 
 {% highlight javascript %}
 lemma {:vcs_split_on_every_assert} {:induction false} SiAreCumulative(i: nat)
@@ -385,25 +392,32 @@ lemma SiAreIncreasing(i: nat, j: nat)
 }
 {% endhighlight %}
 
-
 ## 1. Smallest inductive set contained in constructive set
 
+After proving that intermediate sets form an increasing sequence, we want to prove that the smallest inductive set is contained in the constructive set. Because the smallest inductive set is the intersection of all sets that satisfies the induction criteria, it suffices to prove that the constructive set satisfies the induction criteria.
+
+Note that I use the annotation `{:rlimit 4000}` which is only a way for Dafny to say that every [assertion batch](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-assertion-batches) should verify using less than 4 million resource units (unit provided by the underlying solver), which reduces the chances of proof variability during development.
+
 {% highlight javascript %}
-lemma {:rlimit 5000} {:vcs_split_on_every_assert}
+lemma {:rlimit 4000} {:vcs_split_on_every_assert}
   AllTermsConstructivelySatisfiesInductionCriteria()
   ensures InductionCriteria(AllTermsConstructively)
   ensures AllTermsInductively <= AllTermsConstructively
 {
-  assert iset{True, False, Zero} <= AllTermsConstructively by {
+  assert && True in AllTermsConstructively
+         && False in AllTermsConstructively
+         && Zero in AllTermsConstructively
+   by {
     assert S(1) <= AllTermsConstructively;
   }
   forall t1 <- AllTermsConstructively
-    ensures iset{Succ(t1), Pred(t1), IsZero(t1)} <= AllTermsConstructively {
+    ensures && Succ(t1) in AllTermsConstructively
+            && Pred(t1) in AllTermsConstructively
+            && IsZero(t1) in AllTermsConstructively {
     var i: nat :| t1 in S(i);
     assert Succ(t1) in S(i+1);
     assert Pred(t1) in S(i+1);
     assert IsZero(t1) in S(i+1);
-    assert iset{Succ(t1), Pred(t1), IsZero(t1)} <= S(i+1);
     assert S(i+1) <= AllTermsConstructively;
   }
   forall t1 <- AllTermsConstructively,
@@ -427,8 +441,11 @@ lemma {:rlimit 5000} {:vcs_split_on_every_assert}
 
 ## 2. Intermediate constructive sets are included in every set that satisfy the induction criteria
 
+Now we want to prove that every `S(i)` is included in every set that satisfies the induction criteria. That way, their union, the constructive set, will also be included in any set that satisfies the induction criteria. The proof works by remarking that every element of `S(i)` is built from elements of `S(i-1)`, so if these elements are in the set satisfying the induction criteria, so is the element by induction.
+I intentionally detailed the proof so that you can understand it, but if you run it yourself, you might see that you can remove a lot of the proof and Dafny will still figure it out.
+
 {% highlight javascript %}
-lemma {:rlimit 10000} {:vcs_split_on_every_assert} {:induction false}
+lemma {:induction false}
   InductionCriteriaHasConcreteIAsSubset(
     i: nat, someset: iset<Term>
 )
@@ -448,20 +465,7 @@ lemma {:rlimit 10000} {:vcs_split_on_every_assert} {:induction false}
       var ifs := iset t1 <- S(i-1), t2 <- S(i-1), t3 <- S(i-1) :: If(t1, t2, t3);
       assert S(i) == bases + succs + preds + iszeros + ifs;
       if elem in bases {
-        assert elem.True? || elem.False? || elem.Zero? by {
-          var trues := iset{True};
-          var falses := iset{False};
-          var zeros := iset{Zero};
-          assert bases == trues + falses + zeros;
-          if elem in trues {
-            assert elem.True?;
-          } else if elem in falses {
-            assert elem.False?;
-          } else {
-            assert elem in zeros;
-            assert elem.Zero?;
-          }
-        }
+        assert elem.True? || elem.False? || elem.Zero?;
         assert elem in someset;
       } else if elem in succs {
         assert elem in someset by {
@@ -499,6 +503,8 @@ lemma {:rlimit 10000} {:vcs_split_on_every_assert} {:induction false}
 
 ## 3. The constructive set is included in the smallest inductive set that satisfies the induction criteria
 
+We can deduce from the previous result that the constructive definition of all terms is also included in any set of term that satisfies the induction criteria. From this we can deduce automatically that the constructive definition of all terms is included in the smallest inductive set satisfying the induction criteria.
+
 {% highlight javascript %}
 // 3.2.6.b.1 AllTermsConstructively is a subset of any set satisfying the induction criteria (hence AllTermsConstructively <= AllTermsInductively)
 lemma AllTermsConstructivelyIncludedInSetsSatisfyingInductionCriteria(
@@ -522,6 +528,8 @@ lemma AllTermsConstructivelyIncludedInAllTermsInductively()
 
 ## 4. Conclusion with the equality
 
+Because we have `<=` and `>=` between these two sets, we can now prove equality.
+
 {% highlight javascript %}
 lemma InductionAndConcreteAreTheSame()
   ensures AllTermsConstructively == AllTermsInductively
@@ -531,3 +539,67 @@ lemma InductionAndConcreteAreTheSame()
   AllTermsConstructivelyIncludedInAllTermsInductively();
 }
 {% endhighlight %}
+
+## Bonus Conclusion
+
+We were able to put together two definitions for infinite sets, and prove that these sets were equivalents.
+As stated in the introduction, having multiple definitions of a single infinite set makes it possible to pick the definition adequate to the job to prove other results. For example,
+
+- If a term is in the constructive set, then it cannot be `Add` for example, because it would need to be in a `S(i)` and none of the `S(i)` define `Add`. This can be illustrated in Dafny with the following lemma:
+
+{% highlight javascript %}
+lemma {:induction false} CannotBeAdd(t: Term)
+  requires t in AllTermsConstructively
+  ensures !t.Add?
+{
+  // InductiveAxioms(); // Uncomment if you use AllTermsInductively
+}
+{% endhighlight %}
+
+which Dafny can verify pretty easily. However, if you put `AllTermsInductively` instead of `AllTermsConstructively`, Dafny would have a hard time figuring out.
+
+- If `x` is in the inductive set, then `Succ(x)` is in the inductive set as well.
+Dafny can figure it out by itself using the `AllTermsInductively` definition, but won't be able to do it with `AllTermsConstructively` without a rigorous proof.
+
+{% highlight javascript %}
+lemma {:induction false} SuccIsInInductiveSet(t: Term)
+  requires t in AllTermsInductively
+  ensures Succ(t) in AllTermsInductively
+{
+  InductiveAxioms();
+}
+{% endhighlight %}
+
+This could be useful for a rewriter or an optimizer to ensure the elements it writes are in the same set.
+
+Everything said, everything above can be a bit overweight for regular Dafny users.
+In practice, you'd better off writing the inductive predicate explicitly as a function rather than an infinite set with a predicate, so that you get both inductive and constructive axioms that enable you to prove something similar to the two results above.
+
+{% highlight javascript %}
+predicate IsAdmissible(t: Term) {
+  match t {
+    case True => true
+    case False => true
+    case Zero => true
+    case Succ(v) => IsAdmissible(v)
+    case Pred(v) => IsAdmissible(v)
+    case IsZero(v) => IsAdmissible(v)
+    case If(c, t, e) => IsAdmissible(c) && IsAdmissible(t) && IsAdmissible(e)
+    case _ => false
+  }
+}
+lemma {:induction false} CannotBeAdd2(t: Term)
+  requires IsAdmissible(t)
+  ensures !t.Add?
+{
+}
+lemma {:induction false} SuccIsInInductiveSet2(t: Term)
+  requires IsAdmissible(t)
+  ensures IsAdmissible(Succ(t))
+{
+}
+{% endhighlight %}
+
+This above illustrates what Dafny does best: it automates all the hard work under the hood
+so that you can focus on what is the most interesting to you, and even better, it ensures you don't need to define `{:axiom}` yourself in this case.
+I hope you give Dafny a try and to see you soon posting [interesting questions on StackOverflow](https://stackoverflow.com/questions/tagged/dafny)!
