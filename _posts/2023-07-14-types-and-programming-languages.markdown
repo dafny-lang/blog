@@ -250,7 +250,8 @@ All the code above powers this page, which is why I can guarantee you that you w
 Now that you know what a type checker is and how to implement one in Dafny, perhaps you will feel much better prepared to model and experiment on your new programming language, like recently the [Cedar team did](https://github.com/cedar-policy/cedar-spec)?
 
 This is the end of the blog post. I hope you enjoyed it!
-<hr>
+
+---
 
 ## Bonus: More advanced modeling
 If you are looking for some advanced concepts, feel free to continue reading! Beware, math ahead!
@@ -331,11 +332,11 @@ Let's prove it in Dafny!
 
 ## 0. Intermediate sets are cumulative
 
-First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)` (set inclusion). We do this in two steps: First we show this cumulative effect between two consecutive sets, and then
+First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)` (set inclusion). We do this in two steps: First, we show this cumulative effect between two consecutive sets, and then
 between any two sets.
 
-We use the annotation `{:vcs_split_on_every_assert}` which gives Dafny the ability to verify each assertion separatedly, which, in this example, helps the verifier. Yes, [helping the verifier](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow) is something we must occasionally do in Dafny.
-To futher control the situation, we use the annotation `{:induction false}` to ensure Dafny does not try to prove induction hypotheses by itself, so that we have control over the proof. Otherwise, Dafny can both automate the proof a lot (which is great!) and sometimes time out because automation is stuck (which is less great!). I let assertions in the code so that not only Dafny, but you too can understand the proof.
+We use the annotation `{:vcs_split_on_every_assert}` which makes Dafny verify each assertion independently, which, in this example, helps the verifier. Yes, [helping the verifier](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow) is something we must occasionally do in Dafny.
+To futher control the situation, we use the annotation `{:induction false}` to ensure Dafny does not try to prove induction hypotheses by itself, which gives us control over the proof. Otherwise, Dafny can both automate the proof a lot (which is great!) and sometimes time out because automation is stuck (which is less great!). I left assertions in the code so that not only Dafny, but you too can understand the proof.
 
 {% highlight javascript %}
 lemma {:vcs_split_on_every_assert} {:induction false} SiAreCumulative(i: nat)
@@ -573,7 +574,7 @@ lemma {:induction false} SuccIsInInductiveSet(t: Term)
 This could be useful for a rewriter or an optimizer to ensure the elements it writes are in the same set.
 
 Everything said, everything above can be a bit overweight for regular Dafny users.
-In practice, you'd better off writing the inductive predicate explicitly as a function rather than an infinite set with a predicate, so that you get both inductive and constructive axioms that enable you to prove something similar to the two results above.
+In practice, you're better off writing the inductive predicate explicitly as a function rather than an infinite set with a predicate, so that you get both inductive and constructive axioms that enable you to prove something similar to the two results above.
 
 {% highlight javascript %}
 predicate IsAdmissible(t: Term) {
@@ -602,4 +603,4 @@ lemma {:induction false} SuccIsInInductiveSet2(t: Term)
 
 This above illustrates what Dafny does best: it automates all the hard work under the hood
 so that you can focus on what is the most interesting to you, and even better, it ensures you don't need to define `{:axiom}` yourself in this case.
-I hope you give Dafny a try and to see you soon posting [interesting questions on StackOverflow](https://stackoverflow.com/questions/tagged/dafny)!
+I hope you give Dafny a try and to see you soon posting [interesting questions](https://github.com/dafny-lang/dafny/discussions)!
