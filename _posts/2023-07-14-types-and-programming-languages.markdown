@@ -7,7 +7,7 @@ author: Mikael Mayer
 <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" href="/blog/assets/css/types-and-programming-languages.css">
 <img class="clickable" id="img-intro" src="/blog/assets/images/type-and-programming-languages/introimage.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
-There are many ways even well tested programs can go wrong (see my [previous blog post]({{ site.baseurl }}{% post_url 2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny %}) on how Dafny helps),
+There are many ways even well tested programs can go wrong (see my [previous blog post]({{ site.baseurl }}{% post_url 2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny %}) on how Dafny helps).
 Static typing often solves a class of these programming issues entirely by preventing unintended usage of a value.
 
 This blog post takes a deep dive... take a deep breath... on how to write _terms of a programming language_, and both a _type-checker_ and an _evaluator_ on such terms, such that the following _soundness property_ holds:
@@ -28,6 +28,10 @@ If surrounded with green, then attaching the term to "Evaluate" and clicking on 
 <script src="/blog/assets/js/bignumber.js"></script>
 <script src="/blog/assets/js/types-and-programming-languages.dfy.js"></script>
 
+By the way, have you seen that `Pred(False)` does not type check?
+Someone made the remark that it's counter-intuitive, because they thought that `Pred` would
+stand up for `Predicate` and so it should type check. But `Pred` stands for `Predecessor`,
+and that's why it applies only to numbers. The type-checker's role is also to solve such ambiguities before the execution.
 # Examples
 Feel free to click on the examples below to load them in the Blockly workspace above.
 
@@ -36,7 +40,7 @@ Feel free to click on the examples below to load them in the Blockly workspace a
 
 # Writing a type checker in Dafny
 
-Writing a type-checker that guarantees that evaluation of an term won't get stuck is not an easy task as we must dive into maths, but fortunately, Dafny makes it easier.
+Writing a type-checker that guarantees that evaluation of a term won't get stuck is not an easy task as we must dive into maths, but fortunately, Dafny makes it easier.
 
 #### The term language
 
@@ -67,7 +71,7 @@ datatype Type =
 
 #### The type checker
 
-We can now write a _type checker_ for the terms above. In our case, a type checker will take a term, and decide wether it has a type or not, and return it if it's the former. We will not dive into error reporting in this blog post.
+We can now write a _type checker_ for the terms above. In our case, a type checker will take a term, and return a type if the term has that type. We will not dive into error reporting in this blog post.
 First, because a term may or may not have a type, we want an `Option<A>` type like this:
 
 {% highlight javascript %}
@@ -139,8 +143,8 @@ predicate WellTyped(term: Term) {
 At first, we can define the notion of evaluating a term. We can evaluate a term using small-step semantics, meaning we only replace a term or a subterm by another one.
 **Not being stuck** means that we will always be able to find a term to "replace" or to "compute", it's a bit of a synonym here.
 
-There are terms where no replacement is possible: Value terms.
-Here is what we want them to look like: Either booleans, zero, positive integers, or negative integers.
+There are terms where no replacement is possible: value terms.
+Here is what we want them to look like: either booleans, zero, positive integers, or negative integers.
 
 {% highlight javascript %}
 predicate IsSuccs(term: Term) {
@@ -227,7 +231,7 @@ The interesting points to note about the function above, in a language like Dafn
   * For example, when encountering the case `IsZero(e)`, if `e` is a final value, it must be either `Pred` or `Succ`. It cannot be `True` or `False` as it's well-typed and the previous pattern precludes `Zero`.
   * Similarly, if the condition of an if term is a final value, because it's well-typed, Dafny knows it's either `True` or `False`.
 
-That concludes the _progress_ part of soundness checking: Whenever a term type-checks, there is always an applicable small step evaluation rule unless it's a final value.
+That concludes the _progress_ part of soundness checking: whenever a term type-checks, there is always an applicable small step evaluation rule unless it's a final value.
 
 #### The preservation check
 
@@ -253,7 +257,7 @@ This is the end of the blog post. I hope you enjoyed it!
 
 ---
 
-## Bonus: More advanced modeling
+## Bonus: more advanced modeling
 If you are looking for some advanced concepts, feel free to continue reading! Beware, math ahead!
 
 Sometimes, modeling the evaluator and the type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation being irrelevant for the final result.
@@ -315,7 +319,7 @@ ghost function S(i: nat): iset<Term> {
 ghost const AllTermsConstructively: iset<Term> := iset i: nat, t <- S(i) :: t
 {% endhighlight %}
 
-But now, we are left with the existential question: Are these two sets the same?
+But now, we are left with the existential question: are these two sets the same?
 We rush in Dafny and write a lemma ensuring `AllTermsConstructively == AllTermsInductively` by invoking the lemma `InductiveAxioms()`, but... Dafny can't prove it.
 
 If you think deeply about it, how do you know that the two are the same? It seems obvious but why? It seems straightforward to prove that `AllTermsInductively <= AllTermsConstructively` because by definition, `AllTermsConstructively` obeys induction rules. But is it the smallest of such sets? But what if there was an element of `AllTermsConstructively` that is not in `AllTermsInductively`? It could actually happen if, instead of a datatype, we only had a trait, and some external user could implement new terms yet unknown to us.
@@ -332,7 +336,7 @@ Let's prove it in Dafny!
 
 ## 0. Intermediate sets are cumulative
 
-First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)` (set inclusion). We do this in two steps: First, we show this cumulative effect between two consecutive sets, and then
+First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)` (set inclusion). We do this in two steps: first, we show this cumulative effect between two consecutive sets, and then
 between any two sets.
 
 We use the annotation `{:vcs_split_on_every_assert}` which makes Dafny verify each assertion independently, which, in this example, helps the verifier. Yes, [helping the verifier](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow) is something we must occasionally do in Dafny.
