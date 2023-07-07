@@ -16,8 +16,8 @@ This blog post takes a deep dive... take a deep breath... on how to write _terms
 > 2. [Preservation] If a term has a type T, then the evaluator will also return a term of type T
 
 We will illustrate this using the infrastructure of the following Blockly workspace.
-If you build a full term and pass it to "Type check", if the type checker succeeds, the block is surrounded with green, otherwise with red.
-If surrounded with green, then attaching the term to "Evaluate" and clicking on "Evaluate" will always do something, except if the term is a final value. "Evaluate" is also surrounded in red if its term does not type check.
+If you build a full term and pass it to "Type check", on success, the block is surrounded with green, otherwise with red.
+If surrounded with green, then attaching the term to "Evaluate" and clicking on "Evaluate" will always do something, except if the term is a final value. "Evaluate" is surrounded in red if its term does not type check.
 
 # Play with the evaluator and the type checker
 <button id="Evaluate" style="padding: 1em;">Evaluate</button>
@@ -262,7 +262,7 @@ If you are looking for some advanced concepts, feel free to continue reading! Be
 
 Sometimes, modeling the evaluator and the type-checker as functions is not enough. One wants to model them as relations, and determine some properties about these relations, such as the order of evaluation being irrelevant for the final result.
 
-In the rest of this blog post, largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, I will illustrate one element of the proof: the one that inductive and constructive versions of the set of Terms are equivalent. Having equivalence enables obtaining other results out of the scope of this blog post, including that the order of evaluation does not matter.
+In the rest of this blog post, largely inspired by the book "Types and Programming Languages", Chapter 8, written by Benjamin Pierce, I will illustrate one element of the proof: the one that inductive and constructive versions of the set of terms are equivalent. Having equivalence enables obtaining other results out of the scope of this blog post, including that the order of evaluation does not matter.
 
 With the help of this trick, it becomes possible to prove similar equivalences for different inductive and constructive definitions of:
 - The set of `(Expr, Expr)` of small-step evaluations
@@ -271,7 +271,7 @@ With the help of this trick, it becomes possible to prove similar equivalences f
 but I leave these as an exercise for the interested reader.
 
 In Types and Programming Languages, chapter 3.2, we discover that there are two other mathematical definitions of the "set of all terms".
-The first one in definition 3.2.1 states that the set of _terms_ is the smallest set 𝒯 such that:
+The first one in definition 3.2.1 states that the set of _terms_ is the smallest set $$𝒯$$ such that:
 
 1. $$\{\texttt{true}, \texttt{false}, 0\} \subseteq 𝒯$$;
 2. if $$t_1 \in 𝒯$$, then $$\{\texttt{succ}\;t_1, \texttt{pred}\;t_1, \texttt{is_zero}\;t_1\} \subseteq 𝒯$$;
@@ -340,7 +340,7 @@ First, we want to show that, for every `i <= j`, we have `S(i) <= S(j)` (set inc
 between any two sets.
 
 We use the annotation `{:vcs_split_on_every_assert}` which makes Dafny verify each assertion independently, which, in this example, helps the verifier. Yes, [helping the verifier](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow) is something we must occasionally do in Dafny.
-To futher control the situation, we use the annotation `{:induction false}` to ensure Dafny does not try to prove induction hypotheses by itself, which gives us control over the proof. Otherwise, Dafny can both automate the proof a lot (which is great!) and sometimes time out because automation is stuck (which is less great!). I left assertions in the code so that not only Dafny, but you too can understand the proof.
+To further control the situation, we use the annotation `{:induction false}` to ensure Dafny does not try to prove induction hypotheses by itself, which gives us control over the proof. Otherwise, Dafny can both automate the proof a lot (which is great!) and sometimes time out because automation is stuck (which is less great!). I left assertions in the code so that not only Dafny, but you too can understand the proof.
 
 {% highlight javascript %}
 lemma {:vcs_split_on_every_assert} {:induction false} SiAreCumulative(i: nat)
@@ -547,10 +547,10 @@ lemma InductionAndConcreteAreTheSame()
 
 ## Bonus Conclusion
 
-We were able to put together two definitions for infinite sets, and prove that these sets were equivalents.
+We were able to put together two definitions for infinite sets, and prove that these sets were equivalent.
 As stated in the introduction, having multiple definitions of a single infinite set makes it possible to pick the definition adequate to the job to prove other results. For example,
 
-- If a term is in the constructive set, then it cannot be `Add` for example, because it would need to be in a `S(i)` and none of the `S(i)` define `Add`. This can be illustrated in Dafny with the following lemma:
+- If a term is in the constructive set, then it cannot be constructed with `Add` for example, because it would need to be in a `S(i)` and none of the `S(i)` define `Add`. This can be illustrated in Dafny with the following lemma:
 
 {% highlight javascript %}
 lemma {:induction false} CannotBeAdd(t: Term)
@@ -605,6 +605,6 @@ lemma {:induction false} SuccIsInInductiveSet2(t: Term)
 }
 {% endhighlight %}
 
-This above illustrates what Dafny does best: it automates all the hard work under the hood
-so that you can focus on what is the most interesting to you, and even better, it ensures you don't need to define `{:axiom}` yourself in this case.
-I hope you give Dafny a try and to see you soon posting [interesting questions](https://github.com/dafny-lang/dafny/discussions)!
+This above example illustrates what Dafny does best: it automates all the hard work under the hood
+so that you can focus on what is most interesting to you, and even better, it ensures you don't need to define `{:axiom}` yourself in this case.
+I hope you give Dafny a try and looking forward to your [interesting questions](https://github.com/dafny-lang/dafny/discussions)!
