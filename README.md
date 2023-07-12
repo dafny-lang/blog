@@ -12,10 +12,10 @@ If this fails, you might have an old Ruby version installed. Consider installing
 
 To run the server,
 
-> bundle exec jekyll server
+> bundle exec jekyll server --future
 
 and then navigate to [http://127.0.0.1:4000/blog/](http://127.0.0.1:4000/blog/).
-When you modify files, the website is automatically rebuilt, you only need to refresh the page.
+When you modify files, the website is automatically rebuilt, you only need to refresh the page. You'll also see upcoming blog posts.
 
 # Writing blog posts
 
