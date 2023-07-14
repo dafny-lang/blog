@@ -1,4 +1,4 @@
-# blog
+# Blog
 The Dafny blog
 
 # Running the blog locally
