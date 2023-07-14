@@ -67,6 +67,8 @@ If `make check` does not work, `make generate` might be able to fix things if ra
   - Go to GitHub > Actions, and click on the last successful task "pages build and deployment"
   - Click on the button "Re-run all jobs"
 
+- Image names are case sensitive, so you'll better want to review your blog post one last time before advertising it
+
 # Local development
 
 We encourage post authors to set up a custom pipeline, which continuously generates a single post. Make that pipeline accessible via
