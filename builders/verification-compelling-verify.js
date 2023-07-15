@@ -1,5 +1,5 @@
 const help = `
- * \`./verify.js <fileName.markdown>\`
+ * \`./<this script.js> <fileName.markdown>\`
  * Verifies that all the outputs are correct (useful for CI)
  * 
  * Options:
