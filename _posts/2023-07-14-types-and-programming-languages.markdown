@@ -4,7 +4,7 @@ title:  "How to use Dafny to prove type safety"
 date:   2023-07-14 18:00:00 +0100
 author: Mikael Mayer
 ---
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" href="/blog/assets/css/types-and-programming-languages.css">
 <img class="clickable" id="img-intro" src="/blog/assets/images/type-and-programming-languages/introimage.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
 There are many ways even well tested programs can go wrong (see my [previous blog post]({{ site.baseurl }}{% post_url 2023-04-19-making-verification-compelling-visual-verification-feedback-for-dafny %}) on how Dafny helps).
@@ -35,8 +35,8 @@ and that's why it applies only to numbers. The type-checker's role is also to so
 # Examples
 Feel free to click on the examples below to load them in the Blockly workspace above.
 
-<img class="clickable" id="example1" src="/blog/assets/images/type-and-programming-languages/example1.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
-<img class="clickable" id="example2" src="/blog/assets/images/type-and-programming-languages/example2.png" alt="A type checker on the term If(True, 0, 1)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
+<img class="clickable" id="example1" src="/blog/assets/images/type-and-programming-languages/Example1.png" alt="An evaluation statement on an addition" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
+<img class="clickable" id="example2" src="/blog/assets/images/type-and-programming-languages/Example2.png" alt="A evaluation statement on a more complex expression)" style="display:block;margin-left:auto;margin-right:auto;width:500px;max-width:95%;"/>
 
 # Writing a type checker in Dafny
 
