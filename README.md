@@ -27,7 +27,7 @@ The front matter looks like this, and is followed by the markdown code of your c
 ---
 layout: post
 title:  "How to optimize code while staying confident about it in Dafny"
-date:   2023-02-24 00:00:01 +0100
+date:   2023-07-14 18:00:00 +0100
 categories: 
 ---
 ```
@@ -56,6 +56,18 @@ To test the blog posts, run:
 `make check`
 
 If `make check` does not work, `make generate` might be able to fix things if ran locally, committed and pushed.
+
+# Publish the blog post
+
+- Make sure you merge the blog post. This will automatically run the workflow "pages build and deployment", so the publishing to dafny.org/blog is automatic
+- If you merged the blog post before its date of publication, it won't appear.
+  The above example's date is "2023-07-14 18:00:00 +0100" which means the blog post
+  will be visible only if the publication process happens after 12pm central time on that day.
+  Hence, if you merge the PR before that date, you need to run the workflow manually after the publication date:
+  - Go to GitHub > Actions, and click on the last successful task "pages build and deployment"
+  - Click on the button "Re-run all jobs"
+
+- Image names are case sensitive, so you'll better want to review your blog post one last time before advertising it
 
 # Local development
 
