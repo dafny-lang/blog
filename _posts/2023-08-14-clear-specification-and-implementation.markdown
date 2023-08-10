@@ -21,13 +21,12 @@ deterministic functions and imperative, stateful methods.
 
 By writing a `function`, you can describe a mathematical object that
 maps each input deterministically to a single output. Functions are
-typically concise, and, given their genesis as one of the
-foundational concepts in mathematics, they tend to be the most
+typically concise, and they tend to be the most
 straightforward to reason about. Because of this, the bodies of
 functions are made directly available to the verifier by default,
-unless a function is marked `{:opaque}`. Functions can often also be
-compiled to executable programs, though sometimes inefficiently (and
-not at all if they make use of infinite data types).
+unless a function is declared with the `opaque` keyword. Functions can also be
+compiled to executable programs when the are computable,
+though sometimes inefficient programs.
 
 By writing a `method`, you can describe an imperative computation that
 performs a sequence of steps to yield an output state or a set of output
@@ -39,12 +38,13 @@ reasoning about methods is somewhat different than reasoning about
 functions. You can prove that a method agrees with a single contract,
 written as `requires`, `ensures`, `modifies`, and `decreases` clauses,
 but you generally do not expand the body of a method as part of
-performing a separate proof (though it is sometimes possible to do so,
-as will be described in a future post).
+performing a separate proof.^[It is sometimes possible to expand the
+body of a method during proof. A future blog post will describe the
+process.]
 
-These differing attributes come into play particularly starkly when
-developing programs that have either or both of the following
-attributes:
+The differences between functions and methods come into play
+particularly starkly when developing programs that have either or both
+of the following attributes:
 
 * The most natural specification of an API involves describing the
 _relationship_ between the available operations, rather than
@@ -87,63 +87,91 @@ following module.
 
 {% highlight dafny %}
 module StackSpecification {
-  // Most clients, including clients of implementations, get no details.
-  // This means that _all_ they know about stacks is what the two lemmas
-  // describe.
-  export
-    // The operations on a stack.
-    provides StackModel, PushModel, PopModel, EmptyModel, IsEmptyModel
-    // The properties of those operations.
-    provides PushPopVal, PushPopStack
+{% endhighlight %}
 
-  // Implementation modules can access the definition of the model
-  // operations, to allow proofs of equivalence, by importing the
-  // `Private export set.
+Most clients, including clients of implementations, get no details.
+This means that _all_ they know about stacks is what the two lemmas
+describe.
+
+{% highlight dafny %}
+  export
+    provides StackModel, PushModel, PopModel, EmptyModel, IsEmptyModel
+    provides PushPopVal, PushPopStack
+{% endhighlight %}
+
+Implementation modules can access the definition of the model
+operations, to allow proofs of equivalence, by importing the `Private`
+export set.
+
+{% highlight dafny %}
   export Private
     reveals StackModel, PushModel, PopModel, EmptyModel, IsEmptyModel
     provides PushPopVal, PushPopStack
+{% endhighlight %}
 
-  // We provide a concrete type to model a stack for simplicity of
-  // proof, since Dafny knows how to prove things about sequences. Note,
-  // however, that most clients don't get to see what this type is.
+We provide a concrete type to model a stack for simplicity of proof,
+since Dafny knows how to prove things about sequences. Note, however,
+that most clients don't get to see what this type is.
+
+{% highlight dafny %}
   type StackModel<T> = seq<T>
+{% endhighlight %}
 
-  // Check to see whether a stack is empty.
+To check to see whether a stack is empty, check that the length of the
+model sequence is 0.
+
+{% highlight dafny %}
   ghost function IsEmptyModel<T>(stk: StackModel<T>) : bool
   {
     |stk| == 0
   }
+{% endhighlight %}
 
-  // Construct an empty stack (and ensure that it's empty).
+To construct an empty stack, construct an empty sequence. This is always
+empty.
+
+{% highlight dafny %}
   ghost function EmptyModel<T>() : StackModel<T>
     ensures(IsEmptyModel(EmptyModel<T>()))
   {
     []
   }
+{% endhighlight %}
 
-  // Push an item onto the stack, ensuring that it's non-empty as a
-  // result.
+To push an item onto the stack, append it to the model sequence. It will
+always be non-empty as a result.
+
+{% highlight dafny %}
   ghost function PushModel<T>(stk: StackModel<T>, val : T) : StackModel<T>
     ensures !IsEmptyModel(PushModel(stk, val))
   {
     [val] + stk
   }
+{% endhighlight %}
 
-  // Pop an item from a non-empty stack, yielding both an item and the
-  // rest of the stack.
+To pop an item from a non-empty stack, return both the first element of
+the sequence and the rest of the sequence.
+
+{% highlight dafny %}
   ghost function PopModel<T>(stk: StackModel<T>) : (T, StackModel<T>)
     requires !IsEmptyModel(stk)
   {
     (stk[0], stk[1..])
   }
+{% endhighlight %}
 
-  // The first core property of stacks, for use by clients. Pushing and
-  // then popping yields the pushed value.
+The first core property of stacks is that pushing and then popping
+yields the pushed value.
+
+{% highlight dafny %}
   lemma PushPopVal<T>(stk: StackModel<T>, val : T)
     ensures PopModel(PushModel(stk, val)).0 == val {}
+{% endhighlight %}
 
-  // The second core property of stacks, for use by clients. Pushing and
-  // then popping yields the original stack.
+The second core property of stacks is that pushing and then popping
+yields the original stack.
+
+{% highlight dafny %}
   lemma PushPopStack<T>(stk: StackModel<T>, val : T)
     ensures PopModel(PushModel(stk, val)).1 == stk {}
 }
@@ -162,7 +190,10 @@ have pre- and post-conditions, specified on the functions themselves
 rather than in lemmas. These are exactly the properties required to
 ensure that each operation is well-defined without specifying
 anything else about behavior. Besides well-definedness, all
-functional properties are specified in lemmas.
+functional properties are specified in lemmas. This is sometimes
+known as the "extrinsic" approach to specification, in contrast to
+the "intrinsic" approach of specifying all behavior in pre- and
+post-conditions.
 
 Now let's look at how a common implementation of this data type
 might be structured. This approach uses a consecutive array to store
@@ -191,37 +222,46 @@ overhead. Therefore, the array-based stack implementation uses an
 
 {% highlight dafny %}
 module ArrayStackImplementation {
-  // Get access to the implementation details.
   import opened StackSpecification`Private
 
-  // This allows `elts` below to include default values in unused
-  // positions.
   datatype GhostOption<T> = ghost None | Some(value: T)
 
-  // An array-based stack can contain elements of most types, but they
-  // must have default values because sometimes the end of the allocated
-  // array contains excess, unused elements.
   class Stack<T> {
+{% endhighlight %}
 
-    // The elements themselves are stored in an array.
+The elements of the are stored in an array, using `GhostOption` to allow
+uninitialized values.
+
+{% highlight dafny %}
     var elts : array<GhostOption<T>>
+{% endhighlight %}
 
-    // We need a separate size tracker to know how much of the array is
-    // being used, because the size of `elts` itself will always be a
-    // power of two, and some entries will usually be unused.
+We need a separate size tracker to know how much of the array is being
+used, because the size of `elts` itself will always be a power of two,
+and some entries will usually be unused.
+
+{% highlight dafny %}
     var size : nat
+{% endhighlight %}
 
-    // A ghost variable keeps track of the correspondence between the
-    // concrete storage in the array and the model used by the
-    // specification.
+A ghost variable keeps track of the correspondence between the concrete
+storage in the array and the model used by the specification. This could
+also be used as a (slightly less efficient) implementation, as is done
+in a later example. As a ghost variable, it has no impact on
+performance.
+
+{% highlight dafny %}
     ghost var model : StackModel<T>
+{% endhighlight %}
 
-    // A stack agrees with its model if `size` matches the size of the
-    // model, the array has at least that much room, and all of the
-    // elements within the size of the model match the model. Note,
-    // however, that the model prepends to the beginning and the array
-    // adds at the end! Finally, the array always needs to have _room_
-    // for some elements, even if they're all unused.
+A stack agrees with its model if `size` matches the size of the model,
+the array has at least that much room, and all of the elements within
+the size of the model match the model. Note, however, that the model
+prepends to the beginning and the array adds at the end! Finally, the
+array always needs to have _room_ for some elements, even if they're all
+unused.
+
+{% highlight dafny %}
     ghost predicate ValidModel()
       reads this, elts
     {
@@ -231,10 +271,12 @@ module ArrayStackImplementation {
       && forall i :: 0 <= i < |model| ==>
            elts[i] == Some(model[size - (i + 1)])
     }
+{% endhighlight %}
 
-    // An initial stack has room for a few elements (the exact number
-    // was chosen arbitrarily) but none of them are used. It is empty
-    // and valid.
+An initial stack has room for a few elements (the exact number was
+chosen arbitrarily) but none of them are used. It is empty and valid.
+
+{% highlight dafny %}
     constructor InitStack()
       ensures ValidModel()
       ensures IsEmpty()
@@ -243,13 +285,15 @@ module ArrayStackImplementation {
       size := 0;
       model := EmptyModel();
     }
+{% endhighlight %}
 
-    // To push an element on the stack, write to the first unused
-    // element of the array and increment the size. If there's not room,
-    // however, it's necessary to allocate a new array and copy the old
-    // elements over. Like all operations except `InitStack`, it
-    // requires a valid model. Like all operations that modify the
-    // stack, it ensures a valid model.
+To push an element on the stack, write to the first unused element of
+the array and increment the size. If there's not room, however, it's
+necessary to allocate a new array and copy the old elements over. Like
+all operations except `InitStack`, it requires a valid model. Like all
+operations that modify the stack, it ensures a valid model.
+
+{% highlight dafny %}
     method Push(val : T)
       requires ValidModel()
       modifies this, elts
@@ -273,10 +317,13 @@ module ArrayStackImplementation {
       elts[size] := Some(val);
       size := size + 1;
     }
+{% endhighlight %}
 
-    // To pop an element, return the last used element of the array and
-    // decrement the size. Ensures that both the return value and the
-    // internal changes match the stack specification.
+To pop an element, return the last used element of the array and
+decrement the size. Ensures that both the return value and the internal
+changes match the stack specification.
+
+{% highlight dafny %}
     method Pop() returns (result : T)
       requires ValidModel()
       requires !IsEmpty()
@@ -289,9 +336,12 @@ module ArrayStackImplementation {
       size := size - 1;
       result := elts[size].value;
     }
+{% endhighlight %}
 
-    // The size variable alone is sufficient to tell us whether the
-    // stack is empty very efficiently.
+The size variable alone is sufficient to tell us whether the stack is
+empty very efficiently.
+
+{% highlight dafny %}
     predicate IsEmpty()
       reads this, elts
       requires ValidModel()
@@ -315,22 +365,32 @@ module LinkedStackImplementation {
   import opened StackSpecification`Private
 
   class Stack<T> {
+{% endhighlight %}
 
-    // The actual content of the stack is stored in a linked sequence of
-    // Node objects, defined below.
+The actual content of the stack is stored in a linked sequence of Node
+objects, defined below.
+
+{% highlight dafny %}
     var top : Node?<T>
+{% endhighlight %}
 
-    // The model is exactly the same as for the array-based
-    // implementation.
+The model is exactly the same as for the array-based implementation.
+
+{% highlight dafny %}
     ghost var model : StackModel<T>
+{% endhighlight %}
 
-    // The footprint keeps track of all objects reachable from this
-    // object. This is used to prove termination.
+The footprint keeps track of all objects reachable from this object.
+This is used to prove termination.
+
+{% highlight dafny %}
     ghost var footprint : set<object>
+{% endhighlight %}
 
-    // Validity is a bit more complex, as it needs to recursively
-    // traverse the list and use the associated footprint to ensure
-    // termination.
+Validity is a bit more complex, as it needs to recursively traverse the
+list and use the associated footprint to ensure termination.
+
+{% highlight dafny %}
     ghost predicate ValidModel()
       reads this, top, footprint
     {
@@ -342,9 +402,12 @@ module LinkedStackImplementation {
         top.footprint <= footprint &&
         top.ValidModel())
     }
+{% endhighlight %}
 
-    // As before, an initial stack is easy to construct and show to be
-    // empty and valid.
+As before, an initial stack is easy to construct and show to be empty
+and valid.
+
+{% highlight dafny %}
     constructor InitStack()
       ensures ValidModel()
       ensures IsEmpty()
@@ -353,9 +416,12 @@ module LinkedStackImplementation {
       model := EmptyModel();
       footprint := {this};
     }
+{% endhighlight %}
 
-    // Pushing a value is simpler than in the array case, and satisfies
-    // the same equivalence with the specification.
+Pushing a value is simpler than in the array case, and satisfies the
+same equivalence with the specification.
+
+{% highlight dafny %}
     method Push(val : T)
       requires ValidModel()
       modifies this
@@ -367,8 +433,11 @@ module LinkedStackImplementation {
       footprint := footprint + top.footprint;
       model := PushModel(model, val);
     }
+{% endhighlight %}
 
-    // Popping a value is very symmetrical with pushing.
+Popping a value is very symmetrical with pushing.
+
+{% highlight dafny %}
     method Pop() returns (result : T)
       requires ValidModel()
       requires !IsEmpty()
@@ -381,8 +450,11 @@ module LinkedStackImplementation {
       top := top.next;
       model := PopModel(model).1;
     }
+{% endhighlight %}
 
-    // Checking emptiness is very simple, as in the array case.
+Checking emptiness is very simple, as in the array case.
+
+{% highlight dafny %}
     predicate IsEmpty()
       reads this, top, footprint
       requires ValidModel()
@@ -391,33 +463,49 @@ module LinkedStackImplementation {
       top == null
     }
   }
+{% endhighlight %}
 
-  // This class, that implements the actual linked data structure, is
-  // where the complexity lives. If you already had a linked list
-  // implementation, you could potentially use that, and share the
-  // burden of implementation and verification with any other uses of
-  // linked lists. Although it would require some cleverness to
-  // integrate the ghost model and node validity notions with a
-  // general-purpose list.
+The following class, that implements the actual linked data structure,
+is where the complexity lives. If you already had a linked list
+implementation, you could potentially use that, and share the burden of
+implementation and verification with any other uses of linked lists.
+Although it would require some cleverness to integrate the ghost model
+and node validity notions with a general-purpose list.
+
+{% highlight dafny %}
   class Node<T> {
+{% endhighlight %}
 
-    // Each node has a value.
+Each node has a value of type `T`.
+
+{% highlight dafny %}
     var val : T
+{% endhighlight %}
 
-    // Each node points to the next node, which may be null if this is
-    // the last node (the bottom of the stack).
+Each node points to the next node, which may be null if this is
+the last node (the bottom of the stack).
+
+{% highlight dafny %}
     var next : Node?<T>
+{% endhighlight %}
 
-    // The model is the same as in the array-based case.
+The model is the same as in the array-based case.
+
+{% highlight dafny %}
     ghost var model : StackModel<T>
+{% endhighlight %}
 
-    // The footprint keeps track of all objects used in this node or any
-    // reachable from its `next` field. This is used to prove
-    // termination.
+The footprint keeps track of all objects used in this node or any
+reachable from its `next` field. This is used to prove termination.
+
+{% highlight dafny %}
     ghost var footprint : set<object>
+{% endhighlight %}
 
-    // The validity of a node is complex, mostly to keep track of the
-    // footprint.
+The validity of a node is complex, mostly to keep track of the
+footprint.
+
+{% highlight dafny %}
     ghost predicate ValidModel()
       reads this, footprint
       decreases footprint + {this}
@@ -430,8 +518,11 @@ module LinkedStackImplementation {
                          model == PushModel(next.model, val) &&
                          next.ValidModel()))
     }
+{% endhighlight %}
 
-    // Creating a node requires keeping track of the footprint, as well.
+Creating a node requires keeping track of the footprint, as well.
+
+{% highlight dafny %}
     constructor InitNode(val: T, next: Node?<T>)
       requires next != null ==> next.ValidModel()
       ensures ValidModel()
@@ -449,10 +540,13 @@ module LinkedStackImplementation {
       this.footprint := if next == null then {this} else {this} + next.footprint;
     }
   }
+{% endhighlight %}
 
-  // The model corresponding to a node is computed by a non-member
-  // function, because it needs to handle the case where the node is
-  // null, corresponding to an empty model.
+The model corresponding to a node is computed by a non-member function,
+because it needs to handle the case where the node is null,
+corresponding to an empty model.
+
+{% highlight dafny %}
   ghost function NodeModel<T>(node: Node?<T>) : StackModel<T>
     reads node
   {
@@ -462,7 +556,8 @@ module LinkedStackImplementation {
 {% endhighlight %}
 
 Finally, given Dafny's built-in types, it's possible to create an
-imperative stack building on the immutable `seq` type. This
+imperative-looking interface to a stack building on the
+persistent `seq` type. This
 implementation is wrapped by a set of methods in a class but is
 essentially the same as the specification itself.
 
@@ -471,19 +566,28 @@ module SeqStackImplementation {
   import opened StackSpecification`Private
 
   class Stack<T> {
+{% endhighlight %}
 
-    // The `elts` field should be an identical copy of the `model` field.
+The `elts` field should be an identical copy of the `model` field.
+
+{% highlight dafny %}
     var elts : seq<T>
     ghost var model : StackModel<T>
+{% endhighlight %}
 
-    // The stack is valid when `elts` is, indeed, identical to `model`.
+The stack is valid when `elts` is, indeed, identical to `model`.
+
+{% highlight dafny %}
     ghost predicate ValidModel()
       reads this
     {
       elts == model
     }
+{% endhighlight %}
 
-    // Initialization is just like in the specification.
+Initialization is just like in the specification.
+
+{% highlight dafny %}
     constructor InitStack()
       ensures ValidModel()
       ensures IsEmpty()
@@ -492,8 +596,11 @@ module SeqStackImplementation {
                   // that abstraction any more than necessary.
       model := EmptyModel();
     }
+{% endhighlight %}
 
-    // Pushing is just like in the specification.
+Pushing is just like in the specification.
+
+{% highlight dafny %}
     method Push(val : T)
       requires ValidModel()
       modifies this
@@ -505,8 +612,11 @@ module SeqStackImplementation {
                             // don't want to break that abstraction.
       model := PushModel(model, val);
     }
+{% endhighlight %}
 
-    // Popping is just like in the specification.
+Popping is just like in the specification.
+
+{% highlight dafny %}
     method Pop() returns (result : T)
       requires ValidModel()
       requires !IsEmpty()
@@ -519,8 +629,11 @@ module SeqStackImplementation {
       result := elts[0];
       elts := elts[1..];
     }
+{% endhighlight %}
 
-    // Checking for emptiness is just like in the specification.
+Checking for emptiness is just like in the specification.
+
+{% highlight dafny %}
     predicate IsEmpty()
       reads this
       requires ValidModel()
