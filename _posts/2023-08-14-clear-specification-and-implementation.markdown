@@ -6,14 +6,64 @@ author: Aaron Tomb
 categories:
 ---
 
-Dafny allows you to describe computations in several ways,
-primarily pure functions and imperative methods, each with its
-own tradeoffs. Because of these tradeoffs, it can be useful to
-combine mechanisms and relate them to each other. This post
-describes one particularly effective technique for doing so, by
-clearly separating a _specification_ from an _implementation_,
-proving properties of the specification, and proving equivalence (or
-refinement) between the specification and the implementation.
+# The Problem
+
+Dafny provides a rich collection of features for proving properties
+about code. However, sometimes it may seem that common and important
+properties are difficult to prove, particularly when those properties
+involve the combined behavior of a sequence of methods calls. For
+example, consider the follow very simple description of an account.
+
+{% highlight dafny %}
+class Account {
+    var balance: int
+
+    method Deposit(amount: int)
+      modifies this
+    {
+        balance := balance + amount;
+    }
+}
+{% endhighlight %}
+
+This class has a `balance` (which can potentially be negative), and a
+method for making deposits to adjust that balance (which can also cover
+withdrawals, by using a negative `amount`). Given this code, it's
+natural to want to prove that, for example, depositing `x` followed by
+depositing `-x` results in a balance equal to the starting balance.
+However, you'll find that this is impossible to prove, with the code as
+written.
+
+To make it possible to prove that property, it may be tempting to add an
+ensures clause that `balance == old(balance) + amount`. With that in
+place, you can write the following code, which verifies.
+
+{% highlight dafny %}
+method DepositWithdrawalEqual(account: Account, amount: int)
+  modifies account
+{
+    account.Deposit(amount);
+    account.Deposit(-amount);
+    assert account.balance == old(account.balance);
+}
+{% endhighlight %}
+
+However, this is a method rather than a lemma (because lemmas aren't
+allowed to call methods), and even if it were a lemma, it would be
+impossible to use the proven fact anywhere else to prove some
+higher-level property of a larger system. You might argue that you don't
+need to prove this in a lemma, because you can re-prove the equivalent
+property wherever the `Deposit` method is used in practice. However, for
+a more complex method, the `ensures` clauses needed to make it possible
+to prove anything you might want about a sequence of method calls would
+quickly get out of hand.
+
+One approach to solving this problem is to maintain a clear separation
+between the _specification_ and _implementation_ of your program, prove
+properties of the specification, and prove equivalence (or refinement)
+between the specification and the implementation.
+
+# Specifications and implementations
 
 To get started, let's go over the tools Dafny provides. The two most
 common computational descriptions in Dafny are terminating,
@@ -21,26 +71,27 @@ deterministic functions and imperative, stateful methods.
 
 By writing a `function`, you can describe a mathematical object that
 maps each input deterministically to a single output. Functions are
-typically concise, and they tend to be the most
-straightforward to reason about. Because of this, the bodies of
-functions are made directly available to the verifier by default,
-unless a function is declared with the `opaque` keyword. Functions can also be
-compiled to executable programs when the are computable,
-though sometimes inefficient programs.
+typically concise, and they tend to be the most straightforward to
+reason about, so they're ideal for specifying what a program should do
+in the abstract. The bodies of functions are made directly available to
+the verifier by default, unless a function is declared with the `opaque`
+keyword. Functions can also be compiled to executable programs when the
+are computable, though sometimes inefficient programs.
 
 By writing a `method`, you can describe an imperative computation that
 performs a sequence of steps to yield an output state or a set of output
 states from each initial program state. Methods more closely match the
 operations performed by actual computing hardware, and are capable of
 describing non-deterministic or non-terminating computations. They are
-also generally meant to be compiled to executable programs. However,
-reasoning about methods is somewhat different than reasoning about
-functions. You can prove that a method agrees with a single contract,
-written as `requires`, `ensures`, `modifies`, and `decreases` clauses,
-but you generally do not expand the body of a method as part of
-performing a separate proof.^[It is sometimes possible to expand the
-body of a method during proof. A future blog post will describe the
-process.]
+also generally meant to be compiled to executable programs. This makes
+them ideal for describing how a computation should be performed during
+actual execution. However, reasoning about methods is somewhat different
+than reasoning about functions. You can prove that a method agrees with
+a single contract, written as `requires`, `ensures`, `modifies`, and
+`decreases` clauses, but you generally do not expand the body of a
+method as part of performing a separate proof.^[It is sometimes possible
+to expand the body of a method during proof. A future blog post will
+describe the process.]
 
 The differences between functions and methods come into play
 particularly starkly when developing programs that have either or both
@@ -81,6 +132,8 @@ or vectors. Perhaps you wouldn't use more than one of these in a
 given application, but we can still look at how to straightforwardly
 show that multiple implementations, using different techniques, all
 fit the same notion of what it means to be a stack.
+
+# Specifying a stack
 
 To start with, let's specify what it means to be a stack in the
 following module.
@@ -177,7 +230,7 @@ yields the original stack.
 }
 {% endhighlight %}
 
-Several things are important about this implementation. First, it
+Several things are important about this specification. First, it
 provides a number of functions with bodies that describe one way of
 constructing a stack out of built-in primitives. Second, it hides
 the bodies of those functions from most clients, except
@@ -194,6 +247,8 @@ functional properties are specified in lemmas. This is sometimes
 known as the "extrinsic" approach to specification, in contrast to
 the "intrinsic" approach of specifying all behavior in pre- and
 post-conditions.
+
+# Implementing an array-based stack
 
 Now let's look at how a common implementation of this data type
 might be structured. This approach uses a consecutive array to store
@@ -352,6 +407,8 @@ empty very efficiently.
   }
 }
 {% endhighlight %}
+
+# Implementing a stack with a linked list
 
 The previous implementation could allocate more space than necessary,
 about twice as much in the worst case, and may be hard to extend to
@@ -555,6 +612,8 @@ corresponding to an empty model.
 }
 {% endhighlight %}
 
+# Implementing a stack with sequences
+
 Finally, given Dafny's built-in types, it's possible to create an
 imperative-looking interface to a stack building on the
 persistent `seq` type. This
@@ -645,6 +704,8 @@ Checking for emptiness is just like in the specification.
 }
 {% endhighlight %}
 
+# Proving things about stack clients
+
 Given this variety of implementations, we can build clients that can
 conclude properties about the results of pushing and popping,
 relying only on the lemmas proved about the model used in the
@@ -693,6 +754,8 @@ module StackClient {
   }
 }
 {% endhighlight %}
+
+# Conclusion
 
 Through this series of examples, we've shown an approach that
 consists of proving equivalence between a single, concise functional
