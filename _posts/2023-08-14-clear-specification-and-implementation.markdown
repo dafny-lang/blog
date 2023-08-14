@@ -39,7 +39,7 @@ ensures clause that `balance == old(balance) + amount`. With that in
 place, you can write the following code, which verifies.
 
 {% highlight dafny %}
-method DepositWithdrawalEqual(account: Account, amount: int)
+method TwoOppositeDepositsCancelOut(account: Account, amount: int)
   modifies account
 {
     account.Deposit(amount);
@@ -50,18 +50,24 @@ method DepositWithdrawalEqual(account: Account, amount: int)
 
 However, this is a method rather than a lemma (because lemmas aren't
 allowed to call methods), and even if it were a lemma, it would be
-impossible to use the proven fact anywhere else to prove some
-higher-level property of a larger system. You might argue that you don't
-need to prove this in a lemma, because you can re-prove the equivalent
-property wherever the `Deposit` method is used in practice. However, for
-a more complex method, the `ensures` clauses needed to make it possible
-to prove anything you might want about a sequence of method calls would
-quickly get out of hand.
+impossible to state the desired fact as a postcondition so that it could
+be used to prove a higher-level property of a larger system. For
+example, you might want to use the fact proven above to show that a
+large sequence of equal positive and negative deposits would leave the
+account balance unchanged. Even though that property is clearly a
+repeated application of the property proved in the method above, there's
+no way to reuse that proof.
+
+You might argue that you don't need to prove this in a lemma, because
+you can re-prove the equivalent property wherever the `Deposit` method
+is used in practice. However, for a more complex method, the `ensures`
+clauses needed to make it possible to prove anything you might want
+about a sequence of method calls would quickly get out of hand.
 
 One approach to solving this problem is to maintain a clear separation
 between the _specification_ and _implementation_ of your program, prove
-properties of the specification, and prove equivalence (or refinement)
-between the specification and the implementation.
+properties of the specification, and prove only equivalence (or
+refinement) between the specification and the implementation.
 
 # Specifications and implementations
 
