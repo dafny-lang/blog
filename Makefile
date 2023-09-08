@@ -19,3 +19,6 @@ watch-compelling:
 
 watch-types:
 	node builders/types-and-programming-languages.js --watch _posts/2023-07-14-types-and-programming-languages.markdown assets/js/types-and-programming-languages.dfy.js
+
+verify:
+	dafny verify assets/src/coinduction-extreme-predicates-ordinals.dfy
