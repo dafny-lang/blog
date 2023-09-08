@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en-US">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -6,8 +5,6 @@
   <meta name="viewport" content="initial-scale=1.0" />
   <meta name="author" content="K. Rustan M. Leino and Jean-Baptiste Tristan" />
   <meta name="description" content="Leino mode: Start numbering at 0" />
-  <title>&lt;small&gt;Dafny Power User:&lt;/small&gt;\
-  Working with coinduction, extreme predicates, and ordinals</title>
   <style type="text/css"  class="link">
   /*# sourceURL=madoko.css */
   
@@ -324,16 +321,7 @@
 <body class="madoko">
 
 <div class="body madoko" style="line-adjust:0">
-<div class="titleblock align-center para-block" data-line="62" style="text-align:center;line-adjust:0">
-<div class="titleheader align-center" data-line="62" style="text-align:center;line-adjust:0">
-<div class="title para-block" data-line="62" style="font-size:xx-large;font-weight:bold;margin-bottom:0.5ex;line-adjust:0"><span data-line="62"></span><small>Dafny Power User:</small><br>
-Working with coinduction, extreme predicates, and ordinals</div></div>
-<div class="authors align-center" data-line="67" style="text-align:center;width:80%;line-adjust:0"><table class="authorrow columns block" data-line="67" style="margin-top:2ex;width:100%;line-adjust:0">
-<tbody><tr><td class="author column" data-line="67" style="text-align:center;line-adjust:0">
-<div class="authorname" data-line="67" style="font-size:large;line-adjust:0"><span data-line="67"></span>K. Rustan M. Leino and Jean-Baptiste Tristan</div></td></tr></tbody></table></div>
-<div class="titlefooter align-center" data-line="76" style="text-align:center;margin-top:0.5ex;line-adjust:0"><span data-line="76"></span>Manuscript KRML 285, 19 February 2023</div></div>
-<div class="abstract" data-line="64" style="margin-left:3em;margin-right:3em;font-size:small">
-<p class="p noindent" data-line="65"><span data-line="65"></span><strong class="strong-star2">Abstract.</strong><span data-line="65"></span> This note is a tutorial case study that formalizes and
+<p class="p noindent" data-line="65"><span data-line="65"></span><span data-line="65"></span> This blog post is a tutorial case study that formalizes and
 proves a simple result in abstract interpretation, with applications
 in compilation and program analysis.  The formalization uses several
 advanced features in Dafny, including coinductive datatypes and least
@@ -342,7 +330,7 @@ introduce along with some basic results in fixpoint theory.  The
 presentation is aimed at users who have little or no prior experience
 with these features in Dafny, or who may be users of such features in
 other proof assistants.</p></div><h2 id="sec-overview" class="h1" data-line="76" data-heading-depth="1" style="display:block"><span data-line="76"></span><span class="heading-before"><span class="heading-label">0</span>.&#8194;</span><span data-line="76"></span>Introduction</h2>
-<p class="p noindent" data-line="78"><span data-line="78"></span>The purpose of this note is to show the use of two advanced features
+<p class="p noindent" data-line="78"><span data-line="78"></span>The purpose of this tutorial is to show the use of two advanced features
 in Dafny: coinductive datatypes and extreme predicates.  We do this by
 considering a concrete problem that is of importance in compiler
 construction and static analysis of programs and whose solution is an
