@@ -56,15 +56,20 @@ module M1 {
 
 module M2 {
 
+  function Sum(x: int): nat
+  {
+    if x <= 0 then 0 else x + Sum(x-1)
+  }
+
+}
+
+module M3 {
+
   import opened M0
   import opened M1
+  import opened M2
 
   trait {:termination false} InsertionSort<T(==)> extends Comparable<T>, Measurable<T>, Sorted<T> {
-
-    function Sum(x: int): nat
-    {
-      if x <= 0 then 0 else x + Sum(x-1)
-    }
 
     method InsertionSort(a: array<T>)
       modifies a, this
@@ -107,11 +112,11 @@ module M2 {
 
 }
 
-module M3 {
+module M4 {
 
   import opened M0
   import opened M1
-  import opened M2
+  import opened M3
 
   class Sort<T(==)> extends InsertionSort<T> {
 
@@ -133,12 +138,12 @@ module M3 {
 
 }
 
-module M4 {
+module M5 {
 
   import opened M0
   import opened M1
-  import opened M2
   import opened M3
+  import opened M4
 
   method Main()
   {

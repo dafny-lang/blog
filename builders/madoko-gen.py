@@ -16,7 +16,8 @@ src_location = 'assets/src/'
 
 madoko = which('madoko')
 if madoko is None:
-    print('Executable madoko not in PATH')
+    print('madoko could not be found')
+    print('Please install madoko (npm install madoko -g)')
     exit()
 
 dafny = which('dafny')
@@ -108,7 +109,7 @@ def GenHTML(MDKfile):
             dmodule = dmodule.split('/')
             DFYfile = dmodule[0]
             if not DFYfile in modules:
-                modules[DFYfile] = loadDafny(src_location + 'insertion-sort/' + DFYfile + '.dfy')
+                modules[DFYfile] = loadDafny(src_location + path_mdk.stem + '/' + DFYfile + '.dfy')
             dmodule = dmodule[1]
             if dmodule in modules[DFYfile]:
                 file_out.write('\n``` dafny \n')
