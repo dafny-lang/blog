@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="generator" content="Madoko, version 1.2.3" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <style type="text/css"  class="link">
+  /*# sourceURL=madoko.css */
+  
+  .madoko .toc>.tocblock .tocblock .tocblock {
+    margin-left: 2.25em;
+  }
+  .madoko .toc>.tocblock .tocblock {
+    margin-left: 1.5em;
+  }
+  .madoko .toc-contents>.tocblock>.tocitem {
+    font-weight: bold;
+  }
+  .madoko .toc {
+    margin-top: 1em;
+  }
+  .madoko p.para-continue {
+    margin-bottom: 0pt;
+  }
+  .madoko .para-block+p {
+    margin-top: 0pt;
+  }
+  .madoko ul.para-block, .madoko ol.para-block {
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+  }
+  .madoko ul.para-end, .madoko ol.para-end {
+    margin-bottom: 1em;
+  }
+  .madoko dl {
+    margin-left: 0em;
+  }
+  .madoko blockquote {
+    font-style: italic;
+  }
+  .madoko a.localref {
+    text-decoration: none;
+  }
+  .madoko a.localref:hover {
+    text-decoration: underline;
+  }
+  .madoko .footnotes {
+    font-size: smaller;
+    margin-top: 2em;
+  }
+  .madoko .footnotes hr {
+    width: 50%;
+    text-align: left;
+  }
+  .madoko .footnote {
+    margin-left: 1em;
+  }
+  .madoko .footnote-before {
+    margin-left: -1em;
+    width: 1em;
+    display: inline-block;
+  }
+  .madoko .align-center, .madoko .align-center>p {
+    text-align: center !important;
+  }
+  .madoko .align-center pre {
+    text-align: left;
+  }
+  .madoko .align-center>* {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-left, .madoko .align-left>p {
+    text-align: left !important;
+  }
+  .madoko .align-left>* {
+    margin-left: 0pt !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-right, .madoko .align-right>p {
+    text-align: right !important;
+  }
+  .madoko .align-right>* {
+    margin-left: auto !important;
+    margin-right: 0pt !important;
+  }
+  .madoko .align-center>table,
+  .madoko .align-left>table,
+  .madoko .align-right>table {
+    text-align: left !important;
+  }
+  .madoko .equation-before {
+    float: right;
+  }
+  .madoko .bibitem {
+    font-size: smaller;
+  }
+  .madoko .bibsearch {
+    font-size: x-small;
+    text-decoration:none;
+    color: black;
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  .madoko .block, .madoko .figure, .madoko .bibitem, .madoko .equation, .madoko div.math {
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .figure {
+    padding: 0.5em;
+    margin-left: 0pt;
+    margin-right: 0pt;
+  }
+  .madoko .hidden {
+    display: none;
+  }
+  .madoko .invisible {
+    visibility: hidden;
+  }
+  .madoko.preview .invisible {
+    visibility: visible;
+    opacity: 0.5;
+  }
+  .madoko code.code, .madoko span.code {
+    white-space: pre-wrap;
+  }
+  .madoko hr, hr.madoko {
+    border: none;
+    border-bottom: black solid 1px;
+    margin-bottom: 0.5ex;
+  }
+  .madoko .framed>*:first-child {
+    margin-top: 0pt;
+  }
+  .madoko .framed>*:last-child {
+    margin-bottom: 0pt;
+  }
+  .madoko ul.list-style-type-dash {
+      list-style-type: none !important;
+  }
+  .madoko ul.list-style-type-dash > li:before {
+      content: "\2013";
+      position: absolute;
+      margin-left: -1em;
+  }
+  .madoko table.madoko {
+    border-collapse: collapse;
+  }
+  .madoko td, .madoko th {
+    padding: 0ex 0.5ex;
+    margin: 0pt;
+    vertical-align: top;
+  }
+  .madoko .cell-border-left {
+    border-left: 1px solid black;
+  }
+  .madoko .cell-border-right {
+    border-right: 1px solid black;
+  }
+  .madoko thead>tr:first-child>.cell-line,
+  .madoko tbody:first-child>tr:first-child>.cell-line {
+    border-top: 1px solid black;
+    border-bottom: none;
+  }
+  .madoko .cell-line, .madoko .cell-double-line {
+    border-bottom: 1px solid black;
+    border-top: none;
+  }
+  .madoko .cell-double-line {
+    border-top: 1px solid black;
+    padding-top: 1.5px !important;
+  }
+  .madoko .input-mathpre .MathJax_Display {
+    text-align: left !important;
+  }
+  .madoko div.input-mathpre {
+    text-align: left;
+    margin-top: 1.5ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .math-rendering {
+    text-align: left;
+    white-space: pre;
+    color: gray;
+  }
+  .madoko .mathdisplay {
+    text-align: center;
+  }
+  .madoko span.math-rendering {
+    display:inline-block;
+    width:8em;
+    overflow-x:auto;
+    font-size:70%;
+  }
+  .madoko span.math-rendering::-webkit-scrollbar {
+    width:4px;
+  }
+  .madoko .pretty table {
+    border-collapse: collapse;
+  }
+  .madoko .pretty td {
+    padding: 0em;
+  }
+  .madoko .pretty td.empty {
+    min-width: 1.5ex;
+  }
+  .madoko .pretty td.expander {
+    width: 100em;
+  }
+  body.madoko, .madoko .serif {
+    font-family: Cambria,"Times New Roman","Liberation Serif","Times",serif;
+  }
+  .madoko .sans-serif {
+    font-family: "Calibri", "Optima", sans-serif;
+  }
+  .madoko .symbol {
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  body.madoko {
+    -webkit-text-size-adjust: 100%;       
+    text-rendering: optimizeLegibility;
+  }
+  body.madoko {
+    max-width: 88ex; 
+    margin: 1em auto;
+    padding: 0em 2em;
+  }
+  body.preview.madoko {
+    padding: 0em 1em;
+  }
+  .madoko p {
+    text-align: justify;
+  }
+  .madoko h1, .madoko h2, .madoko h3, .madoko h4 {
+    margin-top: 1.22em;
+    margin-bottom: 1ex;
+  }
+  .madoko h1+p, .madoko h2+p, .madoko h3+p, .madoko h4+p, .madoko h5+p  {
+    margin-top: 1ex;
+  }
+  .madoko h5, .madoko h6 {
+    margin-top: 1ex;
+    font-size: 1em;
+  }
+  .madoko h5 {
+    margin-bottom: 0.5ex;
+  }
+  .madoko h5 + p {
+    margin-top: 0.5ex;
+  }
+  .madoko h6 {
+    margin-bottom: 0pt;
+  }
+  .madoko h6 + p {
+    margin-top: 0pt;
+  }
+  .madoko pre, .madoko code, .madoko kbd, .madoko samp, .madoko tt,
+  .madoko .monospace, .madoko .token-indent, .madoko .reveal pre, .madoko .reveal code, .madoko .email {
+    font-family: Consolas,"Andale Mono WT","Andale Mono",Lucida Console,Monaco,monospace,monospace;
+    font-size: 0.85em;
+  }
+  .madoko pre code, .madoko .token-indent {
+    font-size: 0.95em;
+  }
+  .madoko pre code {
+    font-family: inherit !important;
+  }
+  .madoko ol.linenums li {
+    background-color: white;
+    list-style-type: decimal;
+  }
+  .madoko .remote {
+    background-color: #F0FFF0;
+  }
+  .madoko .remote + * {
+    margin-top: 0pt;
+  }
+  @media print {
+    body.madoko {
+      font-size: 10pt;
+    }
+    @page {
+      margin: 1in 1.5in;
+    }
+  }
+  @media only screen and (max-device-width:1024px) {
+    body.madoko {
+      padding: 0em 0.5em;
+    }
+    .madoko li {
+      text-align: left;
+    }
+  }
+  
+    </style>
+  
+  </head>
+<body class="madoko">
+
+<div class="body madoko" style="line-adjust:0">
+<h2 id="sec-one" class="h1" data-line="7" data-heading-depth="1" style="display:block"><span data-line="7"></span><span class="heading-before"><span class="heading-label">1</span>.&#8194;</span><span data-line="7"></span>One</h2><!-- inline-dafny Unverified/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="11" data-line-first="12" style="display:block"><code data-line="12">  <span style="color:blue">method</span> {<span style="color:purple">:verify</span> <span style="color:blue">false</span>} InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+  {
+    for i <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span> to a.Length
+    {
+      <span style="color:blue">var</span> minValue <span style="color:blue">:=</span> a[i];
+      <span style="color:blue">var</span> minPos <span style="color:blue">:=</span> i;
+      for j <span style="color:blue">:=</span> i + <span class="constant" style="color:purple">1</span> to a.Length
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue <span style="color:blue">:=</span> a[j];
+          minPos <span style="color:blue">:=</span> j;
+        }
+      }
+      <span style="color:blue">if</span> i != minPos {
+        a[i], a[minPos] <span style="color:blue">:=</span> minValue, a[i];
+      }
+    }
+  }</code></pre><!-- inline-dafny Unverified/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="35" data-line-first="36" style="display:block"><code data-line="36">  <span style="color:blue">method</span> Main()
+  {
+    <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
+    a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
+    InsertionSort(a);
+    <span style="color:blue">print</span> a[..];
+  }
+
+}</code></pre><h2 id="sec-two" class="h1" data-line="48" data-heading-depth="1" style="display:block"><span data-line="48"></span><span class="heading-before"><span class="heading-label">2</span>.&#8194;</span><span data-line="48"></span>Two</h2><!-- inline-dafny VerifiedInt/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="52" data-line-first="53" style="display:block"><code data-line="53">  <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+    <span style="color:purple">reads</span> a
+    <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+  {
+    <span style="color:blue">forall</span> i: <span style="color:teal">nat</span> :: <span class="constant" style="color:purple">0</span> &lt; left &lt;= i &lt; right ==&gt; a[i-<span class="constant" style="color:purple">1</span>] &lt;= a[i]
+  }</code></pre><!-- inline-dafny VerifiedInt/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="64" data-line-first="65" style="display:block"><code data-line="65">  twostate <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+    <span style="color:purple">reads</span> a
+    <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+  {
+    <span style="color:teal">multiset</span>(a[left..right]) == <span style="color:teal">multiset</span>(<span style="color:blue">old</span>(a[left..right]))
+  }</code></pre><!-- inline-dafny VerifiedInt/M3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="76" data-line-first="77" style="display:block"><code data-line="77">  twostate <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">reads</span> a
+  {
+    Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length) &amp;&amp; Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+  }</code></pre><!-- inline-dafny VerifiedInt/M4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="87" data-line-first="88" style="display:block"><code data-line="88">  <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">modifies</span> a
+    <span style="color:purple">ensures</span> Sorted(a)
+  {
+    for i <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span> to a.Length
+      <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+      <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+    {
+      <span style="color:blue">var</span> minValue <span style="color:blue">:=</span> a[i];
+      <span style="color:blue">var</span> minPos <span style="color:blue">:=</span> i;
+      for j <span style="color:blue">:=</span> i + <span class="constant" style="color:purple">1</span> to a.Length
+        <span style="color:purple">invariant</span> minPos &lt; a.Length
+        <span style="color:purple">invariant</span> a[minPos] == minValue
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue <span style="color:blue">:=</span> a[j];
+          minPos <span style="color:blue">:=</span> j;
+        }
+      }
+      <span style="color:blue">if</span> i != minPos {
+        a[i], a[minPos] <span style="color:blue">:=</span> minValue, a[i];
+      }
+    }
+  }
+
+}</code></pre><h2 id="sec-three" class="h1" data-line="117" data-heading-depth="1" style="display:block"><span data-line="117"></span><span class="heading-before"><span class="heading-label">3</span>.&#8194;</span><span data-line="117"></span>Three</h2><!-- inline-dafny VerifiedAbstract/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="121" data-line-first="122" style="display:block"><code data-line="122">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} Comparable&lt;T(==)&gt; {
+
+    <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span>
+
+  }</code></pre><!-- inline-dafny VerifiedAbstract/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="132" data-line-first="133" style="display:block"><code data-line="133">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+
+    <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+      <span style="color:purple">reads</span> a
+      <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+    {
+      <span style="color:blue">forall</span> i: <span style="color:teal">nat</span> :: <span class="constant" style="color:purple">0</span> &lt; left &lt;= i &lt; right ==&gt; Lt(a[i-<span class="constant" style="color:purple">1</span>],a[i]) || a[i-<span class="constant" style="color:purple">1</span>] == a[i]
+    }
+
+    twostate <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+      <span style="color:purple">reads</span> a
+      <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+    {
+      <span style="color:teal">multiset</span>(a[left..right]) == <span style="color:teal">multiset</span>(<span style="color:blue">old</span>(a[left..right]))
+    }
+
+    twostate <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;T&gt;)
+      <span style="color:purple">reads</span> a
+    {
+      Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length) &amp;&amp; Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+    }
+
+  }</code></pre><!-- inline-dafny VerifiedAbstract/M3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="161" data-line-first="162" style="display:block"><code data-line="162">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
+
+    <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
+      <span style="color:purple">modifies</span> a
+      <span style="color:purple">ensures</span> Sorted(a)
+    {
+      for i <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span> to a.Length
+        <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+        <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+      {
+        <span style="color:blue">var</span> minValue <span style="color:blue">:=</span> a[i];
+        <span style="color:blue">var</span> minPos <span style="color:blue">:=</span> i;
+        for j <span style="color:blue">:=</span> i + <span class="constant" style="color:purple">1</span> to a.Length
+          <span style="color:purple">invariant</span> minPos &lt; a.Length
+          <span style="color:purple">invariant</span> a[minPos] == minValue
+        {
+          <span style="color:blue">if</span> Lt(a[j], minValue) {
+            minValue <span style="color:blue">:=</span> a[j];
+            minPos <span style="color:blue">:=</span> j;
+          }
+        }
+        <span style="color:blue">if</span> i != minPos {
+          a[i], a[minPos] <span style="color:blue">:=</span> minValue, a[i];
+        }
+      }
+    }
+
+  }</code></pre><!-- inline-dafny VerifiedAbstract/M4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="195" data-line-first="196" style="display:block"><code data-line="196">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+
+    const CMP: (T,T) -&gt; <span style="color:teal">bool</span>
+
+    <span style="color:blue">constructor</span>(cmp: (T,T) -&gt; <span style="color:teal">bool</span>)
+      <span style="color:purple">ensures</span> CMP == cmp
+    {
+      CMP <span style="color:blue">:=</span> cmp;
+    }
+
+    <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span> {
+      CMP(x,y)
+    }
+
+  }</code></pre><!-- inline-dafny VerifiedAbstract/M5 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="216" data-line-first="217" style="display:block"><code data-line="217">  <span style="color:blue">method</span> Main()
+  {
+    <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
+    a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
+    <span style="color:blue">var</span> Sort <span style="color:blue">:=</span> <span style="color:blue">new</span> Sort((x: <span style="color:teal">int</span>, y: <span style="color:teal">int</span>) =&gt; x &lt; y);
+    Sort.InsertionSort(a);
+    <span style="color:blue">print</span> a[..];
+  }
+
+}</code></pre><h2 id="sec-four" class="h1" data-line="230" data-heading-depth="1" style="display:block"><span data-line="230"></span><span class="heading-before"><span class="heading-label">4</span>.&#8194;</span><span data-line="230"></span>Four</h2><!-- inline-dafny Complexity/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="234" data-line-first="235" style="display:block"><code data-line="235">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+
+    <span style="color:blue">ghost</span> <span style="color:blue">var</span> comparisonCount: <span style="color:teal">nat</span>
+
+    <span style="color:blue">method</span> Ltm(x: T, y: T) <span style="color:blue">returns</span> (b: <span style="color:teal">bool</span>)
+      <span style="color:purple">modifies</span> <span style="color:blue">this</span>`comparisonCount
+      <span style="color:purple">ensures</span> b ==&gt; Lt(x,y)
+      <span style="color:purple">ensures</span> comparisonCount == <span style="color:blue">old</span>(comparisonCount) + <span class="constant" style="color:purple">1</span>
+    {
+      comparisonCount <span style="color:blue">:=</span> comparisonCount + <span class="constant" style="color:purple">1</span>;
+      b <span style="color:blue">:=</span> Lt(x,y);
+    }
+
+  }</code></pre><!-- inline-dafny Complexity/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="254" data-line-first="255" style="display:block"><code data-line="255">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
+
+    <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
+    {
+      <span style="color:blue">if</span> x &lt;= <span class="constant" style="color:purple">0</span> <span style="color:blue">then</span> <span class="constant" style="color:purple">0</span> <span style="color:blue">else</span> x + Sum(x-<span class="constant" style="color:purple">1</span>)
+    }
+
+    <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
+      <span style="color:purple">modifies</span> a, <span style="color:blue">this</span>
+      <span style="color:purple">requires</span> comparisonCount == <span class="constant" style="color:purple">0</span>
+      <span style="color:purple">ensures</span> Sorted(a)
+      <span style="color:purple">ensures</span> comparisonCount &lt;= a.Length * a.Length
+    {
+
+      for i <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span> to a.Length
+        <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+        <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+        <span style="color:purple">invariant</span> comparisonCount == i * a.Length - Sum(i)
+      {
+        <span style="color:blue">var</span> minValue <span style="color:blue">:=</span> a[i];
+        <span style="color:blue">var</span> minPos <span style="color:blue">:=</span> i;
+        <span style="color:blue">assert</span> comparisonCount == i * a.Length - Sum(i) + (i + <span class="constant" style="color:purple">1</span> - i) - <span class="constant" style="color:purple">1</span>;
+        for j <span style="color:blue">:=</span> i + <span class="constant" style="color:purple">1</span> to a.Length
+          <span style="color:purple">invariant</span> minPos &lt; a.Length
+          <span style="color:purple">invariant</span> a[minPos] == minValue
+          <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+          <span style="color:purple">invariant</span> comparisonCount == i * a.Length - Sum(i) + (j - i) - <span class="constant" style="color:purple">1</span>
+        {
+          <span style="color:blue">label</span> L:
+          <span style="color:blue">var</span> cmp <span style="color:blue">:=</span> Ltm(a[j], minValue);
+          <span style="color:blue">assert</span> a[..] == <span style="color:blue">old</span>@L(a[..]);
+          <span style="color:blue">if</span> cmp {
+            minValue <span style="color:blue">:=</span> a[j];
+            minPos <span style="color:blue">:=</span> j;
+          }
+          <span style="color:blue">assert</span>(i * a.Length - Sum(i) + (j - i) - <span class="constant" style="color:purple">1</span>) + <span class="constant" style="color:purple">1</span> == i * a.Length - Sum(i) + ((j + <span class="constant" style="color:purple">1</span>) - i) - <span class="constant" style="color:purple">1</span>;
+        }
+        <span style="color:blue">if</span> i != minPos {
+          a[i], a[minPos] <span style="color:blue">:=</span> minValue, a[i];
+        }
+        <span style="color:blue">assert</span> comparisonCount == (i+<span class="constant" style="color:purple">1</span>) * a.Length - Sum(i+<span class="constant" style="color:purple">1</span>);
+      }
+    }
+
+  }</code></pre><!-- inline-dafny Complexity/M3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="305" data-line-first="306" style="display:block"><code data-line="306">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+
+    const CMP: (T,T) -&gt; <span style="color:teal">bool</span>
+
+    <span style="color:blue">constructor</span>(cmp: (T,T) -&gt; <span style="color:teal">bool</span>)
+      <span style="color:purple">ensures</span> CMP == cmp
+      <span style="color:purple">ensures</span> comparisonCount == <span class="constant" style="color:purple">0</span>
+    {
+      CMP <span style="color:blue">:=</span> cmp;
+      comparisonCount <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span>;
+    }
+
+    <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span> {
+      CMP(x,y)
+    }
+
+  }</code></pre><!-- inline-dafny Complexity/M4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="328" data-line-first="329" style="display:block"><code data-line="329">  <span style="color:blue">method</span> Main()
+  {
+    <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
+    a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
+    <span style="color:blue">var</span> Sort <span style="color:blue">:=</span> <span style="color:blue">new</span> Sort((x: <span style="color:teal">int</span>, y: <span style="color:teal">int</span>) =&gt; x &lt; y);
+    Sort.InsertionSort(a);
+    <span style="color:blue">print</span> a[..];
+  }
+
+}</code></pre><span data-line=""></span></div>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+
+Colorizer     : dafnyx
+
+# One
+
+<!-- inline-dafny Unverified/M1 -->
+
+<!-- inline-dafny Unverified/M2 -->
+
+# Two
+
+<!-- inline-dafny VerifiedInt/M1 -->
+
+<!-- inline-dafny VerifiedInt/M2 -->
+
+<!-- inline-dafny VerifiedInt/M3 -->
+
+<!-- inline-dafny VerifiedInt/M4 -->
+
+# Three
+
+<!-- inline-dafny VerifiedAbstract/M1 -->
+
+<!-- inline-dafny VerifiedAbstract/M2 -->
+
+<!-- inline-dafny VerifiedAbstract/M3 -->
+
+<!-- inline-dafny VerifiedAbstract/M4 -->
+
+<!-- inline-dafny VerifiedAbstract/M5 -->
+
+# Four
+
+<!-- inline-dafny Complexity/M1 -->
+
+<!-- inline-dafny Complexity/M2 -->
+
+<!-- inline-dafny Complexity/M3 -->
+
+<!-- inline-dafny Complexity/M4 -->
