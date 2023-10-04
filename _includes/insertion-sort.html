@@ -292,15 +292,29 @@
   
     </style>
   
+  <style>
+    * {
+        font: 400 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-weight: 400;
+      }
+      body.madoko {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .page-content {
+        padding: 0;
+      }
+  </style>
   </head>
 <body class="madoko">
 
 <div class="body madoko" style="line-adjust:0">
-<h2 id="sec-one" class="h1" data-line="7" data-heading-depth="1" style="display:block"><span data-line="7"></span><span class="heading-before"><span class="heading-label">1</span>.&#8194;</span><span data-line="7"></span>One</h2><!-- inline-dafny Unverified/M1 -->
+<h2 id="sec-one" class="h1" data-line="23" data-heading-depth="1" style="display:block"><span data-line="23"></span>One</h2><!-- inline-dafny Unverified/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="11" data-line-first="12" style="display:block"><code data-line="12">  <span style="color:blue">method</span> {<span style="color:purple">:verify</span> <span style="color:blue">false</span>} InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="27" data-line-first="28" style="display:block"><code data-line="28">  <span style="color:blue">method</span> {<span style="color:purple">:verify</span> <span style="color:blue">false</span>} InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
   {
     for i <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span> to a.Length
     {
@@ -321,7 +335,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="35" data-line-first="36" style="display:block"><code data-line="36">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="51" data-line-first="52" style="display:block"><code data-line="52">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
@@ -329,11 +343,11 @@
     <span style="color:blue">print</span> a[..];
   }
 
-}</code></pre><h2 id="sec-two" class="h1" data-line="48" data-heading-depth="1" style="display:block"><span data-line="48"></span><span class="heading-before"><span class="heading-label">2</span>.&#8194;</span><span data-line="48"></span>Two</h2><!-- inline-dafny VerifiedInt/M1 -->
+}</code></pre><h2 id="sec-two" class="h1" data-line="64" data-heading-depth="1" style="display:block"><span data-line="64"></span>Two</h2><!-- inline-dafny VerifiedInt/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="52" data-line-first="53" style="display:block"><code data-line="53">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="68" data-line-first="69" style="display:block"><code data-line="69">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
     <span style="color:purple">reads</span> a
     <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
   {
@@ -342,7 +356,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="64" data-line-first="65" style="display:block"><code data-line="65">  twostate <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="80" data-line-first="81" style="display:block"><code data-line="81">  twostate <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
     <span style="color:purple">reads</span> a
     <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
   {
@@ -351,7 +365,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="76" data-line-first="77" style="display:block"><code data-line="77">  twostate <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="92" data-line-first="93" style="display:block"><code data-line="93">  twostate <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
     <span style="color:purple">reads</span> a
   {
     Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length) &amp;&amp; Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
@@ -359,7 +373,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="87" data-line-first="88" style="display:block"><code data-line="88">  <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="103" data-line-first="104" style="display:block"><code data-line="104">  <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
     <span style="color:purple">modifies</span> a
     <span style="color:purple">ensures</span> Sorted(a)
   {
@@ -384,11 +398,11 @@
     }
   }
 
-}</code></pre><h2 id="sec-three" class="h1" data-line="117" data-heading-depth="1" style="display:block"><span data-line="117"></span><span class="heading-before"><span class="heading-label">3</span>.&#8194;</span><span data-line="117"></span>Three</h2><!-- inline-dafny VerifiedAbstract/M1 -->
+}</code></pre><h2 id="sec-three" class="h1" data-line="133" data-heading-depth="1" style="display:block"><span data-line="133"></span>Three</h2><!-- inline-dafny VerifiedAbstract/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="121" data-line-first="122" style="display:block"><code data-line="122">  <span style="color:blue">trait</span> Comparable&lt;T(==)&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="137" data-line-first="138" style="display:block"><code data-line="138">  <span style="color:blue">trait</span> Comparable&lt;T(==)&gt; {
 
     <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span>
 
@@ -396,7 +410,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="132" data-line-first="133" style="display:block"><code data-line="133">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="148" data-line-first="149" style="display:block"><code data-line="149">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
       <span style="color:purple">reads</span> a
@@ -422,7 +436,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="161" data-line-first="162" style="display:block"><code data-line="162">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="177" data-line-first="178" style="display:block"><code data-line="178">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a
@@ -453,7 +467,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="195" data-line-first="196" style="display:block"><code data-line="196">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="211" data-line-first="212" style="display:block"><code data-line="212">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
 
     const CMP: (T,T) -&gt; <span style="color:teal">bool</span>
 
@@ -471,7 +485,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="216" data-line-first="217" style="display:block"><code data-line="217">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="232" data-line-first="233" style="display:block"><code data-line="233">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
@@ -480,11 +494,11 @@
     <span style="color:blue">print</span> a[..];
   }
 
-}</code></pre><h2 id="sec-four" class="h1" data-line="230" data-heading-depth="1" style="display:block"><span data-line="230"></span><span class="heading-before"><span class="heading-label">4</span>.&#8194;</span><span data-line="230"></span>Four</h2><!-- inline-dafny Complexity/M1 -->
+}</code></pre><h2 id="sec-four" class="h1" data-line="246" data-heading-depth="1" style="display:block"><span data-line="246"></span>Four</h2><!-- inline-dafny Complexity/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="234" data-line-first="235" style="display:block"><code data-line="235">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="250" data-line-first="251" style="display:block"><code data-line="251">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">ghost</span> <span style="color:blue">var</span> comparisonCount: <span style="color:teal">nat</span>
 
@@ -501,14 +515,14 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="254" data-line-first="255" style="display:block"><code data-line="255">  <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="270" data-line-first="271" style="display:block"><code data-line="271">  <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
   {
     <span style="color:blue">if</span> x &lt;= <span class="constant" style="color:purple">0</span> <span style="color:blue">then</span> <span class="constant" style="color:purple">0</span> <span style="color:blue">else</span> x + Sum(x-<span class="constant" style="color:purple">1</span>)
   }</code></pre><!-- inline-dafny Complexity/M3 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="264" data-line-first="265" style="display:block"><code data-line="265">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="280" data-line-first="281" style="display:block"><code data-line="281">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a, <span style="color:blue">this</span>
@@ -551,7 +565,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="310" data-line-first="311" style="display:block"><code data-line="311">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="326" data-line-first="327" style="display:block"><code data-line="327">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
 
     const CMP: (T,T) -&gt; <span style="color:teal">bool</span>
 
@@ -570,7 +584,7 @@
   }</code></pre><!-- inline-dafny Complexity/M5 -->
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="332" data-line-first="333" style="display:block"><code data-line="333">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="348" data-line-first="349" style="display:block"><code data-line="349">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
