@@ -1,13 +1,13 @@
 
 Colorizer     : dafnyx
 
-## One
+# One
 
 <!-- inline-dafny Unverified/M1 -->
 
 <!-- inline-dafny Unverified/M2 -->
 
-## Two
+# Two
 
 <!-- inline-dafny VerifiedInt/M1 -->
 
@@ -17,7 +17,7 @@ Colorizer     : dafnyx
 
 <!-- inline-dafny VerifiedInt/M4 -->
 
-## Three
+# Three
 
 <!-- inline-dafny VerifiedAbstract/M1 -->
 
@@ -29,7 +29,7 @@ Colorizer     : dafnyx
 
 <!-- inline-dafny VerifiedAbstract/M5 -->
 
-## Four
+# Four
 
 <!-- inline-dafny Complexity/M1 -->
 

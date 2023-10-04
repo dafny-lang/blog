@@ -297,7 +297,7 @@
 <body class="madoko">
 
 <div class="body madoko" style="line-adjust:0">
-<h3 id="sec-one" class="h2" data-line="7" data-heading-depth="2" style="display:block"><span data-line="7"></span><span class="heading-before"><span class="heading-label">0.1</span>.&#8194;</span><span data-line="7"></span>One</h3><!-- inline-dafny Unverified/M1 -->
+<h2 id="sec-one" class="h1" data-line="7" data-heading-depth="1" style="display:block"><span data-line="7"></span><span class="heading-before"><span class="heading-label">1</span>.&#8194;</span><span data-line="7"></span>One</h2><!-- inline-dafny Unverified/M1 -->
 
 
 
@@ -330,7 +330,7 @@
     <span style="color:blue">print</span> a[..];
   }
 
-}</code></pre><h3 id="sec-two" class="h2" data-line="48" data-heading-depth="2" style="display:block"><span data-line="48"></span><span class="heading-before"><span class="heading-label">0.2</span>.&#8194;</span><span data-line="48"></span>Two</h3><!-- inline-dafny VerifiedInt/M1 -->
+}</code></pre><h2 id="sec-two" class="h1" data-line="48" data-heading-depth="1" style="display:block"><span data-line="48"></span><span class="heading-before"><span class="heading-label">2</span>.&#8194;</span><span data-line="48"></span>Two</h2><!-- inline-dafny VerifiedInt/M1 -->
 
 
 
@@ -385,11 +385,11 @@
     }
   }
 
-}</code></pre><h3 id="sec-three" class="h2" data-line="117" data-heading-depth="2" style="display:block"><span data-line="117"></span><span class="heading-before"><span class="heading-label">0.3</span>.&#8194;</span><span data-line="117"></span>Three</h3><!-- inline-dafny VerifiedAbstract/M1 -->
+}</code></pre><h2 id="sec-three" class="h1" data-line="117" data-heading-depth="1" style="display:block"><span data-line="117"></span><span class="heading-before"><span class="heading-label">3</span>.&#8194;</span><span data-line="117"></span>Three</h2><!-- inline-dafny VerifiedAbstract/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="121" data-line-first="122" style="display:block"><code data-line="122">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} Comparable&lt;T(==)&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="121" data-line-first="122" style="display:block"><code data-line="122">  <span style="color:blue">trait</span> Comparable&lt;T(==)&gt; {
 
     <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span>
 
@@ -397,7 +397,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="132" data-line-first="133" style="display:block"><code data-line="133">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="132" data-line-first="133" style="display:block"><code data-line="133">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
       <span style="color:purple">reads</span> a
@@ -423,7 +423,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="161" data-line-first="162" style="display:block"><code data-line="162">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="161" data-line-first="162" style="display:block"><code data-line="162">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a
@@ -481,11 +481,11 @@
     <span style="color:blue">print</span> a[..];
   }
 
-}</code></pre><h3 id="sec-four" class="h2" data-line="230" data-heading-depth="2" style="display:block"><span data-line="230"></span><span class="heading-before"><span class="heading-label">0.4</span>.&#8194;</span><span data-line="230"></span>Four</h3><!-- inline-dafny Complexity/M1 -->
+}</code></pre><h2 id="sec-four" class="h1" data-line="230" data-heading-depth="1" style="display:block"><span data-line="230"></span><span class="heading-before"><span class="heading-label">4</span>.&#8194;</span><span data-line="230"></span>Four</h2><!-- inline-dafny Complexity/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="234" data-line-first="235" style="display:block"><code data-line="235">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="234" data-line-first="235" style="display:block"><code data-line="235">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">ghost</span> <span style="color:blue">var</span> comparisonCount: <span style="color:teal">nat</span>
 
@@ -509,7 +509,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="264" data-line-first="265" style="display:block"><code data-line="265">  <span style="color:blue">trait</span> {<span style="color:purple">:termination</span> <span style="color:blue">false</span>} InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="264" data-line-first="265" style="display:block"><code data-line="265">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a, <span style="color:blue">this</span>

@@ -65,12 +65,10 @@ def loadDafny(DFYfile):
             mod_name = None
             nested = False
             continue
-        elif '//////////' in line:
-            continue
         elif 'import opened' in line and not nested:
             continue
         elif mod_name:
-            modules[mod_name] += line
+            modules[mod_name] += line.replace('{:termination false} ','')
         if 'module' in line:
             nested = True
 

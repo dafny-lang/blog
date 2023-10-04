@@ -38,8 +38,8 @@ module M3 {
 
 module M4 {
 
-  import opened M1 
-  import opened M2 
+  import opened M1
+  import opened M2
   import opened M3
 
   method InsertionSort(a: array<int>)
