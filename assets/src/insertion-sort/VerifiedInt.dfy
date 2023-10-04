@@ -1,7 +1,7 @@
 
 module M1 {
 
-  predicate Ordered(a: array<int>, left: nat, right: nat)
+  ghost predicate Ordered(a: array<int>, left: nat, right: nat)
     reads a
     requires left <= right <= a.Length
   {

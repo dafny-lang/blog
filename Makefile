@@ -14,7 +14,7 @@ check:
 
 generate:
 	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
-	python3 builders/madoko-gen.py insertion-sort.mdk --check
+	python3 builders/madoko-gen.py insertion-sort --check
 
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html

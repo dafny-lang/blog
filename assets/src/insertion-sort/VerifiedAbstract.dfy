@@ -14,7 +14,7 @@ module M2 {
 
   trait {:termination false} Sorted<T(==)> extends Comparable<T> {
 
-    predicate Ordered(a: array<T>, left: nat, right: nat)
+    ghost predicate Ordered(a: array<T>, left: nat, right: nat)
       reads a
       requires left <= right <= a.Length
     {

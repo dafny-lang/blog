@@ -17,7 +17,7 @@
     "include",
     "extends","refines","returns","yields",
     "assert","by","assume","reveal","break","then","else","if","label","return","yield",
-    "while","print",
+    "while","print","for",
     "old","allocated","unchanged","forall","exists","new","calc","modify","in","this","fresh",
     "match","case","false","true","null","is"
   ],

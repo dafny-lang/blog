@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en-US">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -334,7 +333,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="52" data-line-first="53" style="display:block"><code data-line="53">  <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="52" data-line-first="53" style="display:block"><code data-line="53">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
     <span style="color:purple">reads</span> a
     <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
   {
@@ -399,7 +398,7 @@
 
 <pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="132" data-line-first="133" style="display:block"><code data-line="133">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
-    <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+    <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
       <span style="color:purple">reads</span> a
       <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
     {

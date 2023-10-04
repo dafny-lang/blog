@@ -13,6 +13,7 @@ with_push = False
 
 mdk_location = 'assets/mdk/'
 src_location = 'assets/src/'
+includes_location = '_includes/'
 
 madoko = which('madoko')
 if madoko is None:
@@ -76,15 +77,15 @@ def loadDafny(DFYfile):
 
     return modules
 
-def GenHTML(MDKfile):
+def GenerateHTMLFromPreMadoko(MDKfile):
 
     if with_debug:
         buff = '\t'
-        print('Creating blog post for',MDKfile)
+        print('Creating blog post for',MDKfile + '.mdk')
 
-    path_mdk = Path(mdk_location + MDKfile)
+    path_mdk = Path(mdk_location + MDKfile + '.mdk')
 
-    if not (path_mdk.is_file() and path_mdk.suffix == '.mdk'):
+    if not (path_mdk.is_file()):
         print('Expected a Madoko file but got', path_mdk)
         exit(1)
 
@@ -123,7 +124,34 @@ def GenHTML(MDKfile):
     if with_debug:
         print(buff,'Running Madoko to generate html from file', path_out)
         
-    subprocess.run([madoko, '--odir=_includes/' ,path_out])
+    subprocess.run([madoko, '--odir=' + includes_location ,path_out])
+
+def PostProcessGeneratedHTML(MDKfile):
+    
+    if with_debug:
+        buff = '\t'
+        print('Postprocessing generated HTML file...')
+
+    path_in = Path(includes_location + MDKfile + '_gen.html')
+    if not (path_in.is_file()):
+        print('Generated HTML does not exist:', path_in)
+        exit(1)    
+    file_in = open(path_in)
+
+    path_out = Path(includes_location + MDKfile + '.html')
+    if with_debug:
+        print(buff,'Inlining code into',path_out)
+    file_out = open(path_out,'w')    
+
+    first = True
+    for line in file_in:    
+        if first:
+            first = False
+            continue
+        file_out.write(line)
+
+    file_in.close()
+    file_out.close()   
 
 if __name__ == "__main__":
 
@@ -140,7 +168,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     globals().update(args.__dict__)
 
-    GenHTML(args.post)
+    GenerateHTMLFromPreMadoko(args.post)
+    PostProcessGeneratedHTML(args.post)
 
     
 
