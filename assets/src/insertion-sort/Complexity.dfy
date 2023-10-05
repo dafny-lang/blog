@@ -56,7 +56,7 @@ module M1 {
 
 module M2 {
 
-  function Sum(x: int): nat
+  ghost function Sum(x: int): nat
   {
     if x <= 0 then 0 else x + Sum(x-1)
   }
