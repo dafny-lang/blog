@@ -4,9 +4,6 @@ Colorizer     : dafnyx
 Heading Depth: 0
 
 Css Header:
-  * {
-    font: 400 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  }
   body.madoko {
     max-width: 100%;
     margin: 0;
@@ -16,21 +13,229 @@ Css Header:
     padding: 0;
   }
 
-# One
+Dafny is a programming language. It should be familiar to anyone with
+experience with languages like Java or C#.  In a nutshell, it is
+characterized by:
+
+- A strong and static type system
+- Class-based object-orientation, with trait-based inheritance
+- Functional programming features and a module system
+
+It comes with standard tools such as a compiler, support for testing
+and test generation, a VSCode IDE extension, support for projects and
+packaging.
+
+There are two characteristics that make Dafny quite different from
+most other programming languages.  First and foremost, Dafny is a
+language designed with formal verification in mind. In Dafny, you can
+annotate your code to mathematically formalize its specification, and
+verify that your code is correct with respect to its specification.
+
+Second, Dafny takes interoperability very seriously. We understand
+that if you have an existing application written in another language,
+the benefits of formal verification don't justify the costs of
+rewriting your application in Dafny. Despite its importance, we will
+not discuss interoperability any further, but this will be the topic
+of other blog posts.
+
+We're going to introduce Dafny and some of its less common concepts
+through a classic example: insertion sort. Ideally, reading through
+will give you a concrete idea of what it feels like to write verified
+software. All you need to follow is some experience with a Java-like
+language  and a vague recollection of insertion sort. 
+
+# An Unverified Implementation of Insertion Sort
+
+Dafny is a full-fledged programming language and you may even want to
+use it if you have no interest in verification whatsoever. In fact,
+writing unverified Dafny program is a good way to get familiarity with
+the language.  Following is one possible implementation of
+insertion sort in Dafny.
 
 <!-- inline-dafny Unverified/M1 -->
 
+Insertion sort is implemented as a method named `InsertionSort` (which
+needs not belong to a class) that takes as a input parameter an array
+of integers `a` of type `array<int>`.  It sorts the array in place
+using two local variables declarations, two nested for loops,
+conditional statements, and assignments. Our method is marked as
+`{:verify false}` because we do not want verification to kick in yet.
+
+Lets write a `Main` method to run our program and check that it works,
+at least on this one example.
+
 <!-- inline-dafny Unverified/M2 -->
 
-# Two
+If you copy and paste these two methods into a file, say `isort.dfy`,
+install dafny, and run `dafny run isort.dfy` on the command line, you
+will see the message:
+
+```
+Dafny program verifier did not attempt verification
+[1, 2, 4]
+```
+
+# Verification of Insertion Sort
+
+Let's now verify our implementation of insertion sort. Before we can
+do the actual verification, we need to specify what we expect of
+insertion sort. First, we need to formalize what it means for an array
+to be ordered.
+
+In English, we might say something like: *Definition: an array is
+ordered if for any non-negative integer value i ranging from 0 to the
+length of the array, excluded, the value at index i is less than the
+value at index i+1*. With more formal notation, we might also say:
+*Definition: an array a of length l is orderd if and only if for all i
+in [0,l), a[i] <= a[i+1]*.
+
+In Dafny, we do not write our specifications in English but instead in
+a formal language. As a first approximation, the formal language is
+that of formal mathematics, in a syntax that closely resembles the
+syntax of Dafny's expressions. In Dafny, such a definition is called a
+`predicate`.
 
 <!-- inline-dafny VerifiedInt/M1 -->
 
+There's a lot to unpack in this example. First note that we define a
+predicate `Ordered` with three typed parameters. The first parameter,
+`a`, is the array. The two extra parameters, `left` and `right` allow
+us to generalize the definition to a sub-range, which will be useful
+later on.
+
+The body of the predicate, `forall i: nat :: 0 < left <= i < right ==>
+a[i-1] <= a[i]`, is the definition itself. This definition is a
+mathematical proposition, as hinted by the keyword `forall`. This
+proposition may or may not be computable.
+
+Our predicate definition is prefixed with the keyword `ghost` to
+indicate that it is meant to be used for specification purposes and
+need not be compiled or be included in the executable. In some cases,
+the keyword may be required if the predicate is truly a non-computable
+mathematical formula.
+
+The two *clauses* that follow the declaration of the predicate are
+relevant to verification. The first clause, `reads a` makes it
+explicit that the predicate reads the array a. This will not play an
+important role in our example, but in general, this is critical
+information to keep reasoning about heap-allocated objects simple and
+modular.
+
+The second clause, `requires left <= right <= a.Length`, is a
+precondition that restricts the definition to values of `left`,
+`right`, and `a.Length` to ones satisfying that precondition. Such
+preconditions are a fundamental feature of Dafny that allow for the
+definition of partial functions. It may not be obvious at first sight,
+but this is highly valuable to writing efficient code, since you can
+define partial functions and ensure statically that they will not be
+used outside of their intended domain of definition, removing any need
+for checking arguments at runtime and making your code throw an
+exception (hint: Dafny does not have exceptions!), or worse, return a
+dummy value.
+
+Our specification of insertion sort is not complete yet. Aside from
+ensuring that the algorithm makes the array ordered, we also need to
+ensure that the values in the array after sorting are the same ones as
+before. More formally, we want to ensure that the multiset of values
+of the array before and after sorting are equal. We capture this
+definition with another predicate, `Preserved`.
+
 <!-- inline-dafny VerifiedInt/M2 -->
+
+This definition introduces a few new interesting concepts. First, the
+expression `multiset(a[left..right])` shows an example use not one but
+two of Dany builtin collection types. The subexpression
+`a[left..right]` transforms the subarray into a *sequence* (or list)
+of values. The expression `multiset(a[left..right])` creates a
+multiset from that sequence. You might think that while this notation
+is conveniently succint, the performance of this code will suffer, but
+remember, this is part of the specification, and this will have no
+impact on the runtime performance of our insertion sort
+implementation.
+
+Second, note that while predicate `Ordered` captures a property that
+is intrinsic to the array, our new predicate is meant to capture a
+relation between the input and the output of insertion
+sort. Therefore, we need to be able to refer to the array both before
+execution of insertion sort and after. This is done thanks to the use
+of the `twostate` prefix that declares that the predicate is a
+relation between a heap-allocated object before and after execution of
+some method, and the expression `old` that refers to the array before
+execution. Other mentions of `a` refer to that array after execution
+of the method.
+
+We can now combine our two predicates into one, `Sorted`, that will be
+the final specification of our implementation.
 
 <!-- inline-dafny VerifiedInt/M3 -->
 
+Now that we are done formalizing our specification, we can revisit our
+implementation of insertion sort and ensures, with mathematical
+certainty, that the code satisfies our specification. To attach the
+specification to the implementation, we annotate the method with a
+clause `ensures Sorted(a)` that establishes that any execution of
+`InsertionSort` should result in an array `a` that satisfies the
+predicate `Sorted`. We call such clause a postcondition.
+
 <!-- inline-dafny VerifiedInt/M4 -->
+
+Note that the verified implementation is quite close to the unverified
+one. One of the fundamental design principles of Dafny is that
+programming and veification should be integrated, and in some cases
+you should be able to reason about your code directly, and not a model
+of it. So, in the same way that the specification is attached to the
+declaration, the verification is done by annotating the body of the
+code. The `modifies a` clause does not play an important role in this
+example and is the dual of the reads clause of our predicates. While
+predicates need to be specific about what heap-allocated values they
+read, methods are usually free to read any heap-allcoated values but
+need to be specific about which ones they modify. Combined, these two
+kinds of clauses make verification of code that works with
+heap-allocated values surprisingly easy.
+
+The body of the method was modified for verification purposes by
+addings four invariant annotations attached to the loops. To
+understand both why we need such annotations, but also why we *only*
+need such annotations, it is useful to have a vague understanging of
+how verification works.
+
+Our verified insertion sort comes with two key ingredients: code and
+specification. To verify that the code meets the spec with
+mathematical certainlty, testing will not do. Instead, the Dafny
+compiler transforms the specification and the code into a mathematical
+formula. If we can prove that this mathematical formula is true, then
+the code satisfies the specification. Otherwise it may or may
+not. Proving such mathematical formula would be a lot of work, so
+Dafny makes use of an *automated theorem prover* (ATP) to prove it on
+your behalf.
+
+Alas, ATPs have fundamental limitations and while they excell at
+proving properties of linear code, they need some help with
+loops. Fundamentally, they need to know of properties that are true
+when the loop start its execution, that remain true after execution of
+the loop, and that imply what needs to be true after execution of the
+loops. This is called an invariant property because it captures what
+does not change despite all the complicated things that happen during
+execution of the loop.
+
+To understand these invariants, you know need to think about what
+insertion sort does and simulate its behavior. At every iteration of
+the outer loop, the assumption is that all values at indices less than
+the current index have been sorted. The inner loop then searches for
+the smallest value in the suffix of the array and this value is
+swapped with the value at the current index of the outer loop. We can
+capture these properties as invariant. The invariants of the outer
+loop indeed state that the array is sorted up to index i, not
+included. Meanhile the invariants of the inner loop capture the
+property that what is currently considered to be the smallest value in
+the suffix of the array is indeed the smallest one we have seen so
+far.
+
+With these invariant annotations, Dafny can verify on its own, in an
+instant, that the body of the method indeed satifies the
+postcondition, which specifices that the array is ordered and contains
+the same values as when the method was called.
+
 
 # Three
 

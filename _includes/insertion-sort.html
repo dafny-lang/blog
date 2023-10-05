@@ -293,11 +293,7 @@
     </style>
   
   <style>
-    * {
-        font: 400 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        font-weight: 400;
-      }
-      body.madoko {
+    body.madoko {
         max-width: 100%;
         margin: 0;
         padding: 0;
@@ -310,11 +306,52 @@
 <body class="madoko">
 
 <div class="body madoko" style="line-adjust:0">
-<h2 id="sec-one" class="h1" data-line="23" data-heading-depth="1" style="display:block"><span data-line="23"></span>One</h2><!-- inline-dafny Unverified/M1 -->
+
+<p class="p noindent" data-line="19"><span data-line="19"></span>Dafny is a programming language. It should be familiar to anyone with
+experience with languages like Java or C<span data-line="20"></span>#<span data-line="20"></span>.  In a nutshell, it is
+characterized by:
+</p>
+<ul class="ul list-dash compact" data-line="23">
+<li class="li ul-li list-dash-li compact-li" data-line="23"><span data-line="23"></span>A strong and static type system
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="24"><span data-line="24"></span>Class-based object-orientation, with trait-based inheritance
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="25"><span data-line="25"></span>Functional programming features and a module system
+</li></ul>
+
+<p class="p noindent" data-line="27"><span data-line="27"></span>It comes with standard tools such as a compiler, support for testing
+and test generation, a VSCode IDE extension, support for projects and
+packaging.
+</p>
+<p class="p indent" data-line="31"><span data-line="31"></span>There are two characteristics that make Dafny quite different from
+most other programming languages.  First and foremost, Dafny is a
+language designed with formal verification in mind. In Dafny, you can
+annotate your code to mathematically formalize its specification, and
+verify that your code is correct with respect to its specification.
+</p>
+<p class="p indent" data-line="37"><span data-line="37"></span>Second, Dafny takes interoperability very seriously. We understand
+that if you have an existing application written in another language,
+the benefits of formal verification don<span data-line="39"></span>&#39;<span data-line="39"></span>t justify the costs of
+rewriting your application in Dafny. Despite its importance, we will
+not discuss interoperability any further, but this will be the topic
+of other blog posts.
+</p>
+<p class="p indent" data-line="44"><span data-line="44"></span>We<span data-line="44"></span>&#39;<span data-line="44"></span>re going to introduce Dafny and some of its less common concepts
+through a classic example: insertion sort. Ideally, reading through
+will give you a concrete idea of what it feels like to write verified
+software. All you need to follow is some experience with a Java-like
+language  and a vague recollection of insertion sort. 
+</p><h2 id="sec-an-unverified-implementation-of-insertion-sort" class="h1" data-line="50" data-heading-depth="1" style="display:block"><span data-line="50"></span>An Unverified Implementation of Insertion Sort</h2>
+<p class="p noindent" data-line="52"><span data-line="52"></span>Dafny is a full-fledged programming language and you may even want to
+use it if you have no interest in verification whatsoever. In fact,
+writing unverified Dafny program is a good way to get familiarity with
+the language.  Following is one possible implementation of
+insertion sort in Dafny.
+</p><!-- inline-dafny Unverified/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="27" data-line-first="28" style="display:block"><code data-line="28">  <span style="color:blue">method</span> {<span style="color:purple">:verify</span> <span style="color:blue">false</span>} InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="60" data-line-first="61" style="display:block"><code data-line="61">  <span style="color:blue">method</span> {<span style="color:purple">:verify</span> <span style="color:blue">false</span>} InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
   {
     for i <span style="color:blue">:=</span> <span class="constant" style="color:purple">0</span> to a.Length
     {
@@ -331,11 +368,21 @@
         a[i], a[minPos] <span style="color:blue">:=</span> minValue, a[i];
       }
     }
-  }</code></pre><!-- inline-dafny Unverified/M2 -->
+  }</code></pre>
+<p class="p noindent para-continued" data-line="82"><span data-line="82"></span>Insertion sort is implemented as a method named <span data-line="82"></span><code class="code code1">InsertionSort</code><span data-line="82"></span> (which
+needs not belong to a class) that takes as a input parameter an array
+of integers <span data-line="84"></span><code class="code code1">a</code><span data-line="84"></span> of type <span data-line="84"></span><code class="code code1">array&lt;int&gt;</code><span data-line="84"></span>.  It sorts the array in place
+using two local variables declarations, two nested for loops,
+conditional statements, and assignments. Our method is marked as
+<span data-line="87"></span><code class="code code1">{:verify false}</code><span data-line="87"></span> because we do not want verification to kick in yet.
+</p>
+<p class="p indent" data-line="89"><span data-line="89"></span>Lets write a <span data-line="89"></span><code class="code code1">Main</code><span data-line="89"></span> method to run our program and check that it works,
+at least on this one example.
+</p><!-- inline-dafny Unverified/M2 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="51" data-line-first="52" style="display:block"><code data-line="52">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="94" data-line-first="95" style="display:block"><code data-line="95">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
@@ -343,37 +390,137 @@
     <span style="color:blue">print</span> a[..];
   }
 
-}</code></pre><h2 id="sec-two" class="h1" data-line="64" data-heading-depth="1" style="display:block"><span data-line="64"></span>Two</h2><!-- inline-dafny VerifiedInt/M1 -->
+}</code></pre>
+<p class="p noindent para-continued" data-line="107"><span data-line="107"></span>If you copy and paste these two methods into a file, say <span data-line="107"></span><code class="code code1">isort.dfy</code><span data-line="107"></span>,
+install dafny, and run <span data-line="108"></span><code class="code code1">dafny run isort.dfy</code><span data-line="108"></span> on the command line, you
+will see the message:
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="111" data-line-first="112" style="display:block"><code data-line="112">Dafny program verifier did not attempt verification
+[1, 2, 4]</code></pre><h2 id="sec-verification-of-insertion-sort" class="h1" data-line="116" data-heading-depth="1" style="display:block"><span data-line="116"></span>Verification of Insertion Sort</h2>
+<p class="p noindent" data-line="118"><span data-line="118"></span>Let<span data-line="118"></span>&#39;<span data-line="118"></span>s now verify our implementation of insertion sort. Before we can
+do the actual verification, we need to specify what we expect of
+insertion sort. First, we need to formalize what it means for an array
+to be ordered.
+</p>
+<p class="p indent" data-line="123"><span data-line="123"></span>In English, we might say something like: <span data-line="123"></span><em class="em-star1">Definition: an array is
+ordered if for any non-negative integer value i ranging from 0 to the
+length of the array, excluded, the value at index i is less than the
+value at index i+1</em><span data-line="126"></span>. With more formal notation, we might also say:
+<span data-line="127"></span><em class="em-star1">Definition: an array a of length l is orderd if and only if for all i
+in [0,l), a[i] &lt;= a[i+1]</em><span data-line="128"></span>.
+</p>
+<p class="p indent" data-line="130"><span data-line="130"></span>In Dafny, we do not write our specifications in English but instead in
+a formal language. As a first approximation, the formal language is
+that of formal mathematics, in a syntax that closely resembles the
+syntax of Dafny<span data-line="133"></span>&#39;<span data-line="133"></span>s expressions. In Dafny, such a definition is called a
+<span data-line="134"></span><code class="code code1">predicate</code><span data-line="134"></span>.
+</p><!-- inline-dafny VerifiedInt/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="68" data-line-first="69" style="display:block"><code data-line="69">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="138" data-line-first="139" style="display:block"><code data-line="139">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
     <span style="color:purple">reads</span> a
     <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
   {
     <span style="color:blue">forall</span> i: <span style="color:teal">nat</span> :: <span class="constant" style="color:purple">0</span> &lt; left &lt;= i &lt; right ==&gt; a[i-<span class="constant" style="color:purple">1</span>] &lt;= a[i]
-  }</code></pre><!-- inline-dafny VerifiedInt/M2 -->
+  }</code></pre>
+<p class="p noindent para-continued" data-line="148"><span data-line="148"></span>There<span data-line="148"></span>&#39;<span data-line="148"></span>s a lot to unpack in this example. First note that we define a
+predicate <span data-line="149"></span><code class="code code1">Ordered</code><span data-line="149"></span> with three typed parameters. The first parameter,
+<span data-line="150"></span><code class="code code1">a</code><span data-line="150"></span>, is the array. The two extra parameters, <span data-line="150"></span><code class="code code1">left</code><span data-line="150"></span> and <span data-line="150"></span><code class="code code1">right</code><span data-line="150"></span> allow
+us to generalize the definition to a sub-range, which will be useful
+later on.
+</p>
+<p class="p indent" data-line="154"><span data-line="154"></span>The body of the predicate, <span data-line="154"></span><code class="code code1">forall i: nat :: 0 &lt; left &lt;= i &lt; right ==&gt;
+a[i-1] &lt;= a[i]</code><span data-line="155"></span>, is the definition itself. This definition is a
+mathematical proposition, as hinted by the keyword <span data-line="156"></span><code class="code code1">forall</code><span data-line="156"></span>. This
+proposition may or may not be computable.
+</p>
+<p class="p indent" data-line="159"><span data-line="159"></span>Our predicate definition is prefixed with the keyword <span data-line="159"></span><code class="code code1">ghost</code><span data-line="159"></span> to
+indicate that it is meant to be used for specification purposes and
+need not be compiled or be included in the executable. In some cases,
+the keyword may be required if the predicate is truly a non-computable
+mathematical formula.
+</p>
+<p class="p indent" data-line="165"><span data-line="165"></span>The two <span data-line="165"></span><em class="em-star1">clauses</em><span data-line="165"></span> that follow the declaration of the predicate are
+relevant to verification. The first clause, <span data-line="166"></span><code class="code code1">reads a</code><span data-line="166"></span> makes it
+explicit that the predicate reads the array a. This will not play an
+important role in our example, but in general, this is critical
+information to keep reasoning about heap-allocated objects simple and
+modular.
+</p>
+<p class="p indent" data-line="172"><span data-line="172"></span>The second clause, <span data-line="172"></span><code class="code code1">requires left &lt;= right &lt;= a.Length</code><span data-line="172"></span>, is a
+precondition that restricts the definition to values of <span data-line="173"></span><code class="code code1">left</code><span data-line="173"></span>,
+<span data-line="174"></span><code class="code code1">right</code><span data-line="174"></span>, and <span data-line="174"></span><code class="code code1">a.Length</code><span data-line="174"></span> to ones satisfying that precondition. Such
+preconditions are a fundamental feature of Dafny that allow for the
+definition of partial functions. It may not be obvious at first sight,
+but this is highly valuable to writing efficient code, since you can
+define partial functions and ensure statically that they will not be
+used outside of their intended domain of definition, removing any need
+for checking arguments at runtime and making your code throw an
+exception (hint: Dafny does not have exceptions!), or worse, return a
+dummy value.
+</p>
+<p class="p indent" data-line="184"><span data-line="184"></span>Our specification of insertion sort is not complete yet. Aside from
+ensuring that the algorithm makes the array ordered, we also need to
+ensure that the values in the array after sorting are the same ones as
+before. More formally, we want to ensure that the multiset of values
+of the array before and after sorting are equal. We capture this
+definition with another predicate, <span data-line="189"></span><code class="code code1">Preserved</code><span data-line="189"></span>.
+</p><!-- inline-dafny VerifiedInt/M2 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="80" data-line-first="81" style="display:block"><code data-line="81">  twostate <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="193" data-line-first="194" style="display:block"><code data-line="194">  twostate <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
     <span style="color:purple">reads</span> a
     <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
   {
     <span style="color:teal">multiset</span>(a[left..right]) == <span style="color:teal">multiset</span>(<span style="color:blue">old</span>(a[left..right]))
-  }</code></pre><!-- inline-dafny VerifiedInt/M3 -->
+  }</code></pre>
+<p class="p noindent para-continued" data-line="203"><span data-line="203"></span>This definition introduces a few new interesting concepts. First, the
+expression <span data-line="204"></span><code class="code code1">multiset(a[left..right])</code><span data-line="204"></span> shows an example use not one but
+two of Dany builtin collection types. The subexpression
+<span data-line="206"></span><code class="code code1">a[left..right]</code><span data-line="206"></span> transforms the subarray into a <span data-line="206"></span><em class="em-star1">sequence</em><span data-line="206"></span> (or list)
+of values. The expression <span data-line="207"></span><code class="code code1">multiset(a[left..right])</code><span data-line="207"></span> creates a
+multiset from that sequence. You might think that while this notation
+is conveniently succint, the performance of this code will suffer, but
+remember, this is part of the specification, and this will have no
+impact on the runtime performance of our insertion sort
+implementation.
+</p>
+<p class="p indent" data-line="214"><span data-line="214"></span>Second, note that while predicate <span data-line="214"></span><code class="code code1">Ordered</code><span data-line="214"></span> captures a property that
+is intrinsic to the array, our new predicate is meant to capture a
+relation between the input and the output of insertion
+sort. Therefore, we need to be able to refer to the array both before
+execution of insertion sort and after. This is done thanks to the use
+of the <span data-line="219"></span><code class="code code1">twostate</code><span data-line="219"></span> prefix that declares that the predicate is a
+relation between a heap-allocated object before and after execution of
+some method, and the expression <span data-line="221"></span><code class="code code1">old</code><span data-line="221"></span> that refers to the array before
+execution. Other mentions of <span data-line="222"></span><code class="code code1">a</code><span data-line="222"></span> refer to that array after execution
+of the method.
+</p>
+<p class="p indent" data-line="225"><span data-line="225"></span>We can now combine our two predicates into one, <span data-line="225"></span><code class="code code1">Sorted</code><span data-line="225"></span>, that will be
+the final specification of our implementation.
+</p><!-- inline-dafny VerifiedInt/M3 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="92" data-line-first="93" style="display:block"><code data-line="93">  twostate <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="230" data-line-first="231" style="display:block"><code data-line="231">  twostate <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
     <span style="color:purple">reads</span> a
   {
     Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length) &amp;&amp; Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
-  }</code></pre><!-- inline-dafny VerifiedInt/M4 -->
+  }</code></pre>
+<p class="p noindent para-continued" data-line="239"><span data-line="239"></span>Now that we are done formalizing our specification, we can revisit our
+implementation of insertion sort and ensures, with mathematical
+certainty, that the code satisfies our specification. To attach the
+specification to the implementation, we annotate the method with a
+clause <span data-line="243"></span><code class="code code1">ensures Sorted(a)</code><span data-line="243"></span> that establishes that any execution of
+<span data-line="244"></span><code class="code code1">InsertionSort</code><span data-line="244"></span> should result in an array <span data-line="244"></span><code class="code code1">a</code><span data-line="244"></span> that satisfies the
+predicate <span data-line="245"></span><code class="code code1">Sorted</code><span data-line="245"></span>. We call such clause a postcondition.
+</p><!-- inline-dafny VerifiedInt/M4 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="103" data-line-first="104" style="display:block"><code data-line="104">  <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="249" data-line-first="250" style="display:block"><code data-line="250">  <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
     <span style="color:purple">modifies</span> a
     <span style="color:purple">ensures</span> Sorted(a)
   {
@@ -398,11 +545,68 @@
     }
   }
 
-}</code></pre><h2 id="sec-three" class="h1" data-line="133" data-heading-depth="1" style="display:block"><span data-line="133"></span>Three</h2><!-- inline-dafny VerifiedAbstract/M1 -->
+}</code></pre>
+<p class="p noindent para-continued" data-line="279"><span data-line="279"></span>Note that the verified implementation is quite close to the unverified
+one. One of the fundamental design principles of Dafny is that
+programming and veification should be integrated, and in some cases
+you should be able to reason about your code directly, and not a model
+of it. So, in the same way that the specification is attached to the
+declaration, the verification is done by annotating the body of the
+code. The <span data-line="285"></span><code class="code code1">modifies a</code><span data-line="285"></span> clause does not play an important role in this
+example and is the dual of the reads clause of our predicates. While
+predicates need to be specific about what heap-allocated values they
+read, methods are usually free to read any heap-allcoated values but
+need to be specific about which ones they modify. Combined, these two
+kinds of clauses make verification of code that works with
+heap-allocated values surprisingly easy.
+</p>
+<p class="p indent" data-line="293"><span data-line="293"></span>The body of the method was modified for verification purposes by
+addings four invariant annotations attached to the loops. To
+understand both why we need such annotations, but also why we <span data-line="295"></span><em class="em-star1">only</em><span data-line="295"></span>
+need such annotations, it is useful to have a vague understanging of
+how verification works.
+</p>
+<p class="p indent" data-line="299"><span data-line="299"></span>Our verified insertion sort comes with two key ingredients: code and
+specification. To verify that the code meets the spec with
+mathematical certainlty, testing will not do. Instead, the Dafny
+compiler transforms the specification and the code into a mathematical
+formula. If we can prove that this mathematical formula is true, then
+the code satisfies the specification. Otherwise it may or may
+not. Proving such mathematical formula would be a lot of work, so
+Dafny makes use of an <span data-line="306"></span><em class="em-star1">automated theorem prover</em><span data-line="306"></span> (ATP) to prove it on
+your behalf.
+</p>
+<p class="p indent" data-line="309"><span data-line="309"></span>Alas, ATPs have fundamental limitations and while they excell at
+proving properties of linear code, they need some help with
+loops. Fundamentally, they need to know of properties that are true
+when the loop start its execution, that remain true after execution of
+the loop, and that imply what needs to be true after execution of the
+loops. This is called an invariant property because it captures what
+does not change despite all the complicated things that happen during
+execution of the loop.
+</p>
+<p class="p indent" data-line="318"><span data-line="318"></span>To understand these invariants, you know need to think about what
+insertion sort does and simulate its behavior. At every iteration of
+the outer loop, the assumption is that all values at indices less than
+the current index have been sorted. The inner loop then searches for
+the smallest value in the suffix of the array and this value is
+swapped with the value at the current index of the outer loop. We can
+capture these properties as invariant. The invariants of the outer
+loop indeed state that the array is sorted up to index i, not
+included. Meanhile the invariants of the inner loop capture the
+property that what is currently considered to be the smallest value in
+the suffix of the array is indeed the smallest one we have seen so
+far.
+</p>
+<p class="p indent" data-line="331"><span data-line="331"></span>With these invariant annotations, Dafny can verify on its own, in an
+instant, that the body of the method indeed satifies the
+postcondition, which specifices that the array is ordered and contains
+the same values as when the method was called.
+</p><h2 id="sec-three" class="h1" data-line="337" data-heading-depth="1" style="display:block"><span data-line="337"></span>Three</h2><!-- inline-dafny VerifiedAbstract/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="137" data-line-first="138" style="display:block"><code data-line="138">  <span style="color:blue">trait</span> Comparable&lt;T(==)&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="341" data-line-first="342" style="display:block"><code data-line="342">  <span style="color:blue">trait</span> Comparable&lt;T(==)&gt; {
 
     <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span>
 
@@ -410,7 +614,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="148" data-line-first="149" style="display:block"><code data-line="149">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="352" data-line-first="353" style="display:block"><code data-line="353">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
       <span style="color:purple">reads</span> a
@@ -436,7 +640,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="177" data-line-first="178" style="display:block"><code data-line="178">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="381" data-line-first="382" style="display:block"><code data-line="382">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a
@@ -467,7 +671,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="211" data-line-first="212" style="display:block"><code data-line="212">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="415" data-line-first="416" style="display:block"><code data-line="416">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
 
     const CMP: (T,T) -&gt; <span style="color:teal">bool</span>
 
@@ -485,7 +689,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="232" data-line-first="233" style="display:block"><code data-line="233">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="436" data-line-first="437" style="display:block"><code data-line="437">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
@@ -494,11 +698,11 @@
     <span style="color:blue">print</span> a[..];
   }
 
-}</code></pre><h2 id="sec-four" class="h1" data-line="246" data-heading-depth="1" style="display:block"><span data-line="246"></span>Four</h2><!-- inline-dafny Complexity/M1 -->
+}</code></pre><h2 id="sec-four" class="h1" data-line="450" data-heading-depth="1" style="display:block"><span data-line="450"></span>Four</h2><!-- inline-dafny Complexity/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="250" data-line-first="251" style="display:block"><code data-line="251">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="454" data-line-first="455" style="display:block"><code data-line="455">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">ghost</span> <span style="color:blue">var</span> comparisonCount: <span style="color:teal">nat</span>
 
@@ -515,14 +719,14 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="270" data-line-first="271" style="display:block"><code data-line="271">  <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="474" data-line-first="475" style="display:block"><code data-line="475">  <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
   {
     <span style="color:blue">if</span> x &lt;= <span class="constant" style="color:purple">0</span> <span style="color:blue">then</span> <span class="constant" style="color:purple">0</span> <span style="color:blue">else</span> x + Sum(x-<span class="constant" style="color:purple">1</span>)
   }</code></pre><!-- inline-dafny Complexity/M3 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="280" data-line-first="281" style="display:block"><code data-line="281">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="484" data-line-first="485" style="display:block"><code data-line="485">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a, <span style="color:blue">this</span>
@@ -565,7 +769,7 @@
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="326" data-line-first="327" style="display:block"><code data-line="327">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="530" data-line-first="531" style="display:block"><code data-line="531">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
 
     const CMP: (T,T) -&gt; <span style="color:teal">bool</span>
 
@@ -584,7 +788,7 @@
   }</code></pre><!-- inline-dafny Complexity/M5 -->
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="348" data-line-first="349" style="display:block"><code data-line="349">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="552" data-line-first="553" style="display:block"><code data-line="553">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; <span style="color:blue">:=</span> <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] <span style="color:blue">:=</span> <span class="constant" style="color:purple">1</span>;
