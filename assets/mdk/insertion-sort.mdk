@@ -358,10 +358,11 @@ it `ghost` to clarify that it is used only as part of the mathematical
 reasoning and should be understood as a function in the mathematical
 sense. It happens to be computable, but in general, it may not be. 
 
-We can add a second postcondition to our method, and a precondition to
-assume that the counter starts at 0. Of course, we can expect to add
+We can add a second postcondition to our method. It states that
+executing the method does not increase the number of counts by more
+than square of the size of the array. Of course, we can expect to add
 additional invariants to loops to help the verification of our
-complexity property. 
+complexity property.
  
 <!-- inline-dafny Complexity/M3 -->
 
@@ -401,8 +402,8 @@ the case. It may not always be trivial, and it requires some training,
 but you can rest assured that if there is a proof, you ought to be
 able to provide enough information for the verification.
 
-Consider again the obscure case of `assert a[..] ==
-old@L(a[..]);`. No-one could just guess that verification needs this
+Consider again the obscure case of `assert a[..] == old@L(a[..]);`.
+No-one could just guess that verification needs this
 specific property at this specific place for the verification to
 succeed, not even Dafny's creator. Without this assertion,
 verification fails but assists you by providing a key piece of
