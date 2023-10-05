@@ -250,7 +250,7 @@ euclidian.dfy(5,15): Related location: this is the postcondition that could not 
 
 Dafny program verifier finished with 1 verified, 1 error
 </pre><!--.output-->
-<p>From this, you see that Dafny was not able to prove that <code>r &lt; a</code> always hold.
+<p>From this, you see that Dafny was not able to prove that <code>r &lt; b</code> always hold.
 To identify why it is the case, you could apply techniques of <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging">verification debugging</a>. For now, you just realize your mistake:
 It's only if <code>a &lt; b</code> that you should take the <codee>if</codee> branch. When <code>a = b</code>, you should
 take one more step recursively. Click <button class="top">Next</button> to fix the code.
