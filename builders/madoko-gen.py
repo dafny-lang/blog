@@ -111,7 +111,7 @@ def GenerateHTMLFromPreMadoko(MDKfile):
                 modules[DFYfile] = loadDafny(src_location + path_mdk.stem + '/' + DFYfile + '.dfy')
             dmodule = dmodule[1]
             if dmodule in modules[DFYfile]:
-                file_out.write('\n``` dafny \n')
+                file_out.write('\n``` dafnyx \n')
                 file_out.write(modules[DFYfile][dmodule].replace('\t','  ').strip('\n') + '\n')
                 file_out.write('```\n\n')
             else:
