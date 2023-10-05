@@ -13,6 +13,8 @@ Css Header:
     padding: 0;
   }
 
+# Introduction
+
 Dafny is a programming language. It should be familiar to anyone with
 experience with languages like Java or C#.  In a nutshell, it is
 characterized by:
@@ -438,3 +440,23 @@ initialize the counter properly.
 
 <!-- inline-dafny Complexity/M4 -->
 
+# Conclusion
+
+Hopefully, this example gives a concrete idea of what program
+specification and verification feels like, and shows that it is not
+limited to toy academic languages. Proving sortedness of insertion
+sort shows that even for such a non-trivial properties, automation is
+good enough to keep the verification effort low. Moreover, the
+complexity example shows that while more abstract and mathematical
+properties may require more work, verification remains doable. Because
+Dafny is not just a great programming language but also a great proof
+assistant, one can learn systematic methodologies to verify code.
+
+In the end, the only issue standing between you and writing verified
+code isn't the difficulty of verification but rather a costs/benefits
+analysis. If you have an existing application written in another
+language and working well enough, it doesn't make sense to rewrite
+everything in Dafny for some elusive mathematical certainty that your
+code satisfies a specification which could also have its own
+issues. This is where Dafny's second key feature, interoperability,
+comes in, but this is another story...
