@@ -145,8 +145,8 @@ definition with another predicate, `Preserved`.
 <!-- inline-dafny VerifiedInt/M2 -->
 
 This definition introduces a few new interesting concepts. First, the
-expression `multiset(a[left..right])` shows an example use not one but
-two of Dafny's built-in collection types. The subexpression
+expression `multiset(a[left..right])` shows an example use of not one
+but two of Dafny's built-in collection types. The subexpression
 `a[left..right]` transforms the sub-array into a *sequence* (or list)
 of values. The expression `multiset(a[left..right])` creates a
 multiset from that sequence. You might think that while this notation
@@ -214,11 +214,11 @@ your behalf.
 Alas, ATPs have fundamental limitations and while they excel at
 proving properties of linear code, they need some help with
 loops. Fundamentally, they need to know of properties that are true
-when the loop start its execution, that remain true after execution of
-the loop, and that imply what needs to be true after execution of the
+when the loop starts its execution ; remain true after execution of
+the loop ; imply what needs to be true after execution of the
 loops. This is called an invariant property because it captures what
-does not change despite all the complicated things that happen during
-execution of the loop.
+does not change despite all the complicated changes that may happen
+during execution of the loop.
 
 To understand these invariants, you know need to think about what
 insertion sort does and simulate its behavior. At every iteration of
@@ -226,7 +226,7 @@ the outer loop, the assumption is that all values at indices less than
 the current index have been sorted. The inner loop then searches for
 the smallest value in the suffix of the array and this value is
 swapped with the value at the current index of the outer loop. We can
-capture these properties as invariant. The invariants of the outer
+capture these properties as invariants. The invariants of the outer
 loop indeed state that the array is sorted up to index i, not
 included. Meanwhile the invariants of the inner loop capture the
 property that what is currently considered to be the smallest value in
@@ -262,10 +262,10 @@ functional version of a computation, respectively. While the body of
 methods is made of a sequence of statements, the body of a function is
 an expression. While a method can declare mutable local variables and
 modify heap-allocated values, functions are, as a first approximation,
-free of side effects and state.
-
-In general, when a choice between a method and a function is possible,
-it is wise to choose using a function as it makes verification easier.
+free of side effects and state. In general, when a choice between a
+method and a function is possible, it is wise to choose using a
+function as it makes verification easier, which is why we choose to
+define `Lt` as a function.
 
 We extend the `Comparable` trait to define a new one, `Sorted` that
 will group together our predicates for specification.
@@ -289,9 +289,8 @@ extend another class! This unusual design ensures that you can benefit
 from multiple inheritance while keeping verification reasonable
 simple. Nevertheless, you should still be able to design your code
 following the core precepts of object-oriented programming:
-inheritance, sub-typing, late binding, overriding, encapsulation, and
-dynamic dispatch. There is one exception: Dafny does not support open
-recursion.
+inheritance, subtyping, late binding, overriding, encapsulation, and
+dynamic dispatch. 
 
 We therefore define a class `Sort` that extends `InsertionSort` and
 complete its implementation.
@@ -302,7 +301,7 @@ The class is made of typical members such as fields, constructors,
 methods, and functions. A constant (or immutable) field `CMP` holds
 our comparison function and is set by the constructor. Function `Lt`
 that was declared in the `Comparable` trait is implemented. We can see
-that Dafny a glimpse of the functional programming side of Dafny: it
+a glimpse of the functional programming side of Dafny: it
 is possible to pass a function as an argument to a
 method/function/constructor and to store it in a field.
 
@@ -342,7 +341,7 @@ the statement that increments it will be removed by the
 compiler. Because `Ltm` modifies the state of the object it belongs
 to, it needs to declare `modifies this`. In fact, to simplify
 verification, we declare more specifically that we modify one specfic
-field of the oject as `modifies this`comparisonCount`.
+field of the oject as ``modifies this`comparisonCount``.
 
 At a high-level, a pencil-and-paper proof would look something like
 this. Assume that the array is of size l. At every iteration of the
@@ -356,7 +355,7 @@ for reasoning about such a summation, we define a function `Sum`.
 Even though this function is not used in the specification, we declare
 it `ghost` to clarify that it is used only as part of the mathematical
 reasoning and should be understood as a function in the mathematical
-sense. It happens to be computable, but in general, it may not be. 
+sense. 
 
 We can add a second postcondition to our method. It states that
 executing the method does not increase the number of counts by more
@@ -403,12 +402,12 @@ but you can rest assured that if there is a proof, you ought to be
 able to provide enough information for the verification.
 
 Consider again the obscure case of `assert a[..] == old@L(a[..]);`.
-No-one could just guess that verification needs this
-specific property at this specific place for the verification to
-succeed, not even Dafny's creator. Without this assertion,
-verification fails but assists you by providing a key piece of
-information: invariant `Preserved(a,0,a.Length)` could not be proved
-to be maintained by the inner loop.
+It would be unrealistic to have to know so much about verification to
+just guess that verification needs this specific property at this
+specific place for the verification to succeed. Without this
+assertion, verification fails but assists you by providing a key piece
+of information: invariant `Preserved(a,0,a.Length)` could not be
+proved to be maintained by the inner loop.
 
 Since it is an invariant, it should hold at any point within the loop,
 so we can assert it in between every statement to see which one makes

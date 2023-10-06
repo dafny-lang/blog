@@ -475,8 +475,8 @@ definition with another predicate, <span data-line="189"></span><code class="cod
     <span style="color:teal">multiset</span>(a[left..right]) == <span style="color:teal">multiset</span>(<span style="color:blue">old</span>(a[left..right]))
   }</code></pre>
 <p class="p noindent para-continued" data-line="203"><span data-line="203"></span>This definition introduces a few new interesting concepts. First, the
-expression <span data-line="204"></span><code class="code code1">multiset(a[left..right])</code><span data-line="204"></span> shows an example use not one but
-two of Dafny<span data-line="205"></span>&#39;<span data-line="205"></span>s built-in collection types. The subexpression
+expression <span data-line="204"></span><code class="code code1">multiset(a[left..right])</code><span data-line="204"></span> shows an example use of not one
+but two of Dafny<span data-line="205"></span>&#39;<span data-line="205"></span>s built-in collection types. The subexpression
 <span data-line="206"></span><code class="code code1">a[left..right]</code><span data-line="206"></span> transforms the sub-array into a <span data-line="206"></span><em class="em-star1">sequence</em><span data-line="206"></span> (or list)
 of values. The expression <span data-line="207"></span><code class="code code1">multiset(a[left..right])</code><span data-line="207"></span> creates a
 multiset from that sequence. You might think that while this notation
@@ -575,11 +575,11 @@ your behalf.
 <p class="p indent" data-line="307"><span data-line="307"></span>Alas, ATPs have fundamental limitations and while they excel at
 proving properties of linear code, they need some help with
 loops. Fundamentally, they need to know of properties that are true
-when the loop start its execution, that remain true after execution of
-the loop, and that imply what needs to be true after execution of the
+when the loop starts its execution ; remain true after execution of
+the loop ; imply what needs to be true after execution of the
 loops. This is called an invariant property because it captures what
-does not change despite all the complicated things that happen during
-execution of the loop.
+does not change despite all the complicated changes that may happen
+during execution of the loop.
 </p>
 <p class="p indent" data-line="316"><span data-line="316"></span>To understand these invariants, you know need to think about what
 insertion sort does and simulate its behavior. At every iteration of
@@ -587,7 +587,7 @@ the outer loop, the assumption is that all values at indices less than
 the current index have been sorted. The inner loop then searches for
 the smallest value in the suffix of the array and this value is
 swapped with the value at the current index of the outer loop. We can
-capture these properties as invariant. The invariants of the outer
+capture these properties as invariants. The invariants of the outer
 loop indeed state that the array is sorted up to index i, not
 included. Meanwhile the invariants of the inner loop capture the
 property that what is currently considered to be the smallest value in
@@ -627,10 +627,10 @@ functional version of a computation, respectively. While the body of
 methods is made of a sequence of statements, the body of a function is
 an expression. While a method can declare mutable local variables and
 modify heap-allocated values, functions are, as a first approximation,
-free of side effects and state.
-</p>
-<p class="p indent" data-line="369"><span data-line="369"></span>In general, when a choice between a method and a function is possible,
-it is wise to choose using a function as it makes verification easier.
+free of side effects and state. In general, when a choice between a
+method and a function is possible, it is wise to choose using a
+function as it makes verification easier, which is why we choose to
+define <span data-line="370"></span><code class="code code1">Lt</code><span data-line="370"></span> as a function.
 </p>
 <p class="p indent" data-line="372"><span data-line="372"></span>We extend the <span data-line="372"></span><code class="code code1">Comparable</code><span data-line="372"></span> trait to define a new one, <span data-line="372"></span><code class="code code1">Sorted</code><span data-line="372"></span> that
 will group together our predicates for specification.
@@ -707,17 +707,16 @@ extend another class! This unusual design ensures that you can benefit
 from multiple inheritance while keeping verification reasonable
 simple. Nevertheless, you should still be able to design your code
 following the core precepts of object-oriented programming:
-inheritance, sub-typing, late binding, overriding, encapsulation, and
-dynamic dispatch. There is one exception: Dafny does not support open
-recursion.
+inheritance, subtyping, late binding, overriding, encapsulation, and
+dynamic dispatch. 
 </p>
-<p class="p indent" data-line="457"><span data-line="457"></span>We therefore define a class <span data-line="457"></span><code class="code code1">Sort</code><span data-line="457"></span> that extends <span data-line="457"></span><code class="code code1">InsertionSort</code><span data-line="457"></span> and
+<p class="p indent" data-line="456"><span data-line="456"></span>We therefore define a class <span data-line="456"></span><code class="code code1">Sort</code><span data-line="456"></span> that extends <span data-line="456"></span><code class="code code1">InsertionSort</code><span data-line="456"></span> and
 complete its implementation.
 </p><!-- inline-dafny VerifiedAbstract/M4 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="462" data-line-first="463" style="display:block"><code data-line="463">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="461" data-line-first="462" style="display:block"><code data-line="462">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
 
     <span style="color:blue">const</span> CMP: (T,T) -&gt; <span style="color:teal">bool</span>
 
@@ -732,28 +731,28 @@ complete its implementation.
     }
 
   }</code></pre>
-<p class="p noindent para-continued" data-line="481"><span data-line="481"></span>The class is made of typical members such as fields, constructors,
-methods, and functions. A constant (or immutable) field <span data-line="482"></span><code class="code code1">CMP</code><span data-line="482"></span> holds
-our comparison function and is set by the constructor. Function <span data-line="483"></span><code class="code code1">Lt</code><span data-line="483"></span>
-that was declared in the <span data-line="484"></span><code class="code code1">Comparable</code><span data-line="484"></span> trait is implemented. We can see
-that Dafny a glimpse of the functional programming side of Dafny: it
+<p class="p noindent para-continued" data-line="480"><span data-line="480"></span>The class is made of typical members such as fields, constructors,
+methods, and functions. A constant (or immutable) field <span data-line="481"></span><code class="code code1">CMP</code><span data-line="481"></span> holds
+our comparison function and is set by the constructor. Function <span data-line="482"></span><code class="code code1">Lt</code><span data-line="482"></span>
+that was declared in the <span data-line="483"></span><code class="code code1">Comparable</code><span data-line="483"></span> trait is implemented. We can see
+a glimpse of the functional programming side of Dafny: it
 is possible to pass a function as an argument to a
 method/function/constructor and to store it in a field.
 </p>
-<p class="p indent" data-line="489"><span data-line="489"></span>We can now write a <span data-line="489"></span><code class="code code1">Main</code><span data-line="489"></span> method to test our generic insertion sort.
+<p class="p indent" data-line="488"><span data-line="488"></span>We can now write a <span data-line="488"></span><code class="code code1">Main</code><span data-line="488"></span> method to test our generic insertion sort.
 </p><!-- inline-dafny VerifiedAbstract/M5 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="493" data-line-first="494" style="display:block"><code data-line="494">  <span style="color:blue">method</span> Main()
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="492" data-line-first="493" style="display:block"><code data-line="493">  <span style="color:blue">method</span> Main()
   {
     <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; := <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
     a[<span class="constant" style="color:purple">0</span>] := <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] := <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] := <span class="constant" style="color:purple">1</span>;
     <span style="color:blue">var</span> Sort := <span style="color:blue">new</span> Sort((x: <span style="color:teal">int</span>, y: <span style="color:teal">int</span>) =&gt; x &lt; y);
     Sort.InsertionSort(a);
     <span style="color:blue">print</span> a[..];
-  }</code></pre><h2 id="sec-a-more-advanced-example-of-verification" class="h1" data-line="505" data-heading-depth="1" style="display:block"><span data-line="505"></span>A More Advanced Example of Verification</h2>
-<p class="p noindent" data-line="507"><span data-line="507"></span>There is a lot more we could prove about our insertion sort
+  }</code></pre><h2 id="sec-a-more-advanced-example-of-verification" class="h1" data-line="504" data-heading-depth="1" style="display:block"><span data-line="504"></span>A More Advanced Example of Verification</h2>
+<p class="p noindent" data-line="506"><span data-line="506"></span>There is a lot more we could prove about our insertion sort
 implementation. For example, you may try to prove that insertion sort
 is stable. Instead, we will prove properties about the runtime
 complexity of our implementation. This will give us a chance to
@@ -762,16 +761,16 @@ runtime complexity of a sorting algorithm we usually count either the
 number of comparisons, or the number of swaps. In this example, we
 will focus on establishing a bound on the number of comparisons. More
 specifically, we want to show that if the input array is of size n,
-the number of comparisons will be less than n <span data-line="516"></span>*<span data-line="516"></span> n.
+the number of comparisons will be less than n <span data-line="515"></span>*<span data-line="515"></span> n.
 </p>
-<p class="p indent" data-line="518"><span data-line="518"></span>To that end, we extend trait <span data-line="518"></span><code class="code code1">Comparable</code><span data-line="518"></span> to define a new trait
-<span data-line="519"></span><code class="code code1">Measurable</code><span data-line="519"></span>. The purpose of this trait is to keep track of the number
+<p class="p indent" data-line="517"><span data-line="517"></span>To that end, we extend trait <span data-line="517"></span><code class="code code1">Comparable</code><span data-line="517"></span> to define a new trait
+<span data-line="518"></span><code class="code code1">Measurable</code><span data-line="518"></span>. The purpose of this trait is to keep track of the number
 of times we call the comparison function. 
 </p><!-- inline-dafny Complexity/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="524" data-line-first="525" style="display:block"><code data-line="525">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="523" data-line-first="524" style="display:block"><code data-line="524">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
 
     <span style="color:blue">ghost</span> <span style="color:blue">var</span> comparisonCount: <span style="color:teal">nat</span>
 
@@ -785,49 +784,49 @@ of times we call the comparison function.
     }
 
   }</code></pre>
-<p class="p noindent para-continued" data-line="542"><span data-line="542"></span>A crucial detail is that we are declaring a mutable field,
-<span data-line="543"></span><code class="code code1">comparisonCount</code><span data-line="543"></span> as <span data-line="543"></span><code class="code code1">ghost</code><span data-line="543"></span>. This is because while we do need a
+<p class="p noindent para-continued" data-line="541"><span data-line="541"></span>A crucial detail is that we are declaring a mutable field,
+<span data-line="542"></span><code class="code code1">comparisonCount</code><span data-line="542"></span> as <span data-line="542"></span><code class="code code1">ghost</code><span data-line="542"></span>. This is because while we do need a
 variable to keep track of the number of times the comparison function
 has been called, we do not want this variable and its counting to
-affect the performance of our code! By declaring the field as <span data-line="546"></span><code class="code code1">ghost</code><span data-line="546"></span>,
+affect the performance of our code! By declaring the field as <span data-line="545"></span><code class="code code1">ghost</code><span data-line="545"></span>,
 we ensure that it will be removed by the compiler.
 </p>
-<p class="p indent" data-line="549"><span data-line="549"></span>The <span data-line="549"></span><code class="code code1">Measurable</code><span data-line="549"></span> trait defines method <span data-line="549"></span><code class="code code1">Ltm</code><span data-line="549"></span> that calls our comparison
+<p class="p indent" data-line="548"><span data-line="548"></span>The <span data-line="548"></span><code class="code code1">Measurable</code><span data-line="548"></span> trait defines method <span data-line="548"></span><code class="code code1">Ltm</code><span data-line="548"></span> that calls our comparison
 function but also increment the counter. Because the counter is ghost,
 the statement that increments it will be removed by the
-compiler. Because <span data-line="552"></span><code class="code code1">Ltm</code><span data-line="552"></span> modifies the state of the object it belongs
-to, it needs to declare <span data-line="553"></span><code class="code code1">modifies this</code><span data-line="553"></span>. In fact, to simplify
+compiler. Because <span data-line="551"></span><code class="code code1">Ltm</code><span data-line="551"></span> modifies the state of the object it belongs
+to, it needs to declare <span data-line="552"></span><code class="code code1">modifies this</code><span data-line="552"></span>. In fact, to simplify
 verification, we declare more specifically that we modify one specfic
-field of the oject as <span data-line="555"></span><code class="code code1">modifies this</code><span data-line="555"></span>comparisonCount<span data-line="555"></span>`<span data-line="555"></span>.
+field of the oject as <span data-line="554"></span><code class="code code2">modifies this`comparisonCount</code><span data-line="554"></span>.
 </p>
-<p class="p indent" data-line="557"><span data-line="557"></span>At a high-level, a pencil-and-paper proof would look something like
+<p class="p indent" data-line="556"><span data-line="556"></span>At a high-level, a pencil-and-paper proof would look something like
 this. Assume that the array is of size l. At every iteration of the
 outer loop, if the index is at position i, the inner loop will do
-roughly l<span data-line="560"></span> <span data-line="560"></span>- i comparison. All in all, it means that the number of
-comparison will be something like l<span data-line="561"></span> <span data-line="561"></span>+ (l-1)<span data-line="561"></span> <span data-line="561"></span>+ <span data-line="561"></span>&#8230;<span data-line="561"></span> <span data-line="561"></span>+ 1.  In preparation
-for reasoning about such a summation, we define a function <span data-line="562"></span><code class="code code1">Sum</code><span data-line="562"></span>.
+roughly l<span data-line="559"></span> <span data-line="559"></span>- i comparison. All in all, it means that the number of
+comparison will be something like l<span data-line="560"></span> <span data-line="560"></span>+ (l-1)<span data-line="560"></span> <span data-line="560"></span>+ <span data-line="560"></span>&#8230;<span data-line="560"></span> <span data-line="560"></span>+ 1.  In preparation
+for reasoning about such a summation, we define a function <span data-line="561"></span><code class="code code1">Sum</code><span data-line="561"></span>.
 </p><!-- inline-dafny Complexity/M2 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="566" data-line-first="567" style="display:block"><code data-line="567">  <span style="color:blue">ghost</span> <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="565" data-line-first="566" style="display:block"><code data-line="566">  <span style="color:blue">ghost</span> <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
   {
     <span style="color:blue">if</span> x &lt;= <span class="constant" style="color:purple">0</span> <span style="color:blue">then</span> <span class="constant" style="color:purple">0</span> <span style="color:blue">else</span> x + Sum(x-<span class="constant" style="color:purple">1</span>)
   }</code></pre>
-<p class="p noindent para-continued" data-line="574"><span data-line="574"></span>Even though this function is not used in the specification, we declare
-it <span data-line="575"></span><code class="code code1">ghost</code><span data-line="575"></span> to clarify that it is used only as part of the mathematical
+<p class="p noindent para-continued" data-line="573"><span data-line="573"></span>Even though this function is not used in the specification, we declare
+it <span data-line="574"></span><code class="code code1">ghost</code><span data-line="574"></span> to clarify that it is used only as part of the mathematical
 reasoning and should be understood as a function in the mathematical
 sense. It happens to be computable, but in general, it may not be. 
 </p>
-<p class="p indent" data-line="579"><span data-line="579"></span>We can add a second postcondition to our method. It states that
+<p class="p indent" data-line="578"><span data-line="578"></span>We can add a second postcondition to our method. It states that
 executing the method does not increase the number of counts by more
 than square of the size of the array. Of course, we can expect to add
 additional invariants to loops to help the verification of our
 complexity property.
  
-<span data-line="585"></span><!-- inline-dafny Complexity/M3 --><span data-line="585"></span>
+<span data-line="584"></span><!-- inline-dafny Complexity/M3 --><span data-line="584"></span>
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="587" data-line-first="588" style="display:block"><code data-line="588">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="586" data-line-first="587" style="display:block"><code data-line="587">  <span style="color:blue">trait</span> InsertionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
 
     <span style="color:blue">method</span> InsertionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
       <span style="color:purple">modifies</span> a, <span style="color:blue">this</span>
@@ -867,87 +866,87 @@ complexity property.
     }
 
   }</code></pre>
-<p class="p noindent para-continued" data-line="631"><span data-line="631"></span>In this case, verification required a little more information than
-just the loop invariants. Note that we have added a few <span data-line="632"></span><code class="code code1">assert</code><span data-line="632"></span>
+<p class="p noindent para-continued" data-line="630"><span data-line="630"></span>In this case, verification required a little more information than
+just the loop invariants. Note that we have added a few <span data-line="631"></span><code class="code code1">assert</code><span data-line="631"></span>
 statements that can be understood as hints of a property that ought to
 hold at the position where it is stated. The point of such assertions
 is to break down the proof and provide hints to the ATP by stating
 intermediate properties that can be potentially easier to verify but
-will play a key role in the overall proof. Take <span data-line="637"></span><code class="code code1">assert
-comparisonCount == (i+1) * a.Length - Sum(i+1);</code><span data-line="638"></span> for example. This is
-letting the verifier know of a useful identity between <span data-line="639"></span><code class="code code1">Sum</code><span data-line="639"></span> and
-<span data-line="640"></span><code class="code code1">comparisonCount</code><span data-line="640"></span>.
+will play a key role in the overall proof. Take <span data-line="636"></span><code class="code code1">assert
+comparisonCount == (i+1) * a.Length - Sum(i+1);</code><span data-line="637"></span> for example. This is
+letting the verifier know of a useful identity between <span data-line="638"></span><code class="code code1">Sum</code><span data-line="638"></span> and
+<span data-line="639"></span><code class="code code1">comparisonCount</code><span data-line="639"></span>.
 </p>
-<p class="p indent" data-line="642"><span data-line="642"></span>Another example, probably much more mysterious, is <span data-line="642"></span><code class="code code1">assert a[..] ==
-old@L(a[..]);</code><span data-line="643"></span>. It states that the values of the array are the same at
-the point in the program labeled <span data-line="644"></span><code class="code code1">L</code><span data-line="644"></span> and the one where the assertion
-is made. By default, the <span data-line="645"></span><code class="code code1">old</code><span data-line="645"></span> expression refers to the state of the
+<p class="p indent" data-line="641"><span data-line="641"></span>Another example, probably much more mysterious, is <span data-line="641"></span><code class="code code1">assert a[..] ==
+old@L(a[..]);</code><span data-line="642"></span>. It states that the values of the array are the same at
+the point in the program labeled <span data-line="643"></span><code class="code code1">L</code><span data-line="643"></span> and the one where the assertion
+is made. By default, the <span data-line="644"></span><code class="code code1">old</code><span data-line="644"></span> expression refers to the state of the
 method at the beginning of execution, but it can be modulated to refer
 to a specific line in the body of the statement.
 </p>
-<p class="p indent" data-line="649"><span data-line="649"></span>You may try to understand what these assertions mean and why they are
-useful, but the point of this discussion isn<span data-line="650"></span>&#39;<span data-line="650"></span>t to understand how to
+<p class="p indent" data-line="648"><span data-line="648"></span>You may try to understand what these assertions mean and why they are
+useful, but the point of this discussion isn<span data-line="649"></span>&#39;<span data-line="649"></span>t to understand how to
 verify the complexity of insertion sort, but rather to address the
 most important frustrations of new Dafny users: how do we know what
 assertions to make and where? In hindsight, all these assertions might
-seem true and relevant, but it doesn<span data-line="654"></span>&#39;<span data-line="654"></span>t say anything about how to come
+seem true and relevant, but it doesn<span data-line="653"></span>&#39;<span data-line="653"></span>t say anything about how to come
 up with them, and to new Dafny users, it might seem like a magic
 incantation.
 </p>
-<p class="p indent" data-line="658"><span data-line="658"></span>It is crucial to understand that these are not, in fact, magic
+<p class="p indent" data-line="657"><span data-line="657"></span>It is crucial to understand that these are not, in fact, magic
 incantation that only people trained as mathematicians can
 spell. Dafny is not just a full-fledged programming language, it is
-also a full-fledged <span data-line="661"></span><em class="em-star1">proof assistant</em><span data-line="661"></span>. There is a systematic way to
+also a full-fledged <span data-line="660"></span><em class="em-star1">proof assistant</em><span data-line="660"></span>. There is a systematic way to
 figure out how to convince Dafny that a result is true if it is indeed
 the case. It may not always be trivial, and it requires some training,
 but you can rest assured that if there is a proof, you ought to be
 able to provide enough information for the verification.
 </p>
-<p class="p indent" data-line="667"><span data-line="667"></span>Consider again the obscure case of <span data-line="667"></span><code class="code code1">assert a[..] == old@L(a[..]);</code><span data-line="667"></span>.
+<p class="p indent" data-line="666"><span data-line="666"></span>Consider again the obscure case of <span data-line="666"></span><code class="code code1">assert a[..] == old@L(a[..]);</code><span data-line="666"></span>.
 No-one could just guess that verification needs this
 specific property at this specific place for the verification to
-succeed, not even Dafny<span data-line="670"></span>&#39;<span data-line="670"></span>s creator. Without this assertion,
+succeed, not even Dafny<span data-line="669"></span>&#39;<span data-line="669"></span>s creator. Without this assertion,
 verification fails but assists you by providing a key piece of
-information: invariant <span data-line="672"></span><code class="code code1">Preserved(a,0,a.Length)</code><span data-line="672"></span> could not be proved
+information: invariant <span data-line="671"></span><code class="code code1">Preserved(a,0,a.Length)</code><span data-line="671"></span> could not be proved
 to be maintained by the inner loop.
 </p>
-<p class="p indent" data-line="675"><span data-line="675"></span>Since it is an invariant, it should hold at any point within the loop,
+<p class="p indent" data-line="674"><span data-line="674"></span>Since it is an invariant, it should hold at any point within the loop,
 so we can assert it in between every statement to see which one makes
-the verification fail. You will find that it is statement <span data-line="677"></span><code class="code code1">var cmp :=
-Ltm(a[j], minValue);</code><span data-line="678"></span> that prevents the verification from verifying
+the verification fail. You will find that it is statement <span data-line="676"></span><code class="code code1">var cmp :=
+Ltm(a[j], minValue);</code><span data-line="677"></span> that prevents the verification from verifying
 the invariant. Three possibilities:
 </p>
-<ul class="ul list-dash compact" data-line="681">
-<li class="li ul-li list-dash-li compact-li" data-line="681"><span data-line="681"></span>The code is actually incorrect
+<ul class="ul list-dash compact" data-line="680">
+<li class="li ul-li list-dash-li compact-li" data-line="680"><span data-line="680"></span>The code is actually incorrect
 </li>
-<li class="li ul-li list-dash-li compact-li" data-line="682"><span data-line="682"></span>The invariant isn<span data-line="682"></span>&#39;<span data-line="682"></span>t actually one and our proof is wrong
+<li class="li ul-li list-dash-li compact-li" data-line="681"><span data-line="681"></span>The invariant isn<span data-line="681"></span>&#39;<span data-line="681"></span>t actually one and our proof is wrong
 </li>
-<li class="li ul-li list-dash-li compact-li" data-line="683"><span data-line="683"></span>The verification needs some hint
+<li class="li ul-li list-dash-li compact-li" data-line="682"><span data-line="682"></span>The verification needs some hint
 </li></ul>
 
-<p class="p noindent" data-line="685"><span data-line="685"></span>To some extent, it makes sense that the verification might need a
-hint. When we call method <span data-line="686"></span><code class="code code1">Ltm</code><span data-line="686"></span>, how do we know that it is not going
-to change array <span data-line="687"></span><code class="code code1">a</code><span data-line="687"></span>? Of course it is in a sense obvious since it is
-clearly not mentioning <span data-line="688"></span><code class="code code1">a</code><span data-line="688"></span> but obvious doesn<span data-line="688"></span>&#39;<span data-line="688"></span>t cut it in formal
+<p class="p noindent" data-line="684"><span data-line="684"></span>To some extent, it makes sense that the verification might need a
+hint. When we call method <span data-line="685"></span><code class="code code1">Ltm</code><span data-line="685"></span>, how do we know that it is not going
+to change array <span data-line="686"></span><code class="code code1">a</code><span data-line="686"></span>? Of course it is in a sense obvious since it is
+clearly not mentioning <span data-line="687"></span><code class="code code1">a</code><span data-line="687"></span> but obvious doesn<span data-line="687"></span>&#39;<span data-line="687"></span>t cut it in formal
 verification. Now, we did specify that the method modifies the field
-but nothing else, so it should be the case that <span data-line="690"></span><code class="code code1">a</code><span data-line="690"></span> is left
-unchanged. This is where it makes sense to assert <span data-line="691"></span><code class="code code1">a[..] ==
-old@L(a[..]);</code><span data-line="692"></span> to double-check that the verification agrees. In this
+but nothing else, so it should be the case that <span data-line="689"></span><code class="code code1">a</code><span data-line="689"></span> is left
+unchanged. This is where it makes sense to assert <span data-line="690"></span><code class="code code1">a[..] ==
+old@L(a[..]);</code><span data-line="691"></span> to double-check that the verification agrees. In this
 case, not only does it agree, but it also turns out to be the hint the
 verification needs ot succeed.
 </p>
-<p class="p indent" data-line="696"><span data-line="696"></span>One may feel like the verification should not have required such a
+<p class="p indent" data-line="695"><span data-line="695"></span>One may feel like the verification should not have required such a
 hint but ATPs are fundamentally bound to miss obvious facts every now
 and then. It is not a bug of the verifier, merely an unfortunate and
 perhaps unavoidable case of incompleteness of its proving capability. 
 </p>
-<p class="p indent" data-line="701"><span data-line="701"></span>We can finish our implementation by defining a class, making to
+<p class="p indent" data-line="700"><span data-line="700"></span>We can finish our implementation by defining a class, making to
 initialize the counter properly.
 </p><!-- inline-dafny Complexity/M4 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="706" data-line-first="707" style="display:block"><code data-line="707">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="705" data-line-first="706" style="display:block"><code data-line="706">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> InsertionSort&lt;T&gt; {
 
     <span style="color:blue">const</span> CMP: (T,T) -&gt; <span style="color:teal">bool</span>
 
@@ -963,8 +962,8 @@ initialize the counter properly.
       CMP(x,y)
     }
 
-  }</code></pre><h2 id="sec-conclusion" class="h1" data-line="727" data-heading-depth="1" style="display:block"><span data-line="727"></span>Conclusion</h2>
-<p class="p noindent" data-line="729"><span data-line="729"></span>Hopefully, this example gives a concrete idea of what program
+  }</code></pre><h2 id="sec-conclusion" class="h1" data-line="726" data-heading-depth="1" style="display:block"><span data-line="726"></span>Conclusion</h2>
+<p class="p noindent" data-line="728"><span data-line="728"></span>Hopefully, this example gives a concrete idea of what program
 specification and verification feels like, and shows that it is not
 limited to toy academic languages. Proving the functional correctness
 of insertion sort shows that even for such a non-trivial properties,
@@ -975,14 +974,14 @@ remains doable. Because Dafny is not just a great programming language
 but also a great proof assistant, one can learn systematic
 methodologies to verify code.
 </p>
-<p class="p indent" data-line="740"><span data-line="740"></span>In the end, the only issue standing between you and writing verified
-code isn<span data-line="741"></span>&#39;<span data-line="741"></span>t the difficulty of verification but rather a costs/benefits
+<p class="p indent" data-line="739"><span data-line="739"></span>In the end, the only issue standing between you and writing verified
+code isn<span data-line="740"></span>&#39;<span data-line="740"></span>t the difficulty of verification but rather a costs/benefits
 analysis. If you have an existing application written in another
-language and working well enough, it doesn<span data-line="743"></span>&#39;<span data-line="743"></span>t make sense to rewrite
+language and working well enough, it doesn<span data-line="742"></span>&#39;<span data-line="742"></span>t make sense to rewrite
 everything in Dafny for some elusive mathematical certainty that your
 code satisfies a specification which could also have its own
-issues. This is where Dafny<span data-line="746"></span>&#39;<span data-line="746"></span>s second key feature, interoperability,
-comes in, but this is another story<span data-line="747"></span>&#8230;<span data-line="747"></span>
+issues. This is where Dafny<span data-line="745"></span>&#39;<span data-line="745"></span>s second key feature, interoperability,
+comes in, but this is another story<span data-line="746"></span>&#8230;<span data-line="746"></span>
 </p><span data-line=""></span></div>
 </body>
 
