@@ -1,14 +1,14 @@
 ---
 layout: post
 title:  "Automated Test Generation: Chess Puzzles with Dafny"
-date:   2023-11-25 18:00:00 +0100
+date:   2023-11-01 18:00:00 +0100
 author: Sasha Fedchin
 ---
 Even if you have successfully verified your code, you might still want to generate test cases, whether to ensure the verified properties hold at runtime once you link your binary against external libraries, or to compare your code to an existing reference implementation. Or perhaps you are about to embark on another proof and want to have some initial assurance that your yet-to-be-verified implementation is correct - again, runtime testing can help. In this blog post, I show how Dafny’s built-in automated test generation can be useful in these situations. 
 
 In the example I have selected, Dafny has to position pieces on a chess board in such a way that certain constraints are satisfied. A brute force enumeration or fuzzing might not be up to the task here, since the number of ways in which you can arrange pieces on the board is astronomically high, even under the constraints I add to the problem. Dafny, however, uses the verifier to generate tests and is, therefore, much more efficient in finding solutions. 
 
-This post is divided into several sections. [Section 1](#1-modelling-chess-in-dafny) outlines a subset of chess rules using Dafny. This code serves as a reference point throughout the post. In [Section 2](#2-test-generation-basics), I demonstrate the basics of test generation and discuss the different coverage metrics you can target. [Section 3](#3-there-is-dead-code-here) deals with visualizing coverage and identifying dead code. [Section 4](#sec-quantifiers-loops-and-recursion) offers an in depth discussion of quantifiers, loops, and recursion — features that require special care when attempting to generate tests. Finally, the [summary section](#conclusions-and-best-practices) provides general guidelines for how to apply this technique to your own Dafny programs. You can also find more information on automated test generation in [Dafny's reference manual](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-dafny-generate-tests).
+This post is divided into several sections. [Section 1](#1-modelling-chess-in-dafny) outlines a subset of chess rules using Dafny. This code serves as a reference point throughout the post. In [Section 2](#2-test-generation-basics), I demonstrate the basics of test generation and discuss the different coverage metrics you can target. [Section 3](#3-there-is-dead-code-here) deals with visualizing coverage and identifying dead code. [Section 4](#sec-quantifiers-loops-and-recursion) offers an in depth discussion of quantifiers, loops, and recursion — features that require special care when attempting to generate tests. Finally, the [summary section](#conclusions-and-best-practices) provides general guidelines for how to apply this technique to your own Dafny programs. You can also find more information on automated test generation in [Dafny's reference manual](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-dafny-generate-tests). If you want to try test generation on your own, I recommend using the latest stable Dafny nightly release.
 
 ## 1. Modelling Chess in Dafny
 
