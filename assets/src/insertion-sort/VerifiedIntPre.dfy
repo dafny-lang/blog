@@ -10,7 +10,7 @@ module M1 {
 
 }
 
-module M4 {
+module M2 {
 
   import opened M1
 
@@ -38,3 +38,4 @@ module M4 {
   }
 
 }
+

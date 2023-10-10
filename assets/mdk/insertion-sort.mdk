@@ -77,7 +77,11 @@ Dafny program verifier did not attempt verification
 [1, 2, 4]
 ```
 
-# Verification of Insertion Sort
+# Verifying the Absence of Runtime Errors
+
+<!-- inline-dafny SimpleVerif/M1 -->
+
+# Verifying the Functional Spec: Output Array is Ordered
 
 Let's now verify our implementation of insertion sort. Before we can
 do the actual verification, we need to specify what we expect of
@@ -97,7 +101,7 @@ that of formal mathematics, in a syntax that closely resembles the
 syntax of Dafny's expressions. In Dafny, such a definition is called a
 `predicate`.
 
-<!-- inline-dafny VerifiedInt/M1 -->
+<!-- inline-dafny VerifiedIntPre/M1 -->
 
 There's a lot to unpack in this example. First note that we define a
 predicate `Ordered` with three typed parameters. The first parameter,
@@ -134,6 +138,10 @@ used outside of their intended domain of definition, removing any need
 for checking arguments at runtime and making your code throw an
 exception (hint: Dafny does not have exceptions!), or worse, return a
 dummy value.
+
+<!-- inline-dafny VerifiedIntPre/M2 -->
+
+# Verifying the Functional Spec: Values are Preserved
 
 Our specification of insertion sort is not complete yet. Aside from
 ensuring that the algorithm makes the array ordered, we also need to
@@ -309,7 +317,7 @@ We can now write a `Main` method to test our generic insertion sort.
 
 <!-- inline-dafny VerifiedAbstract/M5 -->
 
-# A More Advanced Example of Verification
+# Verifying the Runtime Complexity
 
 There is a lot more we could prove about our insertion sort
 implementation. For example, you may try to prove that insertion sort
@@ -439,6 +447,10 @@ We can finish our implementation by defining a class, making to
 initialize the counter properly.
 
 <!-- inline-dafny Complexity/M4 -->
+
+# Verifying an Optimization
+
+<!-- inline-dafny Optimized/M1 -->
 
 # Conclusion
 
