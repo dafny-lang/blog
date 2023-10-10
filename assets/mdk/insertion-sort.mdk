@@ -23,28 +23,18 @@ characterized by:
 - Class-based object-orientation, with trait-based inheritance
 - Functional programming features and a module system
 
-It comes with standard tools such as a compiler, support for testing
-and test generation, a VSCode IDE extension, support for projects and
-packaging.
+The key characteristic that makes Dafny quite different from most
+other programming languages is that it is designed with formal
+verification in mind. In Dafny, you can annotate your code to
+mathematically formalize its specification, and verify that your code
+is correct with respect to its specification. Dafny is not just
+designed to support object-oriented programming and functional
+programming, but also verified programming.
 
-There are two characteristics that make Dafny quite different from
-most other programming languages.  First and foremost, Dafny is a
-language designed with formal verification in mind. In Dafny, you can
-annotate your code to mathematically formalize its specification, and
-verify that your code is correct with respect to its specification.
-
-Second, Dafny takes interoperability very seriously. We understand
-that if you have an existing application written in another language,
-the benefits of formal verification don't justify the costs of
-rewriting your application in Dafny. Despite its importance, we will
-not discuss interoperability any further, but this will be the topic
-of other blog posts.
-
-We're going to introduce Dafny and some of its less common concepts
-through a classic example: insertion sort. Ideally, reading through
-will give you a concrete idea of what it feels like to write verified
-software. All you need to follow is some experience with a Java-like
-language  and a vague recollection of insertion sort. 
+We're going to introduce verified programming in Dafny will give you a
+concrete idea of what it feels like to write verified software. All
+you need to follow is some experience with a Java-like language and a
+vague recollection of insertion sort.
 
 # An Unverified Implementation of Insertion Sort
 
@@ -79,14 +69,93 @@ Dafny program verifier did not attempt verification
 
 # Verifying the Absence of Runtime Errors
 
+We start our verification effort by proving the absence of runtime
+errors (no division by 0, indexing outside of the bounds of an array,
+etc...). In a statically and strongly typed language like Java, these
+would take the form of exceptions. In Dafny, however, there are no
+exceptions and one must prove that there is never any reason to throw
+one, so to speak. All we need to do to undertake this verification is
+to remove `{:verify false}`. Doing so would reveal two error messages
+from the verifier, both of which are reported on the line where
+the content of two of the array's locations are swapped.
+
+- `assignment might update an array element not in the enclosing context's modifies clause`
+- `index out of range`
+
+The first error reminds us that in a language like Dafny, a method
+must explicitely be allowed to make modifications to a memory
+reference such as `a`. We therefore need to refine the signature of
+our method with the clause `modifies a`. This aspect of Dafny will not
+play an important role in our example, and it is good enough to know
+that to make reasoning simple and modular, methods in Dafny must be
+explicit about what part of memory they have access to.
+
+The second error reported is more interesting because it raises a key
+question: do we actually have an index out of range access in our
+code, or is it that the automation failed to verify that it is the
+case on its own? In this case, it is the latter, and the verifier
+needs some help in the form of an *invariant*. For concreteness, let's
+consider a version of our code with enough annotation to pass
+verification.
+
 <!-- inline-dafny SimpleVerif/M1 -->
+
+Note that the verified implementation is quite close to the unverified
+one. Aside from the modifies clause, the only difference between the
+unverified implementation and the one for which we verify the absence
+of runtime errors is the invariant statement that is attached to the
+innermost for loop. One of the fundamental design principles of Dafny
+is that programming and verification should be integrated, and you
+should be able to reason about your code directly, in this case by
+directly annotating one of the for loop with a hint for the
+verifier. To understand both why we need such an annotation, but also
+why we *only* need this annotation for verification to pass, it is
+useful to have a vague understanding of how verification works in Dafny.
+
+Our verified insertion sort comes with two key ingredients: code and
+specification. We do not have an explicit specification yet, but we do
+have an implicit one: in order to prove the absence of runtime errors,
+we must ensure that accesses to the array are within bounds, which the
+verifier must establish. To verify that the code meets the spec with
+mathematical certainly, testing will not do. Instead, the Dafny
+compiler transforms the specification and the code into a mathematical
+formula. If we can prove that this mathematical formula is true, then
+the code satisfies the specification. Otherwise it may or may
+not. Proving such mathematical formula would be a lot of work, so
+Dafny makes use of an *automated theorem prover* (ATP) to prove it on
+your behalf.
+
+Alas, ATPs have fundamental limitations and while they excel at
+proving properties of linear code, they need some help with
+loops. Fundamentally, they need to know of properties that are true
+when the loop starts its execution ; remain true after execution of
+the loop ; imply what needs to be true after execution of the
+loops. This is called an invariant property because it captures what
+does not change despite all the complicated changes that may happen
+during execution of the loop.
+
+Without the invariant annotation, the verifier reported that it could
+not establish that `minPos` is within bound. It is indeed difficult to
+establish since it is modified within the loop. However, it should
+always be true that `minPos` is less than `a.Length` since it
+indicates the position of a value in the array that is smaller than
+the one under consideration in the outer loop. Therefore, we can help
+verification by annotation the for loop with `invariant minPos < a.Length`.
+The verifier is not only able to verify that this property
+is indeed an invariant of the loop, but this turns out to be enough
+information for the verification to succeed.
 
 # Verifying the Functional Spec: Output Array is Ordered
 
-Let's now verify our implementation of insertion sort. Before we can
-do the actual verification, we need to specify what we expect of
-insertion sort. First, we need to formalize what it means for an array
-to be ordered.
+While it is generally useful to verify the absence of runtime errors,
+we would now like to verify the specific behavior of our insertion
+sort implementation, its *functional specification*. There are several
+properties that characterize the functional behavior of a sorting
+algorithm, one of which is that once the computation is done, the
+values in the array should be ordered. Before we can do the actual
+verification, we need to specify what we expect of insertion
+sort. First, we need to formalize what it means for an array to be
+ordered.
 
 In English, we might say something like: *Definition: an array is
 ordered if for any non-negative integer value i ranging from 0 to the
@@ -120,12 +189,12 @@ need not be compiled or be included in the executable. In some cases,
 the keyword may be required if the predicate is truly a non-computable
 mathematical formula.
 
-The two *clauses* that follow the declaration of the predicate are
+The two clauses that follow the declaration of the predicate are
 relevant to verification. The first clause, `reads a` makes it
 explicit that the predicate reads the array a. This will not play an
-important role in our example, but in general, this is critical
-information to keep reasoning about heap-allocated objects simple and
-modular.
+important role in our example. It is the dual of the modifies clause
+we encountered previously, and for now it is good enough to know that
+these clauses are important to keep verification simple and modular.
 
 The second clause, `requires left <= right <= a.Length`, is a
 precondition that restricts the definition to values of `left`,
@@ -136,19 +205,34 @@ but this is highly valuable to writing efficient code, since you can
 define partial functions and ensure statically that they will not be
 used outside of their intended domain of definition, removing any need
 for checking arguments at runtime and making your code throw an
-exception (hint: Dafny does not have exceptions!), or worse, return a
+exception (recall: Dafny does not have exceptions!), or worse, return a
 dummy value.
+
+Now that we are done formalizing our specification, we can revisit our
+implementation of insertion sort and ensures, with mathematical
+certainty, that the code satisfies our specification. To attach the
+specification to the implementation, we annotate the method with a
+clause `ensures Ordered(a,0,a.Length)` that establishes that any execution of
+`InsertionSort` should result in an array `a` that satisfies the
+predicate `Ordered(a,0,a.Length)`. We call such clause a postcondition.
 
 <!-- inline-dafny VerifiedIntPre/M2 -->
 
+To help with the verification, we provided more annotation, in the form
+of invariants. Insertion sort works by incrementally ordering the
+array, maintaining the property that the sub-array up to the position
+of the outer index `i` are ordered. We therefore capture this with an
+invariant annotation that we attach to the outer loop
+`invariant Ordered(a,0,i)`.
+
 # Verifying the Functional Spec: Values are Preserved
 
-Our specification of insertion sort is not complete yet. Aside from
-ensuring that the algorithm makes the array ordered, we also need to
-ensure that the values in the array after sorting are the same ones as
-before. More formally, we want to ensure that the multiset of values
-of the array before and after sorting are equal. We capture this
-definition with another predicate, `Preserved`.
+Our functional specification of insertion sort can be improved. Aside
+from ensuring that the algorithm makes the array ordered, we also need
+to ensure that the values in the array after sorting are the same ones
+as before. More formally, we want to ensure that the multiset of
+values of the array before and after sorting are equal. We capture
+this definition with another predicate, `Preserved`.
 
 <!-- inline-dafny VerifiedInt/M2 -->
 
@@ -174,72 +258,27 @@ some method, and the expression `old` that refers to the array before
 execution. Other mentions of `a` refer to that array after execution
 of the method.
 
-We can now combine our two predicates into one, `Sorted`, that will be
-the final specification of our implementation.
+We can combine our two predicates, `Ordered` and `Preserved` into one,
+`Sorted`, that will be the final functional specification of our
+implementation.
 
 <!-- inline-dafny VerifiedInt/M3 -->
 
-Now that we are done formalizing our specification, we can revisit our
-implementation of insertion sort and ensures, with mathematical
-certainty, that the code satisfies our specification. To attach the
-specification to the implementation, we annotate the method with a
-clause `ensures Sorted(a)` that establishes that any execution of
-`InsertionSort` should result in an array `a` that satisfies the
-predicate `Sorted`. We call such clause a postcondition.
+We attach this specification to our method as a postcondition and
+refine our verification efforts accordingly with new invariant
+annotations.
 
 <!-- inline-dafny VerifiedInt/M4 -->
 
-Note that the verified implementation is quite close to the unverified
-one. One of the fundamental design principles of Dafny is that
-programming and verification should be integrated, and in some cases
-you should be able to reason about your code directly, and not a model
-of it. So, in the same way that the specification is attached to the
-declaration, the verification is done by annotating the body of the
-code. The `modifies a` clause does not play an important role in this
-example and is the dual of the reads clause of our predicates. While
-predicates need to be specific about what heap-allocated values they
-read, methods are usually free to read any heap-allocated values but
-need to be specific about which ones they modify. Combined, these two
-kinds of clauses make verification of code that works with
-heap-allocated values surprisingly easy.
-
-The body of the method was modified for verification purposes by
-adding four invariant annotations attached to the loops. To
-understand both why we need such annotations, but also why we *only*
-need such annotations, it is useful to have a vague understanding of
-how verification works.
-
-Our verified insertion sort comes with two key ingredients: code and
-specification. To verify that the code meets the spec with
-mathematical certainly, testing will not do. Instead, the Dafny
-compiler transforms the specification and the code into a mathematical
-formula. If we can prove that this mathematical formula is true, then
-the code satisfies the specification. Otherwise it may or may
-not. Proving such mathematical formula would be a lot of work, so
-Dafny makes use of an *automated theorem prover* (ATP) to prove it on
-your behalf.
-
-Alas, ATPs have fundamental limitations and while they excel at
-proving properties of linear code, they need some help with
-loops. Fundamentally, they need to know of properties that are true
-when the loop starts its execution ; remain true after execution of
-the loop ; imply what needs to be true after execution of the
-loops. This is called an invariant property because it captures what
-does not change despite all the complicated changes that may happen
-during execution of the loop.
-
-To understand these invariants, you know need to think about what
-insertion sort does and simulate its behavior. At every iteration of
-the outer loop, the assumption is that all values at indices less than
-the current index have been sorted. The inner loop then searches for
-the smallest value in the suffix of the array and this value is
-swapped with the value at the current index of the outer loop. We can
-capture these properties as invariants. The invariants of the outer
-loop indeed state that the array is sorted up to index i, not
-included. Meanwhile the invariants of the inner loop capture the
-property that what is currently considered to be the smallest value in
-the suffix of the array is indeed the smallest one we have seen so
-far.
+Unlike `Ordered` which is invariant up to the index `i`, `Preserved`
+is invariant on the entire array and throughout the execution of the
+method, and it is an invariant of the outer loop. Unfortunately, this
+would not be quite enough for the verification to succeed. Note that
+we have not said much about the inner loop yet. It searches for the
+smallest value in the suffix of the array and this value is swapped
+with the value at the current index of the outer loop. It should be
+the case the `minPos` and `minValue` be in sync, and we add the
+invariant `invariant a[minPos] == minValue` to capture this property. 
 
 With these invariant annotations, Dafny can verify on its own, in an
 instant, that the body of the method indeed satisfies the
@@ -374,15 +413,25 @@ complexity property.
 <!-- inline-dafny Complexity/M3 -->
 
 In this case, verification required a little more information than
-just the loop invariants. Note that we have added a few `assert`
-statements that can be understood as hints of a property that ought to
-hold at the position where it is stated. The point of such assertions
-is to break down the proof and provide hints to the ATP by stating
-intermediate properties that can be potentially easier to verify but
-will play a key role in the overall proof. Take `assert
-comparisonCount == (i+1) * a.Length - Sum(i+1);` for example. This is
-letting the verifier know of a useful identity between `Sum` and
-`comparisonCount`.
+just the loop invariants. Also, the invariants are more complicated
+than what you might have expected from the high-level explanation for
+the complexity bound, but it is because in the inner loop, we need to
+keep a precise count of how many comparisons are being done. This is
+the kind of reasoning that is intuitive, difficult to do precisely on
+paper, usually ignored, and the source of subtle errors. Thanks to
+Dafny though, we can flesh out a rigorous argument with confidence
+that the correct expression is `(i + 1 - i)` and not `(i - i)`, for
+example.
+
+Note that we have added a few `assert` statements that can be
+understood as hints of a property that ought to hold at the position
+where it is stated. The point of such assertions is to break down the
+proof and provide hints to the ATP by stating intermediate properties
+that can be potentially easier to verify but will play a key role in
+the overall proof. Take
+`assert comparisonCount == (i+1) * a.Length - Sum(i+1);`
+for example. This is letting the verifier know of a useful
+identity between `Sum` and `comparisonCount`.
 
 Another example, probably much more mysterious, is `assert a[..] ==
 old@L(a[..]);`. It states that the values of the array are the same at
@@ -419,8 +468,9 @@ proved to be maintained by the inner loop.
 
 Since it is an invariant, it should hold at any point within the loop,
 so we can assert it in between every statement to see which one makes
-the verification fail. You will find that it is statement `var cmp :=
-Ltm(a[j], minValue);` that prevents the verification from verifying
+the verification fail. You will find that it is statement
+`var cmp := Ltm(a[j], minValue);`
+that prevents the verification from verifying
 the invariant. Three possibilities:
 
 - The code is actually incorrect
@@ -436,7 +486,7 @@ but nothing else, so it should be the case that `a` is left
 unchanged. This is where it makes sense to assert `a[..] ==
 old@L(a[..]);` to double-check that the verification agrees. In this
 case, not only does it agree, but it also turns out to be the hint the
-verification needs ot succeed.
+verification needs to succeed.
 
 One may feel like the verification should not have required such a
 hint but ATPs are fundamentally bound to miss obvious facts every now
@@ -448,9 +498,50 @@ initialize the counter properly.
 
 <!-- inline-dafny Complexity/M4 -->
 
-# Verifying an Optimization
+# Verifying Backward Compatibility of an Optimization
+
+We have seen three kinds of verification so far:
+
+- Verifying the absence of runtime errors
+- Verifying a functional specification
+- Verifying runtime complexity
+
+There is another very important case we need to mention briefly:
+verification of optimizations. Throughout this introduction, our
+implementation of insertion sort uses an inner loop that identifies
+`minValue` and `minPos` and eventually perform a swap. We could also
+have chosen to perform the swap whenever we identify a new
+`minValue`. This would save two local variables and the condition
+statement following the loop. This may or may not actually be an
+optimization, but for the sake of this discussion, let us assume that
+it is.
+
+If we have the luxury of a functional specification, we may implement
+this optimization and make sure that the functional specification
+continues to hold. But we do not always have the luxury of a function
+specification. First, there may not be a crisp and clear functional
+specification beyond ensuring the absence of runtime errors. Even in
+that case, the functional specification may not be complete (case in
+point, we did not formally verify that our implementation of insertion
+sort is stable).
+
+It is, however, very common for existing code to have been tested and
+used enough that *it* serves as the specification, and the
+verification goal is therefore to show that the optimized code behaves
+like the unoptimized but trusted one. In such a case, ghost variables
+are very handy, as they allow making the old trusted code ghost and
+serve as the specification.
 
 <!-- inline-dafny Optimized/M1 -->
+
+Here, `minValue` has become a ghost variable and the invariant
+maintains that throughout the execution of the inner loop, the value
+`a[i]` is the smallest we have encountered so far. Aside from proving
+the absence of runtime errors, this kind of verification where one
+improves code while proving backward compatibility with respect to the
+ghost version of the old code allows verification effort to deliver a
+high-degree of confidence for a small specification and verification
+effort.
 
 # Conclusion
 
@@ -465,11 +556,3 @@ remains doable. Because Dafny is not just a great programming language
 but also a great proof assistant, one can learn systematic
 methodologies to verify code.
 
-In the end, the only issue standing between you and writing verified
-code isn't the difficulty of verification but rather a costs/benefits
-analysis. If you have an existing application written in another
-language and working well enough, it doesn't make sense to rewrite
-everything in Dafny for some elusive mathematical certainty that your
-code satisfies a specification which could also have its own
-issues. This is where Dafny's second key feature, interoperability,
-comes in, but this is another story...
