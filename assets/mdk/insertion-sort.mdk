@@ -53,7 +53,7 @@ using two local variables declarations, two nested for loops,
 conditional statements, and assignments. Our method is marked as
 `{:verify false}` because we do not want verification to kick in yet.
 
-Lets write a `Main` method to run our program and check that it works,
+Let's write a `Main` method to run our program and check that it works,
 at least on this one example.
 
 <!-- inline-dafny Unverified/M2 -->
@@ -208,13 +208,14 @@ for checking arguments at runtime and making your code throw an
 exception (recall: Dafny does not have exceptions!), or worse, return a
 dummy value.
 
-Now that we are done formalizing our specification, we can revisit our
-implementation of insertion sort and ensures, with mathematical
-certainty, that the code satisfies our specification. To attach the
-specification to the implementation, we annotate the method with a
-clause `ensures Ordered(a,0,a.Length)` that establishes that any execution of
-`InsertionSort` should result in an array `a` that satisfies the
-predicate `Ordered(a,0,a.Length)`. We call such clause a postcondition.
+Now that we are done formalizing what it means for an array to be
+ordered, we can revisit our implementation of insertion sort and
+ensures, with mathematical certainty, that the code satisfies our
+specification. To attach the specification to the implementation, we
+annotate the method with a clause `ensures Ordered(a,0,a.Length)` that
+establishes that any execution of `InsertionSort` should result in an
+array `a` that satisfies the predicate `Ordered(a,0,a.Length)`. We
+call such clause a postcondition.
 
 <!-- inline-dafny VerifiedIntPre/M2 -->
 
@@ -224,6 +225,18 @@ array, maintaining the property that the sub-array up to the position
 of the outer index `i` are ordered. We therefore capture this with an
 invariant annotation that we attach to the outer loop
 `invariant Ordered(a,0,i)`.
+
+This example is a good example of how effective automation can be. The
+verification effort reduces to the specification of a single
+invariant, which captures formally what one might write as a comment
+to justify the correctness of our implementation. In fact, it is not
+even necessary! You could comment it out and verification would still
+succeed. It is still valuable to add for documentation purposes and to
+help the verifier. In fact, you could add more invariant properties to
+confirm your intuition about what the verifier is proving, for example
+by adding the invariant
+`forall k: nat :: i <= k < j ==> minValue <= a[k]`
+to the inner loop.
 
 # Verifying the Functional Spec: Values are Preserved
 
@@ -391,10 +404,10 @@ verification, we declare more specifically that we modify one specfic
 field of the oject as ``modifies this`comparisonCount``.
 
 At a high-level, a pencil-and-paper proof would look something like
-this. Assume that the array is of size l. At every iteration of the
+this. Assume that the array is of size N. At every iteration of the
 outer loop, if the index is at position i, the inner loop will do
-roughly l - i comparison. All in all, it means that the number of
-comparison will be something like l + (l-1) + ... + 1.  In preparation
+roughly N - i comparison. All in all, it means that the number of
+comparison will be something like N + (N-1) + ... + 1.  In preparation
 for reasoning about such a summation, we define a function `Sum`.
 
 <!-- inline-dafny Complexity/M2 -->
@@ -456,7 +469,7 @@ also a full-fledged *proof assistant*. There is a systematic way to
 figure out how to convince Dafny that a result is true if it is indeed
 the case. It may not always be trivial, and it requires some training,
 but you can rest assured that if there is a proof, you ought to be
-able to provide enough information for the verification.
+able to provide enough information for the verification. 
 
 Consider again the obscure case of `assert a[..] == old@L(a[..]);`.
 It would be unrealistic to have to know so much about verification to
@@ -483,10 +496,13 @@ to change array `a`? Of course it is in a sense obvious since it is
 clearly not mentioning `a` but obvious doesn't cut it in formal
 verification. Now, we did specify that the method modifies the field
 but nothing else, so it should be the case that `a` is left
-unchanged. This is where it makes sense to assert `a[..] ==
-old@L(a[..]);` to double-check that the verification agrees. In this
+unchanged. This is where it makes sense to assert
+`a[..] == old@L(a[..]);`
+to double-check that the verification agrees. In this
 case, not only does it agree, but it also turns out to be the hint the
-verification needs to succeed.
+verification needs to succeed. You may be interesting in seeing
+[another example in
+action](https://dafny.org/latest/DafnyRef/DafnyRef#sec-verification-debugging).
 
 One may feel like the verification should not have required such a
 hint but ATPs are fundamentally bound to miss obvious facts every now
