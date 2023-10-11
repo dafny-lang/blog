@@ -159,7 +159,7 @@ ordered.
 
 In English, we might say something like: *Definition: an array is
 ordered if for any non-negative integer value i ranging from 0 to the
-length of the array, excluded, the value at index i is less than the
+length of the array, exclusive, the value at index i is less than the
 value at index i+1*. With more formal notation, we might also say:
 *Definition: an array a of length l is ordered if and only if for all i
 in [0,l), a[i] <= a[i+1]*.
