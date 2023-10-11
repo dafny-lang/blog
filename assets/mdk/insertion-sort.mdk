@@ -129,7 +129,7 @@ Alas, ATPs have fundamental limitations and while they excel at
 proving properties of linear code, they need some help with
 loops. Fundamentally, they need to know of properties that are true
 when the loop starts its execution, remain true after execution of
-the loop ; imply what needs to be true after execution of the
+the loop, and imply what needs to be true after execution of the
 loops. This is called an invariant property because it captures what
 does not change despite all the complicated changes that may happen
 during execution of the loop.
