@@ -47,7 +47,7 @@ insertion sort in Dafny.
 <!-- inline-dafny Unverified/M1 -->
 
 Insertion sort is implemented as a method named `InsertionSort` (which
-needs not belong to a class) that takes as a input parameter an array
+need not belong to a class) that takes as an input parameter an array
 of integers `a` of type `array<int>`.  It sorts the array in place
 using two local variables declarations, two nested for loops,
 conditional statements, and assignments. Our method is marked as
