@@ -327,7 +327,7 @@ is correct with respect to its specification. Dafny is not just
 designed to support object-oriented programming and functional
 programming, but also verified programming.
 </p>
-<p class="p indent" data-line="37"><span data-line="37"></span>We<span data-line="37"></span>&#39;<span data-line="37"></span>re going to introduce verified programming in Dafny will give you a
+<p class="p indent" data-line="37"><span data-line="37"></span>We<span data-line="37"></span>&#39;<span data-line="37"></span>re going to introduce verified programming in Dafny to give a
 concrete idea of what it feels like to write verified software. All
 you need to follow is some experience with a Java-like language and a
 vague recollection of insertion sort.
@@ -360,7 +360,7 @@ insertion sort in Dafny.
     }
   }</code></pre>
 <p class="p noindent para-continued" data-line="74"><span data-line="74"></span>Insertion sort is implemented as a method named <span data-line="74"></span><code class="code code1">InsertionSort</code><span data-line="74"></span> (which
-needs not belong to a class) that takes as a input parameter an array
+need not belong to a class) that takes as an input parameter an array
 of integers <span data-line="76"></span><code class="code code1">a</code><span data-line="76"></span> of type <span data-line="76"></span><code class="code code1">array&lt;int&gt;</code><span data-line="76"></span>.  It sorts the array in place
 using two local variables declarations, two nested for loops,
 conditional statements, and assignments. Our method is marked as
@@ -468,8 +468,8 @@ your behalf.
 <p class="p indent" data-line="188"><span data-line="188"></span>Alas, ATPs have fundamental limitations and while they excel at
 proving properties of linear code, they need some help with
 loops. Fundamentally, they need to know of properties that are true
-when the loop starts its execution ; remain true after execution of
-the loop ; imply what needs to be true after execution of the
+when the loop starts its execution, remain true after execution of
+the loop, and imply what needs to be true after execution of the
 loops. This is called an invariant property because it captures what
 does not change despite all the complicated changes that may happen
 during execution of the loop.
@@ -497,7 +497,7 @@ ordered.
 </p>
 <p class="p indent" data-line="220"><span data-line="220"></span>In English, we might say something like: <span data-line="220"></span><em class="em-star1">Definition: an array is
 ordered if for any non-negative integer value i ranging from 0 to the
-length of the array, excluded, the value at index i is less than the
+length of the array, exclusive, the value at index i is less than the
 value at index i+1</em><span data-line="223"></span>. With more formal notation, we might also say:
 <span data-line="224"></span><em class="em-star1">Definition: an array a of length l is ordered if and only if for all i
 in [0,l), a[i] &lt;= a[i+1]</em><span data-line="225"></span>.
@@ -550,7 +550,7 @@ but this is highly valuable to writing efficient code, since you can
 define partial functions and ensure statically that they will not be
 used outside of their intended domain of definition, removing any need
 for checking arguments at runtime and making your code throw an
-exception (recall: Dafny does not have exceptions!), or worse, return a
+exception (recall: Dafny does not have exceptions!), or worse, returning a
 dummy value.
 </p>
 <p class="p indent" data-line="281"><span data-line="281"></span>Now that we are done formalizing what it means for an array to be

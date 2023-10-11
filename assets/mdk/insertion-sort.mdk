@@ -31,7 +31,7 @@ is correct with respect to its specification. Dafny is not just
 designed to support object-oriented programming and functional
 programming, but also verified programming.
 
-We're going to introduce verified programming in Dafny will give you a
+We're going to introduce verified programming in Dafny to give a
 concrete idea of what it feels like to write verified software. All
 you need to follow is some experience with a Java-like language and a
 vague recollection of insertion sort.
