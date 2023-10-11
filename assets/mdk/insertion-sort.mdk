@@ -205,7 +205,7 @@ but this is highly valuable to writing efficient code, since you can
 define partial functions and ensure statically that they will not be
 used outside of their intended domain of definition, removing any need
 for checking arguments at runtime and making your code throw an
-exception (recall: Dafny does not have exceptions!), or worse, return a
+exception (recall: Dafny does not have exceptions!), or worse, returning a
 dummy value.
 
 Now that we are done formalizing what it means for an array to be
