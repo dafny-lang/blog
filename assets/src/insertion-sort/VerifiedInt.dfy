@@ -42,7 +42,7 @@ module M4 {
   import opened M2
   import opened M3
 
-  method InsertionSort(a: array<int>)
+  method SelectionnSort(a: array<int>)
     modifies a
     ensures Sorted(a)
   {

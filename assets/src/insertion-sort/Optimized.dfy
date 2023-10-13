@@ -1,7 +1,7 @@
 
 module M1 {
 
-  method InsertionSort(a: array<int>)
+  method SelectionSort(a: array<int>)
     modifies a
   {
     for i := 0 to a.Length
