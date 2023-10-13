@@ -1,7 +1,7 @@
 
 module M1 {
 
-  method {:verify false} InsertionSort(a: array<int>)
+  method {:verify false} SelectionSort(a: array<int>)
   {
     for i := 0 to a.Length
     {
@@ -30,7 +30,7 @@ module M2 {
   {
     var a: array<int> := new int[3];
     a[0] := 2; a[1] := 4; a[2] := 1;
-    InsertionSort(a);
+    SelectionSort(a);
     print a[..];
   }
 

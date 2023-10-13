@@ -34,19 +34,19 @@ programming, but also verified programming.
 We're going to introduce verified programming in Dafny to give a
 concrete idea of what it feels like to write verified software. All
 you need to follow is some experience with a Java-like language and a
-vague recollection of insertion sort.
+vague recollection of selection sort.
 
-# An Unverified Implementation of Insertion Sort
+# An Unverified Implementation of Selection Sort
 
 Dafny is a full-fledged programming language and you may even want to
 use it if you have no interest in verification whatsoever. In fact,
 writing unverified Dafny program is a good way to get familiarity with
 the language.  Following is one possible implementation of
-insertion sort in Dafny.
+selection sort in Dafny.
 
 <!-- inline-dafny Unverified/M1 -->
 
-Insertion sort is implemented as a method named `InsertionSort` (which
+Selection sort is implemented as a method named `SelectionSort` (which
 need not belong to a class) that takes as an input parameter an array
 of integers `a` of type `array<int>`.  It sorts the array in place
 using two local variables declarations, two nested for loops,
@@ -112,7 +112,7 @@ verifier. To understand both why we need such an annotation, but also
 why we *only* need this annotation for verification to pass, it is
 useful to have a vague understanding of how verification works in Dafny.
 
-Our verified insertion sort comes with two key ingredients: code and
+Our verified selection sort comes with two key ingredients: code and
 specification. We do not have an explicit specification yet, but we do
 have an implicit one: in order to prove the absence of runtime errors,
 we must ensure that accesses to the array are within bounds, which the
@@ -148,12 +148,12 @@ information for the verification to succeed.
 # Verifying the Functional Spec: Output Array is Ordered
 
 While it is generally useful to verify the absence of runtime errors,
-we would now like to verify the specific behavior of our insertion
+we would now like to verify the specific behavior of our selection
 sort implementation, its *functional specification*. There are several
 properties that characterize the functional behavior of a sorting
 algorithm, one of which is that once the computation is done, the
 values in the array should be ordered. Before we can do the actual
-verification, we need to specify what we expect of insertion
+verification, we need to specify what we expect of selection
 sort. First, we need to formalize what it means for an array to be
 ordered.
 
@@ -178,8 +178,9 @@ predicate `Ordered` with three typed parameters. The first parameter,
 us to generalize the definition to a sub-range, which will be useful
 later on.
 
-The body of the predicate, `forall i: nat :: 0 < left <= i < right ==>
-a[i-1] <= a[i]`, is the definition itself. This definition is a
+The body of the predicate,
+`forall i: nat :: 0 < left <= i < right ==> a[i-1] <= a[i]`,
+is the definition itself. This definition is a
 mathematical proposition, as hinted by the keyword `forall`. This
 proposition may or may not be computable.
 
@@ -209,20 +210,20 @@ exception (recall: Dafny does not have exceptions!), or worse, returning a
 dummy value.
 
 Now that we are done formalizing what it means for an array to be
-ordered, we can revisit our implementation of insertion sort and
+ordered, we can revisit our implementation of selection sort and
 ensures, with mathematical certainty, that the code satisfies our
 specification. To attach the specification to the implementation, we
 annotate the method with a clause `ensures Ordered(a,0,a.Length)` that
-establishes that any execution of `InsertionSort` should result in an
+establishes that any execution of `SelectionSort` should result in an
 array `a` that satisfies the predicate `Ordered(a,0,a.Length)`. We
 call such clause a postcondition.
 
 <!-- inline-dafny VerifiedIntPre/M2 -->
 
 To help with the verification, we provided more annotation, in the form
-of invariants. Insertion sort works by incrementally ordering the
+of invariants. Selection sort works by incrementally ordering the
 array, maintaining the property that the sub-array up to the position
-of the outer index `i` are ordered. We therefore capture this with an
+of the outer index `i` is ordered. We therefore capture this with an
 invariant annotation that we attach to the outer loop
 `invariant Ordered(a,0,i)`.
 
@@ -240,7 +241,7 @@ to the inner loop.
 
 # Verifying the Functional Spec: Values are Preserved
 
-Our functional specification of insertion sort can be improved. Aside
+Our functional specification of selection sort can be improved. Aside
 from ensuring that the algorithm makes the array ordered, we also need
 to ensure that the values in the array after sorting are the same ones
 as before. More formally, we want to ensure that the multiset of
@@ -255,16 +256,16 @@ but two of Dafny's built-in collection types. The subexpression
 `a[left..right]` transforms the sub-array into a *sequence* (or list)
 of values. The expression `multiset(a[left..right])` creates a
 multiset from that sequence. You might think that while this notation
-is conveniently succint, the performance of this code will suffer, but
+is conveniently succinct, the performance of this code will suffer, but
 remember, this is part of the specification, and this will have no
-impact on the runtime performance of our insertion sort
+impact on the runtime performance of our selection sort
 implementation.
 
 Second, note that while predicate `Ordered` captures a property that
 is intrinsic to the array, our new predicate is meant to capture a
-relation between the input and the output of insertion
+relation between the input and the output of selection
 sort. Therefore, we need to be able to refer to the array both before
-execution of insertion sort and after. This is done thanks to the use
+execution of selection sort and after. This is done thanks to the use
 of the `twostate` prefix that declares that the predicate is a
 relation between a heap-allocated object before and after execution of
 some method, and the expression `old` that refers to the array before
@@ -290,7 +291,7 @@ would not be quite enough for the verification to succeed. Note that
 we have not said much about the inner loop yet. It searches for the
 smallest value in the suffix of the array and this value is swapped
 with the value at the current index of the outer loop. It should be
-the case the `minPos` and `minValue` be in sync, and we add the
+the case that `minPos` and `minValue` be in sync, and we add the
 invariant `invariant a[minPos] == minValue` to capture this property. 
 
 With these invariant annotations, Dafny can verify on its own, in an
@@ -298,7 +299,7 @@ instant, that the body of the method indeed satisfies the
 postcondition, which specifies that the array is ordered and contains
 the same values as when the method was called.
 
-# Generic Insertion Sort
+# Generic Selection Sort
 
 To keep things simple, we have thus far assumed that the input array
 contains integers. Now we would like to abstract our implementation so
@@ -332,7 +333,7 @@ will group together our predicates for specification.
 
 <!-- inline-dafny VerifiedAbstract/M2 -->
 
-We can now define insertion sort in a trait `InsertionSort` where the
+We can now define selection sort in a trait `SelectionSort` where the
 type of values is abstract but extends the traits `Comparable` and
 `Sorted`.
 
@@ -342,8 +343,8 @@ Dafny is designed in such a way that verification is unaffected by
 this abstraction and the verification effort is unchanged.
 
 Traits, unlike classes, cannot be instantiated, so if we want to use
-our insertion sort implementation, we need to define a class that
-extends the trait. You might wonder why we did not define insertion
+our selection sort implementation, we need to define a class that
+extends the trait. You might wonder why we did not define selection
 sort in a class directly: it is because in Dafny, a class cannot
 extend another class! This unusual design ensures that you can benefit
 from multiple inheritance while keeping verification reasonable
@@ -352,7 +353,7 @@ following the core precepts of object-oriented programming:
 inheritance, subtyping, late binding, overriding, encapsulation, and
 dynamic dispatch. 
 
-We therefore define a class `Sort` that extends `InsertionSort` and
+We therefore define a class `Sort` that extends `SelectionSort` and
 complete its implementation.
 
 <!-- inline-dafny VerifiedAbstract/M4 -->
@@ -365,22 +366,22 @@ a glimpse of the functional programming side of Dafny: it
 is possible to pass a function as an argument to a
 method/function/constructor and to store it in a field.
 
-We can now write a `Main` method to test our generic insertion sort.
+We can now write a `Main` method to test our generic selection sort.
 
 <!-- inline-dafny VerifiedAbstract/M5 -->
 
 # Verifying the Runtime Complexity
 
-There is a lot more we could prove about our insertion sort
-implementation. For example, you may try to prove that insertion sort
+There is a lot more we could prove about our selection sort
+implementation. For example, you may try to prove that selection sort
 is stable. Instead, we will prove properties about the runtime
 complexity of our implementation. This will give us a chance to
 introduce more interesting concepts. Recall that when studying the
 runtime complexity of a sorting algorithm we usually count either the
 number of comparisons, or the number of swaps. In this example, we
 will focus on establishing a bound on the number of comparisons. More
-specifically, we want to show that if the input array is of size n,
-the number of comparisons will be less than n * n.
+specifically, we want to show that if the input array is of size N,
+the number of comparisons will be less than N * N.
 
 To that end, we extend trait `Comparable` to define a new trait
 `Measurable`. The purpose of this trait is to keep track of the number
@@ -401,12 +402,12 @@ the statement that increments it will be removed by the
 compiler. Because `Ltm` modifies the state of the object it belongs
 to, it needs to declare `modifies this`. In fact, to simplify
 verification, we declare more specifically that we modify one specfic
-field of the oject as ``modifies this`comparisonCount``.
+field of the object as ``modifies this`comparisonCount``.
 
 At a high-level, a pencil-and-paper proof would look something like
 this. Assume that the array is of size N. At every iteration of the
 outer loop, if the index is at position i, the inner loop will do
-roughly N - i comparison. All in all, it means that the number of
+roughly N - i comparisons. All in all, it means that the number of
 comparison will be something like N + (N-1) + ... + 1.  In preparation
 for reasoning about such a summation, we define a function `Sum`.
 
@@ -428,7 +429,7 @@ complexity property.
 In this case, verification required a little more information than
 just the loop invariants. Also, the invariants are more complicated
 than what you might have expected from the high-level explanation for
-the complexity bound, but it is because in the inner loop, we need to
+the complexity bound, but this is because in the inner loop, we need to
 keep a precise count of how many comparisons are being done. This is
 the kind of reasoning that is intuitive, difficult to do precisely on
 paper, usually ignored, and the source of subtle errors. Thanks to
@@ -446,8 +447,9 @@ the overall proof. Take
 for example. This is letting the verifier know of a useful
 identity between `Sum` and `comparisonCount`.
 
-Another example, probably much more mysterious, is `assert a[..] ==
-old@L(a[..]);`. It states that the values of the array are the same at
+Another example, probably much more mysterious, is
+`assert a[..] == old@L(a[..]);`.
+It states that the values of the array are the same at
 the point in the program labeled `L` and the one where the assertion
 is made. By default, the `old` expression refers to the state of the
 method at the beginning of execution, but it can be modulated to refer
@@ -455,7 +457,7 @@ to a specific line in the body of the statement.
 
 You may try to understand what these assertions mean and why they are
 useful, but the point of this discussion isn't to understand how to
-verify the complexity of insertion sort, but rather to address the
+verify the complexity of selection sort, but rather to address the
 most important frustrations of new Dafny users: how do we know what
 assertions to make and where? In hindsight, all these assertions might
 seem true and relevant, but it doesn't say anything about how to come
@@ -509,8 +511,7 @@ hint but ATPs are fundamentally bound to miss obvious facts every now
 and then. It is not a bug of the verifier, merely an unfortunate and
 perhaps unavoidable case of incompleteness of its proving capability. 
 
-We can finish our implementation by defining a class, making to
-initialize the counter properly.
+We can finish our implementation by defining a class to extend these traits.
 
 <!-- inline-dafny Complexity/M4 -->
 
@@ -524,8 +525,8 @@ We have seen three kinds of verification so far:
 
 There is another very important case we need to mention briefly:
 verification of optimizations. Throughout this introduction, our
-implementation of insertion sort uses an inner loop that identifies
-`minValue` and `minPos` and eventually perform a swap. We could also
+implementation of selection sort uses an inner loop that identifies
+`minValue` and `minPos` and eventually performs a swap. We could also
 have chosen to perform the swap whenever we identify a new
 `minValue`. This would save two local variables and the condition
 statement following the loop. This may or may not actually be an
@@ -534,11 +535,11 @@ it is.
 
 If we have the luxury of a functional specification, we may implement
 this optimization and make sure that the functional specification
-continues to hold. But we do not always have the luxury of a function
+continues to hold. But we do not always have such a functional
 specification. First, there may not be a crisp and clear functional
 specification beyond ensuring the absence of runtime errors. Even in
 that case, the functional specification may not be complete (case in
-point, we did not formally verify that our implementation of insertion
+point, we did not formally verify that our implementation of selection
 sort is stable).
 
 It is, however, very common for existing code to have been tested and
@@ -564,7 +565,7 @@ effort.
 Hopefully, this example gives a concrete idea of what program
 specification and verification feels like, and shows that it is not
 limited to toy academic languages. Proving the functional correctness
-of insertion sort shows that even for such a non-trivial properties,
+of selection sort shows that even for such a non-trivial properties,
 automation is good enough to keep the verification effort
 low. Moreover, the complexity example shows that while more abstract
 and mathematical properties may require more work, verification

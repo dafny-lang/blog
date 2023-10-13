@@ -69,9 +69,9 @@ module M3 {
   import opened M1
   import opened M2
 
-  trait {:termination false} InsertionSort<T(==)> extends Comparable<T>, Measurable<T>, Sorted<T> {
+  trait {:termination false} SelectionSort<T(==)> extends Comparable<T>, Measurable<T>, Sorted<T> {
 
-    method InsertionSort(a: array<T>)
+    method SelectionSort(a: array<T>)
       modifies a, this
       requires comparisonCount == 0
       ensures Sorted(a)
@@ -118,7 +118,7 @@ module M4 {
   import opened M1
   import opened M3
 
-  class Sort<T(==)> extends InsertionSort<T> {
+  class Sort<T(==)> extends SelectionSort<T> {
 
     const CMP: (T,T) -> bool
 
@@ -150,7 +150,7 @@ module M5 {
     var a: array<int> := new int[3];
     a[0] := 2; a[1] := 4; a[2] := 1;
     var Sort := new Sort((x: int, y: int) => x < y);
-    Sort.InsertionSort(a);
+    Sort.SelectionSort(a);
     print a[..];
   }
 

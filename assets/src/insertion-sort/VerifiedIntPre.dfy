@@ -14,7 +14,7 @@ module M2 {
 
   import opened M1
 
-  method InsertionSort(a: array<int>)
+  method SelectionSort(a: array<int>)
     modifies a
     ensures Ordered(a,0,a.Length)
   {
