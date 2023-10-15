@@ -10,7 +10,7 @@ In this example, Dafny has to position pieces on a chess board in such a way tha
 
 This post is divided into several sections. [Section 1](#1-modelling-chess-in-dafny) outlines a subset of chess rules using Dafny. This code serves as a reference point throughout the post. In [Section 2](#2-test-generation-basics), I demonstrate the basics of test generation and discuss the different coverage metrics you can target. [Section 3](#3-there-is-dead-code-here) deals with visualizing coverage and identifying dead code. [Section 4](#sec-quantifiers-loops-and-recursion) offers an in depth discussion of quantifiers, loops, and recursion — features that require special care when attempting to generate tests. Finally, the [summary section](#conclusions-and-best-practices) provides general guidelines for how to apply this technique to your own Dafny programs. You can also find more information on automated test generation in [Dafny's reference manual](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-dafny-generate-tests). If you want to try test generation on your own, I recommend using the latest stable Dafny nightly release.
 
-## 1. Modelling Chess in Dafny
+## 1. Modeling Chess in Dafny
 
 Chess is played on an 8 by 8 board with white and black pieces. A king of either color is considered *checked* if it is under threat from a piece of the opposite color. The game reaches its conclusion with a *checkmate* when there is no feasible way to escape a check in a single move. Let's say you're interested in understanding the different scenarios in which a white king can be put in check by two black knights and two black pawns. If you write down the relevant chess rules in Dafny, you can employ test generation to infer all the interesting cases.
 
