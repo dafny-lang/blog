@@ -73,6 +73,7 @@ module Chess {
       print "White king is safe\n";
     }
     if CheckmatedByPlayer(board, whiteKing, Black) {
+      expect CheckedByPlayer(board, whiteKing, Black);
       print "It is checkmate for white\n";
     } else {
       print "No checkmate yet\n"; 

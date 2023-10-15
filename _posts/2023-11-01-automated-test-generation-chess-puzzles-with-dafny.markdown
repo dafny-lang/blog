@@ -34,6 +34,7 @@ method {:testEntry} Describe(board: ValidBoard) {
     print "White king is safe\n";
   }
   if CheckmatedByPlayer(board, whiteKing, Black) {
+    expect CheckedByPlayer(board, whiteKing, Black);
     print "It is checkmate for white\n";
   } else {
     print "No checkmate yet\n"; 
@@ -41,6 +42,8 @@ method {:testEntry} Describe(board: ValidBoard) {
 }
 {% endhighlight %}
 </div><!--.file-->
+
+Note that I also added an `expect` statement in the code. An `expect` statement is checked to be true at runtime and triggers a runtime exception if the check fails. In our case, the `expect` statement is trivially true (a checkmate always implies a check) and every test we generate passes it. In fact, if you were to turn this `expect` statement into an assertion, Dafny would prove it. Not every `expect` statement can be proven, however, especially in the presence of external libraries. You can read more about `expect` statements <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-expect-statement">here</a>.
 
 Now that we have all the code, you can wrap it around in a module (click <a href="/blog/assets/src/chess.dfy">here</a> to download the source code and <a href="/blog/assets/src/chessWithQuantifiers.dfy">here</a> to download the optimized version I discuss in Section 4) and run Dafny test generation like so:
 
@@ -86,7 +89,7 @@ Oftentimes, you would want to translate the tests from Dafny code to some other 
 {% include test-generation-svgs/block-no-inlining/1.svg %}
 </center>
 
-The image on the right shows a checkmate and the image on the left corresponds to the absence of either a checkmate or a check. These two tests cover all the statement within the test entry method and, therefore, provide complete statement coverage. Dafny is not always guaranteed to generate the minimum number of tests required for complete coverage but it does so here. Note that there is no test for the case in which the king is checked but can escape. Dafny could have generated such a test but under the block coverage criterion it is not required to do so, provided it can achieve full coverage by other means. 
+The image on the right shows a checkmate and the image on the left corresponds to the absence of either a checkmate or a check. These two tests cover all the statement within the test entry method and, therefore, provide complete statement coverage of that method. Dafny is not always guaranteed to generate the minimum number of tests required for complete coverage but here it does just that. Note that there is no test for the case in which the king is checked but can escape. Dafny could have generated such a test but under the block coverage criterion it is not required to do so, provided it can achieve full coverage by other means. 
 
 To expand the set of tests Dafny generates we can instead prompt it to target path-coverage - the most expensive form of coverage Dafny supports. The relevant command is
 
