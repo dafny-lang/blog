@@ -86,7 +86,9 @@ Oftentimes, you would want to translate the tests from Dafny code to some other 
 {% include test-generation-svgs/block-no-inlining/1.svg %}
 </center>
 
-The image on the right shows a checkmate and the image on the left corresponds to the absence of either a checkmate or a check. While the exact configurations will depend on the version of Dafny you are using, you will always get two tests and there will never be a test for the case in which the king is checked but can escape. This is because under the block coverage criteria, such a test is unnecessary - there is no one statement in the target method that this test would cover that the two existing ones do not. To expand the set of tests Dafny generates we can instead prompt it to target path-coverage - the most expensive form of coverage Dafny supports. The relevant command is
+The image on the right shows a checkmate and the image on the left corresponds to the absence of either a checkmate or a check. While the exact configurations will depend on the version of Dafny you are using, you will always get two tests and there will never be a test for the case in which the king is checked but can escape. This is because under the block coverage criteria, such a test is unnecessary - there is no one statement in the target method that this test would cover that the two existing ones do not.
+
+To expand the set of tests Dafny generates we can instead prompt it to target path-coverage - the most expensive form of coverage Dafny supports. The relevant command is
 
 <br>
 `dafny generate-tests Path chess.dfy`
