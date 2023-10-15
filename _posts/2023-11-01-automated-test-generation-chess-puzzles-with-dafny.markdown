@@ -29,14 +29,14 @@ Let us first define the method we want to test, called `Describe`, which prints 
 method {:testEntry} Describe(board: ValidBoard) {
   var whiteKing := board.pieces[0];
   if CheckedByPlayer(board, whiteKing, Black) {
-    print("White king is in check\n");
+    print "White king is in check\n";
   } else {
-    print("White king is safe\n");
+    print "White king is safe\n";
   }
   if CheckmatedByPlayer(board, whiteKing, Black) {
-    print("It is checkmate for white\n");
+    print "It is checkmate for white\n";
   } else {
-    print("No checkmate yet\n"); 
+    print "No checkmate yet\n"; 
   }
 }
 {% endhighlight %}
