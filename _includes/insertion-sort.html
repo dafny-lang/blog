@@ -1,0 +1,1164 @@
+<html lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="generator" content="Madoko, version 1.2.3" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <style type="text/css"  class="link">
+  /*# sourceURL=madoko.css */
+  
+  .madoko .toc>.tocblock .tocblock .tocblock {
+    margin-left: 2.25em;
+  }
+  .madoko .toc>.tocblock .tocblock {
+    margin-left: 1.5em;
+  }
+  .madoko .toc-contents>.tocblock>.tocitem {
+    font-weight: bold;
+  }
+  .madoko .toc {
+    margin-top: 1em;
+  }
+  .madoko p.para-continue {
+    margin-bottom: 0pt;
+  }
+  .madoko .para-block+p {
+    margin-top: 0pt;
+  }
+  .madoko ul.para-block, .madoko ol.para-block {
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+  }
+  .madoko ul.para-end, .madoko ol.para-end {
+    margin-bottom: 1em;
+  }
+  .madoko dl {
+    margin-left: 0em;
+  }
+  .madoko blockquote {
+    font-style: italic;
+  }
+  .madoko a.localref {
+    text-decoration: none;
+  }
+  .madoko a.localref:hover {
+    text-decoration: underline;
+  }
+  .madoko .footnotes {
+    font-size: smaller;
+    margin-top: 2em;
+  }
+  .madoko .footnotes hr {
+    width: 50%;
+    text-align: left;
+  }
+  .madoko .footnote {
+    margin-left: 1em;
+  }
+  .madoko .footnote-before {
+    margin-left: -1em;
+    width: 1em;
+    display: inline-block;
+  }
+  .madoko .align-center, .madoko .align-center>p {
+    text-align: center !important;
+  }
+  .madoko .align-center pre {
+    text-align: left;
+  }
+  .madoko .align-center>* {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-left, .madoko .align-left>p {
+    text-align: left !important;
+  }
+  .madoko .align-left>* {
+    margin-left: 0pt !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-right, .madoko .align-right>p {
+    text-align: right !important;
+  }
+  .madoko .align-right>* {
+    margin-left: auto !important;
+    margin-right: 0pt !important;
+  }
+  .madoko .align-center>table,
+  .madoko .align-left>table,
+  .madoko .align-right>table {
+    text-align: left !important;
+  }
+  .madoko .equation-before {
+    float: right;
+  }
+  .madoko .bibitem {
+    font-size: smaller;
+  }
+  .madoko .bibsearch {
+    font-size: x-small;
+    text-decoration:none;
+    color: black;
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  .madoko .block, .madoko .figure, .madoko .bibitem, .madoko .equation, .madoko div.math {
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .figure {
+    padding: 0.5em;
+    margin-left: 0pt;
+    margin-right: 0pt;
+  }
+  .madoko .hidden {
+    display: none;
+  }
+  .madoko .invisible {
+    visibility: hidden;
+  }
+  .madoko.preview .invisible {
+    visibility: visible;
+    opacity: 0.5;
+  }
+  .madoko code.code, .madoko span.code {
+    white-space: pre-wrap;
+  }
+  .madoko hr, hr.madoko {
+    border: none;
+    border-bottom: black solid 1px;
+    margin-bottom: 0.5ex;
+  }
+  .madoko .framed>*:first-child {
+    margin-top: 0pt;
+  }
+  .madoko .framed>*:last-child {
+    margin-bottom: 0pt;
+  }
+  .madoko ul.list-style-type-dash {
+      list-style-type: none !important;
+  }
+  .madoko ul.list-style-type-dash > li:before {
+      content: "\2013";
+      position: absolute;
+      margin-left: -1em;
+  }
+  .madoko table.madoko {
+    border-collapse: collapse;
+  }
+  .madoko td, .madoko th {
+    padding: 0ex 0.5ex;
+    margin: 0pt;
+    vertical-align: top;
+  }
+  .madoko .cell-border-left {
+    border-left: 1px solid black;
+  }
+  .madoko .cell-border-right {
+    border-right: 1px solid black;
+  }
+  .madoko thead>tr:first-child>.cell-line,
+  .madoko tbody:first-child>tr:first-child>.cell-line {
+    border-top: 1px solid black;
+    border-bottom: none;
+  }
+  .madoko .cell-line, .madoko .cell-double-line {
+    border-bottom: 1px solid black;
+    border-top: none;
+  }
+  .madoko .cell-double-line {
+    border-top: 1px solid black;
+    padding-top: 1.5px !important;
+  }
+  .madoko .input-mathpre .MathJax_Display {
+    text-align: left !important;
+  }
+  .madoko div.input-mathpre {
+    text-align: left;
+    margin-top: 1.5ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .math-rendering {
+    text-align: left;
+    white-space: pre;
+    color: gray;
+  }
+  .madoko .mathdisplay {
+    text-align: center;
+  }
+  .madoko span.math-rendering {
+    display:inline-block;
+    width:8em;
+    overflow-x:auto;
+    font-size:70%;
+  }
+  .madoko span.math-rendering::-webkit-scrollbar {
+    width:4px;
+  }
+  .madoko .pretty table {
+    border-collapse: collapse;
+  }
+  .madoko .pretty td {
+    padding: 0em;
+  }
+  .madoko .pretty td.empty {
+    min-width: 1.5ex;
+  }
+  .madoko .pretty td.expander {
+    width: 100em;
+  }
+  body.madoko, .madoko .serif {
+    font-family: Cambria,"Times New Roman","Liberation Serif","Times",serif;
+  }
+  .madoko .sans-serif {
+    font-family: "Calibri", "Optima", sans-serif;
+  }
+  .madoko .symbol {
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  body.madoko {
+    -webkit-text-size-adjust: 100%;       
+    text-rendering: optimizeLegibility;
+  }
+  body.madoko {
+    max-width: 88ex; 
+    margin: 1em auto;
+    padding: 0em 2em;
+  }
+  body.preview.madoko {
+    padding: 0em 1em;
+  }
+  .madoko p {
+    text-align: justify;
+  }
+  .madoko h1, .madoko h2, .madoko h3, .madoko h4 {
+    margin-top: 1.22em;
+    margin-bottom: 1ex;
+  }
+  .madoko h1+p, .madoko h2+p, .madoko h3+p, .madoko h4+p, .madoko h5+p  {
+    margin-top: 1ex;
+  }
+  .madoko h5, .madoko h6 {
+    margin-top: 1ex;
+    font-size: 1em;
+  }
+  .madoko h5 {
+    margin-bottom: 0.5ex;
+  }
+  .madoko h5 + p {
+    margin-top: 0.5ex;
+  }
+  .madoko h6 {
+    margin-bottom: 0pt;
+  }
+  .madoko h6 + p {
+    margin-top: 0pt;
+  }
+  .madoko pre, .madoko code, .madoko kbd, .madoko samp, .madoko tt,
+  .madoko .monospace, .madoko .token-indent, .madoko .reveal pre, .madoko .reveal code, .madoko .email {
+    font-family: Consolas,"Andale Mono WT","Andale Mono",Lucida Console,Monaco,monospace,monospace;
+    font-size: 0.85em;
+  }
+  .madoko pre code, .madoko .token-indent {
+    font-size: 0.95em;
+  }
+  .madoko pre code {
+    font-family: inherit !important;
+  }
+  .madoko ol.linenums li {
+    background-color: white;
+    list-style-type: decimal;
+  }
+  .madoko .remote {
+    background-color: #F0FFF0;
+  }
+  .madoko .remote + * {
+    margin-top: 0pt;
+  }
+  @media print {
+    body.madoko {
+      font-size: 10pt;
+    }
+    @page {
+      margin: 1in 1.5in;
+    }
+  }
+  @media only screen and (max-device-width:1024px) {
+    body.madoko {
+      padding: 0em 0.5em;
+    }
+    .madoko li {
+      text-align: left;
+    }
+  }
+  
+    </style>
+  
+  <style>
+    body.madoko {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .page-content {
+        padding: 0;
+      }
+  </style>
+  </head>
+<body class="madoko">
+
+<div class="body madoko" style="line-adjust:0">
+<h2 id="sec-introduction" class="h1" data-line="19" data-heading-depth="1" style="display:block"><span data-line="19"></span>Introduction</h2>
+<p class="p noindent" data-line="21"><span data-line="21"></span>Dafny is a programming language. It should be familiar to anyone with
+experience with languages like Java or C<span data-line="22"></span>#<span data-line="22"></span>.  In a nutshell, it is
+characterized by:
+</p>
+<ul class="ul list-dash compact" data-line="25">
+<li class="li ul-li list-dash-li compact-li" data-line="25"><span data-line="25"></span>A strong and static type system
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="26"><span data-line="26"></span>Class-based object-orientation, with trait-based inheritance
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="27"><span data-line="27"></span>Functional programming features and a module system
+</li></ul>
+
+<p class="p noindent" data-line="29"><span data-line="29"></span>The key characteristic that makes Dafny quite different from most
+other programming languages is that it is designed with formal
+verification in mind. In Dafny, you can annotate your code to
+mathematically formalize its specification, and verify that your code
+is correct with respect to its specification. Dafny is not just
+designed to support object-oriented programming and functional
+programming, but also verified programming.
+</p>
+<p class="p indent" data-line="37"><span data-line="37"></span>We<span data-line="37"></span>&#39;<span data-line="37"></span>re going to introduce verified programming in Dafny to give a
+concrete idea of what it feels like to write verified software. All
+you need to follow is some experience with a Java-like language and a
+vague recollection of selection sort.
+</p><h2 id="sec-an-unverified-implementation-of-selection-sort" class="h1" data-line="42" data-heading-depth="1" style="display:block"><span data-line="42"></span>An Unverified Implementation of Selection Sort</h2>
+<p class="p noindent" data-line="44"><span data-line="44"></span>Dafny is a full-fledged programming language and you may even want to
+use it if you have no interest in verification whatsoever. In fact,
+writing unverified Dafny program is a good way to get familiarity with
+the language.  Following is one possible implementation of
+selection sort in Dafny.
+</p><!-- inline-dafny Unverified/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="52" data-line-first="53" style="display:block"><code data-line="53">  <span style="color:blue">method</span> {<span style="color:purple">:verify</span> <span style="color:blue">false</span>} SelectionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+  {
+    <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+    {
+      <span style="color:blue">var</span> minValue := a[i];
+      <span style="color:blue">var</span> minPos := i;
+      <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue := a[j];
+          minPos := j;
+        }
+      }
+      <span style="color:blue">if</span> i != minPos {
+        a[i], a[minPos] := minValue, a[i];
+      }
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="74"><span data-line="74"></span>Selection sort is implemented as a method named <span data-line="74"></span><code class="code code1">SelectionSort</code><span data-line="74"></span> (which
+need not belong to a class) that takes as an input parameter an array
+of integers <span data-line="76"></span><code class="code code1">a</code><span data-line="76"></span> of type <span data-line="76"></span><code class="code code1">array&lt;int&gt;</code><span data-line="76"></span>.  It sorts the array in place
+using two local variables declarations, two nested for loops,
+conditional statements, and assignments. Our method is marked as
+<span data-line="79"></span><code class="code code1">{:verify false}</code><span data-line="79"></span> because we do not want verification to kick in yet.
+</p>
+<p class="p indent" data-line="81"><span data-line="81"></span>Let<span data-line="81"></span>&#39;<span data-line="81"></span>s write a <span data-line="81"></span><code class="code code1">Main</code><span data-line="81"></span> method to run our program and check that it works,
+at least on this one example.
+</p><!-- inline-dafny Unverified/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="86" data-line-first="87" style="display:block"><code data-line="87">  <span style="color:blue">method</span> Main()
+  {
+    <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; := <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
+    a[<span class="constant" style="color:purple">0</span>] := <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] := <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] := <span class="constant" style="color:purple">1</span>;
+    SelectionSort(a);
+    <span style="color:blue">print</span> a[..];
+  }</code></pre>
+<p class="p noindent para-continued" data-line="97"><span data-line="97"></span>If you copy and paste these two methods into a file, say <span data-line="97"></span><code class="code code1">isort.dfy</code><span data-line="97"></span>,
+install dafny, and run <span data-line="98"></span><code class="code code1">dafny run isort.dfy</code><span data-line="98"></span> on the command line, you
+will see the message:
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="101" data-line-first="102" style="display:block"><code data-line="102">Dafny program verifier did not attempt verification
+[1, 2, 4]</code></pre><h2 id="sec-verifying-the-absence-of-runtime-errors" class="h1" data-line="106" data-heading-depth="1" style="display:block"><span data-line="106"></span>Verifying the Absence of Runtime Errors</h2>
+<p class="p noindent" data-line="108"><span data-line="108"></span>We start our verification effort by proving the absence of runtime
+errors (no division by 0, indexing outside of the bounds of an array,
+etc<span data-line="110"></span>&#8230;<span data-line="110"></span>). In a statically and strongly typed language like Java, these
+would take the form of exceptions. In Dafny, however, there are no
+exceptions and one must prove that there is never any reason to throw
+one, so to speak. All we need to do to undertake this verification is
+to remove <span data-line="114"></span><code class="code code1">{:verify false}</code><span data-line="114"></span>. Doing so would reveal two error messages
+from the verifier, both of which are reported on the line where
+the content of two of the array<span data-line="116"></span>&#39;<span data-line="116"></span>s locations are swapped.
+</p>
+<ul class="ul list-dash compact" data-line="118">
+<li class="li ul-li list-dash-li compact-li" data-line="118"><span data-line="118"></span><code class="code code1">assignment might update an array element not in the enclosing context&#39;s modifies clause</code><span data-line="118"></span>
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="119"><span data-line="119"></span><code class="code code1">index out of range</code><span data-line="119"></span>
+</li></ul>
+
+<p class="p noindent" data-line="121"><span data-line="121"></span>The first error reminds us that in a language like Dafny, a method
+must explicitely be allowed to make modifications to a memory
+reference such as <span data-line="123"></span><code class="code code1">a</code><span data-line="123"></span>. We therefore need to refine the signature of
+our method with the clause <span data-line="124"></span><code class="code code1">modifies a</code><span data-line="124"></span>. This aspect of Dafny will not
+play an important role in our example, and it is good enough to know
+that to make reasoning simple and modular, methods in Dafny must be
+explicit about what part of memory they have access to.
+</p>
+<p class="p indent" data-line="129"><span data-line="129"></span>The second error reported is more interesting because it raises a key
+question: do we actually have an index out of range access in our
+code, or is it that the automation failed to verify that it is the
+case on its own? In this case, it is the latter, and the verifier
+needs some help in the form of an <span data-line="133"></span><em class="em-star1">invariant</em><span data-line="133"></span>. For concreteness, let<span data-line="133"></span>&#39;<span data-line="133"></span>s
+consider a version of our code with enough annotation to pass
+verification.
+</p><!-- inline-dafny SimpleVerif/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="139" data-line-first="140" style="display:block"><code data-line="140">  <span style="color:blue">method</span> SelectionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">modifies</span> a
+  {
+    <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+    {
+      <span style="color:blue">var</span> minValue := a[i];
+      <span style="color:blue">var</span> minPos := i;
+      <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+        <span style="color:purple">invariant</span> minPos &lt; a.Length
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue := a[j];
+          minPos := j;
+        }
+      }
+      <span style="color:blue">if</span> i != minPos {
+        a[i], a[minPos] := minValue, a[i];
+      }
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="163"><span data-line="163"></span>Note that the verified implementation is quite close to the unverified
+one. Aside from the modifies clause, the only difference between the
+unverified implementation and the one for which we verify the absence
+of runtime errors is the invariant statement that is attached to the
+innermost for loop. One of the fundamental design principles of Dafny
+is that programming and verification should be integrated, and you
+should be able to reason about your code directly, in this case by
+directly annotating one of the for loop with a hint for the
+verifier. To understand both why we need such an annotation, but also
+why we <span data-line="172"></span><em class="em-star1">only</em><span data-line="172"></span> need this annotation for verification to pass, it is
+useful to have a vague understanding of how verification works in Dafny.
+</p>
+<p class="p indent" data-line="175"><span data-line="175"></span>Our verified selection sort comes with two key ingredients: code and
+specification. We do not have an explicit specification yet, but we do
+have an implicit one: in order to prove the absence of runtime errors,
+we must ensure that accesses to the array are within bounds, which the
+verifier must establish. To verify that the code meets the spec with
+mathematical certainly, testing will not do. Instead, the Dafny
+compiler transforms the specification and the code into a mathematical
+formula. If we can prove that this mathematical formula is true, then
+the code satisfies the specification. Otherwise it may or may
+not. Proving such mathematical formula would be a lot of work, so
+Dafny makes use of an <span data-line="185"></span><em class="em-star1">automated theorem prover</em><span data-line="185"></span> (ATP) to prove it on
+your behalf.
+</p>
+<p class="p indent" data-line="188"><span data-line="188"></span>Alas, ATPs have fundamental limitations and while they excel at
+proving properties of linear code, they need some help with
+loops. Fundamentally, they need to know of properties that are true
+when the loop starts its execution, remain true after execution of
+the loop, and imply what needs to be true after execution of the
+loops. This is called an invariant property because it captures what
+does not change despite all the complicated changes that may happen
+during execution of the loop.
+</p>
+<p class="p indent" data-line="197"><span data-line="197"></span>Without the invariant annotation, the verifier reported that it could
+not establish that <span data-line="198"></span><code class="code code1">minPos</code><span data-line="198"></span> is within bound. It is indeed difficult to
+establish since it is modified within the loop. However, it should
+always be true that <span data-line="200"></span><code class="code code1">minPos</code><span data-line="200"></span> is less than <span data-line="200"></span><code class="code code1">a.Length</code><span data-line="200"></span> since it
+indicates the position of a value in the array that is smaller than
+the one under consideration in the outer loop. Therefore, we can help
+verification by annotation the for loop with <span data-line="203"></span><code class="code code1">invariant minPos &lt; a.Length</code><span data-line="203"></span>.
+The verifier is not only able to verify that this property
+is indeed an invariant of the loop, but this turns out to be enough
+information for the verification to succeed.
+</p><h2 id="sec-verifying-the-functional-spec--output-array-is-ordered" class="h1" data-line="208" data-heading-depth="1" style="display:block"><span data-line="208"></span>Verifying the Functional Spec: Output Array is Ordered</h2>
+<p class="p noindent" data-line="210"><span data-line="210"></span>While it is generally useful to verify the absence of runtime errors,
+we would now like to verify the specific behavior of our selection
+sort implementation, its <span data-line="212"></span><em class="em-star1">functional specification</em><span data-line="212"></span>. There are several
+properties that characterize the functional behavior of a sorting
+algorithm, one of which is that once the computation is done, the
+values in the array should be ordered. Before we can do the actual
+verification, we need to specify what we expect of selection
+sort. First, we need to formalize what it means for an array to be
+ordered.
+</p>
+<p class="p indent" data-line="220"><span data-line="220"></span>In English, we might say something like: <span data-line="220"></span><em class="em-star1">Definition: an array is
+ordered if for any non-negative integer value i ranging from 0 to the
+length of the array, exclusive, the value at index i is less than the
+value at index i+1</em><span data-line="223"></span>. With more formal notation, we might also say:
+<span data-line="224"></span><em class="em-star1">Definition: an array a of length l is ordered if and only if for all i
+in [0,l), a[i] &lt;= a[i+1]</em><span data-line="225"></span>.
+</p>
+<p class="p indent" data-line="227"><span data-line="227"></span>In Dafny, we do not write our specifications in English but instead in
+a formal language. As a first approximation, the formal language is
+that of formal mathematics, in a syntax that closely resembles the
+syntax of Dafny<span data-line="230"></span>&#39;<span data-line="230"></span>s expressions. In Dafny, such a definition is called a
+<span data-line="231"></span><code class="code code1">predicate</code><span data-line="231"></span>.
+</p><!-- inline-dafny VerifiedIntPre/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="235" data-line-first="236" style="display:block"><code data-line="236">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+    <span style="color:purple">reads</span> a
+    <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+  {
+    <span style="color:blue">forall</span> i: <span style="color:teal">nat</span> :: <span class="constant" style="color:purple">0</span> &lt; left &lt;= i &lt; right ==&gt; a[i-<span class="constant" style="color:purple">1</span>] &lt;= a[i]
+  }</code></pre>
+<p class="p noindent para-continued" data-line="245"><span data-line="245"></span>There<span data-line="245"></span>&#39;<span data-line="245"></span>s a lot to unpack in this example. First note that we define a
+predicate <span data-line="246"></span><code class="code code1">Ordered</code><span data-line="246"></span> with three typed parameters. The first parameter,
+<span data-line="247"></span><code class="code code1">a</code><span data-line="247"></span>, is the array. The two extra parameters, <span data-line="247"></span><code class="code code1">left</code><span data-line="247"></span> and <span data-line="247"></span><code class="code code1">right</code><span data-line="247"></span> allow
+us to generalize the definition to a sub-range, which will be useful
+later on.
+</p>
+<p class="p indent" data-line="251"><span data-line="251"></span>The body of the predicate,
+<span data-line="252"></span><code class="code code1">forall i: nat :: 0 &lt; left &lt;= i &lt; right ==&gt; a[i-1] &lt;= a[i]</code><span data-line="252"></span>,
+is the definition itself. This definition is a
+mathematical proposition, as hinted by the keyword <span data-line="254"></span><code class="code code1">forall</code><span data-line="254"></span>. This
+proposition may or may not be computable.
+</p>
+<p class="p indent" data-line="257"><span data-line="257"></span>Our predicate definition is prefixed with the keyword <span data-line="257"></span><code class="code code1">ghost</code><span data-line="257"></span> to
+indicate that it is meant to be used for specification purposes and
+need not be compiled or be included in the executable. In some cases,
+the keyword may be required if the predicate is truly a non-computable
+mathematical formula.
+</p>
+<p class="p indent" data-line="263"><span data-line="263"></span>The two clauses that follow the declaration of the predicate are
+relevant to verification. The first clause, <span data-line="264"></span><code class="code code1">reads a</code><span data-line="264"></span> makes it
+explicit that the predicate reads the array a. This will not play an
+important role in our example. It is the dual of the modifies clause
+we encountered previously, and for now it is good enough to know that
+these clauses are important to keep verification simple and modular.
+</p>
+<p class="p indent" data-line="270"><span data-line="270"></span>The second clause, <span data-line="270"></span><code class="code code1">requires left &lt;= right &lt;= a.Length</code><span data-line="270"></span>, is a
+precondition that restricts the definition to values of <span data-line="271"></span><code class="code code1">left</code><span data-line="271"></span>,
+<span data-line="272"></span><code class="code code1">right</code><span data-line="272"></span>, and <span data-line="272"></span><code class="code code1">a.Length</code><span data-line="272"></span> to ones satisfying that precondition. Such
+preconditions are a fundamental feature of Dafny that allow for the
+definition of partial functions. It may not be obvious at first sight,
+but this is highly valuable to writing efficient code, since you can
+define partial functions and ensure statically that they will not be
+used outside of their intended domain of definition, removing any need
+for checking arguments at runtime and making your code throw an
+exception (recall: Dafny does not have exceptions!), or worse, returning a
+dummy value.
+</p>
+<p class="p indent" data-line="282"><span data-line="282"></span>Now that we are done formalizing what it means for an array to be
+ordered, we can revisit our implementation of selection sort and
+ensures, with mathematical certainty, that the code satisfies our
+specification. To attach the specification to the implementation, we
+annotate the method with a clause <span data-line="286"></span><code class="code code1">ensures Ordered(a,0,a.Length)</code><span data-line="286"></span> that
+establishes that any execution of <span data-line="287"></span><code class="code code1">SelectionSort</code><span data-line="287"></span> should result in an
+array <span data-line="288"></span><code class="code code1">a</code><span data-line="288"></span> that satisfies the predicate <span data-line="288"></span><code class="code code1">Ordered(a,0,a.Length)</code><span data-line="288"></span>. We
+call such clause a postcondition.
+</p><!-- inline-dafny VerifiedIntPre/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="293" data-line-first="294" style="display:block"><code data-line="294">  <span style="color:blue">method</span> SelectionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">modifies</span> a
+    <span style="color:purple">ensures</span> Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length)
+  {
+    <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+      <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+    {
+      <span style="color:blue">var</span> minValue := a[i];
+      <span style="color:blue">var</span> minPos := i;
+      <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+        <span style="color:purple">invariant</span> minPos &lt; a.Length
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue := a[j];
+          minPos := j;
+        }
+      }
+      <span style="color:blue">if</span> i != minPos {
+        a[i], a[minPos] := minValue, a[i];
+      }
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="319"><span data-line="319"></span>To help with the verification, we provided more annotation, in the form
+of invariants. Selection sort works by incrementally ordering the
+array, maintaining the property that the sub-array up to the position
+of the outer index <span data-line="322"></span><code class="code code1">i</code><span data-line="322"></span> is ordered. We therefore capture this with an
+invariant annotation that we attach to the outer loop
+<span data-line="324"></span><code class="code code1">invariant Ordered(a,0,i)</code><span data-line="324"></span>.
+</p>
+<p class="p indent" data-line="326"><span data-line="326"></span>This example is a good example of how effective automation can be. The
+verification effort reduces to the specification of a single
+invariant, which captures formally what one might write as a comment
+to justify the correctness of our implementation. In fact, it is not
+even necessary! You could comment it out and verification would still
+succeed. It is still valuable to add for documentation purposes and to
+help the verifier. In fact, you could add more invariant properties to
+confirm your intuition about what the verifier is proving, for example
+by adding the invariant
+<span data-line="335"></span><code class="code code1">forall k: nat :: i &lt;= k &lt; j ==&gt; minValue &lt;= a[k]</code><span data-line="335"></span>
+to the inner loop.
+</p><h2 id="sec-verifying-the-functional-spec--values-are-preserved" class="h1" data-line="338" data-heading-depth="1" style="display:block"><span data-line="338"></span>Verifying the Functional Spec: Values are Preserved</h2>
+<p class="p noindent" data-line="340"><span data-line="340"></span>Our functional specification of selection sort can be improved. Aside
+from ensuring that the algorithm makes the array ordered, we also need
+to ensure that the values in the array after sorting are the same ones
+as before. More formally, we want to ensure that the multiset of
+values of the array before and after sorting are equal. We capture
+this definition with another predicate, <span data-line="345"></span><code class="code code1">Preserved</code><span data-line="345"></span>.
+</p><!-- inline-dafny VerifiedInt/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="349" data-line-first="350" style="display:block"><code data-line="350">  <span style="color:blue">twostate</span> <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+    <span style="color:purple">reads</span> a
+    <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+  {
+    <span style="color:teal">multiset</span>(a[left..right]) == <span style="color:teal">multiset</span>(<span style="color:blue">old</span>(a[left..right]))
+  }</code></pre>
+<p class="p noindent para-continued" data-line="359"><span data-line="359"></span>This definition introduces a few new interesting concepts. First, the
+expression <span data-line="360"></span><code class="code code1">multiset(a[left..right])</code><span data-line="360"></span> shows an example use of not one
+but two of Dafny<span data-line="361"></span>&#39;<span data-line="361"></span>s built-in collection types. The subexpression
+<span data-line="362"></span><code class="code code1">a[left..right]</code><span data-line="362"></span> transforms the sub-array into a <span data-line="362"></span><em class="em-star1">sequence</em><span data-line="362"></span> (or list)
+of values. The expression <span data-line="363"></span><code class="code code1">multiset(a[left..right])</code><span data-line="363"></span> creates a
+multiset from that sequence. You might think that while this notation
+is conveniently succinct, the performance of this code will suffer, but
+remember, this is part of the specification, and this will have no
+impact on the runtime performance of our selection sort
+implementation.
+</p>
+<p class="p indent" data-line="370"><span data-line="370"></span>Second, note that while predicate <span data-line="370"></span><code class="code code1">Ordered</code><span data-line="370"></span> captures a property that
+is intrinsic to the array, our new predicate is meant to capture a
+relation between the input and the output of selection
+sort. Therefore, we need to be able to refer to the array both before
+execution of selection sort and after. This is done thanks to the use
+of the <span data-line="375"></span><code class="code code1">twostate</code><span data-line="375"></span> prefix that declares that the predicate is a
+relation between a heap-allocated object before and after execution of
+some method, and the expression <span data-line="377"></span><code class="code code1">old</code><span data-line="377"></span> that refers to the array before
+execution. Other mentions of <span data-line="378"></span><code class="code code1">a</code><span data-line="378"></span> refer to that array after execution
+of the method.
+</p>
+<p class="p indent" data-line="381"><span data-line="381"></span>We can combine our two predicates, <span data-line="381"></span><code class="code code1">Ordered</code><span data-line="381"></span> and <span data-line="381"></span><code class="code code1">Preserved</code><span data-line="381"></span> into one,
+<span data-line="382"></span><code class="code code1">Sorted</code><span data-line="382"></span>, that will be the final functional specification of our
+implementation.
+</p><!-- inline-dafny VerifiedInt/M3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="387" data-line-first="388" style="display:block"><code data-line="388">  <span style="color:blue">twostate</span> <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">reads</span> a
+  {
+    Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length) &amp;&amp; Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+  }</code></pre>
+<p class="p noindent para-continued" data-line="396"><span data-line="396"></span>We attach this specification to our method as a postcondition and
+refine our verification efforts accordingly with new invariant
+annotations.
+</p><!-- inline-dafny VerifiedInt/M4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="402" data-line-first="403" style="display:block"><code data-line="403">  <span style="color:blue">method</span> SelectionnSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">modifies</span> a
+    <span style="color:purple">ensures</span> Sorted(a)
+  {
+    <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+      <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+      <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+    {
+      <span style="color:blue">var</span> minValue := a[i];
+      <span style="color:blue">var</span> minPos := i;
+      <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+        <span style="color:purple">invariant</span> minPos &lt; a.Length
+        <span style="color:purple">invariant</span> a[minPos] == minValue
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue := a[j];
+          minPos := j;
+        }
+      }
+      <span style="color:blue">if</span> i != minPos {
+        a[i], a[minPos] := minValue, a[i];
+      }
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="430"><span data-line="430"></span>Unlike <span data-line="430"></span><code class="code code1">Ordered</code><span data-line="430"></span> which is invariant up to the index <span data-line="430"></span><code class="code code1">i</code><span data-line="430"></span>, <span data-line="430"></span><code class="code code1">Preserved</code><span data-line="430"></span>
+is invariant on the entire array and throughout the execution of the
+method, and it is an invariant of the outer loop. Unfortunately, this
+would not be quite enough for the verification to succeed. Note that
+we have not said much about the inner loop yet. It searches for the
+smallest value in the suffix of the array and this value is swapped
+with the value at the current index of the outer loop. It should be
+the case that <span data-line="437"></span><code class="code code1">minPos</code><span data-line="437"></span> and <span data-line="437"></span><code class="code code1">minValue</code><span data-line="437"></span> be in sync, and we add the
+invariant <span data-line="438"></span><code class="code code1">invariant a[minPos] == minValue</code><span data-line="438"></span> to capture this property. 
+</p>
+<p class="p indent" data-line="440"><span data-line="440"></span>With these invariant annotations, Dafny can verify on its own, in an
+instant, that the body of the method indeed satisfies the
+postcondition, which specifies that the array is ordered and contains
+the same values as when the method was called.
+</p><h2 id="sec-generic-selection-sort" class="h1" data-line="445" data-heading-depth="1" style="display:block"><span data-line="445"></span>Generic Selection Sort</h2>
+<p class="p noindent" data-line="447"><span data-line="447"></span>To keep things simple, we have thus far assumed that the input array
+contains integers. Now we would like to abstract our implementation so
+that it can sort an array for any values as long as they can be
+compared. In Dafny, we would do this using a <span data-line="450"></span><em class="em-star1">trait</em><span data-line="450"></span>. If you<span data-line="450"></span>&#39;<span data-line="450"></span>re not
+familiar with the concept, you can think of it as an interface which
+may contain code. We define a trait of <span data-line="452"></span><code class="code code1">Comparable</code><span data-line="452"></span> values.
+</p><!-- inline-dafny VerifiedAbstract/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="456" data-line-first="457" style="display:block"><code data-line="457">  <span style="color:blue">trait</span> Comparable&lt;T(==)&gt; {
+
+    <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span>
+
+  }</code></pre>
+<p class="p noindent para-continued" data-line="465"><span data-line="465"></span>Our trait is generic and parameterized by a type <span data-line="465"></span><code class="code code1">T</code><span data-line="465"></span>. The suffix
+<span data-line="466"></span><code class="code code1">(==)</code><span data-line="466"></span> is a <span data-line="466"></span><em class="em-star1">type characteristic</em><span data-line="466"></span> that will ensure that our trait is
+only instantiated on types for which it is possible to test whether
+two values are equal. The trait contains a single declaration for a
+function <span data-line="469"></span><code class="code code1">Lt</code><span data-line="469"></span> that takes two parameters of type <span data-line="469"></span><code class="code code1">T</code><span data-line="469"></span> and returns a
+Boolean value.
+</p>
+<p class="p indent" data-line="472"><span data-line="472"></span>In Dafny, we make a distinction between <span data-line="472"></span><em class="em-star1">methods</em><span data-line="472"></span> and <span data-line="472"></span><em class="em-star1">functions</em><span data-line="472"></span>. As
+a first approximation, you can think of them as the imperative and the
+functional version of a computation, respectively. While the body of
+methods is made of a sequence of statements, the body of a function is
+an expression. While a method can declare mutable local variables and
+modify heap-allocated values, functions are, as a first approximation,
+free of side effects and state. In general, when a choice between a
+method and a function is possible, it is wise to choose using a
+function as it makes verification easier, which is why we choose to
+define <span data-line="481"></span><code class="code code1">Lt</code><span data-line="481"></span> as a function.
+</p>
+<p class="p indent" data-line="483"><span data-line="483"></span>We extend the <span data-line="483"></span><code class="code code1">Comparable</code><span data-line="483"></span> trait to define a new one, <span data-line="483"></span><code class="code code1">Sorted</code><span data-line="483"></span> that
+will group together our predicates for specification.
+</p><!-- inline-dafny VerifiedAbstract/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="488" data-line-first="489" style="display:block"><code data-line="489">  <span style="color:blue">trait</span> Sorted&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+
+    <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Ordered(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+      <span style="color:purple">reads</span> a
+      <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+    {
+      <span style="color:blue">forall</span> i: <span style="color:teal">nat</span> :: <span class="constant" style="color:purple">0</span> &lt; left &lt;= i &lt; right ==&gt; Lt(a[i-<span class="constant" style="color:purple">1</span>],a[i]) || a[i-<span class="constant" style="color:purple">1</span>] == a[i]
+    }
+
+    <span style="color:blue">twostate</span> <span style="color:blue">predicate</span> Preserved(a: <span style="color:teal">array</span>&lt;T&gt;, left: <span style="color:teal">nat</span>, right: <span style="color:teal">nat</span>)
+      <span style="color:purple">reads</span> a
+      <span style="color:purple">requires</span> left &lt;= right &lt;= a.Length
+    {
+      <span style="color:teal">multiset</span>(a[left..right]) == <span style="color:teal">multiset</span>(<span style="color:blue">old</span>(a[left..right]))
+    }
+
+    <span style="color:blue">twostate</span> <span style="color:blue">predicate</span> Sorted(a: <span style="color:teal">array</span>&lt;T&gt;)
+      <span style="color:purple">reads</span> a
+    {
+      Ordered(a,<span class="constant" style="color:purple">0</span>,a.Length) &amp;&amp; Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+    }
+
+  }</code></pre>
+<p class="p noindent para-continued" data-line="515"><span data-line="515"></span>We can now define selection sort in a trait <span data-line="515"></span><code class="code code1">SelectionSort</code><span data-line="515"></span> where the
+type of values is abstract but extends the traits <span data-line="516"></span><code class="code code1">Comparable</code><span data-line="516"></span> and
+<span data-line="517"></span><code class="code code1">Sorted</code><span data-line="517"></span>.
+</p><!-- inline-dafny VerifiedAbstract/M3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="521" data-line-first="522" style="display:block"><code data-line="522">  <span style="color:blue">trait</span> SelectionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Sorted&lt;T&gt; {
+
+    <span style="color:blue">method</span> SelectionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
+      <span style="color:purple">modifies</span> a
+      <span style="color:purple">ensures</span> Sorted(a)
+    {
+      <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+        <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+        <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+      {
+        <span style="color:blue">var</span> minValue := a[i];
+        <span style="color:blue">var</span> minPos := i;
+        <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+          <span style="color:purple">invariant</span> minPos &lt; a.Length
+          <span style="color:purple">invariant</span> a[minPos] == minValue
+        {
+          <span style="color:blue">if</span> Lt(a[j], minValue) {
+            minValue := a[j];
+            minPos := j;
+          }
+        }
+        <span style="color:blue">if</span> i != minPos {
+          a[i], a[minPos] := minValue, a[i];
+        }
+      }
+    }
+
+  }</code></pre>
+<p class="p noindent para-continued" data-line="553"><span data-line="553"></span>Dafny is designed in such a way that verification is unaffected by
+this abstraction and the verification effort is unchanged.
+</p>
+<p class="p indent" data-line="556"><span data-line="556"></span>Traits, unlike classes, cannot be instantiated, so if we want to use
+our selection sort implementation, we need to define a class that
+extends the trait. You might wonder why we did not define selection
+sort in a class directly: it is because in Dafny, a class cannot
+extend another class! This unusual design ensures that you can benefit
+from multiple inheritance while keeping verification reasonable
+simple. Nevertheless, you should still be able to design your code
+following the core precepts of object-oriented programming:
+inheritance, subtyping, late binding, overriding, encapsulation, and
+dynamic dispatch. 
+</p>
+<p class="p indent" data-line="567"><span data-line="567"></span>We therefore define a class <span data-line="567"></span><code class="code code1">Sort</code><span data-line="567"></span> that extends <span data-line="567"></span><code class="code code1">SelectionSort</code><span data-line="567"></span> and
+complete its implementation.
+</p><!-- inline-dafny VerifiedAbstract/M4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="572" data-line-first="573" style="display:block"><code data-line="573">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> SelectionSort&lt;T&gt; {
+
+    <span style="color:blue">const</span> CMP: (T,T) -&gt; <span style="color:teal">bool</span>
+
+    <span style="color:blue">constructor</span>(cmp: (T,T) -&gt; <span style="color:teal">bool</span>)
+      <span style="color:purple">ensures</span> CMP == cmp
+    {
+      CMP := cmp;
+    }
+
+    <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span> {
+      CMP(x,y)
+    }
+
+  }</code></pre>
+<p class="p noindent para-continued" data-line="591"><span data-line="591"></span>The class is made of typical members such as fields, constructors,
+methods, and functions. A constant (or immutable) field <span data-line="592"></span><code class="code code1">CMP</code><span data-line="592"></span> holds
+our comparison function and is set by the constructor. Function <span data-line="593"></span><code class="code code1">Lt</code><span data-line="593"></span>
+that was declared in the <span data-line="594"></span><code class="code code1">Comparable</code><span data-line="594"></span> trait is implemented. We can see
+a glimpse of the functional programming side of Dafny: it
+is possible to pass a function as an argument to a
+method/function/constructor and to store it in a field.
+</p>
+<p class="p indent" data-line="599"><span data-line="599"></span>We can now write a <span data-line="599"></span><code class="code code1">Main</code><span data-line="599"></span> method to test our generic selection sort.
+</p><!-- inline-dafny VerifiedAbstract/M5 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="603" data-line-first="604" style="display:block"><code data-line="604">  <span style="color:blue">method</span> Main()
+  {
+    <span style="color:blue">var</span> a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt; := <span style="color:blue">new</span> <span style="color:teal">int</span>[<span class="constant" style="color:purple">3</span>];
+    a[<span class="constant" style="color:purple">0</span>] := <span class="constant" style="color:purple">2</span>; a[<span class="constant" style="color:purple">1</span>] := <span class="constant" style="color:purple">4</span>; a[<span class="constant" style="color:purple">2</span>] := <span class="constant" style="color:purple">1</span>;
+    <span style="color:blue">var</span> Sort := <span style="color:blue">new</span> Sort((x: <span style="color:teal">int</span>, y: <span style="color:teal">int</span>) =&gt; x &lt; y);
+    Sort.SelectionSort(a);
+    <span style="color:blue">print</span> a[..];
+  }</code></pre><h2 id="sec-verifying-the-runtime-complexity" class="h1" data-line="615" data-heading-depth="1" style="display:block"><span data-line="615"></span>Verifying the Runtime Complexity</h2>
+<p class="p noindent" data-line="617"><span data-line="617"></span>There is a lot more we could prove about our selection sort
+implementation. For example, you may try to prove that selection sort
+is stable. Instead, we will prove properties about the runtime
+complexity of our implementation. This will give us a chance to
+introduce more interesting concepts. Recall that when studying the
+runtime complexity of a sorting algorithm we usually count either the
+number of comparisons, or the number of swaps. In this example, we
+will focus on establishing a bound on the number of comparisons. More
+specifically, we want to show that if the input array is of size N,
+the number of comparisons will be less than N <span data-line="626"></span>*<span data-line="626"></span> N.
+</p>
+<p class="p indent" data-line="628"><span data-line="628"></span>To that end, we extend trait <span data-line="628"></span><code class="code code1">Comparable</code><span data-line="628"></span> to define a new trait
+<span data-line="629"></span><code class="code code1">Measurable</code><span data-line="629"></span>. The purpose of this trait is to keep track of the number
+of times we call the comparison function. 
+</p><!-- inline-dafny Complexity/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="634" data-line-first="635" style="display:block"><code data-line="635">  <span style="color:blue">trait</span> Measurable&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt; {
+
+    <span style="color:blue">ghost</span> <span style="color:blue">var</span> comparisonCount: <span style="color:teal">nat</span>
+
+    <span style="color:blue">method</span> Ltm(x: T, y: T) <span style="color:blue">returns</span> (b: <span style="color:teal">bool</span>)
+      <span style="color:purple">modifies</span> <span style="color:blue">this</span>`comparisonCount
+      <span style="color:purple">ensures</span> b ==&gt; Lt(x,y)
+      <span style="color:purple">ensures</span> comparisonCount == <span style="color:blue">old</span>(comparisonCount) + <span class="constant" style="color:purple">1</span>
+    {
+      comparisonCount := comparisonCount + <span class="constant" style="color:purple">1</span>;
+      b := Lt(x,y);
+    }
+
+  }</code></pre>
+<p class="p noindent para-continued" data-line="652"><span data-line="652"></span>A crucial detail is that we are declaring a mutable field,
+<span data-line="653"></span><code class="code code1">comparisonCount</code><span data-line="653"></span> as <span data-line="653"></span><code class="code code1">ghost</code><span data-line="653"></span>. This is because while we do need a
+variable to keep track of the number of times the comparison function
+has been called, we do not want this variable and its counting to
+affect the performance of our code! By declaring the field as <span data-line="656"></span><code class="code code1">ghost</code><span data-line="656"></span>,
+we ensure that it will be removed by the compiler.
+</p>
+<p class="p indent" data-line="659"><span data-line="659"></span>The <span data-line="659"></span><code class="code code1">Measurable</code><span data-line="659"></span> trait defines method <span data-line="659"></span><code class="code code1">Ltm</code><span data-line="659"></span> that calls our comparison
+function but also increment the counter. Because the counter is ghost,
+the statement that increments it will be removed by the
+compiler. Because <span data-line="662"></span><code class="code code1">Ltm</code><span data-line="662"></span> modifies the state of the object it belongs
+to, it needs to declare <span data-line="663"></span><code class="code code1">modifies this</code><span data-line="663"></span>. In fact, to simplify
+verification, we declare more specifically that we modify one specfic
+field of the object as <span data-line="665"></span><code class="code code2">modifies this`comparisonCount</code><span data-line="665"></span>.
+</p>
+<p class="p indent" data-line="667"><span data-line="667"></span>At a high-level, a pencil-and-paper proof would look something like
+this. Assume that the array is of size N. At every iteration of the
+outer loop, if the index is at position i, the inner loop will do
+roughly N<span data-line="670"></span> <span data-line="670"></span>- i comparisons. All in all, it means that the number of
+comparison will be something like N<span data-line="671"></span> <span data-line="671"></span>+ (N-1)<span data-line="671"></span> <span data-line="671"></span>+ <span data-line="671"></span>&#8230;<span data-line="671"></span> <span data-line="671"></span>+ 1.  In preparation
+for reasoning about such a summation, we define a function <span data-line="672"></span><code class="code code1">Sum</code><span data-line="672"></span>.
+</p><!-- inline-dafny Complexity/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="676" data-line-first="677" style="display:block"><code data-line="677">  <span style="color:blue">ghost</span> <span style="color:blue">function</span> Sum(x: <span style="color:teal">int</span>): <span style="color:teal">nat</span>
+  {
+    <span style="color:blue">if</span> x &lt;= <span class="constant" style="color:purple">0</span> <span style="color:blue">then</span> <span class="constant" style="color:purple">0</span> <span style="color:blue">else</span> x + Sum(x-<span class="constant" style="color:purple">1</span>)
+  }</code></pre>
+<p class="p noindent para-continued" data-line="684"><span data-line="684"></span>Even though this function is not used in the specification, we declare
+it <span data-line="685"></span><code class="code code1">ghost</code><span data-line="685"></span> to clarify that it is used only as part of the mathematical
+reasoning and should be understood as a function in the mathematical
+sense. 
+</p>
+<p class="p indent" data-line="689"><span data-line="689"></span>We can add a second postcondition to our method. It states that
+executing the method does not increase the number of counts by more
+than square of the size of the array. Of course, we can expect to add
+additional invariants to loops to help the verification of our
+complexity property.
+ 
+<span data-line="695"></span><!-- inline-dafny Complexity/M3 --><span data-line="695"></span>
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="697" data-line-first="698" style="display:block"><code data-line="698">  <span style="color:blue">trait</span> SelectionSort&lt;T(==)&gt; <span style="color:blue">extends</span> Comparable&lt;T&gt;, Measurable&lt;T&gt;, Sorted&lt;T&gt; {
+
+    <span style="color:blue">method</span> SelectionSort(a: <span style="color:teal">array</span>&lt;T&gt;)
+      <span style="color:purple">modifies</span> a, <span style="color:blue">this</span>
+      <span style="color:purple">requires</span> comparisonCount == <span class="constant" style="color:purple">0</span>
+      <span style="color:purple">ensures</span> Sorted(a)
+      <span style="color:purple">ensures</span> comparisonCount &lt;= a.Length * a.Length
+    {
+
+      <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+        <span style="color:purple">invariant</span> Ordered(a,<span class="constant" style="color:purple">0</span>,i)
+        <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+        <span style="color:purple">invariant</span> comparisonCount == i * a.Length - Sum(i)
+      {
+        <span style="color:blue">var</span> minValue := a[i];
+        <span style="color:blue">var</span> minPos := i;
+        <span style="color:blue">assert</span> comparisonCount == i * a.Length - Sum(i) + (i + <span class="constant" style="color:purple">1</span> - i) - <span class="constant" style="color:purple">1</span>;
+        <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+          <span style="color:purple">invariant</span> minPos &lt; a.Length
+          <span style="color:purple">invariant</span> a[minPos] == minValue
+          <span style="color:purple">invariant</span> Preserved(a,<span class="constant" style="color:purple">0</span>,a.Length)
+          <span style="color:purple">invariant</span> comparisonCount == i * a.Length - Sum(i) + (j - i) - <span class="constant" style="color:purple">1</span>
+        {
+          <span style="color:blue">label</span> L:
+          <span style="color:blue">var</span> cmp := Ltm(a[j], minValue);
+          <span style="color:blue">assert</span> a[..] == <span style="color:blue">old</span>@L(a[..]);
+          <span style="color:blue">if</span> cmp {
+            minValue := a[j];
+            minPos := j;
+          }
+          <span style="color:blue">assert</span>(i * a.Length - Sum(i) + (j - i) - <span class="constant" style="color:purple">1</span>) + <span class="constant" style="color:purple">1</span> == i * a.Length - Sum(i) + ((j + <span class="constant" style="color:purple">1</span>) - i) - <span class="constant" style="color:purple">1</span>;
+        }
+        <span style="color:blue">if</span> i != minPos {
+          a[i], a[minPos] := minValue, a[i];
+        }
+        <span style="color:blue">assert</span> comparisonCount == (i+<span class="constant" style="color:purple">1</span>) * a.Length - Sum(i+<span class="constant" style="color:purple">1</span>);
+      }
+    }
+
+  }</code></pre>
+<p class="p noindent para-continued" data-line="741"><span data-line="741"></span>In this case, verification required a little more information than
+just the loop invariants. Also, the invariants are more complicated
+than what you might have expected from the high-level explanation for
+the complexity bound, but this is because in the inner loop, we need to
+keep a precise count of how many comparisons are being done. This is
+the kind of reasoning that is intuitive, difficult to do precisely on
+paper, usually ignored, and the source of subtle errors. Thanks to
+Dafny though, we can flesh out a rigorous argument with confidence
+that the correct expression is <span data-line="749"></span><code class="code code1">(i + 1 - i)</code><span data-line="749"></span> and not <span data-line="749"></span><code class="code code1">(i - i)</code><span data-line="749"></span>, for
+example.
+</p>
+<p class="p indent" data-line="752"><span data-line="752"></span>Note that we have added a few <span data-line="752"></span><code class="code code1">assert</code><span data-line="752"></span> statements that can be
+understood as hints of a property that ought to hold at the position
+where it is stated. The point of such assertions is to break down the
+proof and provide hints to the ATP by stating intermediate properties
+that can be potentially easier to verify but will play a key role in
+the overall proof. Take
+<span data-line="758"></span><code class="code code1">assert comparisonCount == (i+1) * a.Length - Sum(i+1);</code><span data-line="758"></span>
+for example. This is letting the verifier know of a useful
+identity between <span data-line="760"></span><code class="code code1">Sum</code><span data-line="760"></span> and <span data-line="760"></span><code class="code code1">comparisonCount</code><span data-line="760"></span>.
+</p>
+<p class="p indent" data-line="762"><span data-line="762"></span>Another example, probably much more mysterious, is
+<span data-line="763"></span><code class="code code1">assert a[..] == old@L(a[..]);</code><span data-line="763"></span>.
+It states that the values of the array are the same at
+the point in the program labeled <span data-line="765"></span><code class="code code1">L</code><span data-line="765"></span> and the one where the assertion
+is made. By default, the <span data-line="766"></span><code class="code code1">old</code><span data-line="766"></span> expression refers to the state of the
+method at the beginning of execution, but it can be modulated to refer
+to a specific line in the body of the statement.
+</p>
+<p class="p indent" data-line="770"><span data-line="770"></span>You may try to understand what these assertions mean and why they are
+useful, but the point of this discussion isn<span data-line="771"></span>&#39;<span data-line="771"></span>t to understand how to
+verify the complexity of selection sort, but rather to address the
+most important frustrations of new Dafny users: how do we know what
+assertions to make and where? In hindsight, all these assertions might
+seem true and relevant, but it doesn<span data-line="775"></span>&#39;<span data-line="775"></span>t say anything about how to come
+up with them, and to new Dafny users, it might seem like a magic
+incantation.
+</p>
+<p class="p indent" data-line="779"><span data-line="779"></span>It is crucial to understand that these are not, in fact, magic
+incantation that only people trained as mathematicians can
+spell. Dafny is not just a full-fledged programming language, it is
+also a full-fledged <span data-line="782"></span><em class="em-star1">proof assistant</em><span data-line="782"></span>. There is a systematic way to
+figure out how to convince Dafny that a result is true if it is indeed
+the case. It may not always be trivial, and it requires some training,
+but you can rest assured that if there is a proof, you ought to be
+able to provide enough information for the verification. 
+</p>
+<p class="p indent" data-line="788"><span data-line="788"></span>Consider again the obscure case of <span data-line="788"></span><code class="code code1">assert a[..] == old@L(a[..]);</code><span data-line="788"></span>.
+It would be unrealistic to have to know so much about verification to
+just guess that verification needs this specific property at this
+specific place for the verification to succeed. Without this
+assertion, verification fails but assists you by providing a key piece
+of information: invariant <span data-line="793"></span><code class="code code1">Preserved(a,0,a.Length)</code><span data-line="793"></span> could not be
+proved to be maintained by the inner loop.
+</p>
+<p class="p indent" data-line="796"><span data-line="796"></span>Since it is an invariant, it should hold at any point within the loop,
+so we can assert it in between every statement to see which one makes
+the verification fail. You will find that it is statement
+<span data-line="799"></span><code class="code code1">var cmp := Ltm(a[j], minValue);</code><span data-line="799"></span>
+that prevents the verification from verifying
+the invariant. Three possibilities:
+</p>
+<ul class="ul list-dash compact" data-line="803">
+<li class="li ul-li list-dash-li compact-li" data-line="803"><span data-line="803"></span>The code is actually incorrect
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="804"><span data-line="804"></span>The invariant isn<span data-line="804"></span>&#39;<span data-line="804"></span>t actually one and our proof is wrong
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="805"><span data-line="805"></span>The verification needs some hint
+</li></ul>
+
+<p class="p noindent" data-line="807"><span data-line="807"></span>To some extent, it makes sense that the verification might need a
+hint. When we call method <span data-line="808"></span><code class="code code1">Ltm</code><span data-line="808"></span>, how do we know that it is not going
+to change array <span data-line="809"></span><code class="code code1">a</code><span data-line="809"></span>? Of course it is in a sense obvious since it is
+clearly not mentioning <span data-line="810"></span><code class="code code1">a</code><span data-line="810"></span> but obvious doesn<span data-line="810"></span>&#39;<span data-line="810"></span>t cut it in formal
+verification. Now, we did specify that the method modifies the field
+but nothing else, so it should be the case that <span data-line="812"></span><code class="code code1">a</code><span data-line="812"></span> is left
+unchanged. This is where it makes sense to assert
+<span data-line="814"></span><code class="code code1">a[..] == old@L(a[..]);</code><span data-line="814"></span>
+to double-check that the verification agrees. In this
+case, not only does it agree, but it also turns out to be the hint the
+verification needs to succeed. You may be interesting in seeing
+<span data-line="818"></span><a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-verification-debugging">another example in
+action</a><span data-line="819"></span>.
+</p>
+<p class="p indent" data-line="821"><span data-line="821"></span>One may feel like the verification should not have required such a
+hint but ATPs are fundamentally bound to miss obvious facts every now
+and then. It is not a bug of the verifier, merely an unfortunate and
+perhaps unavoidable case of incompleteness of its proving capability. 
+</p>
+<p class="p indent" data-line="826"><span data-line="826"></span>We can finish our implementation by defining a class to extend these traits.
+</p><!-- inline-dafny Complexity/M4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="830" data-line-first="831" style="display:block"><code data-line="831">  <span style="color:blue">class</span> Sort&lt;T(==)&gt; <span style="color:blue">extends</span> SelectionSort&lt;T&gt; {
+
+    <span style="color:blue">const</span> CMP: (T,T) -&gt; <span style="color:teal">bool</span>
+
+    <span style="color:blue">constructor</span>(cmp: (T,T) -&gt; <span style="color:teal">bool</span>)
+      <span style="color:purple">ensures</span> CMP == cmp
+      <span style="color:purple">ensures</span> comparisonCount == <span class="constant" style="color:purple">0</span>
+    {
+      CMP := cmp;
+      comparisonCount := <span class="constant" style="color:purple">0</span>;
+    }
+
+    <span style="color:blue">function</span> Lt(x: T, y: T): <span style="color:teal">bool</span> {
+      CMP(x,y)
+    }
+
+  }</code></pre><h2 id="sec-verifying-backward-compatibility-of-an-optimization" class="h1" data-line="851" data-heading-depth="1" style="display:block"><span data-line="851"></span>Verifying Backward Compatibility of an Optimization</h2>
+<p class="p noindent" data-line="853"><span data-line="853"></span>We have seen three kinds of verification so far:
+</p>
+<ul class="ul list-dash compact" data-line="855">
+<li class="li ul-li list-dash-li compact-li" data-line="855"><span data-line="855"></span>Verifying the absence of runtime errors
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="856"><span data-line="856"></span>Verifying a functional specification
+</li>
+<li class="li ul-li list-dash-li compact-li" data-line="857"><span data-line="857"></span>Verifying runtime complexity
+</li></ul>
+
+<p class="p noindent" data-line="859"><span data-line="859"></span>There is another very important case we need to mention briefly:
+verification of optimizations. Throughout this introduction, our
+implementation of selection sort uses an inner loop that identifies
+<span data-line="862"></span><code class="code code1">minValue</code><span data-line="862"></span> and <span data-line="862"></span><code class="code code1">minPos</code><span data-line="862"></span> and eventually performs a swap. We could also
+have chosen to perform the swap whenever we identify a new
+<span data-line="864"></span><code class="code code1">minValue</code><span data-line="864"></span>. This would save two local variables and the condition
+statement following the loop. This may or may not actually be an
+optimization, but for the sake of this discussion, let us assume that
+it is.
+</p>
+<p class="p indent" data-line="869"><span data-line="869"></span>If we have the luxury of a functional specification, we may implement
+this optimization and make sure that the functional specification
+continues to hold. But we do not always have such a functional
+specification. First, there may not be a crisp and clear functional
+specification beyond ensuring the absence of runtime errors. Even in
+that case, the functional specification may not be complete (case in
+point, we did not formally verify that our implementation of selection
+sort is stable).
+</p>
+<p class="p indent" data-line="878"><span data-line="878"></span>It is, however, very common for existing code to have been tested and
+used enough that <span data-line="879"></span><em class="em-star1">it</em><span data-line="879"></span> serves as the specification, and the
+verification goal is therefore to show that the optimized code behaves
+like the unoptimized but trusted one. In such a case, ghost variables
+are very handy, as they allow making the old trusted code ghost and
+serve as the specification.
+</p><!-- inline-dafny Optimized/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="887" data-line-first="888" style="display:block"><code data-line="888">  <span style="color:blue">method</span> SelectionSort(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;)
+    <span style="color:purple">modifies</span> a
+  {
+    <span style="color:blue">for</span> i := <span class="constant" style="color:purple">0</span> to a.Length
+    {
+      <span style="color:blue">ghost</span> <span style="color:blue">var</span> minValue := a[i];
+      <span style="color:blue">for</span> j := i + <span class="constant" style="color:purple">1</span> to a.Length
+        <span style="color:purple">invariant</span> a[i] == minValue
+      {
+        <span style="color:blue">if</span> a[j] &lt; minValue {
+          minValue := a[j];
+        }
+        <span style="color:blue">if</span> a[j] &lt; a[i] {
+          a[i], a[j] := a[j], a[i];
+        }
+      }
+      <span style="color:blue">assert</span> a[i] == minValue;
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="910"><span data-line="910"></span>Here, <span data-line="910"></span><code class="code code1">minValue</code><span data-line="910"></span> has become a ghost variable and the invariant
+maintains that throughout the execution of the inner loop, the value
+<span data-line="912"></span><code class="code code1">a[i]</code><span data-line="912"></span> is the smallest we have encountered so far. Aside from proving
+the absence of runtime errors, this kind of verification where one
+improves code while proving backward compatibility with respect to the
+ghost version of the old code allows verification effort to deliver a
+high-degree of confidence for a small specification and verification
+effort.
+</p><h2 id="sec-conclusion" class="h1" data-line="919" data-heading-depth="1" style="display:block"><span data-line="919"></span>Conclusion</h2>
+<p class="p noindent" data-line="921"><span data-line="921"></span>Hopefully, this example gives a concrete idea of what program
+specification and verification feels like, and shows that it is not
+limited to toy academic languages. Proving the functional correctness
+of selection sort shows that even for such a non-trivial properties,
+automation is good enough to keep the verification effort
+low. Moreover, the complexity example shows that while more abstract
+and mathematical properties may require more work, verification
+remains doable. Because Dafny is not just a great programming language
+but also a great proof assistant, one can learn systematic
+methodologies to verify code.
+</p><span data-line=""></span></div>
+</body>
+
+</html>
