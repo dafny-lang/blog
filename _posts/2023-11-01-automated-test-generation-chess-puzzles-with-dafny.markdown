@@ -49,7 +49,7 @@ method {:testEntry} Describe(board: ValidBoard) {
 
 Note that I also added an `expect` statement in the code. An `expect` statement is checked to be true at runtime and triggers a runtime exception if the check fails. In our case, the `expect` statement is trivially true (a checkmate always implies a check) and every test we generate passes it. In fact, if you were to turn this `expect` statement into an assertion, Dafny would prove it. Not every `expect` statement can be proven, however, especially in the presence of external libraries. You can read more about `expect` statements <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-expect-statement">here</a>.
 
-Now that we have all the code, you can wrap it around in a module (click <a href="/blog/assets/src/chess.dfy">here</a> to download the source code and <a href="/blog/assets/src/chessWithQuantifiers.dfy">here</a> to download the optimized version I discuss in Section 4) and run Dafny test generation like so:
+Now that we have all the code, you can wrap it around in a module (click <a href="/blog/assets/src/test-generation/chess.dfy">here</a> to download the source code and <a href="/blog/assets/src/test-generation/chessWithQuantifiers.dfy">here</a> to download the optimized version I discuss later in this post) and run Dafny test generation like so:
 
 <br>
 `dafny generate-tests Block chess.dfy`
