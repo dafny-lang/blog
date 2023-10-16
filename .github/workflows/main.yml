@@ -18,13 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Install Dafny"
+      - name: "Install Dafny and test Blogposts"
         run: |
           git clone https://github.com/dafny-lang/dafny.git
           cd dafny && make z3-mac && make exe
           export PATH=/Users/runner/work/blog/blog/dafny/Binaries:$PATH
-          which dafny
-        
-      - name: Check Blogposts
-        run: | 
+          cd ../
           make check-test-generation
