@@ -21,7 +21,8 @@ jobs:
       - name: "Install Dafny"
         run: |
           git clone https://github.com/dafny-lang/dafny.git
-          cd dafny && make z3-mac && make exe && export PATH=$pwd/dafny/Binaries:$PATH
+          cd dafny && make z3-mac && make exe
+          export PATH=/Users/runner/work/blog/blog/dafny/Binaries:$PATH
           which dafny
         
       - name: Check Blogposts
