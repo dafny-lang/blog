@@ -2,9 +2,9 @@ name: Check Blogposts
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
 
@@ -19,9 +19,10 @@ jobs:
           fetch-depth: 0
 
       - name: "Install Dafny"
-        uses: dafny-lang/setup-dafny-action@v1
-        with:
-          dafny-version: "4.3.0"
+        run: |
+          git clone https://github.com/dafny-lang/dafny.git
+          cd dafny && make z3-mac && make exe && export PATH=$pwd/dafny/Binaries:$PATH
+          which dafny
         
       - name: Check Blogposts
         run: | 
