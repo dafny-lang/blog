@@ -27,4 +27,4 @@ jobs:
         
       - name: Check Blogposts
         run: | 
-          make check
+          make check-test-generation

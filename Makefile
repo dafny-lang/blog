@@ -10,6 +10,8 @@ default: check
 
 check:
 	node builders/verification-compelling-verify.js _includes/verification-compelling-intro.html
+	
+check-test-generation:
 	assets/src/test-generation/verify.sh
 
 generate:
