@@ -21,7 +21,7 @@ jobs:
       - name: "Install Dafny"
         uses: dafny-lang/setup-dafny-action@v1
         with:
-          dafny-version: "4.3"
+          dafny-version: "4.3.0"
         
       - name: Check Blogposts
         run: | 
