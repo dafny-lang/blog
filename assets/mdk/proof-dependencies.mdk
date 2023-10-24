@@ -22,9 +22,9 @@ If it's possible to prove a program correct without taking the final proof goal 
 
 <!-- inline-dafny vacuous/Vacuous -->
 
-Here, the `Find` method has a roughly reasonable-looking (if incomplete) specification. However, it turns out that the `ensures` clause is always false if `start` and `end` are the same or adjacent indices, and `CallFind` passes in adjacent indices. Therefore, it's possible to prove a false assertion after the call.
+Here, the `Find` method has a roughly reasonable-looking (if incomplete) specification. However, it turns out that the `ensures` clause is false if `start` and `end` are the same or adjacent indices, and `CallFind` passes in adjacent indices. Therefore, it's possible to prove a false assertion after the call.
 
-Proof dependencies can also identify unspecified portions of an implementation. If it's possible to prove a program correct without taking into account certain implementation statements, then those statements are unconstrained by the verification. They could be changed arbitrarily without causing verification to fail. In the following example of a binary search implementation, Dafny verifies only the absence of undefined behavior. In particular, it doesn't prove that the return value is reasonable. Therefore, any of the return statements could be replaced with essentially anything without resulting in a verification failure.
+Proof dependencies can also identify unspecified portions of an implementation. If it's possible to prove a program correct without taking into account certain implementation statements, then those statements are unconstrained by the verification. They could be changed arbitrarily without causing verification to fail. In the following example of a binary search implementation, Dafny verifies only the absence of undefined behavior. In particular, it doesn't prove that the return value correctly corresponds to what you'd expect from a binary search implementation. Therefore, any of the return statements could be modified without causing a verification failure.
 
 <!-- inline-dafny unspecified/BinarySearch -->
 
@@ -36,11 +36,11 @@ As a final example, proof dependency analysis can also detect preconditions, ass
 
 Three new flags to the `dafny verify` command enable proof dependency calculation.
 
-The `--warn-contradictory-assumptions` flag instructs Dafny will emit a warning any time it completes a proof without taking the goal into account, indicating a dependence on contradictory assumptions.
+The `--warn-contradictory-assumptions` flag instructs Dafny to emit a warning any time it completes a proof without taking the goal into account, indicating a dependence on contradictory assumptions. For example, it produces the following output on the `CallFind` method above that calls an incorrectly-specified (and unimplemented) `Find` method.
 
 <img class="clickable" id="img-vacuous-warning" src="/blog/assets/images/proof-dependencies/vacuous-warning.png" alt="Warnings emitted by Dafny on an example of a vacuous proof" style="display:block;margin-left:auto;margin-right:auto;width:1126px;max-width:95%;"/>
 
-The `--warn-redundant-assumptions` flag instructs Dafny will emit a warning any time an assumption in scope (from an `assume` statement or `requires` clause) was not required to complete any proof goal.
+The `--warn-redundant-assumptions` flag instructs Dafny to emit a warning any time an assumption in scope (from an `assume` statement or `requires` clause) was not required to complete any proof goal. On the binary search example above, with an unnecessary `requires` clause, Dafny produces the following.
 
 <img class="clickable" id="img-redundant-warning" src="/blog/assets/images/proof-dependencies/redundant-warning.png" alt="Warnings emitted by Dafny on an example of a proof with a redundant requires clause" style="display:block;margin-left:auto;margin-right:auto;width:1301px;max-width:95%;"/>
 
@@ -60,8 +60,7 @@ To identify portions of a program that were not included in verification current
 
 <!-- inline-dafny unspecified/BinarySearch -->
 
-Dafny includes a verification logger that will describe the status of and statistics about each verification goal in the program. When proof dependency analysis is enabled, this will include information about which potential proof dependencies did or did not take place in the actual proof. This information will only be included if one of the other flags enabling proof dependency analysis is enabled, however. So, if we analyze the binary search example using the command
-`dafny verify --log-format text --warn-redundant-assertions`, the output will include the following text.
+Dafny includes a verification logger that will describe the status of and statistics about each verification goal in the program. When proof dependency analysis is enabled, this will include information about which potential proof dependencies did or did not take place in the actual proof. This information will only be included if one of the other flags enabling proof dependency analysis is enabled, however. So, if we analyze the binary search example using the command `dafny verify --log-format text --warn-redundant-assertions`, the output will include the following text.
 
 ```
     Unused by proof:
@@ -77,8 +76,10 @@ Dafny includes a verification logger that will describe the status of and statis
 This shows that the assignment/return statements on lines 10, 14, and 17, for example, were not necessary to show that the method is well-defined.
 
 
-Enabling proof dependency calculation requires additional work as part of the proof process. This means it can slow down verification, and potentially cause especially brittle proofs to fail. In our experiments so far, it can add ~30% to verification time. If your project is developed with the feature turned on from the start, however, this cost can be mitigated, especially when taking verification optimization guidance into account.
+Enabling proof dependency calculation requires additional work as part of the proof process. This means it can slow down verification, and potentially cause especially brittle proofs to fail. In our experiments so far, it can add ~30% to verification time. If your project is developed with the feature turned on from the start, however, this cost can be mitigated, especially when taking [verification optimization](https://dafny.org/latest/VerificationOptimization/VerificationOptimization) guidance into account.
 
 # Theory and implementation
 
-Internally, the analysis is build on the common SMT feature of _unsatisfiable cores_. Dafny encodes each verification goal as an SMT query that negates the original goal. This means that a conclusion that the negated goal is unsatisfiable (_i.e._, no value exists that will make it true) means that the original goal is valid (_i.e._, true for all possible values). Many SMT solvers, including the Z3 solver that Dafny uses by default, can accompany a conclusion of UNSAT with a subset of the sub-expressions (clauses, in SMT terminology) from the original goal that is still unsatisfiable. This subset is generally smaller than the original formula, though it is not guaranteed to be so, and is not guaranteed to be minimal.
+Internally, Dafny's proof dependency analysis is built on the common SMT feature of _unsatisfiable cores_. Dafny encodes each verification goal as an SMT query that negates the original goal. This means that a conclusion that the negated goal is unsatisfiable (_i.e._, no value exists that will make it true) means that the original goal is valid (_i.e._, true for all possible values). Many SMT solvers, including the Z3 solver that Dafny uses by default, can accompany a conclusion of "unsatisfiable" with a subset of the sub-expressions (clauses, in SMT terminology) from the original goal that is still unsatisfiable. This subset is generally smaller than the original formula, though it is not guaranteed to be so, and is not guaranteed to be minimal.
+
+Because unsatisfiable cores are not guaranteed to be minimal, Dafny may sometimes fail to warn about some goals that are proved using a contradiction, or some assumptions that are not ultimately necessary. In our early experience, however, Dafny does produce useful warnings for all large code bases we've tried it on.
