@@ -26,4 +26,4 @@ jobs:
       - name: "Test Blogposts"
         run: |
           export PATH=/Users/runner/work/blog/blog/dafny/Binaries:$PATH
-          make check-dafny
+          make check
