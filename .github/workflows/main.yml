@@ -18,6 +18,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "Install Node.js"
+        uses: actions/setup-node@v3
+
       - name: "Install Dafny"
         run: |
           git clone https://github.com/dafny-lang/dafny.git
