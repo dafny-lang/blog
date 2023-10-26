@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Automated Test Generation: Chess Puzzles with Dafny"
-date:   2023-11-01 18:00:00 +0100
+date:   2023-11-10 18:00:00 +0100
 author: Sasha Fedchin
 ---
 Given all the incredible examples that showcase how powerful Dafny is (did you know that part of Dafny is written in Dafny?), you might think that verification can fully replace testing. And in many cases it does! However if, like a number of industrial Dafny users, you want to integrate Dafny code with existing codebases, you will face challenges that verification alone might not solve:
