@@ -1,0 +1,3 @@
+[options]
+warn-redundant-assumptions = true
+warn-contradictory-assumptions = true
