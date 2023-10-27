@@ -38,7 +38,7 @@ With v4.4.0[^1] Dafny will include features to automatically detect problems lik
 
 [^1]: Or any nightly build after 2023-10-24.
 
-Proof dependencies make it possible to identify properties proved due to contradictory assumptions. To legitimately prove that a property holds of the program, it must be the case that the proof takes the property itself into account. If it's possible to construct a proof that the property holds _without_ considering what it is we're ultimately trying to prove, we say that we've proved it _vacuously_. This can occur because the assumptions in scope at that program location are contradictory, or that that location is unreachable.
+Proof dependencies make it possible to identify properties proved due to contradictory assumptions. Consider for a moment an abstract, pencil and paper proof. To legitimately prove that a property holds of the program, it must be the case that the proof you write takes the property itself into account. If it's possible to construct a proof that the property holds _without_ considering what we're ultimately trying to prove, we say that we've proved it _vacuously_. This can occur because the assumptions in scope at that program location are contradictory, or that that location is unreachable.
 
 Similarly, any assumptions that never appear in the dependencies of the proof of any property can be removed. This also applies to the assumptions that arise from the use of intermediate `assert` statements that exist as stepping stones toward proving a later property. If they weren't actually used to prove any later property, they can be removed.
 
@@ -95,4 +95,4 @@ Because unsatisfiable cores are not guaranteed to be minimal, Dafny may sometime
 
 # Summary
 
-Dafny can now integrate proof dependency analysis into the verification process, enabling it to warn about contradictory and redundant assumptions and enabling you to identify unspecified code. We encourage you to turn on the new warnings in your code as a standard part of your verification workflow, ideally using the `dfyconfig.toml` entries listed above. Although this analysis incurs some performance overhead, the extra computational work provides higher trust that you've verified what you really intended.
+Dafny can now integrate proof dependency analysis into the verification process, enabling it to warn about contradictory and redundant assumptions and enabling you to identify unspecified code. We encourage you to turn on the new warnings in your code as a standard part of your verification workflow, ideally adding `warn-contradictory-assumptions=true` and `warn-redundant-assumptions=true` in a `dfyconfig.toml` file. Although this analysis incurs some performance overhead, the extra computational work provides higher trust that you've verified what you really intended.
