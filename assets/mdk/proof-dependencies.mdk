@@ -14,27 +14,35 @@ Css Header:
 
 # Introduction
 
-Problems a program's specification can undermine the trust obtained from verification. If the specification doesn't actually state what you intended it to state, the verification may still be technically sound but provide a false sense of security that the program behaves as intended. There are many ways that the text of a specification may differ from its intent, but there are some specific signs of potential mistakes that can be stated formally and reasoned about automatically. For example, if the properties you want to prove about your program are contradictory, any program will satisfy them. Similarly, If the properties you want to prove don't cover all of the program's behavior, any implementation will satisfy the uncovered portions. This latter case is frequently intentional -- you may only want to prove certain simple properties about your program, such as the lack of runtime errors -- but it can be useful to confirm that the unspecified portions do not include code you intended to specify.
+Problems in a program's specification can undermine the trust obtained from verification. If the specification doesn't actually state what you intended it to state, the verification may still be technically sound but provide a false sense of security that the program behaves as intended. There are many ways that the text of a specification may differ from its intent, but there are some specific signs of potential mistakes that can be stated formally and reasoned about automatically.
 
-With v4.4.0[^1] Dafny will include features to detect problems like these, using a notion of _proof dependency_. A proof dependency is a portion of a program that needed to be taken into account in order to construct a proof that the program is correct.
-
-[^1]: Or any nightly build after 2023-10-24.
-
-Let's use the term _property_ more formally from here on to refer a particular statement about a Dafny program that we want to prove. This might arise from an `assert` statement or an `ensures` clause, for example. To legitimately prove that such a property holds of the program, it must be the case that the proof takes the property itself into account. If it's possible to construct a proof that the property holds _without_ considering what it is we're ultimately trying to prove, we say that we've proved it _vacuously_. This can occur because the assumptions in scope at that program location are contradictory, or that that location is unreachable. Contradictory specifications are particularly easy to construct by accident when writing assumed specifications about external or yet-to-be-written code. Consider the following example.
+For example, if the assumptions you make in your specification are contradictory, any program will satisfy it. Contradictory specifications are particularly easy to construct by accident when writing assumed specifications about external or yet-to-be-written code. To see what a contradictory specification might look like, consider the following code with an unimplemented declaration of `Find`, to find an element in a sequence, and an implemented caller. This sort of situation might occur during the development process, as you experiment with how you want to structure your program.
 
 <!-- inline-dafny vacuous/Vacuous -->
 
 Here, the `Find` method has a roughly reasonable-looking (if incomplete) specification. However, it turns out that the `ensures` clause is false if `start` and `end` are the same or adjacent indices, and `CallFind` passes in adjacent indices. Therefore, it's possible to prove a false assertion after the call.
 
-Proof dependencies can also identify unspecified portions of an implementation. If it's possible to prove a program correct without taking into account certain implementation statements, then those statements are unconstrained by the verification. They could be changed arbitrarily without causing verification to fail. In the following example of a binary search implementation, Dafny verifies only the absence of undefined behavior. In particular, it doesn't prove that the return value correctly corresponds to what you'd expect from a binary search implementation. Therefore, any of the return statements could be modified without causing a verification failure.
-
-<!-- inline-dafny unspecified/BinarySearch -->
-
-As a final example, proof dependency analysis can also detect preconditions, assumptions, or intermediate assertions that are unnecessary for constructing a proof of correctness. These redundant specifications may indicate a mistake, such that they would not be redundant if written correctly. Or it may be possible to remove them, simplifying the program and proof process. In the following example, the precondition (which one might think would be required to make the code well-defined) turns out to be unnecessary.
+As another example, a program may contain assumptions, or intermediate assertions, that are unnecessary for constructing a proof of correctness. These redundant specifications may indicate a mistake, such that they would not be redundant if written correctly. Or it may be possible to remove them, simplifying the program and proof process. In the following example, the precondition (which one might think would be required to make the code well-defined) turns out to be unnecessary. Why it's unnecessary is left to you as a thought exercise: do we really need the array to be sorted to ensure that the array indices are always in bounds?
 
 <!-- inline-dafny redundant/BinarySearch -->
 
+As a final example, if the specification doesn't cover all of the program's behavior, any implementation will satisfy the uncovered portions. This latter case is frequently intentional -- you may only want to prove certain simple properties about your program, such as the lack of runtime errors -- but it can be useful to confirm that the unspecified portions do not include code you intended to specify.
+
+In the following example of a binary search implementation, we removed the redundant assumption, and Dafny verifies only the absence of undefined behavior. In particular, it doesn't prove that the return value correctly corresponds to what you'd expect from a binary search implementation. Therefore, any of the return statements could be modified without causing a verification failure.
+
+<!-- inline-dafny unspecified/BinarySearch -->
+
 # Proof dependencies in Dafny
+
+With v4.4.0[^1] Dafny will include features to automatically detect problems like contradictory specifications, redundant assumptions, and unspecified code, using a notion of _proof dependency_. A proof dependency is a portion of a program that needed to be taken into account in order to construct a proof that the program is correct. When talking about proof dependencies, let's use the term _property_ more formally from here on to refer a particular statement about a Dafny program that we want to prove. This might arise from an `assert` statement, an `ensures` clause, or a `requires` clause of a call, for example. Let's use _assumption_ to refer to anything that's assumed, arising, for example, from an `assume` statement, a `requires` clause, or an `ensures` clause of a call.
+
+[^1]: Or any nightly build after 2023-10-24.
+
+Proof dependencies make it possible to identify properties proved due to contradictory assumptions. To legitimately prove that a property holds of the program, it must be the case that the proof takes the property itself into account. If it's possible to construct a proof that the property holds _without_ considering what it is we're ultimately trying to prove, we say that we've proved it _vacuously_. This can occur because the assumptions in scope at that program location are contradictory, or that that location is unreachable.
+
+Similarly, any assumptions that never appear in the dependencies of the proof of any property can be removed. This also applies to the assumptions that arise from the use of intermediate `assert` statements that exist as stepping stones toward proving a later property. If they weren't actually used to prove any later property, they can be removed.
+
+Finally, proof dependencies can identify unspecified portions of an implementation. If it's possible to prove a program correct without taking into account certain implementation statements, then those statements are unconstrained by the verification. They could be changed arbitrarily without causing verification to fail.
 
 Three new flags to the `dafny verify` command enable proof dependency calculation.
 
@@ -77,7 +85,6 @@ Dafny includes a verification logger that will describe the status of and statis
 
 This shows that the assignment/return statements on lines 10, 14, and 17, for example, were not necessary to show that the method is well-defined.
 
-
 Enabling proof dependency calculation requires additional work as part of the proof process. This means it can slow down verification, and potentially cause especially brittle proofs to fail. In our experiments so far, it can add ~30% to verification time. If your project is developed with the feature turned on from the start, however, this cost can be mitigated, especially when taking [verification optimization](https://dafny.org/latest/VerificationOptimization/VerificationOptimization) guidance into account.
 
 # Theory and implementation
@@ -85,3 +92,7 @@ Enabling proof dependency calculation requires additional work as part of the pr
 Internally, Dafny's proof dependency analysis is built on the common SMT feature of _unsatisfiable cores_. Dafny encodes each verification goal as an SMT query that negates the original goal. This means that a conclusion that the negated goal is unsatisfiable (_i.e._, no value exists that will make it true) means that the original goal is valid (_i.e._, true for all possible values). Many SMT solvers, including the Z3 solver that Dafny uses by default, can accompany a conclusion of "unsatisfiable" with a subset of the sub-expressions (clauses, in SMT terminology) from the original goal that is still unsatisfiable. This subset is generally smaller than the original formula, though it is not guaranteed to be so, and is not guaranteed to be minimal.
 
 Because unsatisfiable cores are not guaranteed to be minimal, Dafny may sometimes fail to warn about some goals that are proved using a contradiction, or some assumptions that are not ultimately necessary. In our early experience, however, Dafny does produce useful warnings for all large code bases we've tried it on.
+
+# Summary
+
+Dafny can now integrate proof dependency analysis into the verification process, enabling it to warn about contradictory and redundant assumptions and enabling you to identify unspecified code. We encourage you to turn on the new warnings in your code as a standard part of your verification workflow, ideally using the `dfyconfig.toml` entries listed above. Although this analysis incurs some performance overhead, the extra computational work provides higher trust that you've verified what you really intended.
