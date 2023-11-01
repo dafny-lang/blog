@@ -1,0 +1,454 @@
+<html lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="generator" content="Madoko, version 1.2.3" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <style type="text/css"  class="link">
+  /*# sourceURL=madoko.css */
+  
+  .madoko .toc>.tocblock .tocblock .tocblock {
+    margin-left: 2.25em;
+  }
+  .madoko .toc>.tocblock .tocblock {
+    margin-left: 1.5em;
+  }
+  .madoko .toc-contents>.tocblock>.tocitem {
+    font-weight: bold;
+  }
+  .madoko .toc {
+    margin-top: 1em;
+  }
+  .madoko p.para-continue {
+    margin-bottom: 0pt;
+  }
+  .madoko .para-block+p {
+    margin-top: 0pt;
+  }
+  .madoko ul.para-block, .madoko ol.para-block {
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+  }
+  .madoko ul.para-end, .madoko ol.para-end {
+    margin-bottom: 1em;
+  }
+  .madoko dl {
+    margin-left: 0em;
+  }
+  .madoko blockquote {
+    font-style: italic;
+  }
+  .madoko a.localref {
+    text-decoration: none;
+  }
+  .madoko a.localref:hover {
+    text-decoration: underline;
+  }
+  .madoko .footnotes {
+    font-size: smaller;
+    margin-top: 2em;
+  }
+  .madoko .footnotes hr {
+    width: 50%;
+    text-align: left;
+  }
+  .madoko .footnote {
+    margin-left: 1em;
+  }
+  .madoko .footnote-before {
+    margin-left: -1em;
+    width: 1em;
+    display: inline-block;
+  }
+  .madoko .align-center, .madoko .align-center>p {
+    text-align: center !important;
+  }
+  .madoko .align-center pre {
+    text-align: left;
+  }
+  .madoko .align-center>* {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-left, .madoko .align-left>p {
+    text-align: left !important;
+  }
+  .madoko .align-left>* {
+    margin-left: 0pt !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-right, .madoko .align-right>p {
+    text-align: right !important;
+  }
+  .madoko .align-right>* {
+    margin-left: auto !important;
+    margin-right: 0pt !important;
+  }
+  .madoko .align-center>table,
+  .madoko .align-left>table,
+  .madoko .align-right>table {
+    text-align: left !important;
+  }
+  .madoko .equation-before {
+    float: right;
+  }
+  .madoko .bibitem {
+    font-size: smaller;
+  }
+  .madoko .bibsearch {
+    font-size: x-small;
+    text-decoration:none;
+    color: black;
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  .madoko .block, .madoko .figure, .madoko .bibitem, .madoko .equation, .madoko div.math {
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .figure {
+    padding: 0.5em;
+    margin-left: 0pt;
+    margin-right: 0pt;
+  }
+  .madoko .hidden {
+    display: none;
+  }
+  .madoko .invisible {
+    visibility: hidden;
+  }
+  .madoko.preview .invisible {
+    visibility: visible;
+    opacity: 0.5;
+  }
+  .madoko code.code, .madoko span.code {
+    white-space: pre-wrap;
+  }
+  .madoko hr, hr.madoko {
+    border: none;
+    border-bottom: black solid 1px;
+    margin-bottom: 0.5ex;
+  }
+  .madoko .framed>*:first-child {
+    margin-top: 0pt;
+  }
+  .madoko .framed>*:last-child {
+    margin-bottom: 0pt;
+  }
+  .madoko ul.list-style-type-dash {
+      list-style-type: none !important;
+  }
+  .madoko ul.list-style-type-dash > li:before {
+      content: "\2013";
+      position: absolute;
+      margin-left: -1em;
+  }
+  .madoko table.madoko {
+    border-collapse: collapse;
+  }
+  .madoko td, .madoko th {
+    padding: 0ex 0.5ex;
+    margin: 0pt;
+    vertical-align: top;
+  }
+  .madoko .cell-border-left {
+    border-left: 1px solid black;
+  }
+  .madoko .cell-border-right {
+    border-right: 1px solid black;
+  }
+  .madoko thead>tr:first-child>.cell-line,
+  .madoko tbody:first-child>tr:first-child>.cell-line {
+    border-top: 1px solid black;
+    border-bottom: none;
+  }
+  .madoko .cell-line, .madoko .cell-double-line {
+    border-bottom: 1px solid black;
+    border-top: none;
+  }
+  .madoko .cell-double-line {
+    border-top: 1px solid black;
+    padding-top: 1.5px !important;
+  }
+  .madoko .input-mathpre .MathJax_Display {
+    text-align: left !important;
+  }
+  .madoko div.input-mathpre {
+    text-align: left;
+    margin-top: 1.5ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .math-rendering {
+    text-align: left;
+    white-space: pre;
+    color: gray;
+  }
+  .madoko .mathdisplay {
+    text-align: center;
+  }
+  .madoko span.math-rendering {
+    display:inline-block;
+    width:8em;
+    overflow-x:auto;
+    font-size:70%;
+  }
+  .madoko span.math-rendering::-webkit-scrollbar {
+    width:4px;
+  }
+  .madoko .pretty table {
+    border-collapse: collapse;
+  }
+  .madoko .pretty td {
+    padding: 0em;
+  }
+  .madoko .pretty td.empty {
+    min-width: 1.5ex;
+  }
+  .madoko .pretty td.expander {
+    width: 100em;
+  }
+  body.madoko, .madoko .serif {
+    font-family: Cambria,"Times New Roman","Liberation Serif","Times",serif;
+  }
+  .madoko .sans-serif {
+    font-family: "Calibri", "Optima", sans-serif;
+  }
+  .madoko .symbol {
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  body.madoko {
+    -webkit-text-size-adjust: 100%;       
+    text-rendering: optimizeLegibility;
+  }
+  body.madoko {
+    max-width: 88ex; 
+    margin: 1em auto;
+    padding: 0em 2em;
+  }
+  body.preview.madoko {
+    padding: 0em 1em;
+  }
+  .madoko p {
+    text-align: justify;
+  }
+  .madoko h1, .madoko h2, .madoko h3, .madoko h4 {
+    margin-top: 1.22em;
+    margin-bottom: 1ex;
+  }
+  .madoko h1+p, .madoko h2+p, .madoko h3+p, .madoko h4+p, .madoko h5+p  {
+    margin-top: 1ex;
+  }
+  .madoko h5, .madoko h6 {
+    margin-top: 1ex;
+    font-size: 1em;
+  }
+  .madoko h5 {
+    margin-bottom: 0.5ex;
+  }
+  .madoko h5 + p {
+    margin-top: 0.5ex;
+  }
+  .madoko h6 {
+    margin-bottom: 0pt;
+  }
+  .madoko h6 + p {
+    margin-top: 0pt;
+  }
+  .madoko pre, .madoko code, .madoko kbd, .madoko samp, .madoko tt,
+  .madoko .monospace, .madoko .token-indent, .madoko .reveal pre, .madoko .reveal code, .madoko .email {
+    font-family: Consolas,"Andale Mono WT","Andale Mono",Lucida Console,Monaco,monospace,monospace;
+    font-size: 0.85em;
+  }
+  .madoko pre code, .madoko .token-indent {
+    font-size: 0.95em;
+  }
+  .madoko pre code {
+    font-family: inherit !important;
+  }
+  .madoko ol.linenums li {
+    background-color: white;
+    list-style-type: decimal;
+  }
+  .madoko .remote {
+    background-color: #F0FFF0;
+  }
+  .madoko .remote + * {
+    margin-top: 0pt;
+  }
+  @media print {
+    body.madoko {
+      font-size: 10pt;
+    }
+    @page {
+      margin: 1in 1.5in;
+    }
+  }
+  @media only screen and (max-device-width:1024px) {
+    body.madoko {
+      padding: 0em 0.5em;
+    }
+    .madoko li {
+      text-align: left;
+    }
+  }
+  
+    </style>
+  
+  <style>
+    body.madoko {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .page-content {
+        padding: 0;
+      }
+  </style>
+  </head>
+<body class="madoko">
+
+<div class="body madoko" style="line-adjust:0">
+<h2 id="sec-introduction" class="h1" data-line="18" data-heading-depth="1" style="display:block"><span data-line="18"></span>Introduction</h2>
+<p class="p noindent" data-line="20"><span data-line="20"></span>Problems in a program<span data-line="20"></span>&#39;<span data-line="20"></span>s specification can undermine the trust obtained from verification. If the specification doesn<span data-line="20"></span>&#39;<span data-line="20"></span>t actually state what you intended it to state, the verification may still be technically sound but provide a false sense of security that the program behaves as intended. There are many ways that the text of a specification may differ from its intent, but there are some specific signs of potential mistakes that can be stated formally and reasoned about automatically.
+</p>
+<p class="p indent" data-line="22"><span data-line="22"></span>For example, if the assumptions you make in your specification are contradictory, any program will satisfy it. Contradictory specifications are particularly easy to construct by accident when writing assumed specifications about external or yet-to-be-written code. To see what a contradictory specification might look like, consider the following code with an unimplemented declaration of <span data-line="22"></span><code class="code code1">Find</code><span data-line="22"></span>, to find an element in a sequence, and an implemented caller. This sort of situation might occur during the development process, as you experiment with how you want to structure your program.
+</p><!-- inline-dafny vacuous/Vacuous -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="26" data-line-first="27" style="display:block"><code data-line="27">  <span style="color:blue">method</span> Find(xs: <span style="color:teal">seq</span>&lt;<span style="color:teal">int</span>&gt;, x: <span style="color:teal">int</span>, start: <span style="color:teal">int</span>, end: <span style="color:teal">int</span>) <span style="color:blue">returns</span> (i: <span style="color:teal">int</span>)
+    <span style="color:purple">requires</span> start &lt; |xs|
+    <span style="color:purple">requires</span> end &lt; |xs|
+    <span style="color:purple">ensures</span> start &lt; i &lt; end
+
+  <span style="color:blue">method</span> CallFind() {
+    <span style="color:blue">var</span> xs := [<span class="constant" style="color:purple">42</span>, <span class="constant" style="color:purple">43</span>];
+    <span style="color:blue">var</span> i := Find(xs, <span class="constant" style="color:purple">43</span>, <span class="constant" style="color:purple">0</span>, <span class="constant" style="color:purple">1</span>);
+    <span style="color:blue">assert</span> xs[i] == <span class="constant" style="color:purple">42</span>;
+  }</code></pre>
+<p class="p noindent para-continued" data-line="40"><span data-line="40"></span>Here, the <span data-line="40"></span><code class="code code1">Find</code><span data-line="40"></span> method has a roughly reasonable-looking (if incomplete) specification. However, it turns out that the <span data-line="40"></span><code class="code code1">ensures</code><span data-line="40"></span> clause is false if <span data-line="40"></span><code class="code code1">start</code><span data-line="40"></span> and <span data-line="40"></span><code class="code code1">end</code><span data-line="40"></span> are the same or adjacent indices, and <span data-line="40"></span><code class="code code1">CallFind</code><span data-line="40"></span> passes in adjacent indices. Therefore, it<span data-line="40"></span>&#39;<span data-line="40"></span>s possible to prove a false assertion after the call.
+</p>
+<p class="p indent" data-line="42"><span data-line="42"></span>As another example, a program may contain assumptions, or intermediate assertions, that are unnecessary for constructing a proof of correctness. These redundant specifications may indicate a mistake, such that they would not be redundant if written correctly. Or it may be possible to remove them, simplifying the program and proof process. In the following example, the precondition (which one might think would be required to make the code well-defined) turns out to be unnecessary. Why it<span data-line="42"></span>&#39;<span data-line="42"></span>s unnecessary is left to you as a thought exercise: do we really need the array to be sorted to ensure that the array indices are always in bounds?
+</p><!-- inline-dafny redundant/BinarySearch -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="46" data-line-first="47" style="display:block"><code data-line="47">  <span style="color:blue">method</span> BinarySearchRedundant(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, key: <span style="color:teal">int</span>) <span style="color:blue">returns</span> (r: <span style="color:teal">int</span>)
+    <span style="color:purple">requires</span> <span style="color:blue">forall</span> i,j :: <span class="constant" style="color:purple">0</span> &lt;= i &lt; j &lt; a.Length ==&gt; a[i] &lt;= a[j]
+  {
+    <span style="color:blue">var</span> lo, hi := <span class="constant" style="color:purple">0</span>, a.Length;
+    <span style="color:blue">while</span> lo &lt; hi
+      <span style="color:purple">invariant</span> <span class="constant" style="color:purple">0</span> &lt;= lo &lt;= hi &lt;= a.Length
+    {
+      <span style="color:blue">var</span> mid := (lo + hi) / <span class="constant" style="color:purple">2</span>;
+      <span style="color:blue">if</span> key &lt; a[mid] {
+        hi := mid;
+      } <span style="color:blue">else</span> <span style="color:blue">if</span> a[mid] &lt; key {
+        lo := mid + <span class="constant" style="color:purple">1</span>;
+      } <span style="color:blue">else</span> {
+        <span style="color:blue">return</span> mid;
+      }
+    }
+    <span style="color:blue">return</span> -<span class="constant" style="color:purple">1</span>;
+  }</code></pre>
+<p class="p noindent para-continued" data-line="68"><span data-line="68"></span>As a final example, if the specification doesn<span data-line="68"></span>&#39;<span data-line="68"></span>t cover all of the program<span data-line="68"></span>&#39;<span data-line="68"></span>s behavior, any implementation will satisfy the uncovered portions. This latter case is frequently intentional<span data-line="68"></span> <span data-line="68"></span>&#8211;<span data-line="68"></span> you may only want to prove certain simple properties about your program, such as the lack of runtime errors<span data-line="68"></span> <span data-line="68"></span>&#8211;<span data-line="68"></span> but it can be useful to confirm that the unspecified portions do not include code you intended to specify.
+</p>
+<p class="p indent" data-line="70"><span data-line="70"></span>In the following example of a binary search implementation, we removed the redundant assumption, and Dafny verifies only the absence of undefined behavior. In particular, it doesn<span data-line="70"></span>&#39;<span data-line="70"></span>t prove that the return value correctly corresponds to what you<span data-line="70"></span>&#39;<span data-line="70"></span>d expect from a binary search implementation. Therefore, any of the return statements could be modified without causing a verification failure.
+</p><!-- inline-dafny unspecified/BinarySearch -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="74" data-line-first="75" style="display:block"><code data-line="75">  <span style="color:blue">method</span> BinarySearch(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, key: <span style="color:teal">int</span>) <span style="color:blue">returns</span> (r: <span style="color:teal">int</span>)
+  {
+    <span style="color:blue">var</span> lo, hi := <span class="constant" style="color:purple">0</span>, a.Length;
+    <span style="color:blue">while</span> lo &lt; hi
+      <span style="color:purple">invariant</span> <span class="constant" style="color:purple">0</span> &lt;= lo &lt;= hi &lt;= a.Length
+    {
+      <span style="color:blue">var</span> mid := (lo + hi) / <span class="constant" style="color:purple">2</span>;
+      <span style="color:blue">if</span> key &lt; a[mid] {
+        hi := mid;
+      } <span style="color:blue">else</span> <span style="color:blue">if</span> a[mid] &lt; key {
+        lo := mid + <span class="constant" style="color:purple">1</span>;
+      } <span style="color:blue">else</span> {
+        <span style="color:blue">return</span> mid; <span style="color:darkgreen">// Unconstrained by specification</span>
+      }
+    }
+    <span style="color:blue">return</span> -<span class="constant" style="color:purple">1</span>; <span style="color:darkgreen">// Unconstrained by specification</span>
+  }</code></pre><h2 id="sec-proof-dependencies-in-dafny" class="h1" data-line="95" data-heading-depth="1" style="display:block"><span data-line="95"></span>Proof dependencies in Dafny</h2>
+<p class="p noindent" data-line="97"><span data-line="97"></span>With v4.4.0<span data-line="97"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.Or any nightly build after 2023-10-24.
+&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="97"></span> Dafny will include features to automatically detect problems like contradictory specifications, redundant assumptions, and unspecified code, using a notion of <span data-line="97"></span><em class="em-low1">proof dependency</em><span data-line="97"></span>. A proof dependency is a portion of a program that needed to be taken into account in order to construct a proof that the program is correct. When talking about proof dependencies, let<span data-line="97"></span>&#39;<span data-line="97"></span>s use the term <span data-line="97"></span><em class="em-low1">property</em><span data-line="97"></span> more formally from here on to refer a particular statement about a Dafny program that we want to prove. This might arise from an <span data-line="97"></span><code class="code code1">assert</code><span data-line="97"></span> statement, an <span data-line="97"></span><code class="code code1">ensures</code><span data-line="97"></span> clause, or a <span data-line="97"></span><code class="code code1">requires</code><span data-line="97"></span> clause of a call, for example. Let<span data-line="97"></span>&#39;<span data-line="97"></span>s use <span data-line="97"></span><em class="em-low1">assumption</em><span data-line="97"></span> to refer to anything that<span data-line="97"></span>&#39;<span data-line="97"></span>s assumed, arising, for example, from an <span data-line="97"></span><code class="code code1">assume</code><span data-line="97"></span> statement, a <span data-line="97"></span><code class="code code1">requires</code><span data-line="97"></span> clause, or an <span data-line="97"></span><code class="code code1">ensures</code><span data-line="97"></span> clause of a call.
+</p>
+<p class="p indent" data-line="101"><span data-line="101"></span>Proof dependencies make it possible to identify properties proved due to contradictory assumptions. To legitimately prove that a property holds of the program, it must be the case that the proof takes the property itself into account. If it<span data-line="101"></span>&#39;<span data-line="101"></span>s possible to construct a proof that the property holds <span data-line="101"></span><em class="em-low1">without</em><span data-line="101"></span> considering what it is we<span data-line="101"></span>&#39;<span data-line="101"></span>re ultimately trying to prove, we say that we<span data-line="101"></span>&#39;<span data-line="101"></span>ve proved it <span data-line="101"></span><em class="em-low1">vacuously</em><span data-line="101"></span>. This can occur because the assumptions in scope at that program location are contradictory, or that that location is unreachable.
+</p>
+<p class="p indent" data-line="103"><span data-line="103"></span>Similarly, any assumptions that never appear in the dependencies of the proof of any property can be removed. This also applies to the assumptions that arise from the use of intermediate <span data-line="103"></span><code class="code code1">assert</code><span data-line="103"></span> statements that exist as stepping stones toward proving a later property. If they weren<span data-line="103"></span>&#39;<span data-line="103"></span>t actually used to prove any later property, they can be removed.
+</p>
+<p class="p indent" data-line="105"><span data-line="105"></span>Finally, proof dependencies can identify unspecified portions of an implementation. If it<span data-line="105"></span>&#39;<span data-line="105"></span>s possible to prove a program correct without taking into account certain implementation statements, then those statements are unconstrained by the verification. They could be changed arbitrarily without causing verification to fail.
+</p>
+<p class="p indent" data-line="107"><span data-line="107"></span>Three new flags to the <span data-line="107"></span><code class="code code1">dafny verify</code><span data-line="107"></span> command enable proof dependency calculation.
+</p>
+<p class="p indent" data-line="109"><span data-line="109"></span>The <span data-line="109"></span><code class="code code1">--warn-contradictory-assumptions</code><span data-line="109"></span> flag instructs Dafny to emit a warning any time it completes a proof without taking the goal into account, indicating a dependence on contradictory assumptions. For example, it produces the following output on the <span data-line="109"></span><code class="code code1">CallFind</code><span data-line="109"></span> method above that calls an incorrectly-specified (and unimplemented) <span data-line="109"></span><code class="code code1">Find</code><span data-line="109"></span> method.
+</p>
+<p class="p indent" data-line="111"><span data-line="111"></span><img class="clickable" id="img-vacuous-warning" src="/blog/assets/images/proof-dependencies/vacuous-warning.png" alt="Warnings emitted by Dafny on an example of a vacuous proof" style="display:block;margin-left:auto;margin-right:auto;width:1126px;max-width:95%;"/><span data-line="111"></span>
+</p>
+<p class="p indent" data-line="113"><span data-line="113"></span>The <span data-line="113"></span><code class="code code1">--warn-redundant-assumptions</code><span data-line="113"></span> flag instructs Dafny to emit a warning any time an assumption in scope (from an <span data-line="113"></span><code class="code code1">assume</code><span data-line="113"></span> statement or <span data-line="113"></span><code class="code code1">requires</code><span data-line="113"></span> clause) was not required to complete any proof goal. On the binary search example above, with an unnecessary <span data-line="113"></span><code class="code code1">requires</code><span data-line="113"></span> clause, Dafny produces the following.
+</p>
+<p class="p indent" data-line="115"><span data-line="115"></span><img class="clickable" id="img-redundant-warning" src="/blog/assets/images/proof-dependencies/redundant-warning.png" alt="Warnings emitted by Dafny on an example of a proof with a redundant requires clause" style="display:block;margin-left:auto;margin-right:auto;width:1301px;max-width:95%;"/><span data-line="115"></span>
+</p>
+<p class="p indent" data-line="117"><span data-line="117"></span>These options can be enabled in the IDE, as well. We recommend doing this in a <span data-line="117"></span><code class="code code1">dfyconfig.toml</code><span data-line="117"></span> file such as the following:
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="119" data-line-first="120" style="display:block"><code data-line="120">[options]
+warn-redundant-assumptions = true
+warn-contradictory-assumptions = true</code></pre>
+<p class="p noindent para-continued" data-line="125"><span data-line="125"></span>With this in place, the example of contradictory assumptions shown above looks something like the following in Visual Studio Code:
+</p>
+<p class="p indent" data-line="127"><span data-line="127"></span><img class="clickable" id="img-vacuous-vscode" src="/blog/assets/images/proof-dependencies/vacuous-vscode.png" alt="Visual Studio Code warnings  on an example of a vacuous proof" style="display:block;margin-left:auto;margin-right:auto;width:1121px;max-width:95%;"/><span data-line="127"></span>
+</p>
+<p class="p indent" data-line="129"><span data-line="129"></span>To identify portions of a program that were not included in verification currently requires a slightly more manual step. Consider the unspecified version of binary search again.
+</p><!-- inline-dafny unspecified/BinarySearch -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="133" data-line-first="134" style="display:block"><code data-line="134">  <span style="color:blue">method</span> BinarySearch(a: <span style="color:teal">array</span>&lt;<span style="color:teal">int</span>&gt;, key: <span style="color:teal">int</span>) <span style="color:blue">returns</span> (r: <span style="color:teal">int</span>)
+  {
+    <span style="color:blue">var</span> lo, hi := <span class="constant" style="color:purple">0</span>, a.Length;
+    <span style="color:blue">while</span> lo &lt; hi
+      <span style="color:purple">invariant</span> <span class="constant" style="color:purple">0</span> &lt;= lo &lt;= hi &lt;= a.Length
+    {
+      <span style="color:blue">var</span> mid := (lo + hi) / <span class="constant" style="color:purple">2</span>;
+      <span style="color:blue">if</span> key &lt; a[mid] {
+        hi := mid;
+      } <span style="color:blue">else</span> <span style="color:blue">if</span> a[mid] &lt; key {
+        lo := mid + <span class="constant" style="color:purple">1</span>;
+      } <span style="color:blue">else</span> {
+        <span style="color:blue">return</span> mid; <span style="color:darkgreen">// Unconstrained by specification</span>
+      }
+    }
+    <span style="color:blue">return</span> -<span class="constant" style="color:purple">1</span>; <span style="color:darkgreen">// Unconstrained by specification</span>
+  }</code></pre>
+<p class="p noindent para-continued" data-line="154"><span data-line="154"></span>Dafny includes a verification logger that will describe the status of and statistics about each verification goal in the program. When proof dependency analysis is enabled, this will include information about which potential proof dependencies did or did not take place in the actual proof. This information will only be included if one of the other flags enabling proof dependency analysis is enabled, however. So, if we analyze the binary search example using the command <span data-line="154"></span><code class="code code1">dafny verify --log-format text --warn-redundant-assertions</code><span data-line="154"></span>, the output will include the following text.
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="156" data-line-first="157" style="display:block"><code data-line="157">    Unused by proof:
+      unspecified.dfy(4,14)-(4,28): assignment (or return)
+      unspecified.dfy(4,14)-(4,28): assignment (or return)
+      unspecified.dfy(6,15)-(6,34): loop invariant
+      unspecified.dfy(10,7)-(10,16): assignment (or return)
+      unspecified.dfy(14,7)-(14,17): assignment (or return)
+      unspecified.dfy(17,3)-(17,12): assignment (or return)
+      unspecified.dfy(18,1)-(18,1): out-parameter &#39;r&#39;, which is subject to definite-assignment rules, is always initialized at this return point</code></pre>
+<p class="p noindent para-continued" data-line="167"><span data-line="167"></span>This shows that the assignment/return statements on lines 10, 14, and 17, for example, were not necessary to show that the method is well-defined.
+</p>
+<p class="p indent" data-line="169"><span data-line="169"></span>Enabling proof dependency calculation requires additional work as part of the proof process. This means it can slow down verification, and potentially cause especially brittle proofs to fail. In our experiments so far, it can add <span data-line="169"></span>~<span data-line="169"></span>30% to verification time. If your project is developed with the feature turned on from the start, however, this cost can be mitigated, especially when taking<span data-line="169"></span>&nbsp;<a href="https://dafny.org/latest/VerificationOptimization/VerificationOptimization">verification optimization</a><span data-line="169"></span> guidance into account.
+</p><h2 id="sec-theory-and-implementation" class="h1" data-line="171" data-heading-depth="1" style="display:block"><span data-line="171"></span>Theory and implementation</h2>
+<p class="p noindent" data-line="173"><span data-line="173"></span>Internally, Dafny<span data-line="173"></span>&#39;<span data-line="173"></span>s proof dependency analysis is built on the common SMT feature of <span data-line="173"></span><em class="em-low1">unsatisfiable cores</em><span data-line="173"></span>. Dafny encodes each verification goal as an SMT query that negates the original goal. This means that a conclusion that the negated goal is unsatisfiable (<span data-line="173"></span><em class="em-low1">i.e.</em><span data-line="173"></span>, no value exists that will make it true) means that the original goal is valid (<span data-line="173"></span><em class="em-low1">i.e.</em><span data-line="173"></span>, true for all possible values). Many SMT solvers, including the Z3 solver that Dafny uses by default, can accompany a conclusion of <span data-line="173"></span>&#8220;unsatisfiable&#8221;<span data-line="173"></span> with a subset of the sub-expressions (clauses, in SMT terminology) from the original goal that is still unsatisfiable. This subset is generally smaller than the original formula, though it is not guaranteed to be so, and is not guaranteed to be minimal.
+</p>
+<p class="p indent" data-line="175"><span data-line="175"></span>Because unsatisfiable cores are not guaranteed to be minimal, Dafny may sometimes fail to warn about some goals that are proved using a contradiction, or some assumptions that are not ultimately necessary. In our early experience, however, Dafny does produce useful warnings for all large code bases we<span data-line="175"></span>&#39;<span data-line="175"></span>ve tried it on.
+</p><h2 id="sec-summary" class="h1" data-line="177" data-heading-depth="1" style="display:block"><span data-line="177"></span>Summary</h2>
+<p class="p noindent" data-line="179"><span data-line="179"></span>Dafny can now integrate proof dependency analysis into the verification process, enabling it to warn about contradictory and redundant assumptions and enabling you to identify unspecified code. We encourage you to turn on the new warnings in your code as a standard part of your verification workflow, ideally using the <span data-line="179"></span><code class="code code1">dfyconfig.toml</code><span data-line="179"></span> entries listed above. Although this analysis incurs some performance overhead, the extra computational work provides higher trust that you<span data-line="179"></span>&#39;<span data-line="179"></span>ve verified what you really intended.
+</p><span data-line=""></span>
+<div class="footnotes madoko">
+<hr >
+
+<div id="fn-1" class="footnote" data-line="99" style="line-adjust:0">
+<p class="p noindent" data-line="99"><span data-line="99"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="99"></span>Or any nightly build after 2023-10-24.
+<span data-line="100"></span><span data-line="100"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
+</body>
+
+</html>

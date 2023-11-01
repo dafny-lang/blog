@@ -12,10 +12,12 @@ check:
 	node builders/verification-compelling-verify.js _includes/verification-compelling-intro.html
 	assets/src/test-generation/verify.sh
 	assets/src/insertion-sort/verify.sh
+	assets/src/proof-dependencies/verify.sh
 
 generate:
 	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
 	python3 builders/madoko-gen.py insertion-sort --check
+	python3 builders/madoko-gen.py proof-dependencies --check
 
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
