@@ -40,7 +40,7 @@ Note that `AllPermutationsOf` returns a potentially *infinite* set of sequences.
 We are now able to formally state the problem task: Define the body of a function with the signature
 
 ```
-function CalculateAllPermutationsOf<T(==)>(s: seq<T>): set<seq<T>> {
+function CalculateAllPermutationsOf<T(==)>(s: seq<T>): set<seq<T>>
 ```
 
 and show that it is *correct*, in the sense that there exists a proof for the lemma
