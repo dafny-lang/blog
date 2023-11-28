@@ -131,17 +131,17 @@ Consider the following module declaring a `TriangleSum` function and assuming so
 
 <!-- inline-dafny TriangleSum/A1 -->
 
-Based on these lemmas, we can prove that the result of `TriangleSum` is equivalent to a closed formula: `(n * (n + 1)) / 2`. This proof is naturally an inductive one, but Dafny doesn’t automatically know to apply induction because it doesn’t see a recursive function definition. So we need to do at least a little work to tell it to depend on a proof of the identity for `n - 1`  when proving the identity for any `n` bigger than zero. And we need to tell Dafny to use the two provided lemmas. Applying these two ideas leads to the following proof.
+Based on these lemmas, we can prove that the result of `TriangleSum` is equivalent to a closed formula: `(n * (n + 1)) / 2`. This proof is naturally an inductive one, but Dafny doesn’t automatically know to apply induction because it doesn’t see a recursive function definition. So we need to do at least a little work to tell it to depend on a proof of the identity for `n - 1`  when proving the identity for any `n` bigger than zero. And we need to tell Dafny to use the two provided lemmas. Applying these two ideas leads to the following lemma.
 
 <!-- inline-dafny TriangleSum/A2 -->
 
-Dafny is able to prove this, but it takes over 1M RU to do so. This is partly because the postconditions from both lemmas are in scope everywhere, even though one is useful only for the base case and one is useful only for the recursive case. We can tell Dafny when to use each lemma by including a conditional statement in the lemma we’re proving.
+Dafny is able to prove this, but it takes over 1M RU to do so. This is partly because the postconditions from both lemmas are in scope everywhere, even though one is useful only for the base case and one is useful only for the inductive case. We can tell Dafny when to use each lemma by including a conditional statement.
 
 <!-- inline-dafny TriangleSum/A3 -->
 
-When conditioning the proof on whether `n` is zero or not, we can invoke the base case lemma only when it is, and invoke the inductive case lemma only when it is not. Note that, in addition, we use `assert by` to specialize the result of `TriangleSumRec` to the specific instantiation we need for the proof. With these two additional bits of structure, the resource use goes down to around 100K.
+When conditioning the proof on whether `n` is zero or not, we can invoke the base case lemma only when it is, and invoke the inductive case lemma only when it is not. In addition, we use `assert by` to specialize the result of `TriangleSumRec` to the specific instantiation we need for the proof. With these two additional bits of structure, the resource use goes down to around 100K.
 
-Note that invoking the assumed lemmas about `TriangleSum` in the correct place is critical. If we use the same conditional structure but invoke both at the beginning, so they scope over the entire lemma, as in the following, Dafny now uses over 1M RU again.
+Note that invoking the assumed lemmas about `TriangleSum` in the correct place is critical. If we use the same conditional structure but invoke both at the beginning, so they scope over the entire lemma, Dafny now uses over 1M RU again.
 
 <!-- inline-dafny TriangleSum/A4 -->
 
