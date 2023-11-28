@@ -1,0 +1,179 @@
+Colorizer     : dafnyx
+
+Heading Depth: 0
+
+Css Header:
+  body.madoko {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .page-content {
+    padding: 0;
+  }
+
+# What is brittleness?
+
+Dafny is designed to integrate programming and verification. You can write both programs and specification in Dafny, using annotations such as preconditions and postconditions on implementation code. To ensure that the code meets the specification, you may also need to annotate the code with the outline of a proof, such as including an invariant on a loop. Some amount of annotation can improve your code, providing precise documentation on what makes the code work. However, too much annotation would is distracting, especially if it amounts to trivialities. To make this work, Dafny relies on automated theorem proving using an SMT solver. These solvers are effective and allow for much of the verification effort to be performed automatically. However, SMT-based automation comes at a cost. If you rely too much on automation, you may find that the outcome of the automated verification becomes chaotic. A postcondition of a method for which the SMT solver used to be able to find a proof may fail to verify for seemingly unrelated changes such as upgrading to a new version of Dafny, adding an unrelated definition to your development, or even changing the name of a variable. This issue is sometimes referred to as *brittleness*. While we make every effort to push the boundary of how much can be automatically verified with Dafny, a serious Dafny user must learn to write annotations to prevent brittleness. This can be done thanks to the application of common software engineering principles such as modularity and abstraction, and also by structuring proof annotations to guide the SMT solver more precisely.
+
+ In this post, we will dig into how to avoid brittleness in practice, what properties of a program tend to push it near this problematic threshold, and how to write Dafny code that consistently verifies. To begin, let’s consider an example program that exhibits the problem. We’ll start by defining a type of rational numbers. 
+
+<!-- inline-dafny RationalAdd/Rat -->
+
+Although this definition is relatively simple, it uses an existential quantifier in the predicate defining the subset type `rat`, which causes existential quantifiers to be part of almost every query sent to the SMT solvers. This is something that such solvers are notoriously bad at reasoning about. We’ll show that this does indeed cause trouble at first, but that it’s possible to resolve that trouble, resulting in a version that consistently verifies.
+
+To see the issues that arise, let’s try to write a function to add rational numbers.
+
+<!-- inline-dafny RationalAdd/M1 -->
+
+This function will verify without too much difficulty using Dafny 3.13.1, but not at all with Dafny 4.x. Even with Dafny 3.13.1, verification is brittle. Removing `ensures Rational(add(x, y))` leads to a failure to prove the other `ensures` clause, even though `assert Rational(r)` is a statement of the same fact. Adding `var r1 := x + y` also leads to the postcondition not being verified, even though `r1` is never used (and even though `assert r == x + y` succeeds).
+
+# Measuring and reducing brittleness
+
+Note that the last of these commented lines, `assert r == x + y`, hints at one of the concepts we’ll use to help reduce brittleness, because brittleness tends to be closely related to the *difficulty* of verification. Execution time is one way to measure difficulty, but execution time can vary widely, especially when doing verification on cloud-hosted computers. Another measure of difficulty, with greater reproducibility, is the Z3-specific *resource count*. If you verify the example `add` function in VS Code (with the Dafny extension installed), you can hover over the function signature line and see a popup that lists “Total resource usage” in units labeled RU (for “resource units”). This number gives you an indication of how much work it took the SMT solver to verify a particular definition. And we’ll see that reducing this number helps reduce brittleness. In general, we tend to aim for less than around 200K RU per definition. For the `add` function we’re considering, using Dafny 3.13, the reported RU is around 679K on my Intel-based Mac laptop.
+
+Before getting into specifics for how to reduce resource use, let’s step back for a moment to discuss what makes automated proofs difficult. The process that an automated prover goes through to establish the validity of a particular statement can be thought of as searching through the space of possible proofs. Roughly speaking, the prover has a starting point (facts that it takes as true at the beginning, such as those in preconditions and assumptions) and an ending point (facts that it’s trying to prove, such as those in postconditions and assertions). To get from the starting point to the ending point, it can repeatedly take a step by applying any one of a set of possible rules. The number of facts available at the starting point is directly proportional to the number rules available to apply, and the prover’s job is to successfully choose the rule that will most quickly get it closer to the ending point. The best rule is difficult to predict, however, so the choice is sometimes (or frequently) arbitrary. This means that the most reliable ways to make the prover’s job easier are to 1) reduce the number of alternative steps available to choose from at any given point, and 2) reduce the total length of the sequence of steps that must be taken to get from the starting point to the ending point.
+
+In terms of Dafny programs, these two techniques take the form of 1) abstracting key concepts into self-contained definitions and lemmas, and 2) introducing additional proof structure to reduce the distance between the assumptions and conclusions at any given point. Self-contained definitions can ideally be made `opaque` and revealed only when necessary. Additional proof structure can take the form of conditionals, application of lemmas, `calc` statements, or `assert` statements.
+
+# A first variation on `add`
+
+To improve our `add` example, it’s easiest to start with approach (2). Consider the following modification.
+
+<!-- inline-dafny RationalAdd/M2 -->
+
+In this example, we’ve added two `assert` statements that represent intermediate steps in the calculation equating `add(x, y)` (or `r`) with `x + y`. These are similar to the intermediate points you might write out if you were to prove the equivalence by hand, applying standard rules of algebra. We’ve also removed the `Rational(add(x, y))` postcondition. We included it originally only because the first version wouldn’t verify without it (although one might want to prove it for its own sake). Because we don’t have that postcondition, we also don’t need `assert Rational(r)`.
+
+With these changes, it now verifies using about 637K RU, which is less, but not significantly less. However, in this case it’s enough to allow it to verify with Dafny 4.3.0, as well! The resource counts between different Z3 versions aren’t directly comparable, and Dafny changed its default Z3 version between 3.x and 4.x, so the resource counts between 3.13.1 and 4.3.0 aren’t directly comparable. However, for comparison with later examples, Dafny 4.3.0 reports 303K RU on `add2` on my laptop.
+
+# Measuring brittleness more thoroughly
+
+We can dig even more deeply into the difference between these two examples than we did above, however. The commented lines indicate that both small changes in the program and changes in Dafny version can cause failures, so this example is still quite brittle. To demonstrate this in practice, we can automatically check what happens when we verify with either different Dafny versions or different variants of the program. Automating the process of checking a given verification with multiple Dafny versions can be implemented in a CI script without much difficulty, and we won’t go into more detail about that here. To automate comparison of different variants of the program, Dafny includes a feature to perform a certain set of very simple random mutations to evaluate whether any of these mutations make verification more difficult or more prone to failure.
+
+This feature is encapsulated in the `dafny measure-complexity` command. The most basic use takes the form:
+
+```
+dafny measure-complexity --iterations N file.dfy
+```
+
+This is roughly equivalent to `dafny verify file.dfy`, except that it attempts verification `N` times, with random changes applied during each attempt. The changes occur at the SMT level, rather than the Dafny source code level, and consist of reordering definitions and renaming variables, as well as passing a random seed on to the SMT solver for use in making the arbitrary decisions described earlier.
+
+Running `dafny measure-complexity --iterations 5` on the `add2` function results in two failures, for me, one for each assertion, using Dafny 4.3.0. (We’ll be using Dafny 4.3.0 for the rest of this post but, just for comparison, Dafny 3.13.1 times out, with a 10s limit, on one out of those 5 iterations. Dafny 4.3.0 completes in less than 10s for each iteration, even when it fails.)
+
+That simple invocation allows you to identify how often a verification fails, when running with multiple random mutations, but it’s possible to get more detail about each iteration. If you add the `--log-format csv` argument, Dafny will create a CSV file containing the outcome, running time, and resource count of each iteration of each definition. Running on the `add2` example above, I get the following.
+
+```
+M2.add2 (well-formedness) (assertion batch 0),Failed,00:00:00.5896098,2261601
+M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.2784350,361443
+M2.add2 (well-formedness) (assertion batch 0),Failed,00:00:00.2034539,410780
+M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.1831648,345467
+M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.1531195,343003
+```
+
+Note that the resource counts for the successful proofs are all in roughly the same range, but the resource counts for the failed iterations are larger (and in one case much larger). We find that even in cases where no iterations fail, large variations in resource counts between successful runs can be an early predictor of brittleness. So, although this example is improved from the first version, it clearly could use work to further reduce brittleness.
+
+# A second variation on `add`
+
+The next step we’ll take is focused on reducing the number of possible reasoning steps available to the prover at any given point, and we’ll do this by breaking the problem up into smaller pieces, each of which is verified independently. We’ll do this by proving each of the facts specified in the first three assertions of `add2` in separate lemmas. For each lemma, the prover has access to only the facts listed explicitly in `requires` clauses (as opposed to the results of previous `assert` statements, or `requires` clauses of the `add3` function, for example).
+
+<!-- inline-dafny RationalAdd/M3 -->
+
+On this code, Dafny reports 243K RU for the `add3` function. Note that it also spends some time proving each of the other definitions, so the total resource use is *higher* than for `add2`. However, for the purposes of brittleness, the resource use of any single goal is the key factor. Total resource use is less important.
+
+In addition to the reduced resource use, `dafny measure-complexity --iterations 5` never fails. The (somewhat long) CSV output is as follows.
+
+```
+TestResult.DisplayName,TestResult.Outcome,TestResult.Duration,TestResult.ResourceCount
+M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0142495,8245
+M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0160199,8280
+M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0161105,8044
+M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0175271,8280
+M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.1247804,8042
+M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0117433,6801
+M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0162976,6801
+M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0202066,6801
+M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0215131,6801
+M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.1248031,6801
+M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0135860,11031
+M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0149381,10330
+M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0166746,10720
+M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0250631,10330
+M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.1247975,10095
+M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0146360,7833
+M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0150925,7833
+M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0152327,7833
+M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0240935,7833
+M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.1248038,7833
+M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0320375,149358
+M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0628351,125510
+M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0693279,125511
+M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0696398,115466
+M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.1671778,108318
+M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0234566,28650
+M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0235562,28652
+M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0268125,28651
+M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0402614,28651
+M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.1247978,28650
+M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1523979,240040
+M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1633594,239653
+M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1705948,239689
+M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1735807,239652
+M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1759347,242545
+```
+
+Note that the values for all iterations are quite close for each definition. In addition, we can successfully verify `add3` with Dafny 3.13.1, 4.0.0, 4.1.0, 4.2.0, 4.3.0, and likely other versions, as well.
+
+# More detailed structure
+
+The rational addition example we’ve covered so far allows for two key improvements: adding inline assertions and extracting the proofs of those assertions to separate lemmas. However, other types of proof structure can be specified in Dafny, and these additional types of structure are often even more effective.
+
+Consider the following module declaring a `TriangleSum` function and assuming some lemmas about its behavior (which happen to be sufficient to specify it precisely).
+
+<!-- inline-dafny TriangleSum/A1 -->
+
+Based on these lemmas, we can prove that the result of `TriangleSum` is equivalent to a closed formula: `(n * (n + 1)) / 2`. This proof is naturally an inductive one, but Dafny doesn’t automatically know to apply induction because it doesn’t see a recursive function definition. So we need to do at least a little work to tell it to depend on a proof of the identity for `n - 1`  when proving the identity for any `n` bigger than zero. And we need to tell Dafny to use the two provided lemmas. Applying these two ideas leads to the following proof.
+
+<!-- inline-dafny TriangleSum/A2 -->
+
+Dafny is able to prove this, but it takes over 1M RU to do so. This is partly because the postconditions from both lemmas are in scope everywhere, even though one is useful only for the base case and one is useful only for the recursive case. We can tell Dafny when to use each lemma by including a conditional statement in the lemma we’re proving.
+
+<!-- inline-dafny TriangleSum/A3 -->
+
+When conditioning the proof on whether `n` is zero or not, we can invoke the base case lemma only when it is, and invoke the inductive case lemma only when it is not. Note that, in addition, we use `assert by` to specialize the result of `TriangleSumRec` to the specific instantiation we need for the proof. With these two additional bits of structure, the resource use goes down to around 100K.
+
+Note that invoking the assumed lemmas about `TriangleSum` in the correct place is critical. If we use the same conditional structure but invoke both at the beginning, so they scope over the entire lemma, as in the following, Dafny now uses over 1M RU again.
+
+<!-- inline-dafny TriangleSum/A4 -->
+
+# More general guidelines
+
+The examples covered so far illustrate two key principles for maintainable verification:
+
+* Break long leaps of reasoning down into smaller steps. This limits the number of reasoning steps that the prover needs to construct on its own.
+* Isolate each step so that the proof of it doesn’t need to (and, further, isn’t able to) take into account irrelevant information. This limits the number of choices that the prover has to evaluate when making each reasoning step.
+
+A nice coincidence is that programs written according to these principles tend to be more understandable to humans, as well. Reducing the work a prover needs to do when reasoning about a program has the effect of reducing the amount of thinking a human has to do to understand what a program does, and why it’s correct. Constructing small, relatively isolated components relates strongly to the concepts of [cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) and [coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) used in software engineering.
+
+Those principles are rather general, however, and there are several more specific guidelines for how to apply them in practice in Dafny.
+
+* Prefer `opaque` functions, with explicit `reveal` statements where necessary.
+* Avoid `requires` and `ensures` clauses on functions, except when necessary to make them total, and prefer a collection of `lemma`s, each of which establishes a single property of the function.
+* Avoid lemmas that establish universally-qualified facts, preferring an additional parameter for each variable that would otherwise be quantified. It’s possible to wrap such a lemma to use universal quantification if it’s necessary, but many uses can pass in specific instantiations.
+* Avoid subset types except perhaps for simple integer ranges.
+* Prove the correctness of each method by including a single postcondition that establishes equivalence with a function or agreement with a relation. Other properties can be proved as independent lemmas about that function or relation.
+
+The Dafny-VMC project includes some [more detailed guidelines](https://github.com/dafny-lang/Dafny-VMC/blob/main/Guidelines.md). Sometimes it can be difficult to re-architect large, existing systems to follow those guidelines strictly, and we have some additional documentation on [optimizing verification](https://dafny.org/latest/VerificationOptimization/VerificationOptimization) that includes techniques that can help in this case.
+
+# Conclusion
+
+Brittleness is an inevitable consequence of the combination of expressiveness and automation available in Dafny. However, although it is unavoidable in theory, it can be dramatically reduced in practice. Aiming to reduce resource use, and setting limits on it as part of your build process, is likely the single most effective way to do so. This can be achieved by writing code in small, self-contained units that each have a clear, single purpose and don’t leak implementation details except when necessary. Within these units, additional details about intermediate proof steps can help. Although `assert` and `calc` statements are the most straightforward way to do this, using the structure of [natural deduction](https://en.wikipedia.org/wiki/Natural_deduction) can be even more effective.
+
+When constructing new Dafny projects, we recommend using a project file something like the following.
+
+```
+[options]
+resource-limit = 200
+default-function-opacity = Opaque
+```
+
+
