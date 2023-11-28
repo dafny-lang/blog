@@ -1,6 +1,0 @@
-TestResult.DisplayName,TestResult.Outcome,TestResult.Duration,TestResult.ResourceCount
-M2.add2 (well-formedness) (assertion batch 0),Failed,00:00:00.5896098,2261601
-M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.2784350,361443
-M2.add2 (well-formedness) (assertion batch 0),Failed,00:00:00.2034539,410780
-M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.1831648,345467
-M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.1531195,343003

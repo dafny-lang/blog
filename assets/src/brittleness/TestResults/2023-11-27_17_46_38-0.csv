@@ -1,8 +1,0 @@
-TestResult.DisplayName,TestResult.Outcome,TestResult.Duration,TestResult.ResourceCount
-M3.AddStep3 (correctness),Passed,00:00:00.1841216,108317
-M3.AddStep1 (correctness),Passed,00:00:00.1382311,8043
-M3.AddStep3 (well-formedness),Passed,00:00:00.1381936,28650
-M3.AddStep2 (correctness),Passed,00:00:00.1381867,10096
-M3.AddStep1 (well-formedness),Passed,00:00:00.1381837,6802
-M3.AddStep2 (well-formedness),Passed,00:00:00.1381819,7834
-M3.add3 (well-formedness),Passed,00:00:00.1281066,242541
