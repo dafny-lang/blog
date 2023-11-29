@@ -14,9 +14,9 @@ Css Header:
 
 # What is brittleness?
 
-Dafny is designed to integrate programming and verification. You can write both programs and specification in Dafny, using annotations such as preconditions and postconditions on implementation code. To ensure that the code meets the specification, you may also need to annotate the code with the outline of a proof, such as including an invariant on a loop. Some amount of annotation can improve your code, providing precise documentation on what makes the code work. However, too much annotation would is distracting, especially if it amounts to trivialities. To make this work, Dafny relies on automated theorem proving using an SMT solver. These solvers are effective and allow for much of the verification effort to be performed automatically. However, SMT-based automation comes at a cost. If you rely too much on automation, you may find that the outcome of the automated verification becomes chaotic. A postcondition of a method for which the SMT solver used to be able to find a proof may fail to verify for seemingly unrelated changes such as upgrading to a new version of Dafny, adding an unrelated definition to your development, or even changing the name of a variable. This issue is sometimes referred to as *brittleness*. While we make every effort to push the boundary of how much can be automatically verified with Dafny, a serious Dafny user must learn to write annotations to prevent brittleness. This can be done thanks to the application of common software engineering principles such as modularity and abstraction, and also by structuring proof annotations to guide the SMT solver more precisely.
+Dafny is designed to integrate programming and verification, allowing you to write both programs and specifications in the same language. To show that the code meets the specification, you may also need to annotate the code with the outline of a proof, such as including an invariant on a loop. To complete the verification process with only these hints available, Dafny relies on automated theorem proving using an SMT solver. These solvers allow for much of the verification effort to be performed automatically. However, SMT-based automation can come at a cost. If you rely too much on automation, you may find that the outcome of verification becomes chaotic. A particular proof goal may fail to verify after seemingly unrelated changes such as upgrading to a new version of Dafny, adding an unrelated definition to your development, or even changing the name of a variable. This issue is sometimes referred to as *brittleness*.
 
- In this post, we will dig into how to avoid brittleness in practice, what properties of a program tend to push it near this problematic threshold, and how to write Dafny code that consistently verifies. To begin, let’s consider an example program that exhibits the problem. We’ll start by defining a type of rational numbers. 
+Fortunately, brittleness can usually be avoided through the application of common software engineering principles such as modularity and abstraction, and by structuring proof annotations to guide the SMT solver more precisely. In this post, we will dig into how to avoid brittleness in practice, what properties of a program tend to push it near this problematic threshold, and how to write Dafny code that consistently verifies. To begin, let’s consider an example program that is specifically designed to exhibit the problem. We’ll start by defining a type of rational numbers.
 
 <!-- inline-dafny RationalAdd/Rat -->
 
@@ -30,9 +30,9 @@ This function will verify without too much difficulty using Dafny 3.13.1, but no
 
 # Measuring and reducing brittleness
 
-Note that the last of these commented lines, `assert r == x + y`, hints at one of the concepts we’ll use to help reduce brittleness, because brittleness tends to be closely related to the *difficulty* of verification. Execution time is one way to measure difficulty, but execution time can vary widely, especially when doing verification on cloud-hosted computers. Another measure of difficulty, with greater reproducibility, is the Z3-specific *resource count*. If you verify the example `add` function in VS Code (with the Dafny extension installed), you can hover over the function signature line and see a popup that lists “Total resource usage” in units labeled RU (for “resource units”). This number gives you an indication of how much work it took the SMT solver to verify a particular definition. And we’ll see that reducing this number helps reduce brittleness. In general, we tend to aim for less than around 200K RU per definition. For the `add` function we’re considering, using Dafny 3.13, the reported RU is around 679K on my Intel-based Mac laptop.
+Note that the last of these commented lines, `assert r == x + y`, hints at one of the concepts we’ll use to help reduce brittleness, because brittleness tends to be correlated to the *difficulty* of verification. Execution time is one way to measure difficulty, but execution time can vary widely, especially when doing verification on cloud-hosted computers. Another measure of difficulty, with greater reproducibility, is the Z3-specific *resource count*. If you verify the example `add` function in VS Code (with the Dafny extension installed), you can hover over the function signature line and see a popup that lists “Total resource usage” in units labeled RU (for “resource units”). This number gives you an indication of how much work it took the SMT solver to verify a particular definition. And we’ll see that reducing this number helps reduce brittleness. In general, we tend to aim for less than around 200K RU per definition. For the `add` function we’re considering, using Dafny 3.13, the reported RU is around 679K on my Intel-based Mac laptop.
 
-Before getting into specifics for how to reduce resource use, let’s step back for a moment to discuss what makes automated proofs difficult. The process that an automated prover goes through to establish the validity of a particular statement can be thought of as searching through the space of possible proofs. Roughly speaking, the prover has a starting point (facts that it takes as true at the beginning, such as those in preconditions and assumptions) and an ending point (facts that it’s trying to prove, such as those in postconditions and assertions). To get from the starting point to the ending point, it can repeatedly take a step by applying any one of a set of possible rules. The number of facts available at the starting point is directly proportional to the number rules available to apply, and the prover’s job is to successfully choose the rule that will most quickly get it closer to the ending point. The best rule is difficult to predict, however, so the choice is sometimes (or frequently) arbitrary. This means that the most reliable ways to make the prover’s job easier are to 1) reduce the number of alternative steps available to choose from at any given point, and 2) reduce the total length of the sequence of steps that must be taken to get from the starting point to the ending point.
+Before getting into specifics for how to reduce resource use, let’s step back for a moment to discuss what makes automated proofs difficult. The process that an automated prover goes through to establish the validity of a particular statement can be thought of as searching through the space of possible proofs. Roughly speaking, the prover has a starting point (facts that it takes as true at the beginning, such as those in preconditions and assumptions) and an ending point (facts that it’s trying to prove, such as those in postconditions and assertions). To get from the starting point to the ending point, it can repeatedly take a step by applying any one of a set of possible rules. The number of facts available at the starting point is directly proportional to the number rules available to apply, and the prover’s job is to successfully choose the rule that will most quickly get it closer to the ending point. The best rule is difficult to predict, however, so the choice is sometimes (or frequently) arbitrary (though SMT solvers are effective in practice partly because they have useful heuristics for making these choices). This means that the most reliable ways to make the prover’s job easier are to 1) reduce the number of alternative steps available to choose from at any given point, and 2) reduce the total length of the sequence of steps that must be taken to get from the starting point to the ending point.
 
 In terms of Dafny programs, these two techniques take the form of 1) abstracting key concepts into self-contained definitions and lemmas, and 2) introducing additional proof structure to reduce the distance between the assumptions and conclusions at any given point. Self-contained definitions can ideally be made `opaque` and revealed only when necessary. Additional proof structure can take the form of conditionals, application of lemmas, `calc` statements, or `assert` statements.
 
@@ -80,40 +80,10 @@ The next step we’ll take is focused on reducing the number of possible reasoni
 
 On this code, Dafny reports 243K RU for the `add3` function. Note that it also spends some time proving each of the other definitions, so the total resource use is *higher* than for `add2`. However, for the purposes of brittleness, the resource use of any single goal is the key factor. Total resource use is less important.
 
-In addition to the reduced resource use, `dafny measure-complexity --iterations 5` never fails. The (somewhat long) CSV output is as follows.
+In addition to the reduced resource use, `dafny measure-complexity --iterations 5` never fails. The CSV output includes entries like the following (trimmed for space).
 
 ```
-TestResult.DisplayName,TestResult.Outcome,TestResult.Duration,TestResult.ResourceCount
-M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0142495,8245
-M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0160199,8280
-M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0161105,8044
-M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.0175271,8280
-M3.AddStep1 (correctness) (assertion batch 0),Passed,00:00:00.1247804,8042
-M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0117433,6801
-M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0162976,6801
-M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0202066,6801
-M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.0215131,6801
-M3.AddStep1 (well-formedness) (assertion batch 0),Passed,00:00:00.1248031,6801
-M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0135860,11031
-M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0149381,10330
-M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0166746,10720
-M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.0250631,10330
-M3.AddStep2 (correctness) (assertion batch 0),Passed,00:00:00.1247975,10095
-M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0146360,7833
-M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0150925,7833
-M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0152327,7833
-M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.0240935,7833
-M3.AddStep2 (well-formedness) (assertion batch 0),Passed,00:00:00.1248038,7833
-M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0320375,149358
-M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0628351,125510
-M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0693279,125511
-M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.0696398,115466
-M3.AddStep3 (correctness) (assertion batch 0),Passed,00:00:00.1671778,108318
-M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0234566,28650
-M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0235562,28652
-M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0268125,28651
-M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.0402614,28651
-M3.AddStep3 (well-formedness) (assertion batch 0),Passed,00:00:00.1247978,28650
+...
 M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1523979,240040
 M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1633594,239653
 M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1705948,239689
@@ -121,7 +91,7 @@ M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1735807,239652
 M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1759347,242545
 ```
 
-Note that the values for all iterations are quite close for each definition. In addition, we can successfully verify `add3` with Dafny 3.13.1, 4.0.0, 4.1.0, 4.2.0, 4.3.0, and likely other versions, as well.
+Note that the values for all iterations are quite close (which they also are for the omitted definitions). In addition, we can successfully verify `add3` with Dafny 3.13.1, 4.0.0, 4.1.0, 4.2.0, 4.3.0, and likely other versions, as well.
 
 # More detailed structure
 
@@ -152,12 +122,12 @@ The examples covered so far illustrate two key principles for maintainable verif
 * Break long leaps of reasoning down into smaller steps. This limits the number of reasoning steps that the prover needs to construct on its own.
 * Isolate each step so that the proof of it doesn’t need to (and, further, isn’t able to) take into account irrelevant information. This limits the number of choices that the prover has to evaluate when making each reasoning step.
 
-A nice coincidence is that programs written according to these principles tend to be more understandable to humans, as well. Reducing the work a prover needs to do when reasoning about a program has the effect of reducing the amount of thinking a human has to do to understand what a program does, and why it’s correct. Constructing small, relatively isolated components relates strongly to the concepts of [cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) and [coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) used in software engineering.
+A nice coincidence is that programs written according to these principles tend to be easier to read, as well. Reducing the work a prover needs to do when reasoning about a program has the effect of reducing the amount of thinking a human has to do to understand what a program does, and why it’s correct. Constructing small, relatively isolated components relates strongly to the concepts of [cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) and [coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) used in software engineering.
 
 Those principles are rather general, however, and there are several more specific guidelines for how to apply them in practice in Dafny.
 
 * Prefer `opaque` functions, with explicit `reveal` statements where necessary.
-* Avoid `requires` and `ensures` clauses on functions, except when necessary to make them total, and prefer a collection of `lemma`s, each of which establishes a single property of the function.
+* Avoid `requires` and `ensures` clauses on functions (intrinsic specifications), except when necessary to make them total, and prefer a collection of `lemma`s, each of which establishes a single property of the function (extrinsic specifications).
 * Avoid lemmas that establish universally-qualified facts, preferring an additional parameter for each variable that would otherwise be quantified. It’s possible to wrap such a lemma to use universal quantification if it’s necessary, but many uses can pass in specific instantiations.
 * Avoid subset types except perhaps for simple integer ranges.
 * Prove the correctness of each method by including a single postcondition that establishes equivalence with a function or agreement with a relation. Other properties can be proved as independent lemmas about that function or relation.
@@ -166,7 +136,7 @@ The Dafny-VMC project includes some [more detailed guidelines](https://github.co
 
 # Conclusion
 
-Brittleness is an inevitable consequence of the combination of expressiveness and automation available in Dafny. However, although it is unavoidable in theory, it can be dramatically reduced in practice. Aiming to reduce resource use, and setting limits on it as part of your build process, is likely the single most effective way to do so. This can be achieved by writing code in small, self-contained units that each have a clear, single purpose and don’t leak implementation details except when necessary. Within these units, additional details about intermediate proof steps can help. Although `assert` and `calc` statements are the most straightforward way to do this, using the structure of [natural deduction](https://en.wikipedia.org/wiki/Natural_deduction) can be even more effective.
+Brittleness is an inevitable consequence of the combination of expressiveness and automation available in Dafny. However, although it is unavoidable in theory, it can be dramatically reduced in practice, and an important part of good verified software engineering is to continually improve the quality of the proofs. Aiming to reduce resource use, and setting limits on it as part of your build process, is one of the most effective ways to do so. This can be achieved by writing code in small, self-contained units that each have a clear, single purpose and don’t leak implementation details except when necessary. Within these units, additional details about intermediate proof steps can help. Although `assert` and `calc` statements are the most straightforward way to do this, using the structure of [natural deduction](https://en.wikipedia.org/wiki/Natural_deduction) can be even more effective.
 
 When constructing new Dafny projects, we recommend using a project file something like the following.
 
