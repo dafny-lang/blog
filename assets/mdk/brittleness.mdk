@@ -60,15 +60,9 @@ This is roughly equivalent to `dafny verify file.dfy`, except that it attempts v
 
 Running `dafny measure-complexity --iterations 5` on the `add2` function results in two failures, for me, one for each assertion, using Dafny 4.3.0. (We’ll be using Dafny 4.3.0 for the rest of this post but, just for comparison, Dafny 3.13.1 times out, with a 10s limit, on one out of those 5 iterations. Dafny 4.3.0 completes in less than 10s for each iteration, even when it fails.)
 
-That simple invocation allows you to identify how often a verification fails, when running with multiple random mutations, but it’s possible to get more detail about each iteration. If you add the `--log-format csv` argument, Dafny will create a CSV file containing the outcome, running time, and resource count of each iteration of each definition. Running on the `add2` example above, I get the following.
+That simple invocation allows you to identify how often a verification fails, when running with multiple random mutations, but it’s possible to get more detail about each iteration. If you add the `--log-format csv` argument, Dafny will create a CSV file containing the outcome, running time, and resource count of each iteration of each definition. Running on the `add2` example above, I get the following (in graphical format).
 
-```
-M2.add2 (well-formedness) (assertion batch 0),Failed,00:00:00.5896098,2261601
-M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.2784350,361443
-M2.add2 (well-formedness) (assertion batch 0),Failed,00:00:00.2034539,410780
-M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.1831648,345467
-M2.add2 (well-formedness) (assertion batch 0),Passed,00:00:00.1531195,343003
-```
+<img class="clickable" id="img-add2-resource" src="/blog/assets/images/brittleness/add2.png" alt="Resource use for 5 iterations of verifying the add2 function." style="display:block;margin-left:auto;margin-right:auto;width:3309px;max-width:95%;"/>
 
 Note that the resource counts for the successful proofs are all in roughly the same range, but the resource counts for the failed iterations are larger (and in one case much larger). We find that even in cases where no iterations fail, large variations in resource counts between successful runs can be an early predictor of brittleness. So, although this example is improved from the first version, it clearly could use work to further reduce brittleness.
 
@@ -80,18 +74,11 @@ The next step we’ll take is focused on reducing the number of possible reasoni
 
 On this code, Dafny reports 243K RU for the `add3` function. Note that it also spends some time proving each of the other definitions, so the total resource use is *higher* than for `add2`. However, for the purposes of brittleness, the resource use of any single goal is the key factor. Total resource use is less important.
 
-In addition to the reduced resource use, `dafny measure-complexity --iterations 5` never fails. The CSV output includes entries like the following (trimmed for space).
+In addition to the reduced resource use, `dafny measure-complexity --iterations 5` never fails. The output shows the following resource use for `add3`.
 
-```
-...
-M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1523979,240040
-M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1633594,239653
-M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1705948,239689
-M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1735807,239652
-M3.add3 (well-formedness) (assertion batch 0),Passed,00:00:00.1759347,242545
-```
+<img class="clickable" id="img-add3-resource" src="/blog/assets/images/brittleness/add3.png" alt="Resource use for 5 iterations of verifying the add3 function." style="display:block;margin-left:auto;margin-right:auto;width:3309px;max-width:95%;"/>
 
-Note that the values for all iterations are quite close (which they also are for the omitted definitions). In addition, we can successfully verify `add3` with Dafny 3.13.1, 4.0.0, 4.1.0, 4.2.0, 4.3.0, and likely other versions, as well.
+Note that the values for all iterations are quite close (which they also are for the accompanying lemmas). In addition, we can successfully verify `add3` with Dafny 3.13.1, 4.0.0, 4.1.0, 4.2.0, 4.3.0, and likely other versions, as well.
 
 # More detailed structure
 
@@ -114,6 +101,8 @@ When conditioning the proof on whether `n` is zero or not, we can invoke the bas
 Note that invoking the assumed lemmas about `TriangleSum` in the correct place is critical. If we use the same conditional structure but invoke both at the beginning, so they scope over the entire lemma, Dafny now uses over 1M RU again.
 
 <!-- inline-dafny TriangleSum/A4 -->
+
+As an exercise, it can be instructive to try to make the resource use of this example even smaller. It's possible to get it below 70K!
 
 # More general guidelines
 
