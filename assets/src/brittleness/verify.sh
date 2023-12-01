@@ -13,8 +13,7 @@ fi
 
 cd "$(dirname "$0")"
 
-for file in `ls *.dfy`
-do 
-  echo "Verifying $file..." 
-  dafny verify $file
-done
+(dafny verify RationalAdd.dfy > RationalAdd.dfy.out) || true
+diff RationalAdd.dfy.out RationalAdd.dfy.expect
+rm -f RationalAdd.dfy.out
+dafny verify TriangleSum.dfy
