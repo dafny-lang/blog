@@ -60,11 +60,11 @@ This is roughly equivalent to `dafny verify file.dfy`, except that it attempts v
 
 Running `dafny measure-complexity --iterations 5` on the `add2` function results in two failures, for me, one for each assertion, using Dafny 4.3.0. (We’ll be using Dafny 4.3.0 for the rest of this post but, just for comparison, Dafny 3.13.1 times out, with a 10s limit, on one out of those 5 iterations. Dafny 4.3.0 completes in less than 10s for each iteration, even when it fails.)
 
-That simple invocation allows you to identify how often a verification fails, when running with multiple random mutations, but it’s possible to get more detail about each iteration. If you add the `--log-format csv` argument, Dafny will create a CSV file containing the outcome, running time, and resource count of each iteration of each definition. Running on the `add2` example above, I get the following (in graphical format).
+That simple invocation allows you to identify how often a verification fails, when running with multiple random mutations, but it’s possible to get more detail about each iteration. If you add the `--log-format csv` argument, Dafny will create a CSV file containing the outcome, running time, and resource count of each iteration of each definition. Running on the `add2` example above, I get the following. (In this graph, each bar represents a separate iteration, and the height indicates the resource usage.)
 
 <img class="clickable" id="img-add2-resource" src="/blog/assets/images/brittleness/add2.png" alt="Resource use for 5 iterations of verifying the add2 function." style="display:block;margin-left:auto;margin-right:auto;width:3309px;max-width:95%;"/>
 
-Note that the resource counts for the successful proofs are all in roughly the same range, but the resource counts for the failed iterations are larger (and in one case much larger). We find that even in cases where no iterations fail, large variations in resource counts between successful runs can be an early predictor of brittleness. So, although this example is improved from the first version, it clearly could use work to further reduce brittleness.
+In this experiment, iterations 1 and 3 failed verification, and the others succeeded. Note that the resource counts for the successful proofs are all in roughly the same range, but the resource counts for the failed iterations are larger (and in one case much larger). We find that even in cases where no iterations fail, large variations in resource counts between successful runs can be an early predictor of brittleness. So, although this example is improved from the first version, it clearly could use work to further reduce brittleness.
 
 # A second variation on `add`
 
