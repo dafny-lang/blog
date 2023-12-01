@@ -1,0 +1,547 @@
+<html lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="generator" content="Madoko, version 1.2.3" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <style type="text/css"  class="link">
+  /*# sourceURL=madoko.css */
+  
+  .madoko .toc>.tocblock .tocblock .tocblock {
+    margin-left: 2.25em;
+  }
+  .madoko .toc>.tocblock .tocblock {
+    margin-left: 1.5em;
+  }
+  .madoko .toc-contents>.tocblock>.tocitem {
+    font-weight: bold;
+  }
+  .madoko .toc {
+    margin-top: 1em;
+  }
+  .madoko p.para-continue {
+    margin-bottom: 0pt;
+  }
+  .madoko .para-block+p {
+    margin-top: 0pt;
+  }
+  .madoko ul.para-block, .madoko ol.para-block {
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+  }
+  .madoko ul.para-end, .madoko ol.para-end {
+    margin-bottom: 1em;
+  }
+  .madoko dl {
+    margin-left: 0em;
+  }
+  .madoko blockquote {
+    font-style: italic;
+  }
+  .madoko a.localref {
+    text-decoration: none;
+  }
+  .madoko a.localref:hover {
+    text-decoration: underline;
+  }
+  .madoko .footnotes {
+    font-size: smaller;
+    margin-top: 2em;
+  }
+  .madoko .footnotes hr {
+    width: 50%;
+    text-align: left;
+  }
+  .madoko .footnote {
+    margin-left: 1em;
+  }
+  .madoko .footnote-before {
+    margin-left: -1em;
+    width: 1em;
+    display: inline-block;
+  }
+  .madoko .align-center, .madoko .align-center>p {
+    text-align: center !important;
+  }
+  .madoko .align-center pre {
+    text-align: left;
+  }
+  .madoko .align-center>* {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-left, .madoko .align-left>p {
+    text-align: left !important;
+  }
+  .madoko .align-left>* {
+    margin-left: 0pt !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-right, .madoko .align-right>p {
+    text-align: right !important;
+  }
+  .madoko .align-right>* {
+    margin-left: auto !important;
+    margin-right: 0pt !important;
+  }
+  .madoko .align-center>table,
+  .madoko .align-left>table,
+  .madoko .align-right>table {
+    text-align: left !important;
+  }
+  .madoko .equation-before {
+    float: right;
+  }
+  .madoko .bibitem {
+    font-size: smaller;
+  }
+  .madoko .bibsearch {
+    font-size: x-small;
+    text-decoration:none;
+    color: black;
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  .madoko .block, .madoko .figure, .madoko .bibitem, .madoko .equation, .madoko div.math {
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .figure {
+    padding: 0.5em;
+    margin-left: 0pt;
+    margin-right: 0pt;
+  }
+  .madoko .hidden {
+    display: none;
+  }
+  .madoko .invisible {
+    visibility: hidden;
+  }
+  .madoko.preview .invisible {
+    visibility: visible;
+    opacity: 0.5;
+  }
+  .madoko code.code, .madoko span.code {
+    white-space: pre-wrap;
+  }
+  .madoko hr, hr.madoko {
+    border: none;
+    border-bottom: black solid 1px;
+    margin-bottom: 0.5ex;
+  }
+  .madoko .framed>*:first-child {
+    margin-top: 0pt;
+  }
+  .madoko .framed>*:last-child {
+    margin-bottom: 0pt;
+  }
+  .madoko ul.list-style-type-dash {
+      list-style-type: none !important;
+  }
+  .madoko ul.list-style-type-dash > li:before {
+      content: "\2013";
+      position: absolute;
+      margin-left: -1em;
+  }
+  .madoko table.madoko {
+    border-collapse: collapse;
+  }
+  .madoko td, .madoko th {
+    padding: 0ex 0.5ex;
+    margin: 0pt;
+    vertical-align: top;
+  }
+  .madoko .cell-border-left {
+    border-left: 1px solid black;
+  }
+  .madoko .cell-border-right {
+    border-right: 1px solid black;
+  }
+  .madoko thead>tr:first-child>.cell-line,
+  .madoko tbody:first-child>tr:first-child>.cell-line {
+    border-top: 1px solid black;
+    border-bottom: none;
+  }
+  .madoko .cell-line, .madoko .cell-double-line {
+    border-bottom: 1px solid black;
+    border-top: none;
+  }
+  .madoko .cell-double-line {
+    border-top: 1px solid black;
+    padding-top: 1.5px !important;
+  }
+  .madoko .input-mathpre .MathJax_Display {
+    text-align: left !important;
+  }
+  .madoko div.input-mathpre {
+    text-align: left;
+    margin-top: 1.5ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .math-rendering {
+    text-align: left;
+    white-space: pre;
+    color: gray;
+  }
+  .madoko .mathdisplay {
+    text-align: center;
+  }
+  .madoko span.math-rendering {
+    display:inline-block;
+    width:8em;
+    overflow-x:auto;
+    font-size:70%;
+  }
+  .madoko span.math-rendering::-webkit-scrollbar {
+    width:4px;
+  }
+  .madoko .pretty table {
+    border-collapse: collapse;
+  }
+  .madoko .pretty td {
+    padding: 0em;
+  }
+  .madoko .pretty td.empty {
+    min-width: 1.5ex;
+  }
+  .madoko .pretty td.expander {
+    width: 100em;
+  }
+  body.madoko, .madoko .serif {
+    font-family: Cambria,"Times New Roman","Liberation Serif","Times",serif;
+  }
+  .madoko .sans-serif {
+    font-family: "Calibri", "Optima", sans-serif;
+  }
+  .madoko .symbol {
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  body.madoko {
+    -webkit-text-size-adjust: 100%;       
+    text-rendering: optimizeLegibility;
+  }
+  body.madoko {
+    max-width: 88ex; 
+    margin: 1em auto;
+    padding: 0em 2em;
+  }
+  body.preview.madoko {
+    padding: 0em 1em;
+  }
+  .madoko p {
+    text-align: justify;
+  }
+  .madoko h1, .madoko h2, .madoko h3, .madoko h4 {
+    margin-top: 1.22em;
+    margin-bottom: 1ex;
+  }
+  .madoko h1+p, .madoko h2+p, .madoko h3+p, .madoko h4+p, .madoko h5+p  {
+    margin-top: 1ex;
+  }
+  .madoko h5, .madoko h6 {
+    margin-top: 1ex;
+    font-size: 1em;
+  }
+  .madoko h5 {
+    margin-bottom: 0.5ex;
+  }
+  .madoko h5 + p {
+    margin-top: 0.5ex;
+  }
+  .madoko h6 {
+    margin-bottom: 0pt;
+  }
+  .madoko h6 + p {
+    margin-top: 0pt;
+  }
+  .madoko pre, .madoko code, .madoko kbd, .madoko samp, .madoko tt,
+  .madoko .monospace, .madoko .token-indent, .madoko .reveal pre, .madoko .reveal code, .madoko .email {
+    font-family: Consolas,"Andale Mono WT","Andale Mono",Lucida Console,Monaco,monospace,monospace;
+    font-size: 0.85em;
+  }
+  .madoko pre code, .madoko .token-indent {
+    font-size: 0.95em;
+  }
+  .madoko pre code {
+    font-family: inherit !important;
+  }
+  .madoko ol.linenums li {
+    background-color: white;
+    list-style-type: decimal;
+  }
+  .madoko .remote {
+    background-color: #F0FFF0;
+  }
+  .madoko .remote + * {
+    margin-top: 0pt;
+  }
+  @media print {
+    body.madoko {
+      font-size: 10pt;
+    }
+    @page {
+      margin: 1in 1.5in;
+    }
+  }
+  @media only screen and (max-device-width:1024px) {
+    body.madoko {
+      padding: 0em 0.5em;
+    }
+    .madoko li {
+      text-align: left;
+    }
+  }
+  
+    </style>
+  
+  <style>
+    body.madoko {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .page-content {
+        padding: 0;
+      }
+  </style>
+  </head>
+<body class="madoko">
+
+<div class="body madoko" style="line-adjust:0">
+<h2 id="sec-what-is-brittleness" class="h1" data-line="18" data-heading-depth="1" style="display:block"><span data-line="18"></span>What is brittleness?</h2>
+<p class="p noindent" data-line="20"><span data-line="20"></span>Dafny is designed to integrate programming and verification, allowing you to write both programs and specifications in the same language. To show that the code meets the specification, you may also need to annotate the code with the outline of a proof, such as including an invariant on a loop. To complete the verification process with only these hints available, Dafny relies on automated theorem proving using an SMT solver. These solvers allow for much of the verification effort to be performed automatically. However, SMT-based automation can come at a cost. If you rely too much on automation, you may find that the outcome of verification becomes chaotic. A particular proof goal may fail to verify after seemingly unrelated changes such as upgrading to a new version of Dafny, adding an unrelated definition to your development, or even changing the name of a variable. This issue is sometimes referred to as <span data-line="20"></span><em class="em-star1">brittleness</em><span data-line="20"></span>.
+</p>
+<p class="p indent" data-line="22"><span data-line="22"></span>Fortunately, brittleness can usually be avoided through the application of common software engineering principles such as modularity and abstraction, and by structuring proof annotations to guide the SMT solver more precisely. In this post, we will dig into how to avoid brittleness in practice, what properties of a program tend to push it near this problematic threshold, and how to write Dafny code that consistently verifies. To begin, let’s consider an example program that is specifically designed to exhibit the problem. We’ll start by defining a type of rational numbers.
+</p><!-- inline-dafny RationalAdd/Rat -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="26" data-line-first="27" style="display:block"><code data-line="27">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> Rational(x: <span style="color:teal">real</span>) {
+    <span style="color:blue">exists</span> n: <span style="color:teal">int</span>, m: <span style="color:teal">int</span> :: m &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; x == (n <span style="color:blue">as</span> <span style="color:teal">real</span>) / (m <span style="color:blue">as</span> <span style="color:teal">real</span>)
+  }
+
+  <span style="color:blue">type</span> rat = x: <span style="color:teal">real</span> | Rational(x) <span style="color:purple">witness</span> (<span class="constant" style="color:purple">0</span> <span style="color:blue">as</span> <span style="color:teal">real</span> / <span class="constant" style="color:purple">1</span> <span style="color:blue">as</span> <span style="color:teal">real</span>)</code></pre>
+<p class="p noindent para-continued" data-line="35"><span data-line="35"></span>Although this definition is relatively simple, it uses an existential quantifier in the predicate defining the subset type <span data-line="35"></span><code class="code code1">rat</code><span data-line="35"></span>, which causes existential quantifiers to be part of almost every query sent to the SMT solvers. This is something that such solvers are notoriously bad at reasoning about. We’ll show that this does indeed cause trouble at first, but that it’s possible to resolve that trouble, resulting in a version that consistently verifies.
+</p>
+<p class="p indent" data-line="37"><span data-line="37"></span>To see the issues that arise, let’s try to write a function to add rational numbers.
+</p><!-- inline-dafny RationalAdd/M1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="41" data-line-first="42" style="display:block"><code data-line="42">  <span style="color:blue">ghost</span> <span style="color:blue">function</span> add(x: rat, y: rat): rat
+    <span style="color:purple">requires</span> Rational(x)
+    <span style="color:purple">requires</span> Rational(y)
+    <span style="color:purple">ensures</span> Rational(add(x,y))  <span style="color:darkgreen">// Comment -&gt; postcondition not verified</span>
+    <span style="color:purple">ensures</span> add(x, y) == x + y
+  {
+    <span style="color:blue">var</span> n1: <span style="color:teal">int</span>, m1: <span style="color:teal">int</span> :| m1 &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; x == (n1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (m1 <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">var</span> n2: <span style="color:teal">int</span>, m2: <span style="color:teal">int</span> :| m2 &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; y == (n2 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (m2 <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:darkgreen">//var r1 := x + y;          // Uncomment -&gt; postcondition not verified</span>
+    <span style="color:blue">var</span> r: rat := ((n1 * m2 + n2 * m1) <span style="color:blue">as</span> <span style="color:teal">real</span>) / ((m1 * m2) <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">assert</span> Rational(r);
+    <span style="color:darkgreen">//assert r == x + y;        // Uncomment -&gt; much higher resource use</span>
+    r
+  }</code></pre>
+<p class="p noindent para-continued" data-line="59"><span data-line="59"></span>This function will verify without too much difficulty using Dafny 3.13.1, but not at all with Dafny 4.x. Even with Dafny 3.13.1, verification is brittle. Removing <span data-line="59"></span><code class="code code1">ensures Rational(add(x, y))</code><span data-line="59"></span> leads to a failure to prove the other <span data-line="59"></span><code class="code code1">ensures</code><span data-line="59"></span> clause, even though <span data-line="59"></span><code class="code code1">assert Rational(r)</code><span data-line="59"></span> is a statement of the same fact. Adding <span data-line="59"></span><code class="code code1">var r1 := x + y</code><span data-line="59"></span> also leads to the postcondition not being verified, even though <span data-line="59"></span><code class="code code1">r1</code><span data-line="59"></span> is never used (and even though <span data-line="59"></span><code class="code code1">assert r == x + y</code><span data-line="59"></span> succeeds).
+</p><h2 id="sec-measuring-and-reducing-brittleness" class="h1" data-line="61" data-heading-depth="1" style="display:block"><span data-line="61"></span>Measuring and reducing brittleness</h2>
+<p class="p noindent" data-line="63"><span data-line="63"></span>Note that the last of these commented lines, <span data-line="63"></span><code class="code code1">assert r == x + y</code><span data-line="63"></span>, hints at one of the concepts we’ll use to help reduce brittleness, because brittleness tends to be correlated to the <span data-line="63"></span><em class="em-star1">difficulty</em><span data-line="63"></span> of verification. Execution time is one way to measure difficulty, but execution time can vary widely, especially when doing verification on cloud-hosted computers. Another measure of difficulty, with greater reproducibility, is the Z3-specific <span data-line="63"></span><em class="em-star1">resource count</em><span data-line="63"></span>. If you verify the example <span data-line="63"></span><code class="code code1">add</code><span data-line="63"></span> function in VS Code (with the Dafny extension installed), you can hover over the function signature line and see a popup that lists “Total resource usage” in units labeled RU (for “resource units”). This number gives you an indication of how much work it took the SMT solver to verify a particular definition. And we’ll see that reducing this number helps reduce brittleness. In general, we tend to aim for less than around 200K RU per definition. For the <span data-line="63"></span><code class="code code1">add</code><span data-line="63"></span> function we’re considering, using Dafny 3.13, the reported RU is around 679K on my Intel-based Mac laptop.
+</p>
+<p class="p indent" data-line="65"><span data-line="65"></span>Before getting into specifics for how to reduce resource use, let’s step back for a moment to discuss what makes automated proofs difficult. The process that an automated prover goes through to establish the validity of a particular statement can be thought of as searching through the space of possible proofs. Roughly speaking, the prover has a starting point (facts that it takes as true at the beginning, such as those in preconditions and assumptions) and an ending point (facts that it’s trying to prove, such as those in postconditions and assertions). To get from the starting point to the ending point, it can repeatedly take a step by applying any one of a set of possible rules. The number of facts available at the starting point is directly proportional to the number rules available to apply, and the prover’s job is to successfully choose the rule that will most quickly get it closer to the ending point. The best rule is difficult to predict, however, so the choice is sometimes (or frequently) arbitrary (though SMT solvers are effective in practice partly because they have useful heuristics for making these choices). This means that the most reliable ways to make the prover’s job easier are to 1) reduce the number of alternative steps available to choose from at any given point, and 2) reduce the total length of the sequence of steps that must be taken to get from the starting point to the ending point.
+</p>
+<p class="p indent" data-line="67"><span data-line="67"></span>In terms of Dafny programs, these two techniques take the form of 1) abstracting key concepts into self-contained definitions and lemmas, and 2) introducing additional proof structure to reduce the distance between the assumptions and conclusions at any given point. Self-contained definitions can ideally be made <span data-line="67"></span><code class="code code1">opaque</code><span data-line="67"></span> and revealed only when necessary. Additional proof structure can take the form of conditionals, application of lemmas, <span data-line="67"></span><code class="code code1">calc</code><span data-line="67"></span> statements, or <span data-line="67"></span><code class="code code1">assert</code><span data-line="67"></span> statements.
+</p><h2 id="sec-a-first-variation-on-add" class="h1" data-line="69" data-heading-depth="1" style="display:block"><span data-line="69"></span>A first variation on <span data-line="69"></span><code class="code code1">add</code></h2>
+<p class="p noindent" data-line="71"><span data-line="71"></span>To improve our <span data-line="71"></span><code class="code code1">add</code><span data-line="71"></span> example, it’s easiest to start with approach (2). Consider the following modification.
+</p><!-- inline-dafny RationalAdd/M2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="75" data-line-first="76" style="display:block"><code data-line="76">  <span style="color:blue">ghost</span> <span style="color:blue">function</span> add2(x: rat, y: rat): rat
+    <span style="color:purple">requires</span> Rational(x)
+    <span style="color:purple">requires</span> Rational(y)
+    <span style="color:darkgreen">// ensures Rational(add2(x,y))  // Uncomment -&gt; higher resource use with 3.13, failure with 4.3</span>
+    <span style="color:purple">ensures</span> add2(x, y) == x + y
+  {
+    <span style="color:blue">var</span> x1: <span style="color:teal">int</span>, x2: <span style="color:teal">int</span> :| x2 &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; x == (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">var</span> y1: <span style="color:teal">int</span>, y2: <span style="color:teal">int</span> :| y2 &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; y == (y1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (y2 <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">var</span> r: <span style="color:teal">real</span> := x + y;
+    <span style="color:blue">var</span> final_d: <span style="color:teal">int</span> := x2 * y2;
+    <span style="color:darkgreen">// var r1 := x + y;         // Uncomment -&gt; higher resource use with 3.13, failure with 4.3</span>
+    <span style="color:blue">assert</span> (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>) == ((x1 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>) / ((x2 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">assert</span> r == (((x1 * y2) + (y1 * x2)) <span style="color:blue">as</span> <span style="color:teal">real</span>) / (final_d <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:darkgreen">// assert Rational(r);      // Uncomment -&gt; higher resource use with 3.13, failure with 4.3</span>
+    <span style="color:darkgreen">// assert r == x + y;       // Uncomment -&gt; higher resource use with 3.13, failure with 4.3</span>
+    r
+  }</code></pre>
+<p class="p noindent para-continued" data-line="96"><span data-line="96"></span>In this example, we’ve added two <span data-line="96"></span><code class="code code1">assert</code><span data-line="96"></span> statements that represent intermediate steps in the calculation equating <span data-line="96"></span><code class="code code1">add(x, y)</code><span data-line="96"></span> (or <span data-line="96"></span><code class="code code1">r</code><span data-line="96"></span>) with <span data-line="96"></span><code class="code code1">x + y</code><span data-line="96"></span>. These are similar to the intermediate points you might write out if you were to prove the equivalence by hand, applying standard rules of algebra. We’ve also removed the <span data-line="96"></span><code class="code code1">Rational(add(x, y))</code><span data-line="96"></span> postcondition. We included it originally only because the first version wouldn’t verify without it (although one might want to prove it for its own sake). Because we don’t have that postcondition, we also don’t need <span data-line="96"></span><code class="code code1">assert Rational(r)</code><span data-line="96"></span>.
+</p>
+<p class="p indent" data-line="98"><span data-line="98"></span>With these changes, it now verifies using about 637K RU, which is less, but not significantly less. However, in this case it’s enough to allow it to verify with Dafny 4.3.0, as well! The resource counts between different Z3 versions aren’t directly comparable, and Dafny changed its default Z3 version between 3.x and 4.x, so the resource counts between 3.13.1 and 4.3.0 aren’t directly comparable. However, for comparison with later examples, Dafny 4.3.0 reports 303K RU on <span data-line="98"></span><code class="code code1">add2</code><span data-line="98"></span> on my laptop.
+</p><h2 id="sec-measuring-brittleness-more-thoroughly" class="h1" data-line="100" data-heading-depth="1" style="display:block"><span data-line="100"></span>Measuring brittleness more thoroughly</h2>
+<p class="p noindent" data-line="102"><span data-line="102"></span>We can dig even more deeply into the difference between these two examples than we did above, however. The commented lines indicate that both small changes in the program and changes in Dafny version can cause failures, so this example is still quite brittle. To demonstrate this in practice, we can automatically check what happens when we verify with either different Dafny versions or different variants of the program. Automating the process of checking a given verification with multiple Dafny versions can be implemented in a CI script without much difficulty, and we won’t go into more detail about that here. To automate comparison of different variants of the program, Dafny includes a feature to perform a certain set of very simple random mutations to evaluate whether any of these mutations make verification more difficult or more prone to failure.
+</p>
+<p class="p indent" data-line="104"><span data-line="104"></span>This feature is encapsulated in the <span data-line="104"></span><code class="code code1">dafny measure-complexity</code><span data-line="104"></span> command. The most basic use takes the form:
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="106" data-line-first="107" style="display:block"><code data-line="107">dafny measure-complexity --iterations N file.dfy</code></pre>
+<p class="p noindent para-continued" data-line="110"><span data-line="110"></span>This is roughly equivalent to <span data-line="110"></span><code class="code code1">dafny verify file.dfy</code><span data-line="110"></span>, except that it attempts verification <span data-line="110"></span><code class="code code1">N</code><span data-line="110"></span> times, with random changes applied during each attempt. The changes occur at the SMT level, rather than the Dafny source code level, and consist of reordering definitions and renaming variables, as well as passing a random seed on to the SMT solver for use in making the arbitrary decisions described earlier.
+</p>
+<p class="p indent" data-line="112"><span data-line="112"></span>Running <span data-line="112"></span><code class="code code1">dafny measure-complexity --iterations 5</code><span data-line="112"></span> on the <span data-line="112"></span><code class="code code1">add2</code><span data-line="112"></span> function results in two failures, for me, one for each assertion, using Dafny 4.3.0. (We’ll be using Dafny 4.3.0 for the rest of this post but, just for comparison, Dafny 3.13.1 times out, with a 10s limit, on one out of those 5 iterations. Dafny 4.3.0 completes in less than 10s for each iteration, even when it fails.)
+</p>
+<p class="p indent" data-line="114"><span data-line="114"></span>That simple invocation allows you to identify how often a verification fails, when running with multiple random mutations, but it’s possible to get more detail about each iteration. If you add the <span data-line="114"></span><code class="code code1">--log-format csv</code><span data-line="114"></span> argument, Dafny will create a CSV file containing the outcome, running time, and resource count of each iteration of each definition. Running on the <span data-line="114"></span><code class="code code1">add2</code><span data-line="114"></span> example above, I get the following. (In this graph, each bar represents a separate iteration, and the height indicates the resource usage.)
+</p>
+<p class="p indent" data-line="116"><span data-line="116"></span><img class="clickable" id="img-add2-resource" src="/blog/assets/images/brittleness/add2.png" alt="Resource use for 5 iterations of verifying the add2 function." style="display:block;margin-left:auto;margin-right:auto;width:3309px;max-width:95%;"/><span data-line="116"></span>
+</p>
+<p class="p indent" data-line="118"><span data-line="118"></span>In this experiment, iterations 1 and 3 failed verification, and the others succeeded. Note that the resource counts for the successful proofs are all in roughly the same range, but the resource counts for the failed iterations are larger (and in one case much larger). We find that even in cases where no iterations fail, large variations in resource counts between successful runs can be an early predictor of brittleness. So, although this example is improved from the first version, it clearly could use work to further reduce brittleness.
+</p><h2 id="sec-a-second-variation-on-add" class="h1" data-line="120" data-heading-depth="1" style="display:block"><span data-line="120"></span>A second variation on <span data-line="120"></span><code class="code code1">add</code></h2>
+<p class="p noindent" data-line="122"><span data-line="122"></span>The next step we’ll take is focused on reducing the number of possible reasoning steps available to the prover at any given point, and we’ll do this by breaking the problem up into smaller pieces, each of which is verified independently. We’ll do this by proving each of the facts specified in the first three assertions of <span data-line="122"></span><code class="code code1">add2</code><span data-line="122"></span> in separate lemmas. For each lemma, the prover has access to only the facts listed explicitly in <span data-line="122"></span><code class="code code1">requires</code><span data-line="122"></span> clauses (as opposed to the results of previous <span data-line="122"></span><code class="code code1">assert</code><span data-line="122"></span> statements, or <span data-line="122"></span><code class="code code1">requires</code><span data-line="122"></span> clauses of the <span data-line="122"></span><code class="code code1">add3</code><span data-line="122"></span> function, for example).
+</p><!-- inline-dafny RationalAdd/M3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="126" data-line-first="127" style="display:block"><code data-line="127">  <span style="color:blue">lemma</span> AddStep1(x1: <span style="color:teal">int</span>, x2: <span style="color:teal">int</span>, y1: <span style="color:teal">int</span>, y2: <span style="color:teal">int</span>)
+    <span style="color:purple">requires</span> x2 &gt; <span class="constant" style="color:purple">0</span>
+    <span style="color:purple">requires</span> y2 &gt; <span class="constant" style="color:purple">0</span>
+    <span style="color:purple">ensures</span> (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>) == ((x1 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>) / ((x2 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>)
+  {}
+
+  <span style="color:blue">lemma</span> AddStep2(r: <span style="color:teal">real</span>, x:<span style="color:teal">real</span>, y: <span style="color:teal">real</span>, x1: <span style="color:teal">int</span>, x2: <span style="color:teal">int</span>, y1: <span style="color:teal">int</span>, y2: <span style="color:teal">int</span>)
+    <span style="color:purple">requires</span> x2 &gt; <span class="constant" style="color:purple">0</span>
+    <span style="color:purple">requires</span> x == (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>)
+    <span style="color:purple">requires</span> y2 &gt; <span class="constant" style="color:purple">0</span>
+    <span style="color:purple">requires</span> y == (y1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (y2 <span style="color:blue">as</span> <span style="color:teal">real</span>)
+    <span style="color:purple">requires</span> r == x + y
+    <span style="color:purple">ensures</span> r == (((x1 * y2) + (y1 * x2)) <span style="color:blue">as</span> <span style="color:teal">real</span>) / ((x2 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>)
+  {}
+
+  <span style="color:blue">lemma</span> AddStep3(r: <span style="color:teal">real</span>, x:<span style="color:teal">real</span>, y: <span style="color:teal">real</span>, x1: <span style="color:teal">int</span>, x2: <span style="color:teal">int</span>, y1: <span style="color:teal">int</span>, y2: <span style="color:teal">int</span>)
+    <span style="color:purple">requires</span> x2 &gt; <span class="constant" style="color:purple">0</span>
+    <span style="color:purple">requires</span> x == (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>)
+    <span style="color:purple">requires</span> y2 &gt; <span class="constant" style="color:purple">0</span>
+    <span style="color:purple">requires</span> y == (y1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (y2 <span style="color:blue">as</span> <span style="color:teal">real</span>)
+    <span style="color:purple">requires</span> r == x + y
+    <span style="color:purple">requires</span> (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>) == ((x1 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>) / ((x2 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>)
+    <span style="color:purple">requires</span> r == (((x1 * y2) + (y1 * x2)) <span style="color:blue">as</span> <span style="color:teal">real</span>) / ((x2 * y2) <span style="color:blue">as</span> <span style="color:teal">real</span>)
+    <span style="color:purple">ensures</span> Rational(r)
+  {}
+
+  <span style="color:blue">ghost</span> <span style="color:blue">function</span> add3(x: rat, y: rat): rat
+    <span style="color:purple">requires</span> Rational(x)
+    <span style="color:purple">requires</span> Rational(y)
+    <span style="color:darkgreen">//ensures Rational(add3(x, y)) // Fine</span>
+    <span style="color:purple">ensures</span> add3(x, y) == x + y
+  {
+    <span style="color:blue">var</span> x1: <span style="color:teal">int</span>, x2: <span style="color:teal">int</span> :| x2 &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; x == (x1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (x2 <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">var</span> y1: <span style="color:teal">int</span>, y2: <span style="color:teal">int</span> :| y2 &gt; <span class="constant" style="color:purple">0</span> &amp;&amp; y == (y1 <span style="color:blue">as</span> <span style="color:teal">real</span>) / (y2 <span style="color:blue">as</span> <span style="color:teal">real</span>);
+    <span style="color:blue">var</span> r: <span style="color:teal">real</span> := x + y;
+    <span style="color:darkgreen">// var r1 := x + y;            // Fine</span>
+    AddStep1(x1,x2,y1,y2);
+    AddStep2(r,x,y,x1,x2,y1,y2);
+    AddStep3(r,x,y,x1,x2,y1,y2);   <span style="color:darkgreen">// Higher resource use if left out, even without postcondition</span>
+    <span style="color:darkgreen">// assert r == x + y;          // Fine</span>
+    r
+  }</code></pre>
+<p class="p noindent para-continued" data-line="172"><span data-line="172"></span>On this code, Dafny reports 243K RU for the <span data-line="172"></span><code class="code code1">add3</code><span data-line="172"></span> function. Note that it also spends some time proving each of the other definitions, so the total resource use is <span data-line="172"></span><em class="em-star1">higher</em><span data-line="172"></span> than for <span data-line="172"></span><code class="code code1">add2</code><span data-line="172"></span>. However, for the purposes of brittleness, the resource use of any single goal is the key factor. Total resource use is less important.
+</p>
+<p class="p indent" data-line="174"><span data-line="174"></span>In addition to the reduced resource use, <span data-line="174"></span><code class="code code1">dafny measure-complexity --iterations 5</code><span data-line="174"></span> never fails. The output shows the following resource use for <span data-line="174"></span><code class="code code1">add3</code><span data-line="174"></span>.
+</p>
+<p class="p indent" data-line="176"><span data-line="176"></span><img class="clickable" id="img-add3-resource" src="/blog/assets/images/brittleness/add3.png" alt="Resource use for 5 iterations of verifying the add3 function." style="display:block;margin-left:auto;margin-right:auto;width:3309px;max-width:95%;"/><span data-line="176"></span>
+</p>
+<p class="p indent" data-line="178"><span data-line="178"></span>Note that the values for all iterations are quite close (which they also are for the accompanying lemmas). In addition, we can successfully verify <span data-line="178"></span><code class="code code1">add3</code><span data-line="178"></span> with Dafny 3.13.1, 4.0.0, 4.1.0, 4.2.0, 4.3.0, and likely other versions, as well.
+</p><h2 id="sec-more-detailed-structure" class="h1" data-line="180" data-heading-depth="1" style="display:block"><span data-line="180"></span>More detailed structure</h2>
+<p class="p noindent" data-line="182"><span data-line="182"></span>The rational addition example we’ve covered so far allows for two key improvements: adding inline assertions and extracting the proofs of those assertions to separate lemmas. However, other types of proof structure can be specified in Dafny, and these additional types of structure are often even more effective.
+</p>
+<p class="p indent" data-line="184"><span data-line="184"></span>Consider the following module declaring a <span data-line="184"></span><code class="code code1">TriangleSum</code><span data-line="184"></span> function and assuming some lemmas about its behavior (which happen to be sufficient to specify it precisely).
+</p><!-- inline-dafny TriangleSum/A1 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="188" data-line-first="189" style="display:block"><code data-line="189">  <span style="color:blue">ghost</span> <span style="color:blue">function</span> TriangleSum(n: <span style="color:teal">nat</span>): <span style="color:teal">nat</span>
+
+  <span style="color:blue">lemma</span> TriangleSumBase()
+    <span style="color:purple">ensures</span> TriangleSum(<span class="constant" style="color:purple">0</span>) == <span class="constant" style="color:purple">0</span>
+
+  <span style="color:blue">lemma</span> TriangleSumRec()
+    <span style="color:purple">ensures</span> <span style="color:blue">forall</span> n: <span style="color:teal">nat</span> :: n &gt; <span class="constant" style="color:purple">0</span> ==&gt; TriangleSum(n) == n + TriangleSum(n - <span class="constant" style="color:purple">1</span>)</code></pre>
+<p class="p noindent para-continued" data-line="199"><span data-line="199"></span>Based on these lemmas, we can prove that the result of <span data-line="199"></span><code class="code code1">TriangleSum</code><span data-line="199"></span> is equivalent to a closed formula: <span data-line="199"></span><code class="code code1">(n * (n + 1)) / 2</code><span data-line="199"></span>. This proof is naturally an inductive one, but Dafny doesn’t automatically know to apply induction because it doesn’t see a recursive function definition. So we need to do at least a little work to tell it to depend on a proof of the identity for <span data-line="199"></span><code class="code code1">n - 1</code><span data-line="199"></span>  when proving the identity for any <span data-line="199"></span><code class="code code1">n</code><span data-line="199"></span> bigger than zero. And we need to tell Dafny to use the two provided lemmas. Applying these two ideas leads to the following lemma.
+</p><!-- inline-dafny TriangleSum/A2 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="203" data-line-first="204" style="display:block"><code data-line="204">  <span style="color:blue">lemma</span> Proof1(n: <span style="color:teal">nat</span>)
+    <span style="color:purple">ensures</span> TriangleSum(n) == (n * (n + <span class="constant" style="color:purple">1</span>)) / <span class="constant" style="color:purple">2</span>
+  {
+    TriangleSumBase();
+    TriangleSumRec();
+    <span style="color:blue">if</span> n &gt; <span class="constant" style="color:purple">0</span> {
+      Proof1(n - <span class="constant" style="color:purple">1</span>);
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="216"><span data-line="216"></span>Dafny is able to prove this, but it takes over 1M RU to do so. This is partly because the postconditions from both lemmas are in scope everywhere, even though one is useful only for the base case and one is useful only for the inductive case. We can tell Dafny when to use each lemma by including a conditional statement.
+</p><!-- inline-dafny TriangleSum/A3 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="220" data-line-first="221" style="display:block"><code data-line="221">  <span style="color:blue">lemma</span> Proof2(n: <span style="color:teal">nat</span>)
+    <span style="color:purple">ensures</span> TriangleSum(n) == (n * (n + <span class="constant" style="color:purple">1</span>)) / <span class="constant" style="color:purple">2</span>
+  {
+    <span style="color:blue">if</span> n == <span class="constant" style="color:purple">0</span> {
+      TriangleSumBase();
+    } <span style="color:blue">else</span> {
+      <span style="color:blue">assert</span> TriangleSum(n) == n + TriangleSum(n - <span class="constant" style="color:purple">1</span>) <span style="color:blue">by</span> {
+        TriangleSumRec();
+      }
+      Proof2(n - <span class="constant" style="color:purple">1</span>);
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="236"><span data-line="236"></span>When conditioning the proof on whether <span data-line="236"></span><code class="code code1">n</code><span data-line="236"></span> is zero or not, we can invoke the base case lemma only when it is, and invoke the inductive case lemma only when it is not. In addition, we use <span data-line="236"></span><code class="code code1">assert by</code><span data-line="236"></span> to specialize the result of <span data-line="236"></span><code class="code code1">TriangleSumRec</code><span data-line="236"></span> to the specific instantiation we need for the proof. With these two additional bits of structure, the resource use goes down to around 100K.
+</p>
+<p class="p indent" data-line="238"><span data-line="238"></span>Note that invoking the assumed lemmas about <span data-line="238"></span><code class="code code1">TriangleSum</code><span data-line="238"></span> in the correct place is critical. If we use the same conditional structure but invoke both at the beginning, so they scope over the entire lemma, Dafny now uses over 1M RU again.
+</p><!-- inline-dafny TriangleSum/A4 -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="242" data-line-first="243" style="display:block"><code data-line="243">  <span style="color:blue">lemma</span> Proof3(n: <span style="color:teal">nat</span>)
+    <span style="color:purple">ensures</span> TriangleSum(n) == (n * (n + <span class="constant" style="color:purple">1</span>)) / <span class="constant" style="color:purple">2</span>
+  {
+    TriangleSumBase();
+    TriangleSumRec();
+    <span style="color:blue">if</span> n == <span class="constant" style="color:purple">0</span> {
+    } <span style="color:blue">else</span> {
+      <span style="color:blue">assert</span> TriangleSum(n) == n + TriangleSum(n - <span class="constant" style="color:purple">1</span>);
+      Proof3(n - <span class="constant" style="color:purple">1</span>);
+    }
+  }</code></pre>
+<p class="p noindent para-continued" data-line="257"><span data-line="257"></span>As an exercise, it can be instructive to try to make the resource use of this example even smaller. It<span data-line="257"></span>&#39;<span data-line="257"></span>s possible to get it below 70K!
+</p><h2 id="sec-more-general-guidelines" class="h1" data-line="259" data-heading-depth="1" style="display:block"><span data-line="259"></span>More general guidelines</h2>
+<p class="p noindent" data-line="261"><span data-line="261"></span>The examples covered so far illustrate two key principles for maintainable verification:
+</p>
+<ul class="ul list-star compact" data-line="263">
+<li class="li ul-li list-star-li compact-li" data-line="263"><span data-line="263"></span>Break long leaps of reasoning down into smaller steps. This limits the number of reasoning steps that the prover needs to construct on its own.
+</li>
+<li class="li ul-li list-star-li compact-li" data-line="264"><span data-line="264"></span>Isolate each step so that the proof of it doesn’t need to (and, further, isn’t able to) take into account irrelevant information. This limits the number of choices that the prover has to evaluate when making each reasoning step.
+</li></ul>
+
+<p class="p noindent" data-line="266"><span data-line="266"></span>A nice coincidence is that programs written according to these principles tend to be easier to read, as well. Reducing the work a prover needs to do when reasoning about a program has the effect of reducing the amount of thinking a human has to do to understand what a program does, and why it’s correct. Constructing small, relatively isolated components relates strongly to the concepts of<span data-line="266"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Cohesion_(computer_science">cohesion</a><span data-line="266"></span>) and<span data-line="266"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Coupling_(computer_programming">coupling</a><span data-line="266"></span>) used in software engineering.
+</p>
+<p class="p indent" data-line="268"><span data-line="268"></span>Those principles are rather general, however, and there are several more specific guidelines for how to apply them in practice in Dafny.
+</p>
+<ul class="ul list-star compact" data-line="270">
+<li class="li ul-li list-star-li compact-li" data-line="270"><span data-line="270"></span>Prefer <span data-line="270"></span><code class="code code1">opaque</code><span data-line="270"></span> functions, with explicit <span data-line="270"></span><code class="code code1">reveal</code><span data-line="270"></span> statements where necessary.
+</li>
+<li class="li ul-li list-star-li compact-li" data-line="271"><span data-line="271"></span>Avoid <span data-line="271"></span><code class="code code1">requires</code><span data-line="271"></span> and <span data-line="271"></span><code class="code code1">ensures</code><span data-line="271"></span> clauses on functions (intrinsic specifications), except when necessary to make them total, and prefer a collection of <span data-line="271"></span><code class="code code1">lemma</code><span data-line="271"></span>s, each of which establishes a single property of the function (extrinsic specifications).
+</li>
+<li class="li ul-li list-star-li compact-li" data-line="272"><span data-line="272"></span>Avoid lemmas that establish universally-qualified facts, preferring an additional parameter for each variable that would otherwise be quantified. It’s possible to wrap such a lemma to use universal quantification if it’s necessary, but many uses can pass in specific instantiations.
+</li>
+<li class="li ul-li list-star-li compact-li" data-line="273"><span data-line="273"></span>Avoid subset types except perhaps for simple integer ranges.
+</li>
+<li class="li ul-li list-star-li compact-li" data-line="274"><span data-line="274"></span>Prove the correctness of each method by including a single postcondition that establishes equivalence with a function or agreement with a relation. Other properties can be proved as independent lemmas about that function or relation.
+</li></ul>
+
+<p class="p noindent" data-line="276"><span data-line="276"></span>The Dafny-VMC project includes some<span data-line="276"></span>&nbsp;<a href="https://github.com/dafny-lang/Dafny-VMC/blob/main/Guidelines.md">more detailed guidelines</a><span data-line="276"></span>. Sometimes it can be difficult to re-architect large, existing systems to follow those guidelines strictly, and we have some additional documentation on<span data-line="276"></span>&nbsp;<a href="https://dafny.org/latest/VerificationOptimization/VerificationOptimization">optimizing verification</a><span data-line="276"></span> that includes techniques that can help in this case.
+</p><h2 id="sec-conclusion" class="h1" data-line="278" data-heading-depth="1" style="display:block"><span data-line="278"></span>Conclusion</h2>
+<p class="p noindent" data-line="280"><span data-line="280"></span>Brittleness is an inevitable consequence of the combination of expressiveness and automation available in Dafny. However, although it is unavoidable in theory, it can be dramatically reduced in practice, and an important part of good verified software engineering is to continually improve the quality of the proofs. Aiming to reduce resource use, and setting limits on it as part of your build process, is one of the most effective ways to do so. This can be achieved by writing code in small, self-contained units that each have a clear, single purpose and don’t leak implementation details except when necessary. Within these units, additional details about intermediate proof steps can help. Although <span data-line="280"></span><code class="code code1">assert</code><span data-line="280"></span> and <span data-line="280"></span><code class="code code1">calc</code><span data-line="280"></span> statements are the most straightforward way to do this, using the structure of<span data-line="280"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Natural_deduction">natural deduction</a><span data-line="280"></span> can be even more effective.
+</p>
+<p class="p indent" data-line="282"><span data-line="282"></span>When constructing new Dafny projects, we recommend using a project file something like the following.
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="284" data-line-first="285" style="display:block"><code data-line="285">[options]
+resource-limit = 200
+default-function-opacity = Opaque</code></pre><span data-line=""></span></div>
+</body>
+
+</html>

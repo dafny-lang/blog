@@ -1,0 +1,17 @@
+  |
+4 |     exists n: int, m: int :: m > 0 && x == (n as real) / (m as real)
+  |     ^^^^^^
+
+RationalAdd.dfy(4,4): Warning: /!\ No terms found to trigger on.
+RationalAdd.dfy(13,17): Error: a postcondition could not be proved on this return path
+   |
+13 |   ghost function add(x: rat, y: rat): rat
+   |                  ^^^
+
+RationalAdd.dfy(17,12): Related location: this is the postcondition that could not be proved
+   |
+17 |     ensures add(x, y) == x + y
+   |             ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 10 verified, 1 error
