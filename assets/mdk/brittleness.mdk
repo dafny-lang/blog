@@ -111,7 +111,7 @@ The examples covered so far illustrate two key principles for maintainable verif
 * Break long leaps of reasoning down into smaller steps. This limits the number of reasoning steps that the prover needs to construct on its own.
 * Isolate each step so that the proof of it doesn’t need to (and, further, isn’t able to) take into account irrelevant information. This limits the number of choices that the prover has to evaluate when making each reasoning step.
 
-A nice coincidence is that programs written according to these principles tend to be easier to read, as well. Reducing the work a prover needs to do when reasoning about a program has the effect of reducing the amount of thinking a human has to do to understand what a program does, and why it’s correct. Constructing small, relatively isolated components relates strongly to the concepts of [cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) and [coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) used in software engineering.
+A nice coincidence is that programs written according to these principles tend to be easier to read, as well. Reducing the work a prover needs to do when reasoning about a program has the effect of reducing the amount of thinking a human has to do to understand what a program does, and why it’s correct. Constructing small, relatively isolated components relates strongly to the concepts of [cohesion](https://en.wikipedia.org/wiki/Cohesion_%28computer_science%29) and [coupling](https://en.wikipedia.org/wiki/Coupling_%28computer_programming%29) used in software engineering.
 
 Those principles are rather general, however, and there are several more specific guidelines for how to apply them in practice in Dafny.
 
