@@ -282,7 +282,7 @@ Thank you to my collaborators on the two the accompanying conference papers who 
 
 Thank you to the Dafny and Boogie developers for their invaluable feedback on the source code, guidence on the design of the tool, and help in writing and proofreading this post: Alex Chew, Oyendrila Dobe, Anjali Joshi, Rustan Leino, Fabio Madge, Mikael Mayer, Niloofar Razavi, Laine Rumreich, Shaz Qadeer, Aaron Tomb, John Tristan, Remy Willems, and Stefan Zetzsche. 
 
-Thank you to the users of Dafny who and the test generation tool, who are a key motivation behind this project: Ryan Emery, Tony Knapp, Cody Roux, Horacio Mijail Anton Quiles, William Schultz, and Serdar Tasiran.
+Thank you to the users of Dafny and the test generation tool in particular, who are a key motivation behind this project: Ryan Emery, Tony Knapp, Cody Roux, Horacio Mijail Anton Quiles, William Schultz, and Serdar Tasiran.
 
 <link rel="stylesheet" href="/blog/assets/css/verification-compelling.css">
 <script src="/blog/assets/js/verification-compelling-verification-steps.js"></script>
