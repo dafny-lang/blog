@@ -20,6 +20,9 @@ generate:
 	python3 builders/madoko-gen.py proof-dependencies --check
 	python3 builders/madoko-gen.py brittleness --check
 
+tmp:
+	python3 builders/madoko-gen.py teaching-dafny
+
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
 

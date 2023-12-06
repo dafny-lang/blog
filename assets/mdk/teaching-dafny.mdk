@@ -1,0 +1,43 @@
+Colorizer     : dafnyx
+
+Heading Depth: 0
+
+Css Header:
+  body.madoko {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .page-content {
+    padding: 0;
+  }
+
+# Introduction
+
+# Part 1: Dafny as a Programming Language
+
+<a href="https://dafny.org/teaching-material/Lectures/1-1-Programming-Functional.html" target="_blank">Functional programming</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/1-2-Programming-Imperative.html" target="_blank">Imperative programming</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/1-3-Programming-ObjectOriented.html" target="_blank">Object-Oriented programming</a>
+
+# Part 2: Dafny as a Proof Assistant
+
+<a href="https://dafny.org/teaching-material/Lectures/2-1-Logic-Propositions.html" target="_blank">Logical propositions</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/2-2-Logic-Definitions.html" target="_blank">Logical definitions</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/2-3-Logic-ProvingByExplaining.html" target="_blank">Proving by explaining</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/2-4-Logic-ProvingByConvincing.html" target="_blank">Proving by convincing</a>
+
+# Part 3: Program Verification in Dafny
+
+<a href="https://dafny.org/teaching-material/Lectures/3-1-Verification-Functional-Independent.html" target="_blank">Extrinsic verification of functional programs</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/3-2-Verification-Functional-Dependent.html" target="_blank">Intrinsic verification of functional programs</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/3-3-Verification-Imperative.html" target="_blank">Verification of imperative programs</a>
+
+<a href="https://dafny.org/teaching-material/Lectures/3-4-Verification-ObjectOriented.html" target="_blank">Verification of object-oriented programs</a>
