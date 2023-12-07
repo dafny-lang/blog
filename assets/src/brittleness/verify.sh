@@ -14,6 +14,6 @@ fi
 cd "$(dirname "$0")"
 
 (dafny verify RationalAdd.dfy > RationalAdd.dfy.out) || true
-diff -w --strip-trailing-cr -B -Z  RationalAdd.dfy.out RationalAdd.dfy.expect
+diff -w --unified=3 --strip-trailing-cr  RationalAdd.dfy.out RationalAdd.dfy.expect
 rm -f RationalAdd.dfy.out
 dafny verify TriangleSum.dfy
