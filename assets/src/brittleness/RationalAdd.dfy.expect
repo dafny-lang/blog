@@ -1,8 +1,8 @@
+RationalAdd.dfy(4,4): Warning: /!\ No terms found to trigger on.
   |
 4 |     exists n: int, m: int :: m > 0 && x == (n as real) / (m as real)
   |     ^^^^^^
 
-RationalAdd.dfy(4,4): Warning: /!\ No terms found to trigger on.
 RationalAdd.dfy(13,17): Error: a postcondition could not be proved on this return path
    |
 13 |   ghost function add(x: rat, y: rat): rat
