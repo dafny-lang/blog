@@ -10,10 +10,10 @@ default: check
 
 check:
 	node builders/verification-compelling-verify.js _includes/verification-compelling-intro.html
+	assets/src/brittleness/verify.sh
 	assets/src/test-generation/verify.sh
 	assets/src/insertion-sort/verify.sh
 	assets/src/proof-dependencies/verify.sh
-	assets/src/brittleness/verify.sh
 
 generate:
 	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
