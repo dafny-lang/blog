@@ -15,6 +15,7 @@ const help = `
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const readline = require('readline');
 
 /*
 First, we need to parse with regular expressions instances of the following pattern 
@@ -174,11 +175,11 @@ function canonicalNewlines(text) {
 }
 // Now, run the commands
 function clearLastThreeLines() {
-  process.stdout.clearLine(1) // from cursor to end
-  process.stdout.moveCursor(0, -1) // up one line
-  process.stdout.clearLine(1) // from cursor to end
-  process.stdout.moveCursor(0, -2) // up one line
-  process.stdout.clearLine(1) // from cursor to end
+  readline.clearLine(process.stdout,1) // from cursor to end
+  readline.moveCursor(process.stdout, 0, -1) // up one line
+  readline.clearLine(process.stdout,1) // from cursor to end
+  readline.moveCursor(process.stdout, 0, -2) // up one line
+  readline.clearLine(process.stdout,1) // from cursor to end
 }
 
 function GetContentChanged(fileName, fileContent) {

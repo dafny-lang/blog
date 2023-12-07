@@ -1,0 +1,34 @@
+name: Check Blogposts
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Install Node.js"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 21.1
+
+      - name: "Install Dafny"
+        run: |
+          git clone https://github.com/dafny-lang/dafny.git
+          cd dafny && make z3-mac && make exe
+
+      - name: "Test Blogposts"
+        run: |
+          export PATH=/Users/runner/work/blog/blog/dafny/Binaries:$PATH
+          make check
