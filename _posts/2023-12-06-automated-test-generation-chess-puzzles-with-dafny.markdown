@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Automated Test Generation: Chess Puzzles with Dafny"
-date:   2023-11-10 11:00:00 -0500
+date:   2023-12-06 11:00:00 -0500
 author: Sasha Fedchin
 ---
 Dafny is incredibly powerful. With it, you can prove [type safety properties of a programming language](https://dafny.org/blog/2023/07/14/types-and-programming-languages/), you can [verify runtime complexity of an algorithm](https://dafny.org/blog/2023/10/11/insertion-sort/), you can [identify conflicting specifications](https://dafny.org/blog/2023/10/27/proof-dependencies/), and [much more](https://dafny.org/blog/). In many cases, verification provides all the correctness guarantees that you need for your project. However, if you want to integrate Dafny code with existing codebases, you may face challenges that verification alone might not solve and where runtime testing could be useful:
