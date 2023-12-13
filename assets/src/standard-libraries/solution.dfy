@@ -1,13 +1,12 @@
 
-include "../utils.dfy"
-
-import opened Std.Wrappers
-import opened Std.Collections.Seq
-import opened Std.Strings.DecimalConversion
+import Std.Collections.Seq
+import Std.FileIO
+import Std.Strings.DecimalConversion
+import Std.Wrappers
  
 method Main() {
-  var input := Utils.ReadPuzzleInputAsString();
-  var lines := Utils.Lines(input);
+  var input := ReadPuzzleInputAsString();
+  var lines := Lines(input);
 
   var calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
@@ -15,12 +14,26 @@ method Main() {
   print total, "\n";
 }
 
-function CalibrationValue(line: string): Result<nat, string> {
+method ReadPuzzleInputAsString() returns (input: string) {
+  var bytes :- expect FileIO.ReadBytesFromFile("input.txt");
+  input := seq(|bytes|, i requires 0 <= i < |bytes| => bytes[i] as char);
+}
+
+function Lines(s: string): seq<string> {
+  var result := Seq.Split(s, '\n');
+  var numLines := |result|;
+  if 0 < |result| && result[|result| - 1] == "" then
+    result[..(numLines - 1)]
+  else
+    result
+}
+
+function CalibrationValue(line: string): Wrappers.Result<nat, string> {
   var firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar).ToResult("No digits");
 
   var lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar).ToResult("No digits");
 
   var resultStr := [line[firstDigitIndex]] + [line[lastDigitIndex]];
 
-  Success(ToNat(resultStr))
+  Wrappers.Success(DecimalConversion.ToNat(resultStr))
 }
