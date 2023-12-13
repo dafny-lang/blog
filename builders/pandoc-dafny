@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+pandoc --highlight-style="../../../dafny/docs/KDESyntaxDefinition/dafny.theme" \
+       --syntax-definition="../../../dafny/docs/KDESyntaxDefinition/dafny.xml" \
+       -V colorlinks=true \
+       $*
