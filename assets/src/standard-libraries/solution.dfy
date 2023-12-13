@@ -35,10 +35,9 @@ function Lines(s: string): seq<string> {
 
 function CalibrationValue(line: string): Wrappers.Result<nat, string> {
   var firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar).ToResult("No digits");
-
   var lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar).ToResult("No digits");
 
-  var resultStr := [line[firstDigitIndex]] + [line[lastDigitIndex]];
+  var resultStr := [line[firstDigitIndex], line[lastDigitIndex]];
 
   Wrappers.Success(DecimalConversion.ToNat(resultStr))
 }
