@@ -54,7 +54,7 @@ function CalibrationValue(line: string): nat {
 
 How do we find the first and last digits?
 
-## Sequences
+## Sequences and Wrappers
 
 Having a look at the [top-level index of Dafny standard libraries](https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries),
 we notice there's a `Std.Collections` library with [a submodule for `Seq`](https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Collections/Seq.dfy), and sure enough, there are functions like `IndexOf` and `LastIndexOf`. Perfect!
