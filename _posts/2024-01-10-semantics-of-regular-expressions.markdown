@@ -71,7 +71,7 @@ ghost function Star<A>(L: Lang<A>): Lang {
 
 ### Denotational Semantics as Induced Morphism
 
-The denotational semantics of regular expressions can now be defined through induction, as a function `Denotational: Exp -> Lang` , by making use of the operations on languages we have just defined:
+The denotational semantics of regular expressions can now be defined through induction, as a function `Denotational: Exp -> Lang`, by making use of the operations on languages we have just defined:
 
 ```
 ghost function Denotational<A>(e: Exp): Lang {
