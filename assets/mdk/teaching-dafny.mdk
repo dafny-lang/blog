@@ -14,30 +14,122 @@ Css Header:
 
 # Introduction
 
+We recently made available some teaching material that we have used to teach program verification to scientists and engineers at Amazon. 
+It composed of <a href="https://dafny.org/teaching-material/">lecture slides</a> 
+and <a href="https://github.com/dafny-lang/teaching-material/tree/main/Exercises">exercises with solution</a>. 
+If you want to learn about Dafny and program verification, you can jump right in. You will learn how to program in Dafny, how to do
+use Dafny as a proof assistant, and finally how to verify programs. If instead you are more interested in teaching program
+verification, you may find the organization of the lectures and the focus on Dafny
+as a proof assistant surprising, and the following note should provide some context and explanations. 
+
+# Dafny: Program Verifier and Proof Assistant
+
+> A proof plays two roles. <br><br>
+> (i) A proof convinces the reader that the statement is correct. <br>
+> (ii) A proof explains why the statement is correct.<br><br>
+> The first point consists of the administrative (‘bookkeeper’) activities of verifying the
+> correctness of the small reasoning steps and see if they constitute a correct proof. One doesn’t
+> have to look at the broad picture, but one just has to verify step by step whether every step is
+> correct. The second point deals with giving the intuition of the theorem: Why is it so natural
+> that this property holds? How did we come to the idea of proving it in this way?<br><br>
+> &emsp;&emsp; --- Herman Geuvers, in <a href="https://www.ias.ac.in/article/fulltext/sadh/034/01/0003-0025"> Proof assistants: History, ideas and future</a>
+
+One way to introduce program verification, including writing specifications and proofs,
+is exemplified by the book <a href="https://mitpress.mit.edu/9780262546232/program-proofs/">Program Proofs</a> authored by 
+K. Rustan M. Leino and published by MIT press. A defining characteristic of the methodology in that book is that verification is
+not only always motivated by programs, but specifications and proofs are attributes of programs. 
+The book starts by considering simple imperative programs whose specification is written as pre and post conditions, and proving is done
+by writing annotations for loops and, on occasion, additional assertions. The curriculum continues with programs of increasing complexity, and specification
+and proofs continue to "decorate" programs.
+The concept of a proof is introduced somewhat implicitly through a program logic that details the effect of different programming constructs on the validity of a specification. 
+This is an effective way to teach program verification: combined with Dafny's automation, one can verify programs by 
+decorating them with a few assertions that explain at a high-level why the specification should hold. It promotes a style of
+program verification where "proving" amounts to explaining. 
+
+Unfortunately, when automation comes short, it may not always be clear what explanations will help with the verification.
+It may seem as if one needs to provide the
+right assertion at the right place, without a clear methodology to figure it out. This can be frustrating to a developer for whom program verification,
+after appearing so simple for a while, may now seem ad hoc. We attempt to address this problem by providing a complementary perspective on
+program verification in Dafny. The key idea is to introduce Dafny as a proof assistant and to study proofs explicitly and independently of programs.
+With this perspective, we not only learn how to write intuitive proofs that take advantage of automation, but we also learn to write detailed formal proofs
+in natural deduction. This methodology opens the possibility of proving by convincing: a handful of rules can be used to refine a proof that will eventually
+pass the verification if it is indeed valid. 
+
+The course is organized in 3 distinct parts. In the first two, Dafny is in turn introduced as a programming language (with no verification) and as a proof
+assistant (with no programming). Program verification is introduced last and emphasizes extrinsic verification. 
+
 # Part 1: Dafny as a Programming Language
 
-<a href="https://dafny.org/teaching-material/Lectures/1-1-Programming-Functional.html" target="_blank">Functional programming</a>
+The first set of lectures introduces Dafny as a programming language, without any consideration for verification. 
+The primary motivation is to allow Dafny newcomers to familiarize themselves with
+the syntax and semantics of the language, and its tools (CLI, IDE). It also makes it easy for more seasoned Dafny developers to skip directly to
+verification. Finally, it emphasizes that Dafny is at its core a full-fledged and classic programming language 
+with strong static typing,  object-orientation, and functional features. It may be an opportunity to introduce
+Dafny's foreign function interface and the idea that Dafny can be used as part of a large software project. 
 
-<a href="https://dafny.org/teaching-material/Lectures/1-2-Programming-Imperative.html" target="_blank">Imperative programming</a>
-
-<a href="https://dafny.org/teaching-material/Lectures/1-3-Programming-ObjectOriented.html" target="_blank">Object-Oriented programming</a>
+We introduce in turn <a href="https://dafny.org/teaching-material/Lectures/1-1-Programming-Functional.html">functional programming</a>, 
+<a href="https://dafny.org/teaching-material/Lectures/1-2-Programming-Imperative.html">imperative programming</a>, and 
+<a href="https://dafny.org/teaching-material/Lectures/1-3-Programming-ObjectOriented.html">object-oriented programming</a>. We usually keep
+the presentation of the module system to a minimum.
 
 # Part 2: Dafny as a Proof Assistant
 
-<a href="https://dafny.org/teaching-material/Lectures/2-1-Logic-Propositions.html" target="_blank">Logical propositions</a>
+After introducing Dafny as a programming language while ignoring verification, we learn about Dafny as a proof assistant while ignoring programming. 
+ 
+We start by introducing the <a href="https://dafny.org/teaching-material/Lectures/2-1-Logic-Propositions.html">language of specification</a>
+of Dafny. At its core, a Dafny specification is composed of uninterpreted symbols of type, constant, predicate, and function symbols and the language of formulas is
+a variant of Church's simple type theory or higher-order logic. The lecture also introduces lemma as a way to declare a family of formulas and axiomatize the meaning of
+symbols. In particular, the primitive types and operations such as reals or sets are presented as specific theories. 
 
-<a href="https://dafny.org/teaching-material/Lectures/2-2-Logic-Definitions.html" target="_blank">Logical definitions</a>
+We then explain how to <a href="https://dafny.org/teaching-material/Lectures/2-2-Logic-Definitions.html">define</a> types, constants, predicates, and functions instead
+of axiomatizing them and assuming their existence. This is an opportunity to talk about partiality, termination of functions, fixed-points, and algebraic datatypes.
 
-<a href="https://dafny.org/teaching-material/Lectures/2-3-Logic-ProvingByExplaining.html" target="_blank">Proving by explaining</a>
+Finally, we start studying proofs in Dafny in the more intuitive way that aims to
+<a href="https://dafny.org/teaching-material/Lectures/2-3-Logic-ProvingByExplaining.html">prove by explaining</a>. In this style, which is the more
+idiomatic Dafny style of proofs, one can prove in a way that is similar to the kind of proofs that we write in a high-school geometry class by
+making intermediate assertions, appealing to know results, fixing values and assumptions (e,g, *let x be a fixed but arbitrary odd number*), 
+and high-level proof methods such as proof by contradiction, proof by case analysis, or proof by induction.
 
-<a href="https://dafny.org/teaching-material/Lectures/2-4-Logic-ProvingByConvincing.html" target="_blank">Proving by convincing</a>
+Lastly, and most importantly, we study proofs in a much more formal way by explaining how to develop completely detailed and rigorous proofs using the 
+rules of natural deduction (and sequent calculus). This systematic approach to formal proofs in Dafny allows one to 
+<a href="https://dafny.org/teaching-material/Lectures/2-4-Logic-ProvingByConvincing.html">prove by convincing</a>, with the fundamental idea that you can 
+always provide enough details so that the verifier will eventually accept your proof if it is indeed valid. 
 
 # Part 3: Program Verification in Dafny
 
-<a href="https://dafny.org/teaching-material/Lectures/3-1-Verification-Functional-Independent.html" target="_blank">Extrinsic verification of functional programs</a>
+As we mentioned in the introduction, a typical path to learning about program verification in a language like Dafny would be to start with
+simple imperative programs, specifications as program annotations, and proofs as program annotations in a program logic. However, since we introduced
+proofs independently of programs by taking the unusual point of view that Dafny is a proof assistant and that proofs are expressed in natural deduction, our
+journey into program verification is somewhat different.   
 
-<a href="https://dafny.org/teaching-material/Lectures/3-2-Verification-Functional-Dependent.html" target="_blank">Intrinsic verification of functional programs</a>
+We start with verification of functional programs, as it is largely similar to verifying mathematics. More specially, we first review
+<a href="https://dafny.org/teaching-material/Lectures/3-1-Verification-Functional-Independent.html">extrinsic verification of functional programs</a>, meaning that 
+we keep function and type definitions separate (as much as possible) from specifying and proving their properties. In practice, it means that we do not
+annotate functions with properties but instead state and prove them as separate lemmas. Only then do we go over 
+<a href="https://dafny.org/teaching-material/Lectures/3-2-Verification-Functional-Dependent.html">intrinsic verification of functional programs</a> with pre and post conditions,
+and subset types. The motivation for keeping extrinsic and intrinsic verification separate is to emphasize the importance of being mindful about proof brittleness
+and that it may be a better strategy in general to introduce intrinsic verification where it simplifies verification the most, rather than making it the default
+verified programming strategy.
 
-<a href="https://dafny.org/teaching-material/Lectures/3-3-Verification-Imperative.html" target="_blank">Verification of imperative programs</a>
+We then discuss <a href="https://dafny.org/teaching-material/Lectures/3-3-Verification-Imperative.html">verification of imperative programs</a>. First, we
+introduce local state and finally mention briefly program logic, loop invariants, and ghost state. We also emphasize an 
+<a href="https://dafny.org/blog/2023/08/14/clear-specification-and-implementation/">important methodology</a> where
+instead of proving properties of an imperative program directly, one first proves that it behaves as a functional model and then prove interesting properties 
+on that functional model. 
 
-<a href="https://dafny.org/teaching-material/Lectures/3-4-Verification-ObjectOriented.html" target="_blank">Verification of object-oriented programs</a>
+Finally, we talk about verification of <a href="https://dafny.org/teaching-material/Lectures/3-4-Verification-ObjectOriented.html">object-oriented programs</a>. The material is standard, but we emphasize the importance of defining an object's API by 
+writing clients first to avoid coming up with an API that is inconsistent or cannot actually be used. We also emphasize that ghost representations need not
+be limited to sets and that it is tremendously useful to capture as much as possible the intended structure of a class in the type of its representation. Lastly, 
+we emphasize the importance of *master* nodes in data structures that can make verification significantly easier.
+
+
+# Conclusion
+
+The first version of this course was designed as a complement to <a href="https://mitpress.mit.edu/9780262546232/program-proofs/">Program Proofs</a>.
+Its goal was to introduce seasoned Dafny software engineers to a different way of thinking about proofs by introducing them to some of the material
+from a <a href="https://wikimpri.dptinfo.ens-cachan.fr/doku.php?id=cours:c-2-7-1">course on the foundations of proof systems</a> ; natural deduction and sequent calculus
+in particular.
+There is anecdotal evidence that it was effective and we have continued to develop this curriculum to use it both as an introduction to program verification, 
+and as a way to help experts take their proving skills to the next level. Automation can be a significant challenge to teaching formal proofs in Dafny because
+it makes it difficult to work on simple examples and exercises, but the lecture on proving by convincing shows one attempt to do so.
+
