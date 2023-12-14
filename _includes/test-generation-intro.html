@@ -1,0 +1,93 @@
+<div class="step-through">
+<div class="step">
+<br>
+First, let us define datatypes to describe the positions of pieces on the board and to distinguish between kings, knights, and pawns. I used a <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-subset-types">subset type declaration</a> to constrain the legal positions to the standard 8 by 8 chess board.
+<div class="file" name="chess.dfy">
+{% highlight javascript linenos %}
+datatype Color = Black | White
+datatype Kind = Knight(c: Color) | King(c: Color) | Pawn(c: Color)
+datatype Pos = Pos(row: int, col: int)
+type ChessPos = pos: Pos | // in this declaration, "|" means "such that" 
+  && 0 <= pos.row < 8
+  && 0 <= pos.col < 8 witness Pos(0, 0) // "witness" proves that the type is nonempty
+{% endhighlight %}
+</div><!--.file-->
+Click <button class="top">Next</button>.
+</div><!--.step-->
+<div class="step">
+<br>
+The next step is to state how one chess piece can threaten another. Knights attack and move in an L shape, pawns can attack pieces immediately to the right and to the left of the square in front of them, and a king controls any of the squares adjacent to it. I encode these rules using the <code>Threatens</code> instance predicate that returns true if a piece threatens the position provided as an argument.
+<div class="file" name="chess.dfy">
+{% highlight javascript linenos %}
+datatype Piece = Piece(kind: Kind, at: ChessPos) {
+  predicate Threatens(pos: ChessPos) {
+    && at != pos
+    && match this.kind {
+      case Knight(c) =>
+        || ( && abs(pos.col - at.col) == 2
+             && abs(pos.row - at.row) == 1)
+        || ( && abs(pos.col - at.col) == 1
+             && abs(pos.row - at.row) == 2)
+      case King(c) => abs(pos.col - at.col) < 2 && abs(pos.row - at.row) < 2
+      case Pawn(c) =>
+        && pos.row == at.row + (if c.White? then -1 else 1)
+        && (pos.col == at.col + 1 || pos.col == at.col - 1)
+    }
+  }
+}
+function abs(n: int): nat { if n > 0 then n else -n }
+{% endhighlight %}
+</div><!--.file-->
+Click <button class="top">Next</button>.
+</div><!--.step-->
+<div class="step">
+<br>
+The last few rules prohibit two pieces on the board from sharing the same square and ensure we are only looking at boards with exactly one white king, two black knights, and two black pawns (a board satisfying these constraints is an instance of <code>ValidBoard</code> datatype). I also define what it means for a check or a checkmate to occur.
+<div style="background-color:#b18787; border-radius: 15px; padding: 10px;">
+<b>A note on code style:</b> these definitions could be significantly condensed with the help of quantifiers and recursion but that would add an extra level of complexity, so I leave this until Section 4 of this blog post. For now, here are the relevant enumerative definitions:
+</div>
+<div class="file" name="chess.dfy">
+{% highlight javascript linenos %}
+datatype Board = Board(pieces: seq<Piece>) 
+predicate BoardIsValid(board: Board) { // See Section 4 for how we can simplify this
+  // We want boards with specific pieces on it:
+  && |board.pieces| == 5
+  && board.pieces[0].kind == King(White) 
+  && board.pieces[1].kind == Knight(Black) && board.pieces[2].kind == Knight(Black)
+  && board.pieces[3].kind == Pawn(Black)   && board.pieces[4].kind == Pawn(Black)
+  // No pair of pieces occupy the same square:
+  && board.pieces[0].at != board.pieces[1].at && board.pieces[0].at != board.pieces[2].at && board.pieces[0].at != board.pieces[3].at && board.pieces[0].at != board.pieces[4].at 
+  && board.pieces[1].at != board.pieces[2].at && board.pieces[1].at != board.pieces[3].at && board.pieces[1].at != board.pieces[4].at 
+  && board.pieces[2].at != board.pieces[3].at && board.pieces[2].at != board.pieces[4].at 
+  && board.pieces[3].at != board.pieces[4].at
+}
+type ValidBoard = board: Board | BoardIsValid(board) 
+  witness Board([Piece(King(White), Pos(0, 0)), 
+                  Piece(Knight(Black), Pos(0, 1)), Piece(Knight(Black), Pos(0, 2)),
+                  Piece(Pawn(Black), Pos(0, 3)),   Piece(Pawn(Black), Pos(0, 4))])
+predicate CheckedByPlayer(board: ValidBoard, king: Piece, byPlayer: Color) {
+  || CheckedByPiece(board, king, Knight(byPlayer)) 
+  || CheckedByPiece(board, king, Pawn(byPlayer))
+}
+predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
+  match byPiece {
+    case Knight(Black) => board.pieces[1].Threatens(king.at) || board.pieces[2].Threatens(king.at)
+    case Pawn(Black) =>   board.pieces[3].Threatens(king.at) || board.pieces[4].Threatens(king.at)
+    case _ => false
+  } 
+} 
+predicate CheckmatedByPlayer(board: ValidBoard, king: Piece, byPlayer: Color) {
+  && (king.at.row == 0 || king.at.col == 7 || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row - 1, king.at.col + 1)), byPlayer))
+  && (                    king.at.col == 7 || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row,     king.at.col + 1)), byPlayer))
+  && (king.at.row == 7 || king.at.col == 7 || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row + 1, king.at.col + 1)), byPlayer))
+  && (king.at.row == 0                     || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row - 1, king.at.col)),     byPlayer))   
+  &&                                          CheckedByPlayer(board, king, byPlayer)     
+  && (king.at.row == 7                     || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row + 1, king.at.col)),     byPlayer))
+  && (king.at.row == 0 || king.at.col == 0 || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row - 1, king.at.col - 1)), byPlayer))
+  && (                 || king.at.col == 0 || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row,     king.at.col - 1)), byPlayer))
+  && (king.at.row == 7 || king.at.col == 0 || CheckedByPlayer(board, Piece(king.kind, Pos(king.at.row + 1, king.at.col - 1)), byPlayer))
+}
+{% endhighlight %}
+</div><!--.file-->
+</div><!--.step-->
+</div><!--.step-through-->
