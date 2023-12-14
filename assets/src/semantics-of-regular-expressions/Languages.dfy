@@ -86,7 +86,7 @@ module Languages {
     }
   }
 
-  lemma BisimilarCuttingPrefixes2<A(!new)>(k: nat, a: A,  L1a: Lang, L1b: Lang)
+  lemma BisimilarCuttingPrefixesPointwise<A(!new)>(k: nat, a: A,  L1a: Lang, L1b: Lang)
     requires k != 0
     requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1a, L1b)
     ensures forall n: nat :: n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
@@ -144,7 +144,7 @@ module Languages {
       var x2 := Comp(L1b.delta(a), L2b);
       assert Bisimilar#[k](x1, x2) by {
         if k != 0 {
-          BisimilarCuttingPrefixes2(k, a, L1a, L1b);
+          BisimilarCuttingPrefixesPointwise(k, a, L1a, L1b);
           var k' :| k == k' + 1;
           CompCongruenceHelper(k', L1a.delta(a), L1b.delta(a), L2a, L2b);
         }
@@ -156,12 +156,12 @@ module Languages {
         if k != 0 {
           if L1a.eps {
             BisimilarityIsReflexive<A>(One());
-            BisimilarCuttingPrefixes2(k, a, L2a, L2b);
+            BisimilarCuttingPrefixesPointwise(k, a, L2a, L2b);
             var k' :| k == k' + 1;
             CompCongruenceHelper(k', One<A>(), One<A>(), L2a.delta(a), L2b.delta(a));
           } else {
             BisimilarityIsReflexive<A>(Zero());
-            BisimilarCuttingPrefixes2(k, a, L2a, L2b);
+            BisimilarCuttingPrefixesPointwise(k, a, L2a, L2b);
             var k' :| k == k' + 1;
             CompCongruenceHelper(k', Zero<A>(), Zero<A>(), L2a.delta(a), L2b.delta(a));
           }
@@ -191,7 +191,7 @@ module Languages {
   {
     forall a ensures Bisimilar#[k](Star(L1).delta(a), Star(L2).delta(a)) {
       if k != 0 {
-        BisimilarCuttingPrefixes2(k, a, L1, L2);
+        BisimilarCuttingPrefixesPointwise(k, a, L1, L2);
         var k' :| k == k' + 1;
         forall n: nat ensures n <= k' + 1 ==> Bisimilar#[n](Star(L1), Star(L2)) {
           if 0 < n <= k' + 1 {
@@ -205,20 +205,3 @@ module Languages {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

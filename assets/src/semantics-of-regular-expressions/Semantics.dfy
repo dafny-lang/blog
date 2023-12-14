@@ -116,7 +116,7 @@ module Semantics {
     }
   }
 
- lemma DenotationalIsCoalgebraHomomorphismHelper1<A>(e: Exp)
+  lemma DenotationalIsCoalgebraHomomorphismHelper1<A>(e: Exp)
     ensures Denotational<A>(e).eps == Eps(e)
   {
     match e
@@ -179,7 +179,7 @@ module Semantics {
       CompCongruence(Denotational(e1).delta(a), Denotational(Delta(e1)(a)), Languages.Star(Denotational(e1)), Languages.Star(Denotational(e1)));
   }
 
-  /* Operational is a algebra homomorphism */
+  /* Operational is an algebra homomorphism */
 
   lemma OperationalIsAlgebraHomomorphism<A(!new)>()
     ensures IsAlgebraHomomorphism<A>(Operational)
@@ -192,11 +192,11 @@ module Semantics {
       match e
       case Zero =>
         BisimilarityIsTransitive(Operational<A>(Zero), Denotational<A>(Zero), Languages.Zero());
-      case One => 
+      case One =>
         BisimilarityIsTransitive(Operational<A>(One), Denotational<A>(One), Languages.One());
-      case Char(a) => 
+      case Char(a) =>
         BisimilarityIsTransitive(Operational<A>(Char(a)), Denotational<A>(Char(a)), Languages.Singleton(a));
-      case Plus(e1, e2) => 
+      case Plus(e1, e2) =>
         BisimilarityIsTransitive(Operational<A>(Plus(e1, e2)), Denotational<A>(Plus(e1, e2)), Languages.Plus(Denotational(e1), Denotational(e2)));
         OperationalAndDenotationalAreBisimilar(e1);
         BisimilarityIsSymmetric(Denotational(e1), Operational(e1));
@@ -204,7 +204,7 @@ module Semantics {
         BisimilarityIsSymmetric(Denotational(e2), Operational(e2));
         PlusCongruence<A>(Denotational(e1), Operational(e1), Denotational(e2), Operational(e2));
         BisimilarityIsTransitive(Operational<A>(Plus(e1, e2)), Languages.Plus(Denotational(e1), Denotational(e2)), Languages.Plus(Operational(e1), Operational(e2)));
-      case Comp(e1, e2) => 
+      case Comp(e1, e2) =>
         BisimilarityIsTransitive(Operational<A>(Comp(e1, e2)), Denotational<A>(Comp(e1, e2)), Languages.Comp(Denotational(e1), Denotational(e2)));
         OperationalAndDenotationalAreBisimilar(e1);
         BisimilarityIsSymmetric(Denotational(e1), Operational(e1));
@@ -212,7 +212,7 @@ module Semantics {
         BisimilarityIsSymmetric(Denotational(e2), Operational(e2));
         CompCongruence<A>(Denotational(e1), Operational(e1), Denotational(e2), Operational(e2));
         BisimilarityIsTransitive(Operational<A>(Comp(e1, e2)), Languages.Comp(Denotational(e1), Denotational(e2)), Languages.Comp(Operational(e1), Operational(e2)));
-      case Star(e1) => 
+      case Star(e1) =>
         BisimilarityIsTransitive(Operational<A>(Star(e1)), Denotational<A>(Star(e1)), Languages.Star(Denotational(e1)));
         OperationalAndDenotationalAreBisimilar(e1);
         BisimilarityIsSymmetric(Denotational(e1), Operational(e1));
@@ -230,7 +230,7 @@ module Semantics {
       BisimilarityIsReflexive(Operational(e).delta(a));
     }
   }
-  
+
   /* Operational and Denotational are equal, up to bisimulation */
 
   lemma OperationalAndDenotationalAreBisimilar<A(!new)>(e: Exp)
