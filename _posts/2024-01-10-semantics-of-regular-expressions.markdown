@@ -31,11 +31,11 @@ We define the set of formal languages parametric in an alphabet `A` as an coindu
 codatatype Lang<!A> = Alpha(eps: bool, delta: A -> Lang<A>)
 ```
 
-To some, this choice might seem odd at first sight. If you are familiar with the regular expressions, you likely have expected the set of formal languages to be defined more concretely as the set of all sets of finite sequences (sometimes called *words*),  `iset<seq<A>>`. Rest assured, we agree — up to an appropriate notion of equality! Where as you characterise languages intrinsically, we treat them extrinsically, in terms of their universal property: [it is well known](https://ir.cwi.nl/pub/28550/rutten.pdf) that `iset<seq<A>>` forms the *greatest* [coalgebraic](https://en.wikipedia.org/wiki/F-coalgebra) structure (think of a deterministic automaton without initial state) `S` that is equipped with a functions `eps: S -> bool` and `delta: S → (A → S)`. Indeed, for any set `U` of finite sequences, we can verify whether `U` contains the empty sequence, `U.eps == [] in U`, and for any `a: A`, we can transition to the set  `U.delta(a) == iset s | [a] + s in U`. Here, we choose the more abstract perspective on formal languages at it hides irrelevant specifics and thus allows us to write more elegant proofs.
+To some, this choice might seem odd at first sight. If you are familiar with the topic, you likely have expected the set of formal languages to be defined more concretely as the set of all sets of finite sequences (sometimes called *words*),  `iset<seq<A>>`. Rest assured, we agree — up to an appropriate notion of equality! Where as you characterise languages intrinsically, we treat them extrinsically, in terms of their universal property: [it is well known](https://ir.cwi.nl/pub/28550/rutten.pdf) that `iset<seq<A>>` forms the *greatest* [coalgebraic](https://en.wikipedia.org/wiki/F-coalgebra) structure (think of a deterministic automaton without initial state) `S` that is equipped with functions `eps: S -> bool` and `delta: S → (A → S)`. Indeed, for any set `U` of finite sequences, we can verify whether `U` contains the empty sequence, `U.eps == ([] in U)`, and for any `a: A`, we can transition to the set  `U.delta(a) == (iset s | [a] + s in U)`. Here, we choose the more abstract perspective on formal languages at it hides irrelevant specifics and thus allows us to write more elegant proofs.
 
 ### An Algebra of Formal Languages
 
-If you think of formal languages as the set of all sets of finite sequences, you will soon realise that languages admit quite a bit of algebraic structure. For example, there exist two languages of distinct importance (can you already guess which ones?), and one can obtain a new language by taking e.g. the union of two languages. In fact, if you think about it for a bit longer, you’ll realise that formal languages admit exactly the same [type of algebraic structure](https://en.wikipedia.org/wiki/F-algebra) as the one you’ve encountered when defining the set of regular expressions!
+If you think of formal languages as the set of all sets of finite sequences, you will soon realise that languages admit quite a bit of algebraic structure. For example, there exist two languages of distinct importance (can you already guess which ones?), and one can obtain a new language by taking e.g. the union of two languages. In fact, if you think about it for a bit longer, you’ll realise that formal languages admit exactly the same [type of algebraic structure](https://en.wikipedia.org/wiki/F-algebra) as the one you’ve encountered when we defined regular expressions!
 
 First, there exists the empty language `Zero()` that contains no words at all. Under above view, we find `Zero().eps == false` and `Zero().delta(a) == Zero`, since the empty set does not contain the empty sequence, and the derivative `iset s | [a] + [s] in iset{}` with respect to any `a: A` yields again the empty set, respectively. We thus define:
 
@@ -193,7 +193,7 @@ In this section, we provide an alternative perspective on the semantics of regul
 
 ### A Coalgebra of Regular Expressions
 
-In [An Algebra of Formal Languages](#an-algebra-of-formal-languagesn Algebra of Formal Languages) we equipped the set of formal languages with an algebraic structure that resembles the one of regular expressions in [Regular Expressions as Datatype](#regular-expressions-as-datatype). Now, we are aiming for the reverse: we would like to equip the set of regular expressions with a (co)algebraic structure that resembles the one of formal languages in [Formal Languages as Codatatype](#formal-languages-as-codatatype). More concretely, we would like to turn the set of regular expressions into a deterministic automaton in which a state `e` is i) accepting iff `Eps(e)` and ii) transitions to a state `Delta(e)(a)` if given the input `a: A`. Note how our definitions closely resemble the Brzozowski derivatives we encountered in [An Algebra of Formal Languages](#an-algebra-of-formal-languages):
+In [An Algebra of Formal Languages](#an-algebra-of-formal-languagesn Algebra of Formal Languages) we equipped the set of formal languages with an algebraic structure that resembles the one of regular expressions. Now, we are aiming for the reverse: we would like to equip the set of regular expressions with a coalgebraic structure that resembles the one of formal languages. More concretely, we would like to turn the set of regular expressions into a deterministic automaton (without initial state) in which a state `e` is i) accepting iff `Eps(e) == true` and ii) transitions to a state `Delta(e)(a)` if given the input `a: A`. Note how our definitions resemble the Brzozowski derivatives we previously encountered:
 
 ```
 ghost function Eps<A>(e: Exp): bool {
@@ -230,7 +230,7 @@ function Operational<A(==)>(e: Exp): Lang {
 
 ### Operational Semantics as Coalgebra Homomorphism
 
-In [Denotational Semantics as Algebra Homomorphism](#denotational-semantics-as-algebra-homomorphism) we defined algebra homomorphisms as functions `f: Exp -> Lang` that commute with the algebraic structures on regular expressions and formal languages, respectively. Analogously, let us now call a function `f` of the same type a *coalgebra homomorphism*, if it commutes with the *coalgebraic* structures we defined in [A Coalgebra of Regular Expressions](#a-coalgebra-of-regular-expressions) and [Formal Languages as Codatatype](#formal-languages-as-codatatype), respectively:
+In [Denotational Semantics as Algebra Homomorphism](#denotational-semantics-as-algebra-homomorphism) we defined algebra homomorphisms as functions `f: Exp -> Lang` that commute with the algebraic structures of regular expressions and formal languages, respectively. Analogously, let us now call a function `f` of the same type a *coalgebra homomorphism*, if it commutes with the *coalgebraic* structures of regular expressions and formal languages, respectively:
 
 ```
 ghost predicate IsCoalgebraHomomorphism<A(!new)>(f: Exp -> Lang) {
@@ -260,7 +260,7 @@ So far, we have seen two dual approaches for assigning a formal language semanti
 
 Next, we show that the denotational and operational semantics of regular expressions are *well-behaved*: they constitute two sides of the same coin. First, we show that `Denotational` is also a coalgebra homomorphism, and that coalgebra homomorphisms are unique up to bisimulation. We then deduce from the former that `Denotational` and `Operational` coincide pointwise, up to bisimulation. Finally, we show that `Operational` is also an algebra homomorphism.
 
-### Denotational Semantics As Coalgebra Homomorphism
+### Denotational Semantics as Coalgebra Homomorphism
 
 In this section, we establish that `Denotational` does not only commute with the algebraic structures of regular expressions and formal languages, but also with their coalgebraic structures:
 
@@ -277,7 +277,7 @@ greatest lemma PlusCongruence<A(!new)>[nat](L1a: Lang, L1b: Lang, L2a: Lang, L2b
   requires Bisimilar(L1a, L1b)
   requires Bisimilar(L2a, L2b)
   ensures Bisimilar(Plus(L1a, L2a), Plus(L1b, L2b))
-{...}
+{}
 
 lemma CompCongruence<A(!new)>(L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
   requires Bisimilar(L1a, L1b)
@@ -286,7 +286,7 @@ lemma CompCongruence<A(!new)>(L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
 {...}
 ```
 
-The proof of `PlusCongruence` is relatively short, as we can take advantage of the syntactic sugaring of the `greatest lemma` construct. For `CompCongruence` we have to put in a bit more manual work.
+Dafny is able to prove `PlusCongruence` on its own, as it can take advantage of the syntactic sugaring of the `greatest lemma` construct. For `CompCongruence` we have to put in a bit of manual work ourselves.
 
 ### Coalgebra Homomorphisms Are Unique
 
@@ -300,12 +300,47 @@ lemma UniqueCoalgebraHomomorphism<A(!new)>(f: Exp -> Lang, g: Exp -> Lang, e: Ex
 {...}
 ```
 
-[As is well-known](https://ir.cwi.nl/pub/28550/rutten.pdf), the statement may in fact be strengthened to: for *any* coalgebra `C` there exists only one coalgebra homomorphism of type `C -> Lang` , up to pointwise bisimulation. For our purposes, the weaker statement above will be sufficient. At the heart of the proof lies the observation that bisimilarity is transitive:
+[As is well-known](https://ir.cwi.nl/pub/28550/rutten.pdf), the statement may in fact be strengthened to: for *any* coalgebra `C` there exists exactly one coalgebra homomorphism of type `C -> Lang` , up to pointwise bisimulation. For our purposes, the weaker statement above will be sufficient. At the heart of the proof lies the observation that bisimilarity is transitive:
 
 ```
-lemma BisimilarityIsTransitive<A(!new)>(L1: Lang, L2: Lang, L3: Lang)
-  ensures Bisimilar(L1, L2) && Bisimilar(L2, L3) ==> Bisimilar(L1, L3)
-{...}
+greatest lemma BisimilarityIsTransitive<A>[nat](L1: Lang, L2: Lang, L3: Lang)
+  requires Bisimilar(L1, L2) && Bisimilar(L2, L3)
+  ensures Bisimilar(L1, L3)
+{}
+```
+
+In fact, in practice, we actually use a slightly more fine grained formalisation of transitivity, as is illustrated below by the proof of `UniqueCoalgebraHomomorphismHelperPointwise`, which is used in the proof of `UniqueCoalgebraHomomorphism`:
+
+```
+lemma UniqueCoalgebraHomomorphismHelperPointwise<A(!new)>(k: nat, f: Exp -> Lang, g: Exp -> Lang, L1: Lang, L2: Lang)
+  requires IsCoalgebraHomomorphism(f)
+  requires IsCoalgebraHomomorphism(g)
+  requires exists e :: Bisimilar#[k](L1, f(e)) && Bisimilar#[k](L2, g(e))
+  ensures Bisimilar#[k](L1, L2)
+{
+  var e :| Bisimilar#[k](L1, f(e)) && Bisimilar#[k](L2, g(e));
+  if k != 0 {
+    forall a ensures Bisimilar#[k-1](L1.delta(a), L2.delta(a)) {
+      BisimilarityIsTransitivePointwise(k-1, L1.delta(a),  f(e).delta(a), f(Delta(e)(a)));
+      BisimilarityIsTransitivePointwise(k-1, L2.delta(a),  g(e).delta(a), g(Delta(e)(a)));
+      UniqueCoalgebraHomomorphismHelperPointwise(k-1, f, g, L1.delta(a), L2.delta(a));
+    }
+  }
+}
+
+lemma BisimilarityIsTransitivePointwise<A(!new)>(k: nat, L1: Lang, L2: Lang, L3: Lang)
+  ensures Bisimilar#[k](L1, L2) && Bisimilar#[k](L2, L3) ==> Bisimilar#[k](L1, L3)
+{
+  if k != 0 {
+    if Bisimilar#[k](L1, L2) && Bisimilar#[k](L2, L3) {
+      assert Bisimilar#[k](L1, L3) by {
+        forall a ensures Bisimilar#[k-1](L1.delta(a), L3.delta(a)) {
+          BisimilarityIsTransitivePointwise(k-1, L1.delta(a), L2.delta(a), L3.delta(a));
+        }
+      }
+    }
+  }
+}
 ```
 
 ### Denotational and Operational Semantics Are Bisimilar
@@ -322,7 +357,7 @@ lemma OperationalAndDenotationalAreBisimilar<A(!new)>(e: Exp)
 }
 ```
 
-### Operational Semantics As Algebra Homomorphism
+### Operational Semantics as Algebra Homomorphism
 
 As a little extra, for the sake of symmetry, let us also prove that `Operational` is an algebra homomorphism. (We already know that it is a coalgebra homomorphism, and that `Denotational` is both an algebra and coalgebra homomorphism.)
 
@@ -332,7 +367,7 @@ lemma OperationalIsAlgebraHomomorphism<A(!new)>()
 {...}
 ```
 
-The idea of the proof is to take advantage of `Denotational` being an algebra homomorphism, by translating its properties to `Operational` via the already proven main result in [Denotational and Operational Semantics Are Bisimilar](#denotational-and-operational-semantics-are-bisimilar).  The relevant new statements capture that bisimilarity is symmetric and a congruence with respect to the `Star` operation:
+The idea of the proof is to take advantage of `Denotational` being an algebra homomorphism, by translating its properties to `Operational` via the lemma in [Denotational and Operational Semantics Are Bisimilar](#denotational-and-operational-semantics-are-bisimilar).  The relevant new statements capture that bisimilarity is symmetric and a congruence with respect to the `Star` operation:
 
 ```
 greatest lemma BisimilarityIsSymmetric<A(!new)>[nat](L1: Lang, L2: Lang)
@@ -348,4 +383,4 @@ lemma StarCongruence<A(!new)>(L1: Lang, L2: Lang)
 
 ## Conclusion
 
-We have used Dafny’s built-in inductive and coinductive reasoning capabilities to define two language semantics for regular expressions: denotational and operational semantics. Through a number of dualities — construction and deconstruction, algebras and coalgebras, and congruence and bisimilarity — we have proven the semantics to be two sides of the same coin. The blogpost is inspired by research in the field of [Coalgebra](https://en.wikipedia.org/wiki/F-coalgebra), which was pioneered by [Rutten](https://pdf.sciencedirectassets.com/271538/1-s2.0-S0304397500X01466/1-s2.0-S0304397500000566/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjELj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDF6w6Fgo6yaRHLxOonVyd6c2NK5OBnjUFYmLPQ5%2FxwJwIhAO8MTWhCr6iXXkvrDJb5ylzqqKxwCWTsO%2BQHcOnpKBl2KrsFCOH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQBRoMMDU5MDAzNTQ2ODY1Igxjn%2BJg6E9T8pxDOv8qjwUsJZLdZb1wZRX8%2FfWwSP4ghcWU0g0XImQqnhAbMTKMrEGol%2FS%2BLRuWJVuTwdOKULbI%2BM6LjAwD3PqFD6r0eLS4dmUB5NQUjuiOV0EdgFC49Aws7ICWRt2%2BqmudKI%2FA2Ng4o8LQbeYm6S0xFuS61lNMaNqeIdaW39AmhpX6cH7BaisztuRPXsTntdxi7eZTstIc1LlpvEaZC5fQpQm2TqEaxQ6ZBMKytxnbfxQGjYTiUVk%2FP8gX4x4cqhWMoPeVZQHalY8oaztSvjDlwGoMxFjA%2FbAWlsrsu36EMQ4Ln%2FH1tT%2B%2BY9QHK7eP30ozRlUEVSl6Xo6FYtRPjn1FuSAHiTdro0tME67u20OPPTE7%2FDOoISCefvuqeb1wnkjRVC%2BeNqyY3YsxgYAo95C54FYNYOQPrdXxiN4y%2BV%2FJx1CUJl3mELinzXVP%2BTkjTHUszcCSmfxIZGkGb8gIsLjD1VNT2i1uNCv41tSP6ZzxRlRy1OsEfT83omdTxMSRSEHvKJC2ruPOR2YnOKoa6KyTFC9Nqecar36%2BMVawBPdRbvnRa36zHOUSz9gj2ugrok8iQnaMjijUB2%2BY900HOFnQ7GbfydlcNwZ8rMZKVV%2Bk5SuVuj3mraiCYQf3J1OAcTpte4MAnwWT7cw3yc26Agsi5I%2Bgbkduv%2B1NkKwQdddbRQLWjDPKBBguV2SDkddwJYL3buYsjtGeavTVkS7Yiv4S8ErOacoVcipC%2BsDc1dvNf4SGbrD0I72%2BKxxnuKoPzVeSi9Wq8qEOzjhnCfWl54bZR8UCr6Y7uHWZvOnXRS3upM%2Fmw8pcm960FfAXpr0MGfiaxIMlhym%2B1oWBJSgAzYQoDURpQiR6HDf5ENlWAJ9ih%2FUTs0EvMJj9gKoGOrABK5gEMZHmn5E3pBNO3do43pi3Eh9OSnySWgdHUwzBRFOu0YrZc5s%2FTLLc1w7uip4MCag93rwnlzR5pp34huRUI380mDWniRIzs3l8MD3U69smz9qmNI2sekojftrKmOv9cSgK8cwPG4mfwPYemWVf91k2vh4JglI60udJkOogGRr%2FJODZ50Uk0XoHLDSrGkiuDrttQuIuFw4rRj6CVNbNUZdHDlMGn8%2FQlTufNSYXthQ%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20231030T235451Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY5CTPNFFC%2F20231030%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=2f06e758aca68bce8dcad281abb706e46f1135867a314833740d5892378fa798&hash=5139ce2f6945cb0fb38bace770ff3c87860d360a9c1077e8cf0fea52c4fe03c7&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S0304397500000566&tid=spdf-654f0c1b-8ec2-4879-9902-886dee8e40d7&sid=9eb633476ba2634017193178041b279cd557gxrqa&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=0f165c520a575b5208&rr=81e795f6091dec78&cc=us) and [Gumm](https://www.researchgate.net/publication/2614339_Elements_Of_The_General_Theory_Of_Coalgebras).  The concept of well-behaved semantics goes back to [Turi and Plotkin](https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf) and was adapted by [Jacobs](https://link.springer.com/chapter/10.1007/11780274_20) to the case of regular expressions. We heavily used automata theoretic constructions from the 1960s, originally investigated by [Brzozowski](https://dl.acm.org/doi/10.1145/321239.321249). Due to space constraints, we had to exclude the details of most of the proofs. To dive deep, please take a look at the full Dafny source code, which is available [here](../../../../assets/src/semantics-of-regular-expressions/semantics-of-regular-expressions.zip).
+We have used Dafny’s built-in inductive and coinductive reasoning capabilities to define two language semantics for regular expressions: denotational and operational semantics. Through a number of dualities — construction and deconstruction, algebras and coalgebras, and congruence and bisimilarity — we have proven the semantics to be two sides of the same coin. The blogpost is inspired by research in the field of [Coalgebra](https://en.wikipedia.org/wiki/F-coalgebra), which was pioneered by [Rutten](https://pdf.sciencedirectassets.com/271538/1-s2.0-S0304397500X01466/1-s2.0-S0304397500000566/main.pdf), [Gumm](https://www.researchgate.net/publication/2614339_Elements_Of_The_General_Theory_Of_Coalgebras), and others. The concept of well-behaved semantics goes back to [Turi and Plotkin](https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf) and was adapted by [Jacobs](https://link.springer.com/chapter/10.1007/11780274_20) to the case of regular expressions. We heavily used automata theoretic constructions from the 1960s, originally investigated by [Brzozowski](https://dl.acm.org/doi/10.1145/321239.321249). Due to space constraints, we had to exclude the details of most of the proofs. To dive deep, please take a look at the full Dafny source code, which is available [here](../../../../assets/src/semantics-of-regular-expressions/Languages.dfy), [here](../../../../assets/src/semantics-of-regular-expressions/Semantics.dfy), and [here](../../../../assets/src/semantics-of-regular-expressions/Expressions.dfy).
