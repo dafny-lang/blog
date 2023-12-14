@@ -13,6 +13,7 @@ check:
 	assets/src/insertion-sort/verify.sh
 	assets/src/proof-dependencies/verify.sh
 	assets/src/brittleness/verify.sh
+	assets/src/teaching-material/verify.sh
 
 generate:
 	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
