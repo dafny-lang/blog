@@ -14,6 +14,8 @@ check:
 	assets/src/test-generation/verify.sh
 	assets/src/insertion-sort/verify.sh
 	assets/src/proof-dependencies/verify.sh
+	assets/src/brittleness/verify.sh
+	assets/src/teaching-material/verify.sh
 	assets/src/standard-libraries/test.sh
 
 generate:
@@ -21,6 +23,7 @@ generate:
 	python3 builders/madoko-gen.py insertion-sort --check
 	python3 builders/madoko-gen.py proof-dependencies --check
 	python3 builders/madoko-gen.py brittleness --check
+	python3 builders/madoko-gen.py teaching-dafny --check
 
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
