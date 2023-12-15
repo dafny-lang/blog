@@ -93,7 +93,7 @@ module Semantics {
     }
   }
 
-  /* Denotational is a algebra homomorphism */
+  /* Denotational is an algebra homomorphism */
 
   lemma DenotationalIsAlgebraHomomorphism<A(!new)>()
     ensures IsAlgebraHomomorphism<A>(Denotational)
