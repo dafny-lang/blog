@@ -2,7 +2,7 @@
 layout: post
 title:  "Well-Behaved (Co)algebraic Semantics of Regular Expressions in Dafny"
 date:   2024-01-10 18:00:00 +0100
-author: Stefan Zetzsche, Wojciech Rozowski
+author: Stefan Zetzsche, Wojciech Różowski
 ---
 
 ## Introduction
@@ -37,7 +37,7 @@ To some, this choice might seem odd at first sight. If you are familiar with the
 
 If you think of formal languages as the set of all sets of finite sequences, you will soon realise that languages admit quite a bit of algebraic structure. For example, there exist two languages of distinct importance (can you already guess which ones?), and one can obtain a new language by taking e.g. the union of two languages. In fact, if you think about it for a bit longer, you’ll realise that formal languages admit exactly the same [type of algebraic structure](https://en.wikipedia.org/wiki/F-algebra) as the one you’ve encountered when we defined regular expressions!
 
-First, there exists the empty language `Zero()` that contains no words at all. Under above view, we find `Zero().eps == false` and `Zero().delta(a) == Zero`, since the empty set does not contain the empty sequence, and the derivative `iset s | [a] + [s] in iset{}` with respect to any `a: A` yields again the empty set, respectively. We thus define:
+First, there exists the empty language `Zero()` that contains no words at all. Under above view, we find `Zero().eps == false` and `Zero().delta(a) == Zero`, since the empty set does not contain the empty sequence, and the derivative `iset s | [a] + s in iset{}` with respect to any `a: A` yields again the empty set, respectively. We thus define:
 
 ```
 ghost function Zero<A>(): Lang {
@@ -150,7 +150,7 @@ lemma BisimilarityIsReflexive<A(!new)>#[k: nat](L: Lang)
 } 
 ```
 
-If you are interested in the full details, I recommend taking a look at [this note on coinduction, predicates, and ordinals](https://leino.science/papers/krml285.html).
+If you are interested in the full details, we recommend taking a look at [this note on coinduction, predicates, and ordinals](https://leino.science/papers/krml285.html).
 
 ### Denotational Semantics as Algebra Homomorphism
 
@@ -383,4 +383,4 @@ lemma StarCongruence<A(!new)>(L1: Lang, L2: Lang)
 
 ## Conclusion
 
-We have used Dafny’s built-in inductive and coinductive reasoning capabilities to define two language semantics for regular expressions: denotational and operational semantics. Through a number of dualities — construction and deconstruction, algebras and coalgebras, and congruence and bisimilarity — we have proven the semantics to be two sides of the same coin. The blogpost is inspired by research in the field of [Coalgebra](https://en.wikipedia.org/wiki/F-coalgebra), which was pioneered by [Rutten](https://pdf.sciencedirectassets.com/271538/1-s2.0-S0304397500X01466/1-s2.0-S0304397500000566/main.pdf), [Gumm](https://www.researchgate.net/publication/2614339_Elements_Of_The_General_Theory_Of_Coalgebras), and others. The concept of well-behaved semantics goes back to [Turi and Plotkin](https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf) and was adapted by [Jacobs](https://link.springer.com/chapter/10.1007/11780274_20) to the case of regular expressions. We heavily used automata theoretic constructions from the 1960s, originally investigated by [Brzozowski](https://dl.acm.org/doi/10.1145/321239.321249). Due to space constraints, we had to exclude the details of most of the proofs. To dive deep, please take a look at the full Dafny source code, which is available [here](../../../../assets/src/semantics-of-regular-expressions/Languages.dfy), [here](../../../../assets/src/semantics-of-regular-expressions/Semantics.dfy), and [here](../../../../assets/src/semantics-of-regular-expressions/Expressions.dfy).
+We have used Dafny’s built-in inductive and coinductive reasoning capabilities to define two language semantics for regular expressions: denotational and operational semantics. Through a number of dualities — construction and deconstruction, algebras and coalgebras, and congruence and bisimilarity — we have proven the semantics to be two sides of the same coin. The blogpost is inspired by research in the field of [Coalgebra](https://en.wikipedia.org/wiki/F-coalgebra), which was pioneered by [Rutten](https://pdf.sciencedirectassets.com/271538/1-s2.0-S0304397500X01466/1-s2.0-S0304397500000566/main.pdf), [Gumm](https://www.researchgate.net/publication/2614339_Elements_Of_The_General_Theory_Of_Coalgebras), and others. The concept of well-behaved semantics goes back to [Turi and Plotkin](https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf) and was adapted by [Jacobs](https://link.springer.com/chapter/10.1007/11780274_20) to the case of regular expressions. We heavily used automata theoretic constructions from the 1960s, originally investigated by [Brzozowski](https://dl.acm.org/doi/10.1145/321239.321249) (a more modern presentation can be found e.g. [here](https://alexandrasilva.org/files/thesis.pdf)). Due to space constraints, we had to exclude the details of most of the proofs. To dive deep, please take a look at the full Dafny source code, which is available [here](../../../../assets/src/semantics-of-regular-expressions/Languages.dfy), [here](../../../../assets/src/semantics-of-regular-expressions/Semantics.dfy), and [here](../../../../assets/src/semantics-of-regular-expressions/Expressions.dfy).
