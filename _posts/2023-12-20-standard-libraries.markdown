@@ -7,13 +7,62 @@ author: Robin Salkeld
 
 I am an engineer and I love Dafny. 
 
-TODO: preamble
-* Intro to Dafny, basic points to back up design later.
-* Intro to adventofcode.com, nice way to close out the year etc.
-* Dafny not a great match for a coding competition where speed is paramount,
-  but this is a great example of how the standard libraries make common tasks so much easier.
-* Other blog posts by my esteemed colleagues (link others) show how to prove interesting properties,
-  but this one is focussing more on how to get things done and support those proof efforts etc.
+Why? Because Dafny is a programming language designed from the start
+to support expressing the behavior of code directly in the code itself.
+Dafny lets you precisely express what it means to sort a sequence of values,
+not just as a giant comment on your sorting function you hope no-one misinterprets,
+but as a machine-readible expression in the same language.
+Even better, the Dafny tool can statically tell you whether your implementation is correct or not,
+without ever running a single test.
+
+When I first learned about Dafny, this was mind-blowing.
+Having worked as an engineer for decades,
+I've seen my share of subtle and catastrophic bugs in production,
+and I've always thought it should be possible to catch more of them before they happen.
+I've always been passionate about inventing and building tools
+to help more engineers do their job better, 
+and now, getting to help maintain and contribute to Dafny every day
+has been the definition of a dream job.
+
+At the same time, it's getting to the end of 2023
+and I'm **really** looking forward to a break this year.
+Having bought my son a Lego advent calendar
+and my wife a crossword advent calendar
+(always on the lookout for alternatives to candy),
+I thought I would try my hand at adventofcode.com,
+a popular code puzzle advent calendar
+that's been around since 2015.
+But to make it extra fun, I thought I'd write my solutions in Dafny.
+
+I was pleased to hear several colleagues had the same idea in years past,
+but also heard a common refrain that it seemed harder than it should be.
+To be fair, Dafny is never going to be the best choice
+if you're trying to solve the puzzles as fast as possible
+and climb the leaderboard:
+Dafny is built for carefully writing a verifiably-correct solution,
+not a probably-correct solution as fast as possible.
+But one of the challenges has been that even though
+the Dafny language itself is easily expressive and full-featured enough,
+it didn't give you much help with basic tasks
+like parsing a number from its string representation.
+
+We've been collecting lots of valuable reusable Dafny code in a separate 
+[`dafny-lang/libraries`](https://github.com/dafny-lang/libraries) repository for several years now.
+I frequently pointed folks to this repository whenever I saw questions like
+"how do I map a function over a sequence in Dafny?", knowing that there was already
+a `Seq.Map` function just waiting there to be used.
+But it was obvious users didn't naturally discover this code,
+and not all projects could easily add it as a submodule
+in order to access it.
+
+This is why I'm so excited about the recent release of Dafny 4.4:
+we spent months refactoring all these libraries and importing them into the Dafny distribution itself,
+so that they are now available to any and all Dafny users out of the box.
+
+To show off what a difference this makes,
+let's look at what it's like to solve the very first Advent of Code puzzle.
+
+## Getting started
 
 The requirements for the first puzzle boil down to:
 
@@ -23,9 +72,7 @@ The requirements for the first puzzle boil down to:
 >
 > Consider your entire calibration document. What is the sum of all of the calibration values?
 
-No problem, we can handle this.
-
-## Getting started
+No problem, we can handle this!
 
 To ensure full backwards compatibility for existing Dafny projects,
 Dafny 4.4 doesn't make the standard libraries available by default:
@@ -34,8 +81,8 @@ But we can do better than that:
 we can use a Dafny project file to indicate we want to use the standard libraries,
 which will let the Dafny IDE understand that dependency.
 
-TODO: set up VS Code extension
-
+Start by [installing Dafny 4.4](https://dafny.org/dafny/Installation), ideally
+opting to [use the VS Code extension](https://dafny.org/dafny/Installation#Visual-Studio-Code) which will download its own copy automatically.
 Create a new directory with an empty `solution.dfy` file and a `dfyconfig.toml` file with these contents:
 
 ```toml
@@ -69,7 +116,7 @@ Let's consider for a moment how you might want to use a function like `IndexOf` 
 Finding the index of an element in a sequence will certainly not always succeed,
 since the sequence might not contain the element.
 In most standard libraries, a function like `IndexOf` may return an invalid sentinel index value,
-like the length of the sequence or `-`.
+like the length of the sequence or `-1`.
 But often you actually know the element is in the sequence
 because of the way the rest of the program is structured.
 Perhaps you just added the element to a list and then sorted it.
@@ -295,7 +342,7 @@ A few notes:
   To unify with a common result type, we use `Option.ToResult` to convert the former value to a `Result`,
   which is a handy and common trick. See [the documentation for `Std.Wrappers`](https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Wrappers.md) for more details.
 
-## Sprinting to the Finish
+## Sprinting to the finish
 
 Now let's put it all together and write our main method:
 
@@ -377,31 +424,53 @@ function CalibrationValue(line: string): Wrappers.Result<nat, string> {
 }
 ```
 
-## Looking ahead
+## Looking back and looking ahead
 
-TODO: parting thoughts
+The standard libraries are made possible by the recent support for Dafny build artifacts: 
+compressed files containing the contents of an entire Dafny library along with metadata about how it was verified.
+These files use the extension `.doo` for Dafny Output Object[^1].
+They play much the same role as `.jar` files do for Java packages.
+Internally, the standard libraries are packaged up as multiple `.doo` files
+and embedded as resources in the Dafny tool.
+When `--standard-libraries` is switched on,
+the appropriate set of `.doo` files are added as additional program source.
 
-* Points about "libraries" plural, not part of the language itself, may be split up and relocated later, especially once we support packages better.
-* Mention JSON, ESDK/DB ESDK test vector runner
-* Specs to evolve over time
-* Implementation notes
-  * A bit about doo files and safe separate verification
-  * Will support attaching source/documentation to doo files soon too
-  * Point to supporting third-party libraries better soon
-  * Tested for all five supported backends
-* Something about future optimizations, especially w.r.t. wrappers
+[^1]: This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+
+This means the standard library source isn't re-verified every time your verify your Dafny project,
+but the tool checks to make sure the options they were previously verified with
+are compatible with the objects in your project.
+In particular, this means if you try to use them with the older `--unicode:false` mode,
+you'll get an explicit error right away,
+rather than potentially misusing code not meant for this mode.
+
+As excited as I am about having standard libraries in Dafny,
+I've also been nervous about having them for a long time:
+I'd be sad in the future if anyone gave Dafny a pass
+because its footprint had grown too bloated for their environment.
+Part of the reason the code is labelled as "standard libraries", plural,
+is to hint at the fact that they may be split up into different packages in the future.
+Now that we have standard libraries in Dafny,
+we're also setting our sights on helping Dafny users create their own shared libraries
+and distributing them as pre-verified `.doo` files in the future,
+so such libraries also get this layer of protection against misuse.
+
+Another great improvement over the old `dafny-lang/libraries` repository
+is that the Dafny standard libraries are well-tested for all of the programming languages
+that Dafny currently compiles to: C#, Go, Python, Java and JavaScript.
+That means even libraries that depend on target language details
+such as `Std.FileIO` and `Std.Concurrent`
+are safe to use in multi-target Dafny projects.
 
 ## Until next year
 
-TODO: connect
-
-Install Dafny 4.4, take the standard libraries for a test drive, 
-and [let us know](https://github.com/dafny-lang/dafny/issues/new/choose) if you run into speed bumps.
+I'll leave this post at that, as I've got some catching up to do in the Advent of Code challenge before time runs out!
+In the meantime, install Dafny 4.4, take the standard libraries for a test drive, 
+and [feel free to cut an issue](https://github.com/dafny-lang/dafny/issues/new/choose) if you run into speed bumps.
 Even better, if you have your own spiffy reusable Dafny code you keep in your back pocket,
-[cut us a PR](https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md) and get it into the standard libraries!
+[create a pull request](https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md) and get it into the standard libraries!
 
 ## TODOS
 
-* Improve section headers?
-* Stronger indication of which code snippets are incomplete/expected to error? (ala Rust book)
 * Get syntax highlighting working on snippets (pandoc not working yet)
+* Address difference between CLI options and project file options consistently
