@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Dafny Standard Libraries"
-date:   2023-11-20 18:00:00 +0100
+date:   2023-12-20 18:00:00 +0100
 author: Robin Salkeld
 ---
 
@@ -29,7 +29,7 @@ and I'm **really** looking forward to a break this year.
 Having bought my son a Lego advent calendar
 and my wife a crossword advent calendar
 (always on the lookout for alternatives to candy),
-I thought I would try my hand at adventofcode.com,
+I thought I would try my hand at [Advent of Code](https://adventofcode.com/),
 a popular code puzzle advent calendar
 that's been around since 2015.
 But to make it extra fun, I thought I'd write my solutions in Dafny.
@@ -103,7 +103,7 @@ How do we find the first and last digits?
 
 ## Sequences and Wrappers
 
-Having a look at the [top-level index of Dafny standard libraries](https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries),
+Having a look at the [top-level index of Dafny standard libraries](https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries/README.md),
 we notice there's a `Std.Collections` library with [a submodule for `Seq`](https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Collections/Seq.dfy), and sure enough, there are functions like `IndexOf` and `LastIndexOf`. Perfect!
 
 Or perhaps you were distracted by the `Std.Strings` module, where you might expect these utilities to live.
