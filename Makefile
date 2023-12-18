@@ -24,6 +24,9 @@ generate:
 	python3 builders/madoko-gen.py proof-dependencies --check
 	python3 builders/madoko-gen.py brittleness --check
 	python3 builders/madoko-gen.py teaching-dafny --check
+# Can't use --check on this one because it requires an extra option (--standard-libraries).
+# But standard-libraries/test.sh will verify the source and more anyway.
+	python3 builders/madoko-gen.py standard-libraries
 
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html

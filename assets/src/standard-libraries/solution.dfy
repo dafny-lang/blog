@@ -1,3 +1,8 @@
+
+// Module contents not indented so they match the indentation
+// of the rest of the snippets when included by inline-dafny
+module M1 {
+
 import Std.BoundedInts
 import Std.Collections.Seq
 import Std.FileIO
@@ -5,7 +10,7 @@ import Std.Strings
 import Std.Strings.DecimalConversion
 import Std.Unicode.UnicodeStringsWithUnicodeChar
 import Std.Wrappers
- 
+
 method Main() {
   var input :- expect ReadPuzzleInput();
 
@@ -31,4 +36,6 @@ function CalibrationValue(line: string): Wrappers.Result<nat, string> {
   var resultStr := [line[firstDigitIndex], line[lastDigitIndex]];
 
   Wrappers.Success(Strings.ToNat(resultStr))
+}
+
 }

@@ -656,93 +656,95 @@ Dafny program verifier finished with <span class="constant" style="color:purple"
 <p class="p noindent para-continued" data-line="398"><span data-line="398"></span>Huzzah! We have a working solution to the first puzzle in less than 40 lines of Dafny code
 (see below for the complete program),
 all thanks to the Dafny standard libraries.
-</p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="402" data-line-first="403" style="display:block"><code data-line="403"><span style="color:blue">import</span> Std.BoundedInts
-<span style="color:blue">import</span> Std.Collections.Seq
-<span style="color:blue">import</span> Std.FileIO
-<span style="color:blue">import</span> Std.Strings.DecimalConversion
-<span style="color:blue">import</span> Std.Unicode.UnicodeStringsWithUnicodeChar
-<span style="color:blue">import</span> Std.Wrappers
- 
-<span style="color:blue">method</span> Main() {
-  <span style="color:blue">var</span> input :- expect ReadPuzzleInput();
+</p><!-- inline-dafny solution/M1 -->
 
-  <span style="color:blue">var</span> lines <span style="color:blue">:=</span> Seq.Split(input, <span style="color:maroon">&#39;</span><span style="color:gray">\n</span><span style="color:maroon">&#39;</span>);
 
-  <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
-  <span style="color:blue">var</span> total <span style="color:blue">:=</span> Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
-  <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;
-}
-
-<span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
-  <span style="color:blue">var</span> bytesAsBVs :- FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
-  <span style="color:blue">var</span> bytes <span style="color:blue">:=</span> <span style="color:teal">seq</span>(|bytesAsBVs|, i <span style="color:purple">requires</span> <span class="constant" style="color:purple">0</span> &lt;= i &lt; |bytesAsBVs| =&gt; bytesAsBVs[i] <span style="color:blue">as</span> BoundedInts.uint8);
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="404" data-line-first="405" style="display:block"><code data-line="405">  <span style="color:blue">import</span> Std.BoundedInts
+  <span style="color:blue">import</span> Std.Collections.Seq
+  <span style="color:blue">import</span> Std.FileIO
+  <span style="color:blue">import</span> Std.Strings
+  <span style="color:blue">import</span> Std.Strings.DecimalConversion
+  <span style="color:blue">import</span> Std.Unicode.UnicodeStringsWithUnicodeChar
+  <span style="color:blue">import</span> Std.Wrappers
   
-  input <span style="color:blue">:=</span> UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">Invalid UTF8</span><span style="color:maroon">&quot;</span>);
-}
+  <span style="color:blue">method</span> Main() {
+    <span style="color:blue">var</span> input :- expect ReadPuzzleInput();
 
-<span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): Wrappers.Result&lt;<span style="color:teal">nat</span>, <span style="color:teal">string</span>&gt; {
-  <span style="color:blue">var</span> firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">No digits</span><span style="color:maroon">&quot;</span>);
-  <span style="color:blue">var</span> lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">No digits</span><span style="color:maroon">&quot;</span>);
+    <span style="color:blue">var</span> lines := Seq.Split(input, <span style="color:maroon">&#39;</span><span style="color:gray">\n</span><span style="color:maroon">&#39;</span>);
 
-  <span style="color:blue">var</span> resultStr <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
+    <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
-  Wrappers.Success(DecimalConversion.ToNat(resultStr))
-}</code></pre><h3 id="sec-looking-back-and-looking-ahead" class="h2" data-line="438" data-heading-depth="2" style="display:block"><span data-line="438"></span>Looking back and looking ahead</h3>
-<p class="p noindent" data-line="440"><span data-line="440"></span>The standard libraries are made possible by the recent support for Dafny build artifacts: 
+    <span style="color:blue">var</span> total := Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
+    <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;
+  }
+
+  <span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
+    <span style="color:blue">var</span> bytesAsBVs :- FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
+    <span style="color:blue">var</span> bytes := <span style="color:teal">seq</span>(|bytesAsBVs|, i <span style="color:purple">requires</span> <span class="constant" style="color:purple">0</span> &lt;= i &lt; |bytesAsBVs| =&gt; bytesAsBVs[i] <span style="color:blue">as</span> BoundedInts.uint8);
+    
+    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">Invalid UTF8</span><span style="color:maroon">&quot;</span>);
+  }
+
+  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): Wrappers.Result&lt;<span style="color:teal">nat</span>, <span style="color:teal">string</span>&gt; {
+    <span style="color:blue">var</span> firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">No digits</span><span style="color:maroon">&quot;</span>);
+    <span style="color:blue">var</span> lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">No digits</span><span style="color:maroon">&quot;</span>);
+
+    <span style="color:blue">var</span> resultStr := [line[firstDigitIndex], line[lastDigitIndex]];
+
+    Wrappers.Success(Strings.ToNat(resultStr))
+  }</code></pre><h3 id="sec-looking-back-and-looking-ahead" class="h2" data-line="442" data-heading-depth="2" style="display:block"><span data-line="442"></span>Looking back and looking ahead</h3>
+<p class="p noindent" data-line="444"><span data-line="444"></span>The standard libraries are made possible by the recent support for Dafny build artifacts: 
 compressed files containing the contents of an entire Dafny library along with metadata about how it was verified.
-These files use the extension <span data-line="442"></span><code class="code code1">.doo</code><span data-line="442"></span> for Dafny Output Object<span data-line="442"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
-&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="442"></span>.
-They play much the same role as <span data-line="443"></span><code class="code code1">.jar</code><span data-line="443"></span> files do for Java packages.
-Internally, the standard libraries are packaged up as multiple <span data-line="444"></span><code class="code code1">.doo</code><span data-line="444"></span> files
+These files use the extension <span data-line="446"></span><code class="code code1">.doo</code><span data-line="446"></span> for Dafny Output Object<span data-line="446"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="446"></span>.
+They play much the same role as <span data-line="447"></span><code class="code code1">.jar</code><span data-line="447"></span> files do for Java packages.
+Internally, the standard libraries are packaged up as multiple <span data-line="448"></span><code class="code code1">.doo</code><span data-line="448"></span> files
 and embedded as resources in the Dafny tool.
-When <span data-line="446"></span><code class="code code1">--standard-libraries</code><span data-line="446"></span> is switched on,
-the appropriate set of <span data-line="447"></span><code class="code code1">.doo</code><span data-line="447"></span> files are added as additional program source.
+When <span data-line="450"></span><code class="code code1">--standard-libraries</code><span data-line="450"></span> is switched on,
+the appropriate set of <span data-line="451"></span><code class="code code1">.doo</code><span data-line="451"></span> files are added as additional program source.
 </p>
-<p class="p indent" data-line="451"><span data-line="451"></span>This means the standard library source isn<span data-line="451"></span>&#39;<span data-line="451"></span>t re-verified every time your verify your Dafny project,
+<p class="p indent" data-line="455"><span data-line="455"></span>This means the standard library source isn<span data-line="455"></span>&#39;<span data-line="455"></span>t re-verified every time your verify your Dafny project,
 but the tool checks to make sure the options they were previously verified with
 are compatible with the objects in your project.
-In particular, this means if you try to use them with the older <span data-line="454"></span><code class="code code1">--unicode:false</code><span data-line="454"></span> mode,
-you<span data-line="455"></span>&#39;<span data-line="455"></span>ll get an explicit error right away,
+In particular, this means if you try to use them with the older <span data-line="458"></span><code class="code code1">--unicode:false</code><span data-line="458"></span> mode,
+you<span data-line="459"></span>&#39;<span data-line="459"></span>ll get an explicit error right away,
 rather than potentially misusing code not meant for this mode.
 </p>
-<p class="p indent" data-line="458"><span data-line="458"></span>As excited as I am about having standard libraries in Dafny,
-I<span data-line="459"></span>&#39;<span data-line="459"></span>ve also been nervous about having them for a long time:
-I<span data-line="460"></span>&#39;<span data-line="460"></span>d be sad in the future if anyone gave Dafny a pass
+<p class="p indent" data-line="462"><span data-line="462"></span>As excited as I am about having standard libraries in Dafny,
+I<span data-line="463"></span>&#39;<span data-line="463"></span>ve also been nervous about having them for a long time:
+I<span data-line="464"></span>&#39;<span data-line="464"></span>d be sad in the future if anyone gave Dafny a pass
 because its footprint had grown too bloated for their environment.
-Part of the reason the code is labelled as <span data-line="462"></span>&#8220;standard libraries&#8221;<span data-line="462"></span>, plural,
+Part of the reason the code is labelled as <span data-line="466"></span>&#8220;standard libraries&#8221;<span data-line="466"></span>, plural,
 is to hint at the fact that they may be split up into different packages in the future.
 Now that we have standard libraries in Dafny,
-we<span data-line="465"></span>&#39;<span data-line="465"></span>re also setting our sights on helping Dafny users create their own shared libraries
-and distributing them as pre-verified <span data-line="466"></span><code class="code code1">.doo</code><span data-line="466"></span> files in the future,
+we<span data-line="469"></span>&#39;<span data-line="469"></span>re also setting our sights on helping Dafny users create their own shared libraries
+and distributing them as pre-verified <span data-line="470"></span><code class="code code1">.doo</code><span data-line="470"></span> files in the future,
 so such libraries also get this layer of protection against misuse.
 </p>
-<p class="p indent" data-line="469"><span data-line="469"></span>Another great improvement over the old <span data-line="469"></span><code class="code code1">dafny-lang/libraries</code><span data-line="469"></span> repository
+<p class="p indent" data-line="473"><span data-line="473"></span>Another great improvement over the old <span data-line="473"></span><code class="code code1">dafny-lang/libraries</code><span data-line="473"></span> repository
 is that the Dafny standard libraries are well-tested for all of the programming languages
-that Dafny currently compiles to: C<span data-line="471"></span>#<span data-line="471"></span>, Go, Python, Java and JavaScript.
+that Dafny currently compiles to: C<span data-line="475"></span>#<span data-line="475"></span>, Go, Python, Java and JavaScript.
 That means even libraries that depend on target language details
-such as <span data-line="473"></span><code class="code code1">Std.FileIO</code><span data-line="473"></span> and <span data-line="473"></span><code class="code code1">Std.Concurrent</code><span data-line="473"></span>
+such as <span data-line="477"></span><code class="code code1">Std.FileIO</code><span data-line="477"></span> and <span data-line="477"></span><code class="code code1">Std.Concurrent</code><span data-line="477"></span>
 are safe to use in multi-target Dafny projects.
-</p><h3 id="sec-until-next-year" class="h2" data-line="476" data-heading-depth="2" style="display:block"><span data-line="476"></span>Until next year</h3>
-<p class="p noindent" data-line="478"><span data-line="478"></span>I<span data-line="478"></span>&#39;<span data-line="478"></span>ll leave this post at that, as I<span data-line="478"></span>&#39;<span data-line="478"></span>ve got some catching up to do in the Advent of Code challenge before time runs out!
+</p><h3 id="sec-until-next-year" class="h2" data-line="480" data-heading-depth="2" style="display:block"><span data-line="480"></span>Until next year</h3>
+<p class="p noindent" data-line="482"><span data-line="482"></span>I<span data-line="482"></span>&#39;<span data-line="482"></span>ll leave this post at that, as I<span data-line="482"></span>&#39;<span data-line="482"></span>ve got some catching up to do in the Advent of Code challenge before time runs out!
 In the meantime, install Dafny 4.4, take the standard libraries for a test drive, 
-and<span data-line="480"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/issues/new/choose">feel free to cut an issue</a><span data-line="480"></span> if you run into speed bumps.
+and<span data-line="484"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/issues/new/choose">feel free to cut an issue</a><span data-line="484"></span> if you run into speed bumps.
 Even better, if you have your own spiffy reusable Dafny code you keep in your back pocket,
-<span data-line="482"></span><a href="https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md">create a pull request</a><span data-line="482"></span> and get it into the standard libraries!
-</p><h3 id="sec-todos" class="h2" data-line="484" data-heading-depth="2" style="display:block"><span data-line="484"></span>TODOS</h3>
-<ul class="ul list-star compact" data-line="486">
-<li class="li ul-li list-star-li compact-li" data-line="486"><span data-line="486"></span>Get syntax highlighting working on snippets (pandoc not working yet)
-</li>
-<li class="li ul-li list-star-li compact-li" data-line="487"><span data-line="487"></span>Address difference between CLI options and project file options consistently
+<span data-line="486"></span><a href="https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md">create a pull request</a><span data-line="486"></span> and get it into the standard libraries!
+</p><h3 id="sec-todos" class="h2" data-line="488" data-heading-depth="2" style="display:block"><span data-line="488"></span>TODOS</h3>
+<ul class="ul list-star compact" data-line="490">
+<li class="li ul-li list-star-li compact-li" data-line="490"><span data-line="490"></span>Address difference between CLI options and project file options consistently
 </li></ul>
 <span data-line=""></span>
 <div class="footnotes madoko">
 <hr >
 
-<div id="fn-1" class="footnote" data-line="449" style="line-adjust:0">
-<p class="p noindent" data-line="449"><span data-line="449"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="449"></span>This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
-<span data-line="450"></span><span data-line="450"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
+<div id="fn-1" class="footnote" data-line="453" style="line-adjust:0">
+<p class="p noindent" data-line="453"><span data-line="453"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="453"></span>This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+<span data-line="454"></span><span data-line="454"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
 </body>
 
 </html>

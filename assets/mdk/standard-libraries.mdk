@@ -396,41 +396,7 @@ Huzzah! We have a working solution to the first puzzle in less than 40 lines of 
 (see below for the complete program),
 all thanks to the Dafny standard libraries.
 
-```dafny
-import Std.BoundedInts
-import Std.Collections.Seq
-import Std.FileIO
-import Std.Strings.DecimalConversion
-import Std.Unicode.UnicodeStringsWithUnicodeChar
-import Std.Wrappers
- 
-method Main() {
-  var input :- expect ReadPuzzleInput();
-
-  var lines := Seq.Split(input, '\n');
-
-  var calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
-
-  var total := Seq.FoldLeft((x, y) => x + y, 0, calibrationValues);
-  print total, "\n";
-}
-
-method ReadPuzzleInput() returns (input: Wrappers.Result<string, string>) {
-  var bytesAsBVs :- FileIO.ReadBytesFromFile("input.txt");
-  var bytes := seq(|bytesAsBVs|, i requires 0 <= i < |bytesAsBVs| => bytesAsBVs[i] as BoundedInts.uint8);
-  
-  input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult("Invalid UTF8");
-}
-
-function CalibrationValue(line: string): Wrappers.Result<nat, string> {
-  var firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar).ToResult("No digits");
-  var lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar).ToResult("No digits");
-
-  var resultStr := [line[firstDigitIndex], line[lastDigitIndex]];
-
-  Wrappers.Success(DecimalConversion.ToNat(resultStr))
-}
-```
+<!-- inline-dafny solution/M1 -->
 
 ## Looking back and looking ahead
 
@@ -480,5 +446,4 @@ Even better, if you have your own spiffy reusable Dafny code you keep in your ba
 
 ## TODOS
 
-* Get syntax highlighting working on snippets (pandoc not working yet)
 * Address difference between CLI options and project file options consistently
