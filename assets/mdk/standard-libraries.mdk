@@ -19,7 +19,7 @@ Why? Because Dafny is a programming language designed from the ground up
 to support expressing the behavior of code directly in the code itself.
 Dafny lets you precisely specify what it means to sort a sequence of values,
 not just as a giant comment on your sorting function you hope no-one misinterprets,
-but as a machine-readible expression in the same language.
+but as a machine-readable expression in the same language.
 Even better, the Dafny tool can statically tell you whether your implementation is correct or not,
 without ever running a single test.
 
