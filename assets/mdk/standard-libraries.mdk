@@ -222,9 +222,10 @@ function CalibrationValue(line: string): nat {
   var firstDigitIndex := Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
   var lastDigitIndex := Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
 
+  // Error: incorrect type for selection into string (got Option<nat>)
   var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Strings.ToNat(resultStr)
+  Strings.ToNat(resultAsString)
 }
 ```
 
@@ -298,6 +299,7 @@ import Std.FileIO
 import Std.Wrappers
 
 method ReadPuzzleInput() returns (input: Wrappers.Result<string, string>) {
+  // Error: incorrect return type for method out-parameter 'res'
   input := FileIO.ReadBytesFromFile("input.txt");
 }
 ```
