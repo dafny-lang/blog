@@ -313,7 +313,7 @@
 to support expressing the behavior of code directly in the code itself.
 Dafny lets you precisely specify what it means to sort a sequence of values,
 not just as a giant comment on your sorting function you hope no-one misinterprets,
-but as a machine-readible expression in the same language.
+but as a machine-readable expression in the same language.
 Even better, the Dafny tool can statically tell you whether your implementation is correct or not,
 without ever running a single test.
 </p>
@@ -637,31 +637,36 @@ which is a handy and common trick. See<span data-line="355"></span>&nbsp;<a href
 <span data-line="376"></span><code class="code code1">ReadPuzzleInput</code><span data-line="376"></span> returns a <span data-line="376"></span><code class="code code1">Result</code><span data-line="376"></span>, but if it fails there<span data-line="376"></span>&#39;<span data-line="376"></span>s nothing more we can do
 in the main method than printing an error and exiting.
 <span data-line="378"></span><code class="code code1">:- expect</code><span data-line="378"></span> means that if the right-hand side of the statement is a failure,
-Dafny will immediately halt and print the failure value to the console.
-This is particularly valuable for writing tests in Dafny.
-Note also that the <span data-line="381"></span><code class="code code1">Seq</code><span data-line="381"></span> library continues to work hard for us,
+Dafny execution will immediately halt and, if you<span data-line="379"></span>&#39;<span data-line="379"></span>re using the <span data-line="379"></span><code class="code code1">dafny run</code><span data-line="379"></span> command,
+print the failure value to the console.
+This is particularly valuable for writing tests in Dafny,
+but be careful about using it in production code:
+unlike mechanisms such as exceptions from other programming languages,
+halting is not recoverable!
+</p>
+<p class="p indent" data-line="386"><span data-line="386"></span>Note also that the <span data-line="386"></span><code class="code code1">Seq</code><span data-line="386"></span> library continues to work hard for us,
 splitting the input into lines,
-mapping our <span data-line="383"></span><code class="code code1">CalibrationValue</code><span data-line="383"></span> function over the sequence of lines,
+mapping our <span data-line="388"></span><code class="code code1">CalibrationValue</code><span data-line="388"></span> function over the sequence of lines,
 and summing the results into the final answer.
-<span data-line="385"></span><code class="code code1">MapWithResult</code><span data-line="385"></span> is a short-circuiting variation of <span data-line="385"></span><code class="code code1">Map</code><span data-line="385"></span> where the mapped function can fail.
+<span data-line="390"></span><code class="code code1">MapWithResult</code><span data-line="390"></span> is a short-circuiting variation of <span data-line="390"></span><code class="code code1">Map</code><span data-line="390"></span> where the mapped function can fail.
 </p>
-<p class="p indent" data-line="387"><span data-line="387"></span>If we put the sample input from the puzzle description into <span data-line="387"></span><code class="code code1">input.txt</code><span data-line="387"></span>
-(not the actual puzzle input<span data-line="388"></span> <span data-line="388"></span>- I draw the line at publishing the answer in this blog post,
-you<span data-line="389"></span>&#39;<span data-line="389"></span>re just going to have to run the solution yourself to get that!),
-we can run our project and get<span data-line="390"></span>&#8230;<span data-line="390"></span>
+<p class="p indent" data-line="392"><span data-line="392"></span>If we put the sample input from the puzzle description into <span data-line="392"></span><code class="code code1">input.txt</code><span data-line="392"></span>
+(not the actual puzzle input<span data-line="393"></span> <span data-line="393"></span>- I draw the line at publishing the answer in this blog post,
+you<span data-line="394"></span>&#39;<span data-line="394"></span>re just going to have to run the solution yourself to get that!),
+we can run our project and get<span data-line="395"></span>&#8230;<span data-line="395"></span>
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="392" data-line-first="393" style="display:block"><code data-line="393">% dafny run dfyconfig.toml
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="397" data-line-first="398" style="display:block"><code data-line="398">% dafny run dfyconfig.toml
 
 Dafny program verifier finished with <span class="constant" style="color:purple">3</span> verified, <span class="constant" style="color:purple">0</span> errors
 <span class="constant" style="color:purple">142</span></code></pre>
-<p class="p noindent para-continued" data-line="399"><span data-line="399"></span>Huzzah! We have a working solution to the first puzzle in less than 40 lines of Dafny code
+<p class="p noindent para-continued" data-line="404"><span data-line="404"></span>Huzzah! We have a working solution to the first puzzle in less than 40 lines of Dafny code
 (see below for the complete program),
 all thanks to the Dafny standard libraries.
 </p><!-- inline-dafny solution/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="405" data-line-first="406" style="display:block"><code data-line="406"><span style="color:blue">import</span> Std.BoundedInts
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="410" data-line-first="411" style="display:block"><code data-line="411"><span style="color:blue">import</span> Std.BoundedInts
 <span style="color:blue">import</span> Std.Collections.Seq
 <span style="color:blue">import</span> Std.FileIO
 <span style="color:blue">import</span> Std.Strings
@@ -677,55 +682,55 @@ all thanks to the Dafny standard libraries.
   <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
   <span style="color:blue">var</span> total := Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
-  <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;</code></pre><h3 id="sec-looking-back-and-looking-ahead" class="h2" data-line="426" data-heading-depth="2" style="display:block"><span data-line="426"></span>Looking back and looking ahead</h3>
-<p class="p noindent" data-line="428"><span data-line="428"></span>The standard libraries are made possible by the recent support for
-<span data-line="429"></span><a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-doo-files">Dafny build artifacts</a><span data-line="429"></span>: 
+  <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;</code></pre><h3 id="sec-looking-back-and-looking-ahead" class="h2" data-line="431" data-heading-depth="2" style="display:block"><span data-line="431"></span>Looking back and looking ahead</h3>
+<p class="p noindent" data-line="433"><span data-line="433"></span>The standard libraries are made possible by the recent support for
+<span data-line="434"></span><a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-doo-files">Dafny build artifacts</a><span data-line="434"></span>: 
 compressed files containing the contents of an entire Dafny library along with metadata about how it was verified.
-These files use the extension <span data-line="431"></span><code class="code code1">.doo</code><span data-line="431"></span> for Dafny Output Object<span data-line="431"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
-&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="431"></span>.
-They play much the same role as <span data-line="432"></span><code class="code code1">.jar</code><span data-line="432"></span> files do for Java packages.
-Internally, the standard libraries are packaged up as multiple <span data-line="433"></span><code class="code code1">.doo</code><span data-line="433"></span> files
+These files use the extension <span data-line="436"></span><code class="code code1">.doo</code><span data-line="436"></span> for Dafny Output Object<span data-line="436"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="436"></span>.
+They play much the same role as <span data-line="437"></span><code class="code code1">.jar</code><span data-line="437"></span> files do for Java packages.
+Internally, the standard libraries are packaged up as multiple <span data-line="438"></span><code class="code code1">.doo</code><span data-line="438"></span> files
 and embedded as resources in the Dafny tool.
-When <span data-line="435"></span><code class="code code1">--standard-libraries</code><span data-line="435"></span> is switched on,
-the appropriate set of <span data-line="436"></span><code class="code code1">.doo</code><span data-line="436"></span> files are added as additional program source.
+When <span data-line="440"></span><code class="code code1">--standard-libraries</code><span data-line="440"></span> is switched on,
+the appropriate set of <span data-line="441"></span><code class="code code1">.doo</code><span data-line="441"></span> files are added as additional program source.
 </p>
-<p class="p indent" data-line="440"><span data-line="440"></span>This means the standard library source isn<span data-line="440"></span>&#39;<span data-line="440"></span>t re-verified every time your verify your Dafny project,
+<p class="p indent" data-line="445"><span data-line="445"></span>This means the standard library source isn<span data-line="445"></span>&#39;<span data-line="445"></span>t re-verified every time your verify your Dafny project,
 but the tool checks to make sure the options they were previously verified with
 are compatible with the objects in your project.
-In particular, this means if you try to use them with the older <span data-line="443"></span><code class="code code1">unicode-char = false</code><span data-line="443"></span> option,
-you<span data-line="444"></span>&#39;<span data-line="444"></span>ll get an explicit error right away,
+In particular, this means if you try to use them with the older <span data-line="448"></span><code class="code code1">unicode-char = false</code><span data-line="448"></span> option,
+you<span data-line="449"></span>&#39;<span data-line="449"></span>ll get an explicit error right away,
 rather than potentially misusing code not meant for this mode.
 </p>
-<p class="p indent" data-line="447"><span data-line="447"></span>As excited as I am about having standard libraries in Dafny,
-I<span data-line="448"></span>&#39;<span data-line="448"></span>ve also been nervous about having them for a long time:
-I<span data-line="449"></span>&#39;<span data-line="449"></span>d be sad in the future if anyone gave Dafny a pass
+<p class="p indent" data-line="452"><span data-line="452"></span>As excited as I am about having standard libraries in Dafny,
+I<span data-line="453"></span>&#39;<span data-line="453"></span>ve also been nervous about having them for a long time:
+I<span data-line="454"></span>&#39;<span data-line="454"></span>d be sad in the future if anyone gave Dafny a pass
 because its footprint had grown too bloated for their environment.
-Part of the reason the code is labelled as <span data-line="451"></span>&#8220;standard libraries&#8221;<span data-line="451"></span>, plural,
+Part of the reason the code is labelled as <span data-line="456"></span>&#8220;standard libraries&#8221;<span data-line="456"></span>, plural,
 is to hint at the fact that they may be split up into different packages in the future.
 Now that we have standard libraries in Dafny,
-we<span data-line="454"></span>&#39;<span data-line="454"></span>re also setting our sights on helping Dafny users create their own shared libraries
-and distributing them as pre-verified <span data-line="455"></span><code class="code code1">.doo</code><span data-line="455"></span> files in the future,
+we<span data-line="459"></span>&#39;<span data-line="459"></span>re also setting our sights on helping Dafny users create their own shared libraries
+and distributing them as pre-verified <span data-line="460"></span><code class="code code1">.doo</code><span data-line="460"></span> files in the future,
 so such libraries also get this layer of protection against misuse.
 </p>
-<p class="p indent" data-line="458"><span data-line="458"></span>Another great improvement over the old <span data-line="458"></span><code class="code code1">dafny-lang/libraries</code><span data-line="458"></span> repository
+<p class="p indent" data-line="463"><span data-line="463"></span>Another great improvement over the old <span data-line="463"></span><code class="code code1">dafny-lang/libraries</code><span data-line="463"></span> repository
 is that the Dafny standard libraries are well-tested for all of the programming languages
-that Dafny currently compiles to: C<span data-line="460"></span>#<span data-line="460"></span>, Go, Python, Java and JavaScript.
+that Dafny currently compiles to: C<span data-line="465"></span>#<span data-line="465"></span>, Go, Python, Java and JavaScript.
 That means even libraries that depend on target language details
-such as <span data-line="462"></span><code class="code code1">Std.FileIO</code><span data-line="462"></span> and <span data-line="462"></span><code class="code code1">Std.Concurrent</code><span data-line="462"></span>
+such as <span data-line="467"></span><code class="code code1">Std.FileIO</code><span data-line="467"></span> and <span data-line="467"></span><code class="code code1">Std.Concurrent</code><span data-line="467"></span>
 are safe to use in multi-target Dafny projects.
-</p><h3 id="sec-until-next-year" class="h2" data-line="465" data-heading-depth="2" style="display:block"><span data-line="465"></span>Until next year</h3>
-<p class="p noindent" data-line="467"><span data-line="467"></span>I<span data-line="467"></span>&#39;<span data-line="467"></span>ll leave this post at that, as I<span data-line="467"></span>&#39;<span data-line="467"></span>ve got some catching up to do in the Advent of Code challenge before time runs out!
+</p><h3 id="sec-until-next-year" class="h2" data-line="470" data-heading-depth="2" style="display:block"><span data-line="470"></span>Until next year</h3>
+<p class="p noindent" data-line="472"><span data-line="472"></span>I<span data-line="472"></span>&#39;<span data-line="472"></span>ll leave this post at that, as I<span data-line="472"></span>&#39;<span data-line="472"></span>ve got some catching up to do in the Advent of Code challenge before time runs out!
 In the meantime, install Dafny 4.4, take the standard libraries for a test drive, 
-and<span data-line="469"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/issues/new/choose">feel free to cut an issue</a><span data-line="469"></span> if you run into speed bumps.
+and<span data-line="474"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/issues/new/choose">feel free to cut an issue</a><span data-line="474"></span> if you run into speed bumps.
 Even better, if you have your own spiffy reusable Dafny code you keep in your back pocket,
-<span data-line="471"></span><a href="https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md">create a pull request</a><span data-line="471"></span> and get it into the standard libraries!
+<span data-line="476"></span><a href="https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md">create a pull request</a><span data-line="476"></span> and get it into the standard libraries!
 </p><span data-line=""></span>
 <div class="footnotes madoko">
 <hr >
 
-<div id="fn-1" class="footnote" data-line="438" style="line-adjust:0">
-<p class="p noindent" data-line="438"><span data-line="438"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="438"></span>This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
-<span data-line="439"></span><span data-line="439"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
+<div id="fn-1" class="footnote" data-line="443" style="line-adjust:0">
+<p class="p noindent" data-line="443"><span data-line="443"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="443"></span>This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+<span data-line="444"></span><span data-line="444"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
 </body>
 
 </html>

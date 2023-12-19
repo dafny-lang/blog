@@ -373,8 +373,13 @@ We've used one more trick with failure-compatible types in this method:
 `ReadPuzzleInput` returns a `Result`, but if it fails there's nothing more we can do
 in the main method than printing an error and exiting.
 `:- expect` means that if the right-hand side of the statement is a failure,
-Dafny will immediately halt and print the failure value to the console.
-This is particularly valuable for writing tests in Dafny.
+Dafny execution will immediately halt and, if you're using the `dafny run` command,
+print the failure value to the console.
+This is particularly valuable for writing tests in Dafny,
+but be careful about using it in production code:
+unlike mechanisms such as exceptions from other programming languages,
+halting is not recoverable!
+
 Note also that the `Seq` library continues to work hard for us,
 splitting the input into lines,
 mapping our `CalibrationValue` function over the sequence of lines,
