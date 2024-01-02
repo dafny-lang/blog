@@ -70,6 +70,8 @@ function Star<A>(L: Lang<A>): Lang {
 }
 ```
 
+Note that the [`{:abstemious}`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-abstemious) attribute above signals that a function does not need to unfold a codatatype instance very far (perhaps just one destructor call) to prove a relevant property. Knowing this is the case can aid the proofs of properties about the function.
+
 ### Denotational Semantics as Induced Morphism
 
 The denotational semantics of regular expressions can now be defined through induction, as a function `Denotational: Exp -> Lang`, by making use of the operations on languages we have just defined:
@@ -176,7 +178,7 @@ ghost predicate IsAlgebraHomomorphismPointwise<A(!new)>(f: Exp -> Lang, e: Exp) 
 }
 ```
 
-Note that we used the `ghost` modifier (which signals that an entity is for specification only, not for compilation) in `IsAlgebraHomomorphism`, since quantifiers in non-ghost contexts must be compilable, but Dafny's heuristics can't figure out how to produce a bounded set of values for `e`, and in `IsAlgebraHomomorphismPointwise` because a call to a greatest predicate is allowed only in specification contexts.
+Note that we used the [`ghost`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-declaration-modifier) modifier (which signals that an entity is meant for specification only, not for compilation) in `IsAlgebraHomomorphism`, since quantifiers in non-ghost contexts must be compilable, but Dafny's heuristics can't figure out how to produce a bounded set of values for `e`, and in `IsAlgebraHomomorphismPointwise` because a call to a greatest predicate is allowed only in specification contexts.
 
 The proof that `Denotational` is an algebra homomorphism is straightforward: it essentially follows from bisimilarity being reflexive:
 
