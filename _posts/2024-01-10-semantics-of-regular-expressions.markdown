@@ -262,7 +262,7 @@ Next, we show that the denotational and operational semantics of regular express
 
 ### Denotational Semantics as Coalgebra Homomorphism
 
-In this section, we establish that `Denotational` does not only commute with the algebraic structures of regular expressions and formal languages, but also with their coalgebraic structures:
+In this section, we establish that `Denotational` not only commutes with the algebraic structures of regular expressions and formal languages, but also with their coalgebraic structures:
 
 ```
 lemma DenotationalIsCoalgebraHomomorphism<A(!new)>()
