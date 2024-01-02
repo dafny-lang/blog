@@ -7,7 +7,7 @@ author: Stefan Zetzsche and Wojciech Różowski
 
 ## Introduction
 
-[Regular expressions](https://en.wikipedia.org/wiki/Regular_expression) are one of the most ubiquitous formalisms of theoretical computer science. Commonly, they are understood in terms of their [*denotational* semantics](https://en.wikipedia.org/wiki/Denotational_semantics), that is, through the formal languages — the [*regular* languages](https://en.wikipedia.org/wiki/Regular_language) — that they induce. This view is *inductive* in nature: two primitives are equivalent if they are *constructed* in the same way.  Alternatively, regular expressions can be understood in terms of their [*operational* semantics](https://en.wikipedia.org/wiki/Operational_semantics), that is, through the [finite automata](https://en.wikipedia.org/wiki/Finite-state_machine) they induce. This view is *coinductive* in nature: two primitives are equivalent if they are *deconstructed* in the same way. It is is hinted at by [Kleene’s famous theorem](http://www.dlsi.ua.es/~mlf/nnafmc/papers/kleene56representation.pdf) that both views are equivalent: regular languages are precisely the formal languages accepted by finite automata. In this blogpost, we utilise Dafny’s built-in inductive and coinductive reasoning capabilities to show that the two semantics of regular expressions are *[well-behaved](https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf)*, in the sense they are in fact one and the same, up to pointwise [bisimulation](https://en.wikipedia.org/wiki/Bisimulation). 
+[Regular expressions](https://en.wikipedia.org/wiki/Regular_expression) are one of the most ubiquitous formalisms of theoretical computer science. Commonly, they are understood in terms of their [*denotational* semantics](https://en.wikipedia.org/wiki/Denotational_semantics), that is, through formal languages — the [*regular* languages](https://en.wikipedia.org/wiki/Regular_language). This view is *inductive* in nature: two primitives are equivalent if they are *constructed* in the same way.  Alternatively, regular expressions can be understood in terms of their [*operational* semantics](https://en.wikipedia.org/wiki/Operational_semantics), that is, through the [finite automata](https://en.wikipedia.org/wiki/Finite-state_machine) they induce. This view is *coinductive* in nature: two primitives are equivalent if they are *deconstructed* in the same way. It is implied by [Kleene’s famous theorem](http://www.dlsi.ua.es/~mlf/nnafmc/papers/kleene56representation.pdf) that both views are equivalent: regular languages are precisely the formal languages accepted by finite automata. In this blogpost, we utilise Dafny’s built-in inductive and coinductive reasoning capabilities to show that the two semantics of regular expressions are *[well-behaved](https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf)*, in the sense they are in fact one and the same, up to pointwise [bisimulation](https://en.wikipedia.org/wiki/Bisimulation). 
 
 ## Denotational Semantics
 
@@ -41,7 +41,7 @@ If you think of formal languages as the set of all sets of finite sequences, you
 First, there exists the empty language `Zero()` that contains no words at all. Under above view, we find `Zero().eps == false` and `Zero().delta(a) == Zero()`, since the empty set does not contain the empty sequence, and the derivative `iset s | [a] + s in iset{}` with respect to any `a: A` yields again the empty set, respectively. We thus define:
 
 ```
-ghost function Zero<A>(): Lang {
+function Zero<A>(): Lang {
   Alpha(false, (a: A) => Zero())
 }
 ```
@@ -49,23 +49,23 @@ ghost function Zero<A>(): Lang {
 Using similar reasoning, we additionally derive the following definitions. In order, we formalise i) the language `One()` that contains only the empty sequence; ii) for any `a: A` the language `Singleton(a)` that consists of only the word `[a]`; iii) the language `Plus(L1, L2)` which consists of the union of the languages `L1` and `L2`; iv) the language `Comp(L1, L2)` that consists of all possible concatenation of words in `L1` and `L2`; and v) the language `Star(L)` that consists of all finite compositions of `L` with itself. Our definitions match what is well-known as *[Brzozowski derivatives](https://en.wikipedia.org/wiki/Brzozowski_derivative)*. 
 
 ```
-ghost function One<A>(): Lang {
+function One<A>(): Lang {
   Alpha(true, (a: A) => Zero())
 }
 
-ghost function Singleton<A>(a: A): Lang {
+function Singleton<A>(a: A): Lang {
   Alpha(false, (b: A) => if a == b then One() else Zero())
 }
 
-ghost function {:abstemious} Plus<A>(L1: Lang, L2: Lang): Lang {
+function {:abstemious} Plus<A>(L1: Lang, L2: Lang): Lang {
   Alpha(L1.eps || L2.eps, (a: A) => Plus(L1.delta(a), L2.delta(a)))
 }
 
-ghost function {:abstemious} Comp<A>(L1: Lang, L2: Lang): Lang {
+function {:abstemious} Comp<A>(L1: Lang, L2: Lang): Lang {
   Alpha(L1.eps && L2.eps, (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a)))    )
 }
 
-ghost function Star<A>(L: Lang<A>): Lang {
+function Star<A>(L: Lang<A>): Lang {
   Alpha(true, (a: A) => Comp(L.delta(a), Star(L)))
 }
 ```
@@ -75,7 +75,7 @@ ghost function Star<A>(L: Lang<A>): Lang {
 The denotational semantics of regular expressions can now be defined through induction, as a function `Denotational: Exp -> Lang`, by making use of the operations on languages we have just defined:
 
 ```
-ghost function Denotational<A>(e: Exp): Lang {
+function Denotational<A>(e: Exp): Lang {
   match e
   case Zero => Languages.Zero()
   case One => Languages.One()
@@ -102,11 +102,11 @@ It is instructive to think of a `greatest predicate` as pure syntactic sugar. In
 ```
 /* Pseudo code for illustration purposes */
 
-ghost predicate Bisimilar<A(!new)>(L1: Lang, L2: Lang) {
+predicate Bisimilar<A(!new)>(L1: Lang, L2: Lang) {
   forall k :: Bisimilar#[k](L1, L2)
 }
 
-ghost predicate Bisimilar<A(!new)>#[k: nat](L1: Lang, L2: Lang) 
+predicate Bisimilar<A(!new)>#[k: nat](L1: Lang, L2: Lang) 
   decreases k
 {
   if k == 0 then
@@ -176,6 +176,8 @@ ghost predicate IsAlgebraHomomorphismPointwise<A(!new)>(f: Exp -> Lang, e: Exp) 
 }
 ```
 
+Note that we used the `ghost` modifier (which signals that an entity is for specification only, not for compilation) in `IsAlgebraHomomorphism`, since quantifiers in non-ghost contexts must be compilable, but Dafny's heuristics can't figure out how to produce a bounded set of values for `e`, and in `IsAlgebraHomomorphismPointwise` because a call to a greatest predicate is allowed only in specification contexts.
+
 The proof that `Denotational` is an algebra homomorphism is straightforward: it essentially follows from bisimilarity being reflexive:
 
 ```
@@ -197,7 +199,7 @@ In this section, we provide an alternative perspective on the semantics of regul
 In [An Algebra of Formal Languages](#an-algebra-of-formal-languagesn Algebra of Formal Languages) we equipped the set of formal languages with an algebraic structure that resembles the one of regular expressions. Now, we are aiming for the reverse: we would like to equip the set of regular expressions with a coalgebraic structure that resembles the one of formal languages. More concretely, we would like to turn the set of regular expressions into a deterministic automaton (without initial state) in which a state `e` is i) accepting iff `Eps(e) == true` and ii) transitions to a state `Delta(e)(a)` if given the input `a: A`. Note how our definitions resemble the Brzozowski derivatives we previously encountered:
 
 ```
-ghost function Eps<A>(e: Exp): bool {
+function Eps<A>(e: Exp): bool {
   match e 
     case Zero => false
     case One => true
@@ -207,7 +209,7 @@ ghost function Eps<A>(e: Exp): bool {
     case Star(e1) => true
 }
 
-ghost function Delta<A(!new)>(e: Exp): A -> Exp {
+function Delta<A(!new)>(e: Exp): A -> Exp {
   (a: A) => 
     match e 
       case Zero => Zero
