@@ -18,7 +18,8 @@ In this section, we define regular expressions and formal languages, introduce t
 We define the set of regular expressions parametric in an alphabet  `A` as an inductive [`datatype`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-inductive-datatypes):
 
 ```
-datatype Exp<A> = Zero | One | Char(A) | Plus(Exp, Exp) | Comp(Exp, Exp) | Star(Exp)
+datatype Exp<A> = Zero | One | Char(A) | Plus(Exp, Exp) | 
+                  Comp(Exp, Exp) | Star(Exp)
 ```
 
 The definition captures that a regular expression is either a primitive character `Char(a)`,  a non-deterministic choice between two regular expressions `Plus(e1, e2)`, a sequential composition of two regular expressions `Comp(e1, e2)`,  a finite number of self-iterations `Star(e)`, or one of the constants `Zero` (the unit of `Plus`) and `One` (the unit of `Comp`). At a higher level, the above defines  `Exp<A>` as the *smallest* algebraic structure that is equipped with two constants, contains all elements of type `A`, and is closed under two binary operations and one unary operation.
