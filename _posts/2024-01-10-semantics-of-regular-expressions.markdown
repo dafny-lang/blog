@@ -135,7 +135,9 @@ Once again, it is instructive to think of a `greatest lemma` as pure syntactic s
 lemma BisimilarityIsReflexive<A(!new)>(L: Lang) 
   ensures Bisimilar(L, L)
 {
-  forall k ensures Bisimilar#[k](L, L) {
+  forall k: nat
+    ensures Bisimilar#[k](L, L)
+  {
     BisimilarityIsReflexive#[k](L);
   }
 }
