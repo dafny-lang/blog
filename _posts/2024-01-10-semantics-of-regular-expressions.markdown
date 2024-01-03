@@ -38,7 +38,7 @@ To some, this choice might seem odd at first sight. If you are familiar with the
 
 If you think of formal languages as the set of all sets of finite sequences, you will soon realise that languages admit quite a bit of algebraic structure. For example, there exist two languages of distinct importance (can you already guess which ones?), and one can obtain a new language by taking e.g. the union of two languages. In fact, if you think about it for a bit longer, you’ll realise that formal languages admit exactly the same [type of algebraic structure](https://en.wikipedia.org/wiki/F-algebra) as the one you’ve encountered when we defined regular expressions!
 
-First, there exists the empty language `Zero()` that contains no words at all. Under above view, we find `Zero().eps == false` and `Zero().delta(a) == Zero()`, since the empty set does not contain the empty sequence, and the derivative `iset s | [a] + s in iset{}` with respect to any `a: A` yields again the empty set, respectively. We thus define:
+First, there exists the empty language `Zero()` that contains no words at all. Under the view above, we find `Zero().eps == false` and `Zero().delta(a) == Zero()`, since the empty set does not contain the empty sequence, and the derivative `iset s | [a] + s in iset{}` with respect to any `a: A` yields again the empty set, respectively. We thus define:
 
 ```
 function Zero<A>(): Lang {
