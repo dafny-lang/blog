@@ -121,7 +121,9 @@ module Languages {
     requires Bisimilar(L2a, L2b)
     ensures Bisimilar(Comp(L1a, L2a), Comp(L1b, L2b))
   {
-    forall k ensures Bisimilar#[k](Comp(L1a,L2a), Comp(L1b,L2b)) {
+    forall k: nat
+      ensures Bisimilar#[k](Comp(L1a,L2a), Comp(L1b,L2b))
+    {
       if k != 0 {
         var k' :| k' + 1 == k;
         CompCongruenceHelper(k', L1a, L1b, L2a, L2b);
