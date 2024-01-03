@@ -91,7 +91,9 @@ module Languages {
     requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1a, L1b)
     ensures forall n: nat :: n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
   {
-    forall n: nat ensures n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a)) {
+    forall n: nat
+      ensures n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
+    {
       if n <= k {
         BisimilarCuttingPrefixes(n, L1a, L1b);
       }
