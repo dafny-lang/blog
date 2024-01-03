@@ -22,6 +22,8 @@ datatype Exp<A> = Zero | One | Char(A) | Plus(Exp, Exp) |
                   Comp(Exp, Exp) | Star(Exp)
 ```
 
+Note that above, and later, we make use of Dafny's [type parameter completion](https://leino.science/papers/krml270.html).
+
 The definition captures that a regular expression is either a primitive character `Char(a)`,  a non-deterministic choice between two regular expressions `Plus(e1, e2)`, a sequential composition of two regular expressions `Comp(e1, e2)`,  a finite number of self-iterations `Star(e)`, or one of the constants `Zero` (the unit of `Plus`) and `One` (the unit of `Comp`). At a higher level, the above defines  `Exp<A>` as the *smallest* algebraic structure that is equipped with two constants, contains all elements of type `A`, and is closed under two binary operations and one unary operation.
 
 ### Formal Languages as Codatatype
