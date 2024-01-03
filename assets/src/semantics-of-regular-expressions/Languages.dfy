@@ -37,7 +37,7 @@ module Languages {
 
   /* Bisimilarity */
 
-  greatest lemma BisimilarityIsReflexive<A>[nat](L: Lang)
+  greatest lemma BisimilarityIsReflexive<A(!new)>[nat](L: Lang)
     ensures Bisimilar(L, L)
   {}
 

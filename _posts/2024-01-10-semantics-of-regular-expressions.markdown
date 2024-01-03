@@ -122,7 +122,7 @@ predicate Bisimilar#<A(!new)>[k: nat](L1: Lang, L2: Lang)
 Now that we have its definition in place, let us establish a property about bisimilarity, say, that it is a [*reflexive*](https://en.wikipedia.org/wiki/Reflexive_relation) relation. With the [`greatest lemma`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-colemmas) construct, Dafny is able to able to derive a proof completely on its own:
 
 ```
-greatest lemma BisimilarityIsReflexive<A>[nat](L: Lang)
+greatest lemma BisimilarityIsReflexive<A(!new)>[nat](L: Lang)
   ensures Bisimilar(L, L)
 {}
 ```
