@@ -279,7 +279,7 @@ lemma DenotationalIsCoalgebraHomomorphism<A(!new)>()
 {...} 
 ```
 
-The proof of the lemma is a bit more elaborated than the ones we have encountered so far. It can be divided into two subproofs, both of which make use of induction. One of the subproofs is straightforward, the other, more difficult one, again uses the reflexivity of bisimilarity, but also that the latter is a *congruence* relation with respect to `Plus` and `Comp`:
+The proof of the lemma is a bit more elaborate than the ones we have encountered so far. It can be divided into two subproofs, both of which make use of induction. One of the subproofs is straightforward, the other, more difficult one, again uses the reflexivity of bisimilarity, but also that the latter is a *congruence* relation with respect to `Plus` and `Comp`:
 
 ```
 greatest lemma PlusCongruence<A(!new)>[nat](L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
