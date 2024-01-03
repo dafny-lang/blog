@@ -182,7 +182,7 @@ ghost predicate IsAlgebraHomomorphismPointwise<A(!new)>(f: Exp -> Lang, e: Exp) 
 }
 ```
 
-Note that we used the [`ghost`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-declaration-modifier) modifier (which signals that an entity is meant for specification only, not for compilation). A `greatest predicate` is always ghost, so `IsAlgebraHomomorphismPointwise` must be declared ghost to call `Bisimilar`, and `IsAlgebraHomomorphismPointwise` must be declared ghost to call `IsAlgebraHomomorphism`.
+Note that we used the [`ghost`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-declaration-modifier) modifier (which signals that an entity is meant for specification only, not for compilation). A `greatest predicate` is always ghost, so `IsAlgebraHomomorphismPointwise` must be declared ghost to call `Bisimilar`, and `IsAlgebraHomomorphism` must be declared ghost to call `IsAlgebraHomomorphismPointwise`.
 
 The proof that `Denotational` is an algebra homomorphism is straightforward: it essentially follows from bisimilarity being reflexive:
 
