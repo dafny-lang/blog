@@ -194,7 +194,9 @@ module Semantics {
   lemma OperationalIsAlgebraHomomorphism<A(!new)>()
     ensures IsAlgebraHomomorphism<A>(Operational)
   {
-    forall e ensures IsAlgebraHomomorphismPointwise<A>(Operational, e) {
+    forall e 
+      ensures IsAlgebraHomomorphismPointwise<A>(Operational, e) 
+    {
       OperationalAndDenotationalAreBisimilar<A>(e);
       assert IsAlgebraHomomorphismPointwise(Denotational, e) by {
         DenotationalIsAlgebraHomomorphism<A>();

@@ -147,7 +147,9 @@ module Languages {
     assert Bisimilar#[1](L2a, L2b);
     assert lhs.eps == rhs.eps;
 
-    forall a ensures (Bisimilar#[k](lhs.delta(a), rhs.delta(a))) {
+    forall a 
+      ensures (Bisimilar#[k](lhs.delta(a), rhs.delta(a))) 
+    {
       var x1 := Comp(L1a.delta(a), L2a);
       var x2 := Comp(L1b.delta(a), L2b);
       assert Bisimilar#[k](x1, x2) by {
@@ -199,7 +201,9 @@ module Languages {
     requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1, L2)
     ensures Bisimilar#[k+1](Star(L1), Star(L2))
   {
-    forall a ensures Bisimilar#[k](Star(L1).delta(a), Star(L2).delta(a)) {
+    forall a 
+      ensures Bisimilar#[k](Star(L1).delta(a), Star(L2).delta(a)) 
+    {
       if k != 0 {
         BisimilarCuttingPrefixesPointwise(k, a, L1, L2);
         var k' :| k == k' + 1;
