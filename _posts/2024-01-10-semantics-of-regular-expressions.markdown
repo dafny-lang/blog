@@ -74,7 +74,7 @@ function Star<A>(L: Lang): Lang {
 }
 ```
 
-Note that the [`{:abstemious}`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-abstemious) attribute above signals that a function does not need to unfold a codatatype instance very far (perhaps just one destructor call) to prove a relevant property. Knowing this is the case can aid the proofs of properties about the function.
+Note that the [`{:abstemious}`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-abstemious) attribute above signals that a function does not need to unfold a codatatype instance very far (perhaps just one destructor call) to prove a relevant property. Knowing this is the case can aid the proofs of properties about the function. In this case, it is needed to convince Dafny that the corecursive calls in `Comp` and `Star` are logically consistent.
 
 ### Denotational Semantics as Induced Morphism
 
