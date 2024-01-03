@@ -17,7 +17,8 @@ check:
 	assets/src/brittleness/verify.sh
 	assets/src/teaching-material/verify.sh
 	assets/src/standard-libraries/test.sh
-	assets/src/semantics-of-regular-expressions/verify.sh
+  assets/src/semantics-of-regular-expressions/verify.sh
+	(cd assets/src/clear-specification-and-implementation && ./verify.sh)
 
 generate:
 	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
