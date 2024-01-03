@@ -70,7 +70,9 @@ module Semantics {
     requires exists e :: Bisimilar(L1, f(e)) && Bisimilar(L2, g(e))
     ensures Bisimilar(L1, L2)
   {
-    forall k ensures Bisimilar#[k](L1, L2) {
+    forall k: nat
+      ensures Bisimilar#[k](L1, L2)
+    {
       if k != 0 {
         UniqueCoalgebraHomomorphismHelperPointwise(k, f, g, L1, L2);
       }
