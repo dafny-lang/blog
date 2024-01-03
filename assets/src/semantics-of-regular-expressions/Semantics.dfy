@@ -108,7 +108,9 @@ module Semantics {
   lemma DenotationalIsCoalgebraHomomorphism<A(!new)>()
     ensures IsCoalgebraHomomorphism<A>(Denotational)
   {
-    forall e ensures Denotational<A>(e).eps == Eps(e) {
+    forall e
+      ensures Denotational<A>(e).eps == Eps(e)
+    {
       DenotationalIsCoalgebraHomomorphismHelper1(e);
     }
     forall e, a
