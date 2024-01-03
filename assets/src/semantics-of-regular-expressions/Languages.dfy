@@ -193,7 +193,9 @@ module Languages {
       if k != 0 {
         BisimilarCuttingPrefixesPointwise(k, a, L1, L2);
         var k' :| k == k' + 1;
-        forall n: nat ensures n <= k' + 1 ==> Bisimilar#[n](Star(L1), Star(L2)) {
+        forall n: nat
+          ensures n <= k' + 1 ==> Bisimilar#[n](Star(L1), Star(L2))
+        {
           if 0 < n <= k' + 1 {
             var n' :| n == n' + 1;
             StarCongruenceHelper(n', L1,L2);
