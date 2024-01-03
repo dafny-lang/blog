@@ -65,7 +65,7 @@ function {:abstemious} Comp<A>(L1: Lang, L2: Lang): Lang {
   Alpha(L1.eps && L2.eps, (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a)))    )
 }
 
-function Star<A>(L: Lang<A>): Lang {
+function Star<A>(L: Lang): Lang {
   Alpha(true, (a: A) => Comp(L.delta(a), Star(L)))
 }
 ```
