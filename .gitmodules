@@ -1,0 +1,3 @@
+[submodule "assets/src/teaching-material"]
+	path = assets/src/teaching-material
+	url = git@github.com:dafny-lang/teaching-material.git
