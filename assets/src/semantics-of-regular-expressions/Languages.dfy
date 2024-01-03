@@ -62,7 +62,9 @@ module Languages {
     if k != 0 {
       if Bisimilar#[k](L1, L2) && Bisimilar#[k](L2, L3) {
         assert Bisimilar#[k](L1, L3) by {
-          forall a ensures Bisimilar#[k-1](L1.delta(a), L3.delta(a)) {
+          forall a
+            ensures Bisimilar#[k-1](L1.delta(a), L3.delta(a))
+          {
             BisimilarityIsTransitivePointwise(k-1, L1.delta(a), L2.delta(a), L3.delta(a));
           }
         }
