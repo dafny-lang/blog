@@ -79,7 +79,9 @@ module Languages {
     requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1, L2)
     ensures forall a :: Bisimilar#[k](L1.delta(a), L2.delta(a))
   {
-    forall a ensures Bisimilar#[k](L1.delta(a), L2.delta(a)) {
+    forall a
+      ensures Bisimilar#[k](L1.delta(a), L2.delta(a))
+    {
       if k != 0 {
         assert Bisimilar#[k + 1](L1, L2);
       }
