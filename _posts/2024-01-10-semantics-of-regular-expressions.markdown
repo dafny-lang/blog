@@ -66,7 +66,7 @@ function {:abstemious} Plus<A>(L1: Lang, L2: Lang): Lang {
 }
 
 function {:abstemious} Comp<A>(L1: Lang, L2: Lang): Lang {
-  Alpha(L1.eps && L2.eps, (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a)))    )
+  Alpha(L1.eps && L2.eps, (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a))))
 }
 
 function Star<A>(L: Lang): Lang {
@@ -81,7 +81,7 @@ Note that the [`{:abstemious}`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-a
 The denotational semantics of regular expressions can now be defined through induction, as a function `Denotational: Exp -> Lang`, by making use of the operations on languages we have just defined:
 
 ```
-function Denotational<A>(e: Exp): Lang {
+function Denotational<A(==)>(e: Exp): Lang {
   match e
   case Zero => Languages.Zero()
   case One => Languages.One()
@@ -210,24 +210,24 @@ In [An Algebra of Formal Languages](#an-algebra-of-formal-languagesn Algebra of 
 
 ```
 function Eps<A>(e: Exp): bool {
-  match e 
-    case Zero => false
-    case One => true
-    case Char(a) => false
-    case Plus(e1, e2) => Eps(e1) || Eps(e2)
-    case Comp(e1, e2) => Eps(e1) && Eps(e2)
-    case Star(e1) => true
+  match e
+  case Zero => false
+  case One => true
+  case Char(a) => false
+  case Plus(e1, e2) => Eps(e1) || Eps(e2)
+  case Comp(e1, e2) => Eps(e1) && Eps(e2)
+  case Star(e1) => true
 }
 
-function Delta<A(!new)>(e: Exp): A -> Exp {
-  (a: A) => 
-    match e 
-      case Zero => Zero
-      case One => Zero
-      case Char(b) => if a == b then One else Zero
-      case Plus(e1, e2) => Plus(Delta(e1)(a), Delta(e2)(a))
-      case Comp(e1, e2) => Plus(Comp(Delta(e1)(a), e2), Comp(if Eps(e1) then One else Zero, Delta(e2)(a)))
-      case Star(e1) => Comp(Delta(e1)(a), Star(e1))
+function Delta<A(==)>(e: Exp): A -> Exp {
+  (a: A) =>
+    match e
+    case Zero => Zero
+    case One => Zero
+    case Char(b) => if a == b then One else Zero
+    case Plus(e1, e2) => Plus(Delta(e1)(a), Delta(e2)(a))
+    case Comp(e1, e2) => Plus(Comp(Delta(e1)(a), e2), Comp(if Eps(e1) then One else Zero, Delta(e2)(a)))
+    case Star(e1) => Comp(Delta(e1)(a), Star(e1))
 }
 ```
 
@@ -258,7 +258,9 @@ It is straightforward to prove that `Operational` is a coalgebra homomorphism: o
 lemma OperationalIsCoalgebraHomomorphism<A(!new)>()
   ensures IsCoalgebraHomomorphism<A>(Operational)
 {
-  forall e, a ensures Bisimilar<A>(Operational(e).delta(a), Operational(Delta(e)(a))) {
+  forall e, a
+    ensures Bisimilar<A>(Operational(e).delta(a), Operational(Delta(e)(a)))
+  {
     BisimilarityIsReflexive(Operational(e).delta(a));
   }
 }
@@ -333,7 +335,9 @@ lemma UniqueCoalgebraHomomorphismHelperPointwise<A(!new)>(k: nat, f: Exp -> Lang
 {
   var e :| Bisimilar#[k](L1, f(e)) && Bisimilar#[k](L2, g(e));
   if k != 0 {
-    forall a ensures Bisimilar#[k-1](L1.delta(a), L2.delta(a)) {
+    forall a
+      ensures Bisimilar#[k-1](L1.delta(a), L2.delta(a))
+    {
       BisimilarityIsTransitivePointwise(k-1, L1.delta(a),  f(e).delta(a), f(Delta(e)(a)));
       BisimilarityIsTransitivePointwise(k-1, L2.delta(a),  g(e).delta(a), g(Delta(e)(a)));
       UniqueCoalgebraHomomorphismHelperPointwise(k-1, f, g, L1.delta(a), L2.delta(a));
@@ -347,7 +351,9 @@ lemma BisimilarityIsTransitivePointwise<A(!new)>(k: nat, L1: Lang, L2: Lang, L3:
   if k != 0 {
     if Bisimilar#[k](L1, L2) && Bisimilar#[k](L2, L3) {
       assert Bisimilar#[k](L1, L3) by {
-        forall a ensures Bisimilar#[k-1](L1.delta(a), L3.delta(a)) {
+        forall a
+          ensures Bisimilar#[k-1](L1.delta(a), L3.delta(a))
+        {
           BisimilarityIsTransitivePointwise(k-1, L1.delta(a), L2.delta(a), L3.delta(a));
         }
       }

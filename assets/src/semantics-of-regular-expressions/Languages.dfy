@@ -24,7 +24,7 @@ module Languages {
     Alpha(L1.eps && L2.eps, (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a))))
   }
 
-  function Star<A>(L: Lang<A>): Lang {
+  function Star<A>(L: Lang): Lang {
     Alpha(true, (a: A) => Comp(L.delta(a), Star(L)))
   }
 
@@ -41,17 +41,17 @@ module Languages {
     ensures Bisimilar(L, L)
   {}
 
-  lemma BisimilarityIsTransitive<A(!new)>(L1: Lang, L2: Lang, L3: Lang)
+  lemma BisimilarityIsTransitiveAlternative<A(!new)>(L1: Lang, L2: Lang, L3: Lang)
     ensures Bisimilar(L1, L2) && Bisimilar(L2, L3) ==> Bisimilar(L1, L3)
   {
     if Bisimilar(L1,L2) && Bisimilar(L2, L3) {
       assert Bisimilar(L1, L3) by {
-        BisimilarityIsTransitiveAlternative(L1, L2, L3);
+        BisimilarityIsTransitive(L1, L2, L3);
       }
     }
   }
 
-  greatest lemma BisimilarityIsTransitiveAlternative<A>[nat](L1: Lang, L2: Lang, L3: Lang)
+  greatest lemma BisimilarityIsTransitive<A>[nat](L1: Lang, L2: Lang, L3: Lang)
     requires Bisimilar(L1, L2) && Bisimilar(L2, L3)
     ensures Bisimilar(L1, L3)
   {}
