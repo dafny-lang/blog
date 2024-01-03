@@ -99,7 +99,7 @@ greatest predicate Bisimilar<A(!new)>[nat](L1: Lang, L2: Lang) {
 }
 ```
 
-It is instructive to think of a `greatest predicate` as pure syntactic sugar. Indeed, under the hood, Dafny’s compiler uses above body to implicitly generate i) for any `k: nat`, a *[prefix predicate](https://dafny.org/latest/DafnyRef/DafnyRef#514361-properties-of-prefix-predicates)* `Bisimilar#[k](L1, L2)` that signifies that the languages `L1` and `L2` concur on the first `k`-unrollings of the definition above; and ii) a predicate `Bisimilar(L1, L2)` that is true iff  `Bisimilar#[k](L1, L2)` is true for all `k: nat`:
+It is instructive to think of a `greatest predicate` as pure syntactic sugar. Indeed, under the hood, Dafny’s compiler uses the body above to implicitly generate i) for any `k: nat`, a *[prefix predicate](https://dafny.org/latest/DafnyRef/DafnyRef#514361-properties-of-prefix-predicates)* `Bisimilar#[k](L1, L2)` that signifies that the languages `L1` and `L2` concur on the first `k`-unrollings of the definition above; and ii) a predicate `Bisimilar(L1, L2)` that is true iff  `Bisimilar#[k](L1, L2)` is true for all `k: nat`:
 
 ```
 /* Pseudo code for illustration purposes */
