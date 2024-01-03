@@ -90,7 +90,7 @@ function Denotational<A>(e: Exp): Lang {
 
 ### Bisimilarity and Coinduction
 
-Let us briefly introduce a notion of equality between formal languages that will be useful soon. A binary relation `R` between languages is called a *[bisimulation](https://en.wikipedia.org/wiki/Bisimulation),* if for any two languages `L1`, `L2` related by `R` the following holds: i) `L1` contains the empty word iff `L2` does; and ii) for any `a: A` the derivatives `L1.delta(a)` and `L2.delta(a)` are again related by `R`. As it turns out, the union of two bisimulations is again a bisimulation. In consequence, one can combine all possible bisimulations into a single relation: the *greatest* bisimulation. In Dafny, we can formalise the latter as a [`greatest predicate`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-copredicates):
+Let us briefly introduce a notion of equality between formal languages that will be useful soon. A binary relation `R` between languages is called a *[bisimulation](https://en.wikipedia.org/wiki/Bisimulation),* if for any two languages `L1`, `L2` related by `R` the following holds: i) `L1` contains the empty word iff `L2` does; and ii) for any `a: A`, the derivatives `L1.delta(a)` and `L2.delta(a)` are again related by `R`. As it turns out, the union of two bisimulations is again a bisimulation. In consequence, one can combine all possible bisimulations into a single relation: the *greatest* bisimulation. In Dafny, we can formalise the latter as a [`greatest predicate`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-copredicates):
 
 ```
 greatest predicate Bisimilar<A(!new)>[nat](L1: Lang, L2: Lang) {
