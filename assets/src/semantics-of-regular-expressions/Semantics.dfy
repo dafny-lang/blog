@@ -85,7 +85,9 @@ module Semantics {
   {
     var e :| Bisimilar#[k](L1, f(e)) && Bisimilar#[k](L2, g(e));
     if k != 0 {
-      forall a ensures Bisimilar#[k-1](L1.delta(a), L2.delta(a)) {
+      forall a
+        ensures Bisimilar#[k-1](L1.delta(a), L2.delta(a))
+      {
         BisimilarityIsTransitivePointwise(k-1, L1.delta(a),  f(e).delta(a), f(Delta(e)(a)));
         BisimilarityIsTransitivePointwise(k-1, L2.delta(a),  g(e).delta(a), g(Delta(e)(a)));
         UniqueCoalgebraHomomorphismHelperPointwise(k-1, f, g, L1.delta(a), L2.delta(a));
