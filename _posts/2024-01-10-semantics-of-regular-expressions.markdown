@@ -142,7 +142,7 @@ lemma BisimilarityIsReflexive<A(!new)>(L: Lang)
   }
 }
 
-lemma BisimilarityIsReflexive<A(!new)>#[k: nat](L: Lang)
+lemma BisimilarityIsReflexive#<A(!new)>[k: nat](L: Lang)
   ensures Bisimilar#[k](L, L)
   decreases k
 {
