@@ -152,7 +152,9 @@ lemma BisimilarityIsReflexive#<A(!new)>[k: nat](L: Lang)
 {
   if k == 0 {
   } else {
-    forall a ensures Bisimilar#[k-1](L.delta(a), L.delta(a)) {
+    forall a
+      ensures Bisimilar#[k-1](L.delta(a), L.delta(a)) 
+    {
       BisimilarityIsReflexive#[k-1](L.delta(a));
     }
   }
