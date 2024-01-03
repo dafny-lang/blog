@@ -177,7 +177,9 @@ module Languages {
     requires Bisimilar(L1, L2)
     ensures Bisimilar(Star(L1), Star(L2))
   {
-    forall k ensures Bisimilar#[k](Star(L1), Star(L2)) {
+    forall k: nat
+      ensures Bisimilar#[k](Star(L1), Star(L2))
+    {
       if k != 0 {
         var k' :| k' + 1 == k;
         StarCongruenceHelper(k', L1, L2);
