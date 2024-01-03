@@ -186,7 +186,9 @@ The proof that `Denotational` is an algebra homomorphism is straightforward: it 
 lemma DenotationalIsAlgebraHomomorphism<A(!new)>()
   ensures IsAlgebraHomomorphism<A>(Denotational)
 {
-  forall e ensures IsAlgebraHomomorphismPointwise<A>(Denotational, e) {
+  forall e
+    ensures IsAlgebraHomomorphismPointwise<A>(Denotational, e)
+  {
     BisimilarityIsReflexive<A>(Denotational(e));
   }
 }
