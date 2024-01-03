@@ -111,7 +111,9 @@ module Semantics {
     forall e ensures Denotational<A>(e).eps == Eps(e) {
       DenotationalIsCoalgebraHomomorphismHelper1(e);
     }
-    forall e, a ensures Bisimilar(Denotational<A>(e).delta(a), Denotational<A>(Delta(e)(a))) {
+    forall e, a
+      ensures Bisimilar(Denotational<A>(e).delta(a), Denotational<A>(Delta(e)(a)))
+    {
       DenotationalIsCoalgebraHomomorphismHelper2(e, a);
     }
   }
