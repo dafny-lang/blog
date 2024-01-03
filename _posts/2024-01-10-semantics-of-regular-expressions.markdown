@@ -364,7 +364,7 @@ lemma OperationalAndDenotationalAreBisimilar<A(!new)>(e: Exp)
 
 ### Operational Semantics as Algebra Homomorphism
 
-As a little extra, for the sake of symmetry, let us also prove that `Operational` is an algebra homomorphism. (We already know that it is a coalgebra homomorphism, and that `Denotational` is both an algebra and coalgebra homomorphism.)
+As a bonus, for the sake of symmetry, let us also prove that `Operational` is an algebra homomorphism. (We already know that it is a coalgebra homomorphism, and that `Denotational` is both an algebra and coalgebra homomorphism.)
 
 ```
 lemma OperationalIsAlgebraHomomorphism<A(!new)>()
