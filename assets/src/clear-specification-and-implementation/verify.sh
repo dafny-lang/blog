@@ -11,6 +11,6 @@ else
     exit 1
 fi
 
-./extract.pl ../../../_posts/2023-08-15-clear-specification-and-implementation.markdown > clear-spec.dfy
+./extract.sh < ../../../_posts/2023-08-15-clear-specification-and-implementation.markdown > clear-spec.dfy
 
 dafny verify clear-spec.dfy
