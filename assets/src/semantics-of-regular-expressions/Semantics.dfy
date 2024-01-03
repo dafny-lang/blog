@@ -226,7 +226,9 @@ module Semantics {
   lemma OperationalIsCoalgebraHomomorphism<A(!new)>()
     ensures IsCoalgebraHomomorphism<A>(Operational)
   {
-    forall e, a ensures Bisimilar<A>(Operational(e).delta(a), Operational(Delta(e)(a))) {
+    forall e, a
+      ensures Bisimilar<A>(Operational(e).delta(a), Operational(Delta(e)(a)))
+    {
       BisimilarityIsReflexive(Operational(e).delta(a));
     }
   }
