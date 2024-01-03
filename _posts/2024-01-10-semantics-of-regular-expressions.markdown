@@ -108,7 +108,7 @@ predicate Bisimilar<A(!new)>(L1: Lang, L2: Lang) {
   forall k: nat :: Bisimilar#[k](L1, L2)
 }
 
-predicate Bisimilar<A(!new)>#[k: nat](L1: Lang, L2: Lang) 
+predicate Bisimilar#<A(!new)>[k: nat](L1: Lang, L2: Lang) 
   decreases k
 {
   if k == 0 then
