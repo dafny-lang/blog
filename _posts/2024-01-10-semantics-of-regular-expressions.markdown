@@ -53,7 +53,7 @@ function One<A>(): Lang {
   Alpha(true, (a: A) => Zero())
 }
 
-function Singleton<A>(a: A): Lang {
+function Singleton<A(==)>(a: A): Lang {
   Alpha(false, (b: A) => if a == b then One() else Zero())
 }
 
