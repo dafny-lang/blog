@@ -243,7 +243,7 @@ function Operational<A(==)>(e: Exp): Lang {
 
 ### Operational Semantics as Coalgebra Homomorphism
 
-In [Denotational Semantics as Algebra Homomorphism](#denotational-semantics-as-algebra-homomorphism) we defined algebra homomorphisms as functions `f: Exp -> Lang` that commute with the algebraic structures of regular expressions and formal languages, respectively. Analogously, let us now call a function `f` of the same type a *coalgebra homomorphism*, if it commutes with the *coalgebraic* structures of regular expressions and formal languages, respectively:
+In [Denotational Semantics as Algebra Homomorphism](#denotational-semantics-as-algebra-homomorphism) we defined algebra homomorphisms as functions `f: Exp -> Lang` that commute with the algebraic structures of regular expressions and formal languages, respectively. Analogously, let us now call a function of the same type a *coalgebra homomorphism*, if it commutes with the *coalgebraic* structures of regular expressions and formal languages, respectively:
 
 ```
 ghost predicate IsCoalgebraHomomorphism<A(!new)>(f: Exp -> Lang) {
