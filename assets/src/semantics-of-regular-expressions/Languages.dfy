@@ -90,7 +90,7 @@ module Languages {
     }
   }
 
-  lemma BisimilarCuttingPrefixesPointwise<A(!new)>(k: nat, a: A,  L1a: Lang, L1b: Lang)
+  lemma BisimilarCuttingPrefixesPointwise<A(!new)>(k: nat, a: A, L1a: Lang, L1b: Lang)
     requires k != 0
     requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1a, L1b)
     ensures forall n: nat :: n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
@@ -126,7 +126,7 @@ module Languages {
     ensures Bisimilar(Comp(L1a, L2a), Comp(L1b, L2b))
   {
     forall k: nat
-      ensures Bisimilar#[k](Comp(L1a,L2a), Comp(L1b,L2b))
+      ensures Bisimilar#[k](Comp(L1a, L2a), Comp(L1b, L2b))
     {
       if k != 0 {
         var k' :| k' + 1 == k;
@@ -212,7 +212,7 @@ module Languages {
         {
           if 0 < n <= k' + 1 {
             var n' :| n == n' + 1;
-            StarCongruenceHelper(n', L1,L2);
+            StarCongruenceHelper(n', L1, L2);
           }
         }
         CompCongruenceHelper(k', L1.delta(a), L2.delta(a), Star(L1), Star(L2));
