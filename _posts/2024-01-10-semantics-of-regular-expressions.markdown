@@ -105,7 +105,7 @@ It is instructive to think of a `greatest predicate` as pure syntactic sugar. In
 /* Pseudo code for illustration purposes */
 
 predicate Bisimilar<A(!new)>(L1: Lang, L2: Lang) {
-  forall k :: Bisimilar#[k](L1, L2)
+  forall k: nat :: Bisimilar#[k](L1, L2)
 }
 
 predicate Bisimilar<A(!new)>#[k: nat](L1: Lang, L2: Lang) 
