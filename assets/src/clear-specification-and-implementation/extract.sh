@@ -12,6 +12,6 @@ while read line ; do
   elif [[ "$line" =~ "{% endhighlight %}" ]] ; then
     print=0
   elif [[ "$print" -eq 1 && "$seen_stack" -eq 1 ]] ; then
-    echo $line
+    echo "$line"
   fi
 done
