@@ -28,7 +28,7 @@ The definition captures that a regular expression is either a primitive characte
 
 ### Formal Languages as Codatatype
 
-We define the set of formal languages parametric in an alphabet `A` as an coinductive [`codatatype`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-coinductive-datatypes):
+We define the set of formal languages parametric in an alphabet `A` as a coinductive [`codatatype`](https://dafny.org/latest/DafnyRef/DafnyRef#sec-coinductive-datatypes):
 
 ```
 codatatype Lang<!A> = Alpha(eps: bool, delta: A -> Lang<A>)
