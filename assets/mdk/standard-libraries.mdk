@@ -386,10 +386,18 @@ mapping our `CalibrationValue` function over the sequence of lines,
 and summing the results into the final answer.
 `MapWithResult` is a short-circuiting variation of `Map` where the mapped function can fail.
 
-If we put the sample input from the puzzle description into `input.txt`
+Let's put the sample input from the puzzle description into `input.txt` so we can try it out
 (not the actual puzzle input - I draw the line at publishing the answer in this blog post,
-you're just going to have to run the solution yourself to get that!),
-we can run our project and get...
+you're just going to have to run the solution yourself to get that!)
+
+```
+1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet
+```
+
+Now we can run our project and get...
 
 ```dafny
 % dafny run dfyconfig.toml
