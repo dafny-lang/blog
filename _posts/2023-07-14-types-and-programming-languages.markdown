@@ -46,7 +46,7 @@ Writing a type-checker that guarantees that evaluation of a term won't get stuck
 
 First, let's define the term language used in the Blockly interface above. Note that the logic of the Blockly workspace above uses that exact code written on this page. Yeah, Dafny compiles to JavaScript too!
 
-{% highlight javascript %}
+{% highlight dafny %}
 datatype Term  =
   | True
   | False
@@ -63,7 +63,7 @@ datatype Term  =
 
 Let's also add the two types our expressions can have.
 
-{% highlight javascript %}
+{% highlight dafny %}
 datatype Type =
   | Bool
   | Int
@@ -74,7 +74,7 @@ datatype Type =
 We can now write a _type checker_ for the terms above. In our case, a type checker will take a term, and return a type if the term has that type. We will not dive into error reporting in this blog post.
 First, because a term may or may not have a type, we want an `Option<A>` type like this:
 
-{% highlight javascript %}
+{% highlight dafny %}
 datatype Option<A> = Some(value: A) | None
 {% endhighlight %}
 
@@ -83,7 +83,7 @@ For example, in a conditional term, the condition has to be a boolean,
 while we only require the "then" and "else" part to have the same, defined type.
 In general, computing types is a task linear in the size of the code, whereas evaluating the code could have any complexity. This is why type checking is an efficient way of preventing obvious mistakes.
 
-{% highlight javascript %}
+{% highlight dafny %}
 function GetType(term: Term): Option<Type> {
   match term {
     case True  => Some(Bool)
@@ -132,7 +132,7 @@ function GetType(term: Term): Option<Type> {
 
 A well-typed term is one for which a type exists.
 
-{% highlight javascript %}
+{% highlight dafny %}
 predicate WellTyped(term: Term) {
   GetType(term) != None
 }
@@ -146,7 +146,7 @@ At first, we can define the notion of evaluating a term. We can evaluate a term 
 There are terms where no replacement is possible: value terms.
 Here is what we want them to look like: either booleans, zero, positive integers, or negative integers.
 
-{% highlight javascript %}
+{% highlight dafny %}
 predicate IsSuccs(term: Term) {
   term == Zero || (term.Succ? && IsSuccs(term.e))
 }
@@ -161,7 +161,7 @@ predicate IsFinalValue(term: Term) {
 
 Now, we can write our one-step evaluation method. As a requirement, we add that the term must be well-typed and nonfinal.
 
-{% highlight javascript %}
+{% highlight dafny %}
 function OneStepEvaluate(e: Term): (r: Term)
   requires WellTyped(e) && !IsFinalValue(e)
 {
@@ -238,7 +238,7 @@ That concludes the _progress_ part of soundness checking: whenever a term type-c
 Soundness has another aspect, preservation, as stated in the intro. It says that, when evaluating a well-typed term, the evaluator will not get stuck and the result will have the same type as the original term.
 Dafny can also prove it for our language, out of the box. Well done, that means our language and evaluator make sense together!
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma OneStepEvaluateWellTyped(e: Term)
   requires WellTyped(e) && !IsFinalValue(e)
   ensures GetType(OneStepEvaluate(e)) == GetType(e)
@@ -281,7 +281,7 @@ Note that these terms omit `Double` and `Add` above. This means we cannot state 
 
 We can write the inductive definition above in Dafny too:
 
-{% highlight javascript %}
+{% highlight dafny %}
 ghost const AllTermsInductively: iset<Term>
 
 ghost predicate InductionCriteria(terms: iset<Term>) {
@@ -305,7 +305,7 @@ $$\begin{aligned}S_{i+1} = && && \{\texttt{true}, \texttt{false}, 0\} \\ && \big
 
 This we can enter in Dafny too:
 
-{% highlight javascript %}
+{% highlight dafny %}
 ghost function S(i: nat): iset<Term> {
   if i == 0 then
     iset{}
@@ -342,7 +342,7 @@ between any two sets.
 We use the annotation `{:vcs_split_on_every_assert}` which makes Dafny verify each assertion independently, which, in this example, helps the verifier. Yes, [helping the verifier](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-verification-debugging-slow) is something we must occasionally do in Dafny.
 To further control the situation, we use the annotation `{:induction false}` to ensure Dafny does not try to prove induction hypotheses by itself, which gives us control over the proof. Otherwise, Dafny can both automate the proof a lot (which is great!) and sometimes time out because automation is stuck (which is less great!). I left assertions in the code so that not only Dafny, but you too can understand the proof.
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma {:vcs_split_on_every_assert} {:induction false} SiAreCumulative(i: nat)
   ensures S(i) <= S(i+1)
 {
@@ -403,7 +403,7 @@ After proving that intermediate sets form an increasing sequence, we want to pro
 
 Note that I use the annotation `{:rlimit 4000}` which is only a way for Dafny to say that every [assertion batch](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-assertion-batches) should verify using less than 4 million resource units (unit provided by the underlying solver), which reduces the chances of proof variability during development.
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma {:rlimit 4000} {:vcs_split_on_every_assert}
   AllTermsConstructivelySatisfiesInductionCriteria()
   ensures InductionCriteria(AllTermsConstructively)
@@ -449,7 +449,7 @@ lemma {:rlimit 4000} {:vcs_split_on_every_assert}
 Now we want to prove that every `S(i)` is included in every set that satisfies the induction criteria. That way, their union, the constructive set, will also be included in any set that satisfies the induction criteria. The proof works by remarking that every element of `S(i)` is built from elements of `S(i-1)`, so if these elements are in the set satisfying the induction criteria, so is the element by induction.
 I intentionally detailed the proof so that you can understand it, but if you run it yourself, you might see that you can remove a lot of the proof and Dafny will still figure it out.
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma {:induction false}
   InductionCriteriaHasConcreteIAsSubset(
     i: nat, someset: iset<Term>
@@ -510,7 +510,7 @@ lemma {:induction false}
 
 We can deduce from the previous result that the constructive definition of all terms is also included in any set of term that satisfies the induction criteria. From this we can deduce automatically that the constructive definition of all terms is included in the smallest inductive set satisfying the induction criteria.
 
-{% highlight javascript %}
+{% highlight dafny %}
 // 3.2.6.b.1 AllTermsConstructively is a subset of any set satisfying the induction criteria (hence AllTermsConstructively <= AllTermsInductively)
 lemma AllTermsConstructivelyIncludedInSetsSatisfyingInductionCriteria(
   terms: iset<Term>
@@ -535,7 +535,7 @@ lemma AllTermsConstructivelyIncludedInAllTermsInductively()
 
 Because we have `<=` and `>=` between these two sets, we can now prove equality.
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma InductionAndConcreteAreTheSame()
   ensures AllTermsConstructively == AllTermsInductively
 {
@@ -552,7 +552,7 @@ As stated in the introduction, having multiple definitions of a single infinite 
 
 - If a term is in the constructive set, then it cannot be constructed with `Add` for example, because it would need to be in a `S(i)` and none of the `S(i)` define `Add`. This can be illustrated in Dafny with the following lemma:
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma {:induction false} CannotBeAdd(t: Term)
   requires t in AllTermsConstructively
   ensures !t.Add?
@@ -566,7 +566,7 @@ which Dafny can verify pretty easily. However, if you put `AllTermsInductively` 
 - If `x` is in the inductive set, then `Succ(x)` is in the inductive set as well.
 Dafny can figure it out by itself using the `AllTermsInductively` definition, but won't be able to do it with `AllTermsConstructively` without a rigorous proof.
 
-{% highlight javascript %}
+{% highlight dafny %}
 lemma {:induction false} SuccIsInInductiveSet(t: Term)
   requires t in AllTermsInductively
   ensures Succ(t) in AllTermsInductively
@@ -580,7 +580,7 @@ This could be useful for a rewriter or an optimizer to ensure the elements it wr
 Everything said, everything above can be a bit overweight for regular Dafny users.
 In practice, you're better off writing the inductive predicate explicitly as a function rather than an infinite set with a predicate, so that you get both inductive and constructive axioms that enable you to prove something similar to the two results above.
 
-{% highlight javascript %}
+{% highlight dafny %}
 predicate IsAdmissible(t: Term) {
   match t {
     case True => true
