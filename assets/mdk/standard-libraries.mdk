@@ -101,9 +101,9 @@ Now for the actual code. Let's start from the bottom-up:
 we're clearly going to need a function to extract the calibration value as a number from a single line of text.
 
 ```dafny
-function CalibrationValue(line: string): nat {
-  // ...
-}
+  function CalibrationValue(line: string): nat {
+    // ...
+  }
 ```
 
 How do we find the first and last digits?
@@ -177,16 +177,16 @@ For this exercise I'm just using `import` statements
 so it's more obvious when we're using things from the standard libraries.
 
 ```dafny
-import Std.Collections.Seq
+  import Std.Collections.Seq
 
-function CalibrationValue(line: string): nat {
-  var firstDigitIndex := Seq.IndexByOption(line, /* hmm... */);
-  var lastDigitIndex := Seq.LastIndexByOption(line, /* hmm... */);
+  function CalibrationValue(line: string): nat {
+    var firstDigitIndex := Seq.IndexByOption(line, /* hmm... */);
+    var lastDigitIndex := Seq.LastIndexByOption(line, /* hmm... */);
 
-  var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
+    var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
 
-  // Still need to parse the result as a number...
-}
+    // Still need to parse the result as a number...
+  }
 ```
 
 Progress! We'll figure out what to pass for the second arguments on the first two lines in a moment.
@@ -196,17 +196,17 @@ That means **now** we can open our `Std.Strings` present,
 and see that it contains a shiny new `ToNat` function!
 
 ```dafny
-import Std.Collections.Seq
-import Std.Strings
+  import Std.Collections.Seq
+  import Std.Strings
 
-function CalibrationValue(line: string): nat {
-  var firstDigitIndex := Seq.IndexByOption(line, /* hmm... */);
-  var lastDigitIndex := Seq.LastIndexByOption(line, /* hmm... */);
+  function CalibrationValue(line: string): nat {
+    var firstDigitIndex := Seq.IndexByOption(line, /* hmm... */);
+    var lastDigitIndex := Seq.LastIndexByOption(line, /* hmm... */);
 
-  var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
+    var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Strings.ToNat(resultStr)
-}
+    Strings.ToNat(resultAsString)
+  }
 ```
 
 Even better, digging into the implementation of `ToNat` leads us to what we need
@@ -214,19 +214,19 @@ to plug the holes we skipped over:
 the `Strings.DecimalConversion.IsDigitChar` predicate tells us if a character is a digit.
 
 ```dafny
-import Std.Collections.Seq
-import Std.Strings
-import Std.Strings.DecimalConversion
+  import Std.Collections.Seq
+  import Std.Strings
+  import Std.Strings.DecimalConversion
 
-function CalibrationValue(line: string): nat {
-  var firstDigitIndex := Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
-  var lastDigitIndex := Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
+  function CalibrationValue(line: string): nat {
+    var firstDigitIndex := Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
+    var lastDigitIndex := Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
 
-  // Error: incorrect type for selection into string (got Option<nat>)
-  var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
+    // Error: incorrect type for selection into string (got Option<nat>)
+    var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Strings.ToNat(resultAsString)
-}
+    Strings.ToNat(resultAsString)
+  }
 ```
 
 Before we pat ourselves on the back too hard, though,
@@ -244,19 +244,19 @@ Let's change our return type, change the two regular `:=` assignment operators t
 and wrap up our result as an `Option<nat>` so it matches our new return type:
 
 ```dafny
-import Std.Collections.Seq
-import Std.Strings
-import Std.Strings.DecimalConversion
-import Std.Wrappers
+  import Std.Collections.Seq
+  import Std.Strings
+  import Std.Strings.DecimalConversion
+  import Std.Wrappers
 
-function CalibrationValue(line: string): Wrappers.Option<nat> {
-  var firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
-  var lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
+  function CalibrationValue(line: string): Wrappers.Option<nat> {
+    var firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
+    var lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
 
-  var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
+    var resultAsString := [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Wrappers.Some(Strings.ToNat(resultAsString))
-}
+    Wrappers.Some(Strings.ToNat(resultAsString))
+  }
 ```
 
 Now if either attempt to find a digit fails,
@@ -273,7 +273,7 @@ That's why the return type of `ToNat` is just `nat`
 and not something like a `Wrappers.Option<nat>` or a `Wrappers.Result<nat, string>`,
 because it always succeeds in parsing the string.
 
-How does Dafny know that `resultStr` is always parsable as a non-negative integer?
+How does Dafny know that `resultAsString` is always parsable as a non-negative integer?
 Because of the post-conditions of `Seq.IndexByOption` and `Seq.LastIndexByOption`,
 Dafny actually **knows** that they return the indexes of elements that satisfy the "by" predicate,
 and therefore deduces that `[line[firstDigitIndex], line[lastDigitIndex]]`
@@ -294,14 +294,14 @@ Here's our first attempt at a reusable utility for reading Advent of Code puzzle
 (because after all we have another month's worth of puzzles to solve!)
 
 ```dafny
-// Just the imports we need for this snippet.
-import Std.FileIO
-import Std.Wrappers
+  // Just the imports we need for this snippet.
+  import Std.FileIO
+  import Std.Wrappers
 
-method ReadPuzzleInput() returns (input: Wrappers.Result<string, string>) {
-  // Error: incorrect return type for method out-parameter 'res'
-  input := FileIO.ReadBytesFromFile("input.txt");
-}
+  method ReadPuzzleInput() returns (input: Wrappers.Result<string, string>) {
+    // Error: incorrect return type for method out-parameter 'res'
+    input := FileIO.ReadBytesFromFile("input.txt");
+  }
 ```
 
 Note that `FileIO.ReadBytesFromFile` is a `method` rather than a `function`,
@@ -323,17 +323,17 @@ But let's pretend we're writing Real Code for the moment so I can show off the `
 hey you never know, later puzzles might have proper UTF8 content!
 
 ```dafny
-import Std.BoundedInts
-import Std.FileIO
-import Std.Unicode.UnicodeStringsWithUnicodeChar
-import Std.Wrappers
+  import Std.BoundedInts
+  import Std.FileIO
+  import Std.Unicode.UnicodeStringsWithUnicodeChar
+  import Std.Wrappers
 
-method ReadPuzzleInput() returns (input: Wrappers.Result<string, string>) {
-  var bytesAsBVs :- FileIO.ReadBytesFromFile("input.txt");
-  
-  var bytes := seq(|bytesAsBVs|, i requires 0 <= i < |bytesAsBVs| => bytesAsBVs[i] as BoundedInts.uint8);
-  input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult("Invalid UTF8");
-}
+  method ReadPuzzleInput() returns (input: Wrappers.Result<string, string>) {
+    var bytesAsBVs :- FileIO.ReadBytesFromFile("input.txt");
+    
+    var bytes := seq(|bytesAsBVs|, i requires 0 <= i < |bytesAsBVs| => bytesAsBVs[i] as BoundedInts.uint8);
+    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult("Invalid UTF8");
+  }
 ```
 
 A few notes:
@@ -347,7 +347,7 @@ A few notes:
   This is a side effect of the Dafny standard libraries having multiple independent contributions from various
   projects, and you can expect future versions of Dafny to provide more versions of common utilities
   to make combining things a bit smoother.
-* `FromUTF8Checked` returns an `Option<string>`, but `FileIO.ReadBytesFrom` returns a `Result<seq<bv8>, string>`.
+* `FromUTF8Checked` returns an `Option<string>`, but `FileIO.File` returns a `Result<seq<bv8>, string>`.
   To unify with a common result type, we use `Option.ToResult` to convert the former value to a `Result`,
   which is a handy and common trick. See [the documentation for `Std.Wrappers`](https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Wrappers.md) for more details.
 
@@ -356,16 +356,16 @@ A few notes:
 Now let's put it all together and write our main method:
 
 ```dafny
-method Main() {
-  var input :- expect ReadPuzzleInput();
+  method Main() {
+    var input :- expect ReadPuzzleInput();
 
-  var lines := Seq.Split(s, '\n');
+    var lines := Seq.Split(s, '\n');
 
-  var calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
+    var calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
-  var total := Seq.FoldLeft((x, y) => x + y, 0, calibrationValues);
-  print total, "\n";
-}
+    var total := Seq.FoldLeft((x, y) => x + y, 0, calibrationValues);
+    print total, "\n";
+  }
 ```
 
 We've used one more trick with failure-compatible types in this method:
