@@ -1,12 +1,18 @@
-module Languages {
-
-  /* Definitions */
-
+module Languages0 {
   codatatype Lang<!A> = Alpha(eps: bool, delta: A -> Lang<A>)
+}
+
+module Languages1 {
+  import opened Languages0
 
   function Zero<A>(): Lang {
     Alpha(false, (a: A) => Zero())
   }
+}
+
+module Languages2 {
+  import opened Languages0
+  import opened Languages1
 
   function One<A>(): Lang {
     Alpha(true, (a: A) => Zero())
@@ -21,90 +27,45 @@ module Languages {
   }
 
   function {:abstemious} Comp<A>(L1: Lang, L2: Lang): Lang {
-    Alpha(L1.eps && L2.eps, (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a))))
+    Alpha(
+      L1.eps && L2.eps,
+      (a: A) => Plus(Comp(L1.delta(a), L2), Comp(if L1.eps then One() else Zero(), L2.delta(a)))
+    )
   }
 
   function Star<A>(L: Lang): Lang {
     Alpha(true, (a: A) => Comp(L.delta(a), Star(L)))
   }
+}
+
+module Languages3 {
+  import opened Languages0
+  import opened Languages1
+  import opened Languages2
 
   greatest predicate Bisimilar<A(!new)>[nat](L1: Lang, L2: Lang) {
     && (L1.eps == L2.eps)
     && (forall a :: Bisimilar(L1.delta(a), L2.delta(a)))
   }
+}
 
-  /* Lemmas */
-
-  /* Bisimilarity */
+module Languages4 {
+  import opened Languages0
+  import opened Languages1
+  import opened Languages2
+  import opened Languages3
 
   greatest lemma BisimilarityIsReflexive<A(!new)>[nat](L: Lang)
     ensures Bisimilar(L, L)
   {}
+}
 
-  lemma BisimilarityIsTransitiveAlternative<A(!new)>(L1: Lang, L2: Lang, L3: Lang)
-    ensures Bisimilar(L1, L2) && Bisimilar(L2, L3) ==> Bisimilar(L1, L3)
-  {
-    if Bisimilar(L1,L2) && Bisimilar(L2, L3) {
-      assert Bisimilar(L1, L3) by {
-        BisimilarityIsTransitive(L1, L2, L3);
-      }
-    }
-  }
-
-  greatest lemma BisimilarityIsTransitive<A>[nat](L1: Lang, L2: Lang, L3: Lang)
-    requires Bisimilar(L1, L2) && Bisimilar(L2, L3)
-    ensures Bisimilar(L1, L3)
-  {}
-
-  lemma BisimilarityIsTransitivePointwise<A(!new)>(k: nat, L1: Lang, L2: Lang, L3: Lang)
-    ensures Bisimilar#[k](L1, L2) && Bisimilar#[k](L2, L3) ==> Bisimilar#[k](L1, L3)
-  {
-    if k != 0 {
-      if Bisimilar#[k](L1, L2) && Bisimilar#[k](L2, L3) {
-        assert Bisimilar#[k](L1, L3) by {
-          forall a
-            ensures Bisimilar#[k-1](L1.delta(a), L3.delta(a))
-          {
-            BisimilarityIsTransitivePointwise(k-1, L1.delta(a), L2.delta(a), L3.delta(a));
-          }
-        }
-      }
-    }
-  }
-
-  greatest lemma BisimilarityIsSymmetric<A(!new)>[nat](L1: Lang, L2: Lang)
-    ensures Bisimilar(L1, L2) ==> Bisimilar(L2, L1)
-    ensures Bisimilar(L1, L2) <== Bisimilar(L2, L1)
-  {}
-
-  lemma BisimilarCuttingPrefixes<A(!new)>(k: nat, L1: Lang, L2: Lang)
-    requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1, L2)
-    ensures forall a :: Bisimilar#[k](L1.delta(a), L2.delta(a))
-  {
-    forall a
-      ensures Bisimilar#[k](L1.delta(a), L2.delta(a))
-    {
-      if k != 0 {
-        assert Bisimilar#[k + 1](L1, L2);
-      }
-    }
-  }
-
-  lemma BisimilarCuttingPrefixesPointwise<A(!new)>(k: nat, a: A, L1a: Lang, L1b: Lang)
-    requires k != 0
-    requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1a, L1b)
-    ensures forall n: nat :: n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
-  {
-    forall n: nat
-      ensures n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
-    {
-      if n <= k {
-        BisimilarCuttingPrefixes(n, L1a, L1b);
-      }
-    }
-  }
-
-  /* Congruence of Plus */
+module Languages5 {
+  import opened Languages0
+  import opened Languages1
+  import opened Languages2
+  import opened Languages3
+  import opened Languages4
 
   greatest lemma PlusCongruence<A(!new)>[nat](L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
     requires Bisimilar(L1a, L1b)
@@ -112,17 +73,14 @@ module Languages {
     ensures Bisimilar(Plus(L1a, L2a), Plus(L1b, L2b))
   {}
 
-  lemma PlusCongruenceAlternative<A>(k: nat, L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
-    requires Bisimilar#[k](L1a, L1b)
-    requires Bisimilar#[k](L2a, L2b)
-    ensures Bisimilar#[k](Plus(L1a, L2a), Plus(L1b, L2b))
-  {}
-
-  /* Congruence of Comp */
-
   lemma CompCongruence<A(!new)>(L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
     requires Bisimilar(L1a, L1b)
     requires Bisimilar(L2a, L2b)
+    ensures Bisimilar(Comp(L1a, L2a), Comp(L1b, L2b))
+}
+
+module Languages5WithProof refines Languages5 {
+  lemma CompCongruence<A(!new)>(L1a: Lang<A>, L1b: Lang<A>, L2a: Lang<A>, L2b: Lang<A>)
     ensures Bisimilar(Comp(L1a, L2a), Comp(L1b, L2b))
   {
     forall k: nat
@@ -147,8 +105,8 @@ module Languages {
     assert Bisimilar#[1](L2a, L2b);
     assert lhs.eps == rhs.eps;
 
-    forall a 
-      ensures (Bisimilar#[k](lhs.delta(a), rhs.delta(a))) 
+    forall a
+      ensures (Bisimilar#[k](lhs.delta(a), rhs.delta(a)))
     {
       var x1 := Comp(L1a.delta(a), L2a);
       var x2 := Comp(L1b.delta(a), L2b);
@@ -181,10 +139,75 @@ module Languages {
     }
   }
 
-  /* Congruence of Star */
+  lemma PlusCongruenceAlternative<A>(k: nat, L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
+    requires Bisimilar#[k](L1a, L1b)
+    requires Bisimilar#[k](L2a, L2b)
+    ensures Bisimilar#[k](Plus(L1a, L2a), Plus(L1b, L2b))
+  {}
+
+
+  lemma BisimilarCuttingPrefixesPointwise<A(!new)>(k: nat, a: A, L1a: Lang, L1b: Lang)
+    requires k != 0
+    requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1a, L1b)
+    ensures forall n: nat :: n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
+  {
+    forall n: nat
+      ensures n <= k ==> Bisimilar#[n](L1a.delta(a), L1b.delta(a))
+    {
+      if n <= k {
+        BisimilarCuttingPrefixes(n, L1a, L1b);
+      }
+    }
+  }
+
+  lemma BisimilarCuttingPrefixes<A(!new)>(k: nat, L1: Lang, L2: Lang)
+    requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1, L2)
+    ensures forall a :: Bisimilar#[k](L1.delta(a), L2.delta(a))
+  {
+    forall a
+      ensures Bisimilar#[k](L1.delta(a), L2.delta(a))
+    {
+      if k != 0 {
+        assert Bisimilar#[k + 1](L1, L2);
+      }
+    }
+  }
+}
+
+module Languages6 {
+  import opened Languages0
+  import opened Languages1
+  import opened Languages2
+  import opened Languages3
+  import opened Languages4
+  import opened Languages5WithProof
+
+  greatest lemma BisimilarityIsTransitive<A>[nat](L1: Lang, L2: Lang, L3: Lang)
+    requires Bisimilar(L1, L2) && Bisimilar(L2, L3)
+    ensures Bisimilar(L1, L3)
+  {}
+}
+
+module Languages7 {
+  import opened Languages0
+  import opened Languages1
+  import opened Languages2
+  import opened Languages3
+  import opened Languages4
+  import opened Languages5WithProof
+  import opened Languages6
+  greatest lemma BisimilarityIsSymmetric<A(!new)>[nat](L1: Lang, L2: Lang)
+    ensures Bisimilar(L1, L2) ==> Bisimilar(L2, L1)
+    ensures Bisimilar(L1, L2) <== Bisimilar(L2, L1)
+  {}
 
   lemma StarCongruence<A(!new)>(L1: Lang, L2: Lang)
     requires Bisimilar(L1, L2)
+    ensures Bisimilar(Star(L1), Star(L2))
+}
+
+module Languages7WithProof refines Languages7 {
+  lemma StarCongruence<A(!new)>(L1: Lang<A>, L2: Lang<A>)
     ensures Bisimilar(Star(L1), Star(L2))
   {
     forall k: nat
@@ -201,8 +224,8 @@ module Languages {
     requires forall n: nat :: n <= k + 1 ==> Bisimilar#[n](L1, L2)
     ensures Bisimilar#[k+1](Star(L1), Star(L2))
   {
-    forall a 
-      ensures Bisimilar#[k](Star(L1).delta(a), Star(L2).delta(a)) 
+    forall a
+      ensures Bisimilar#[k](Star(L1).delta(a), Star(L2).delta(a))
     {
       if k != 0 {
         BisimilarCuttingPrefixesPointwise(k, a, L1, L2);
@@ -219,5 +242,25 @@ module Languages {
       }
     }
   }
+}
 
+module Languages8 {
+  import opened Languages0
+  import opened Languages1
+  import opened Languages2
+  import opened Languages3
+  import opened Languages4
+  import opened Languages5WithProof
+  import opened Languages6
+  import opened Languages7WithProof
+
+  lemma BisimilarityIsTransitiveAlternative<A(!new)>(L1: Lang, L2: Lang, L3: Lang)
+    ensures Bisimilar(L1, L2) && Bisimilar(L2, L3) ==> Bisimilar(L1, L3)
+  {
+    if Bisimilar(L1,L2) && Bisimilar(L2, L3) {
+      assert Bisimilar(L1, L3) by {
+        BisimilarityIsTransitive(L1, L2, L3);
+      }
+    }
+  }
 }

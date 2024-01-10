@@ -1,8 +1,9 @@
-module Expressions {
-
-  /* Definitions */
-
+module Expressions0 {
   datatype Exp<A> = Zero | One | Char(A) | Plus(Exp, Exp) | Comp(Exp, Exp) | Star(Exp)
+}
+
+module Expressions1 {
+  import opened Expressions0
 
   function Eps<A>(e: Exp): bool {
     match e
@@ -24,5 +25,4 @@ module Expressions {
       case Comp(e1, e2) => Plus(Comp(Delta(e1)(a), e2), Comp(if Eps(e1) then One else Zero, Delta(e2)(a)))
       case Star(e1) => Comp(Delta(e1)(a), Star(e1))
   }
-
 }
