@@ -391,9 +391,9 @@ standard-libraries = true</code></pre>
 <p class="p noindent para-continued" data-line="103"><span data-line="103"></span>Now for the actual code. Let<span data-line="103"></span>&#39;<span data-line="103"></span>s start from the bottom-up:
 we<span data-line="104"></span>&#39;<span data-line="104"></span>re clearly going to need a function to extract the calibration value as a number from a single line of text.
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="106" data-line-first="107" style="display:block"><code data-line="107"><span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
-  <span style="color:darkgreen">// ...</span>
-}</code></pre>
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="106" data-line-first="107" style="display:block"><code data-line="107">  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
+    <span style="color:darkgreen">// ...</span>
+  }</code></pre>
 <p class="p noindent para-continued" data-line="112"><span data-line="112"></span>How do we find the first and last digits?
 </p><h3 id="sec-sequences-and-wrappers" class="h2" data-line="114" data-heading-depth="2" style="display:block"><span data-line="114"></span>Sequences and Wrappers</h3>
 <p class="p noindent" data-line="116"><span data-line="116"></span>Having a look at the<span data-line="116"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries/README.md">top-level index of Dafny standard libraries</a><span data-line="116"></span>,
@@ -460,50 +460,50 @@ rather than <span data-line="178"></span><code class="code code1">Wrappers.Some(
 For this exercise I<span data-line="179"></span>&#39;<span data-line="179"></span>m just using <span data-line="179"></span><code class="code code1">import</code><span data-line="179"></span> statements
 so it<span data-line="180"></span>&#39;<span data-line="180"></span>s more obvious when we<span data-line="180"></span>&#39;<span data-line="180"></span>re using things from the standard libraries.
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="182" data-line-first="183" style="display:block"><code data-line="183"><span style="color:blue">import</span> Std.Collections.Seq
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="182" data-line-first="183" style="display:block"><code data-line="183">  <span style="color:blue">import</span> Std.Collections.Seq
 
-<span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
-  <span style="color:blue">var</span> firstDigitIndex <span style="color:blue">:=</span> Seq.IndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
-  <span style="color:blue">var</span> lastDigitIndex <span style="color:blue">:=</span> Seq.LastIndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
+  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
+    <span style="color:blue">var</span> firstDigitIndex <span style="color:blue">:=</span> Seq.IndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
+    <span style="color:blue">var</span> lastDigitIndex <span style="color:blue">:=</span> Seq.LastIndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
 
-  <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
+    <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
 
-  <span style="color:darkgreen">// Still need to parse the result as a number...</span>
-}</code></pre>
+    <span style="color:darkgreen">// Still need to parse the result as a number...</span>
+  }</code></pre>
 <p class="p noindent para-continued" data-line="195"><span data-line="195"></span>Progress! We<span data-line="195"></span>&#39;<span data-line="195"></span>ll figure out what to pass for the second arguments on the first two lines in a moment.
 First, how do we convert our <span data-line="196"></span><code class="code code1">resultAsString</code><span data-line="196"></span> to a number, more specifically a <span data-line="196"></span><code class="code code1">nat</code><span data-line="196"></span>?
 This is more specifically an operation on strings rather than generic sequences.
 That means <span data-line="198"></span><strong class="strong-star2">now</strong><span data-line="198"></span> we can open our <span data-line="198"></span><code class="code code1">Std.Strings</code><span data-line="198"></span> present, 
 and see that it contains a shiny new <span data-line="199"></span><code class="code code1">ToNat</code><span data-line="199"></span> function!
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="201" data-line-first="202" style="display:block"><code data-line="202"><span style="color:blue">import</span> Std.Collections.Seq
-<span style="color:blue">import</span> Std.Strings
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="201" data-line-first="202" style="display:block"><code data-line="202">  <span style="color:blue">import</span> Std.Collections.Seq
+  <span style="color:blue">import</span> Std.Strings
 
-<span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
-  <span style="color:blue">var</span> firstDigitIndex <span style="color:blue">:=</span> Seq.IndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
-  <span style="color:blue">var</span> lastDigitIndex <span style="color:blue">:=</span> Seq.LastIndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
+  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
+    <span style="color:blue">var</span> firstDigitIndex <span style="color:blue">:=</span> Seq.IndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
+    <span style="color:blue">var</span> lastDigitIndex <span style="color:blue">:=</span> Seq.LastIndexByOption(line, <span style="color:darkgreen">/*</span><span style="color:darkgreen"> hmm... </span><span style="color:darkgreen">*/</span>);
 
-  <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
+    <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Strings.ToNat(resultStr)
-}</code></pre>
+    Strings.ToNat(resultAsString)
+  }</code></pre>
 <p class="p noindent para-continued" data-line="215"><span data-line="215"></span>Even better, digging into the implementation of <span data-line="215"></span><code class="code code1">ToNat</code><span data-line="215"></span> leads us to what we need
 to plug the holes we skipped over:
 the <span data-line="217"></span><code class="code code1">Strings.DecimalConversion.IsDigitChar</code><span data-line="217"></span> predicate tells us if a character is a digit.
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="219" data-line-first="220" style="display:block"><code data-line="220"><span style="color:blue">import</span> Std.Collections.Seq
-<span style="color:blue">import</span> Std.Strings
-<span style="color:blue">import</span> Std.Strings.DecimalConversion
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="219" data-line-first="220" style="display:block"><code data-line="220">  <span style="color:blue">import</span> Std.Collections.Seq
+  <span style="color:blue">import</span> Std.Strings
+  <span style="color:blue">import</span> Std.Strings.DecimalConversion
 
-<span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
-  <span style="color:blue">var</span> firstDigitIndex <span style="color:blue">:=</span> Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
-  <span style="color:blue">var</span> lastDigitIndex <span style="color:blue">:=</span> Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
+  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): <span style="color:teal">nat</span> {
+    <span style="color:blue">var</span> firstDigitIndex <span style="color:blue">:=</span> Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
+    <span style="color:blue">var</span> lastDigitIndex <span style="color:blue">:=</span> Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
 
-  <span style="color:darkgreen">// Error: incorrect type for selection into string (got Option&lt;nat&gt;)</span>
-  <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
+    <span style="color:darkgreen">// Error: incorrect type for selection into string (got Option&lt;nat&gt;)</span>
+    <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Strings.ToNat(resultAsString)
-}</code></pre>
+    Strings.ToNat(resultAsString)
+  }</code></pre>
 <p class="p noindent para-continued" data-line="235"><span data-line="235"></span>Before we pat ourselves on the back too hard, though,
 we notice this program doesn<span data-line="236"></span>&#39;<span data-line="236"></span>t typecheck yet:
 <span data-line="237"></span><code class="code code1">firstDigitIndex</code><span data-line="237"></span> and <span data-line="237"></span><code class="code code1">lastDigitIndex</code><span data-line="237"></span> are not plain <span data-line="237"></span><code class="code code1">nat</code><span data-line="237"></span> values but <span data-line="237"></span><code class="code code1">Option&lt;nat&gt;</code><span data-line="237"></span> values.
@@ -518,19 +518,19 @@ That means they can be used with the <span data-line="245"></span><code class="c
 Let<span data-line="246"></span>&#39;<span data-line="246"></span>s change our return type, change the two regular <span data-line="246"></span><code class="code code1">:=</code><span data-line="246"></span> assignment operators to elephants instead,
 and wrap up our result as an <span data-line="247"></span><code class="code code1">Option&lt;nat&gt;</code><span data-line="247"></span> so it matches our new return type:
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="249" data-line-first="250" style="display:block"><code data-line="250"><span style="color:blue">import</span> Std.Collections.Seq
-<span style="color:blue">import</span> Std.Strings
-<span style="color:blue">import</span> Std.Strings.DecimalConversion
-<span style="color:blue">import</span> Std.Wrappers
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="249" data-line-first="250" style="display:block"><code data-line="250">  <span style="color:blue">import</span> Std.Collections.Seq
+  <span style="color:blue">import</span> Std.Strings
+  <span style="color:blue">import</span> Std.Strings.DecimalConversion
+  <span style="color:blue">import</span> Std.Wrappers
 
-<span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): Wrappers.Option&lt;<span style="color:teal">nat</span>&gt; {
-  <span style="color:blue">var</span> firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
-  <span style="color:blue">var</span> lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
+  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): Wrappers.Option&lt;<span style="color:teal">nat</span>&gt; {
+    <span style="color:blue">var</span> firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar);
+    <span style="color:blue">var</span> lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar);
 
-  <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
+    <span style="color:blue">var</span> resultAsString <span style="color:blue">:=</span> [line[firstDigitIndex], line[lastDigitIndex]];
 
-  Wrappers.Some(Strings.ToNat(resultAsString))
-}</code></pre>
+    Wrappers.Some(Strings.ToNat(resultAsString))
+  }</code></pre>
 <p class="p noindent para-continued" data-line="265"><span data-line="265"></span>Now if either attempt to find a digit fails,
 the execution of the function body will immediately stop,
 and that failure will become the result of the whole function.
@@ -545,7 +545,7 @@ That<span data-line="275"></span>&#39;<span data-line="275"></span>s why the ret
 and not something like a <span data-line="276"></span><code class="code code1">Wrappers.Option&lt;nat&gt;</code><span data-line="276"></span> or a <span data-line="276"></span><code class="code code1">Wrappers.Result&lt;nat, string&gt;</code><span data-line="276"></span>,
 because it always succeeds in parsing the string.
 </p>
-<p class="p indent" data-line="279"><span data-line="279"></span>How does Dafny know that <span data-line="279"></span><code class="code code1">resultStr</code><span data-line="279"></span> is always parsable as a non-negative integer?
+<p class="p indent" data-line="279"><span data-line="279"></span>How does Dafny know that <span data-line="279"></span><code class="code code1">resultAsString</code><span data-line="279"></span> is always parsable as a non-negative integer?
 Because of the post-conditions of <span data-line="280"></span><code class="code code1">Seq.IndexByOption</code><span data-line="280"></span> and <span data-line="280"></span><code class="code code1">Seq.LastIndexByOption</code><span data-line="280"></span>,
 Dafny actually <span data-line="281"></span><strong class="strong-star2">knows</strong><span data-line="281"></span> that they return the indexes of elements that satisfy the <span data-line="281"></span>&#8220;by&#8221;<span data-line="281"></span> predicate,
 and therefore deduces that <span data-line="282"></span><code class="code code1">[line[firstDigitIndex], line[lastDigitIndex]]</code><span data-line="282"></span>
@@ -563,14 +563,14 @@ file data for these kinds of use cases, rather than modelling entire file system
 Here<span data-line="296"></span>&#39;<span data-line="296"></span>s our first attempt at a reusable utility for reading Advent of Code puzzle input
 (because after all we have another month<span data-line="297"></span>&#39;<span data-line="297"></span>s worth of puzzles to solve!)
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="299" data-line-first="300" style="display:block"><code data-line="300"><span style="color:darkgreen">// Just the imports we need for this snippet.</span>
-<span style="color:blue">import</span> Std.FileIO
-<span style="color:blue">import</span> Std.Wrappers
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="299" data-line-first="300" style="display:block"><code data-line="300">  <span style="color:darkgreen">// Just the imports we need for this snippet.</span>
+  <span style="color:blue">import</span> Std.FileIO
+  <span style="color:blue">import</span> Std.Wrappers
 
-<span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
-  <span style="color:darkgreen">// Error: incorrect return type for method out-parameter &#39;res&#39;</span>
-  input <span style="color:blue">:=</span> FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
-}</code></pre>
+  <span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
+    <span style="color:darkgreen">// Error: incorrect return type for method out-parameter &#39;res&#39;</span>
+    input <span style="color:blue">:=</span> FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
+  }</code></pre>
 <p class="p noindent para-continued" data-line="310"><span data-line="310"></span>Note that <span data-line="310"></span><code class="code code1">FileIO.ReadBytesFromFile</code><span data-line="310"></span> is a <span data-line="310"></span><code class="code code1">method</code><span data-line="310"></span> rather than a <span data-line="310"></span><code class="code code1">function</code><span data-line="310"></span>,
 and so <span data-line="311"></span><code class="code code1">ReadPuzzleInput</code><span data-line="311"></span> has to be as well.
 A <span data-line="312"></span><code class="code code1">function</code><span data-line="312"></span> has to behave like a pure mathematical function
@@ -589,17 +589,17 @@ to its corresponding character.
 But let<span data-line="325"></span>&#39;<span data-line="325"></span>s pretend we<span data-line="325"></span>&#39;<span data-line="325"></span>re writing Real Code for the moment so I can show off the <span data-line="325"></span><code class="code code1">Std.Unicode</code><span data-line="325"></span> library;
 hey you never know, later puzzles might have proper UTF8 content!
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="328" data-line-first="329" style="display:block"><code data-line="329"><span style="color:blue">import</span> Std.BoundedInts
-<span style="color:blue">import</span> Std.FileIO
-<span style="color:blue">import</span> Std.Unicode.UnicodeStringsWithUnicodeChar
-<span style="color:blue">import</span> Std.Wrappers
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="328" data-line-first="329" style="display:block"><code data-line="329">  <span style="color:blue">import</span> Std.BoundedInts
+  <span style="color:blue">import</span> Std.FileIO
+  <span style="color:blue">import</span> Std.Unicode.UnicodeStringsWithUnicodeChar
+  <span style="color:blue">import</span> Std.Wrappers
 
-<span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
-  <span style="color:blue">var</span> bytesAsBVs :- FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
-  
-  <span style="color:blue">var</span> bytes <span style="color:blue">:=</span> <span style="color:teal">seq</span>(|bytesAsBVs|, i <span style="color:purple">requires</span> <span class="constant" style="color:purple">0</span> &lt;= i &lt; |bytesAsBVs| =&gt; bytesAsBVs[i] <span style="color:blue">as</span> BoundedInts.uint8);
-  input <span style="color:blue">:=</span> UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">Invalid UTF8</span><span style="color:maroon">&quot;</span>);
-}</code></pre>
+  <span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
+    <span style="color:blue">var</span> bytesAsBVs :- FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
+    
+    <span style="color:blue">var</span> bytes <span style="color:blue">:=</span> <span style="color:teal">seq</span>(|bytesAsBVs|, i <span style="color:purple">requires</span> <span class="constant" style="color:purple">0</span> &lt;= i &lt; |bytesAsBVs| =&gt; bytesAsBVs[i] <span style="color:blue">as</span> BoundedInts.uint8);
+    input <span style="color:blue">:=</span> UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">Invalid UTF8</span><span style="color:maroon">&quot;</span>);
+  }</code></pre>
 <p class="p noindent para-continued" data-line="342"><span data-line="342"></span>A few notes:
 </p>
 <ul class="ul list-star compact" data-line="344">
@@ -615,23 +615,23 @@ This is a side effect of the Dafny standard libraries having multiple independen
 projects, and you can expect future versions of Dafny to provide more versions of common utilities
 to make combining things a bit smoother.
 </li>
-<li class="li ul-li list-star-li compact-li" data-line="353"><span data-line="353"></span><code class="code code1">FromUTF8Checked</code><span data-line="353"></span> returns an <span data-line="353"></span><code class="code code1">Option&lt;string&gt;</code><span data-line="353"></span>, but <span data-line="353"></span><code class="code code1">FileIO.ReadBytesFrom</code><span data-line="353"></span> returns a <span data-line="353"></span><code class="code code1">Result&lt;seq&lt;bv8&gt;, string&gt;</code><span data-line="353"></span>.
+<li class="li ul-li list-star-li compact-li" data-line="353"><span data-line="353"></span><code class="code code1">FromUTF8Checked</code><span data-line="353"></span> returns an <span data-line="353"></span><code class="code code1">Option&lt;string&gt;</code><span data-line="353"></span>, but <span data-line="353"></span><code class="code code1">FileIO.File</code><span data-line="353"></span> returns a <span data-line="353"></span><code class="code code1">Result&lt;seq&lt;bv8&gt;, string&gt;</code><span data-line="353"></span>.
 To unify with a common result type, we use <span data-line="354"></span><code class="code code1">Option.ToResult</code><span data-line="354"></span> to convert the former value to a <span data-line="354"></span><code class="code code1">Result</code><span data-line="354"></span>,
 which is a handy and common trick. See<span data-line="355"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Wrappers.md">the documentation for <code class="code code1">Std.Wrappers</code></a><span data-line="355"></span> for more details.
 </li></ul>
 <h3 id="sec-sprinting-to-the-finish" class="h2" data-line="357" data-heading-depth="2" style="display:block"><span data-line="357"></span>Sprinting to the finish</h3>
 <p class="p noindent" data-line="359"><span data-line="359"></span>Now let<span data-line="359"></span>&#39;<span data-line="359"></span>s put it all together and write our main method:
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="361" data-line-first="362" style="display:block"><code data-line="362"><span style="color:blue">method</span> Main() {
-  <span style="color:blue">var</span> input :- expect ReadPuzzleInput();
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="361" data-line-first="362" style="display:block"><code data-line="362">  <span style="color:blue">method</span> Main() {
+    <span style="color:blue">var</span> input :- expect ReadPuzzleInput();
 
-  <span style="color:blue">var</span> lines <span style="color:blue">:=</span> Seq.Split(s, <span style="color:maroon">&#39;</span><span style="color:gray">\n</span><span style="color:maroon">&#39;</span>);
+    <span style="color:blue">var</span> lines <span style="color:blue">:=</span> Seq.Split(s, <span style="color:maroon">&#39;</span><span style="color:gray">\n</span><span style="color:maroon">&#39;</span>);
 
-  <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
+    <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
-  <span style="color:blue">var</span> total <span style="color:blue">:=</span> Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
-  <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;
-}</code></pre>
+    <span style="color:blue">var</span> total <span style="color:blue">:=</span> Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
+    <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;
+  }</code></pre>
 <p class="p noindent para-continued" data-line="374"><span data-line="374"></span>We<span data-line="374"></span>&#39;<span data-line="374"></span>ve used one more trick with failure-compatible types in this method:
 <span data-line="375"></span><code class="code code1">:- expect</code><span data-line="375"></span>, a variation on the elephant operator to make <span data-line="375"></span>&#8220;assign or halt&#8221;<span data-line="375"></span> statements.
 <span data-line="376"></span><code class="code code1">ReadPuzzleInput</code><span data-line="376"></span> returns a <span data-line="376"></span><code class="code code1">Result</code><span data-line="376"></span>, but if it fails there<span data-line="376"></span>&#39;<span data-line="376"></span>s nothing more we can do
@@ -650,87 +650,109 @@ mapping our <span data-line="388"></span><code class="code code1">CalibrationVal
 and summing the results into the final answer.
 <span data-line="390"></span><code class="code code1">MapWithResult</code><span data-line="390"></span> is a short-circuiting variation of <span data-line="390"></span><code class="code code1">Map</code><span data-line="390"></span> where the mapped function can fail.
 </p>
-<p class="p indent" data-line="392"><span data-line="392"></span>If we put the sample input from the puzzle description into <span data-line="392"></span><code class="code code1">input.txt</code><span data-line="392"></span>
+<p class="p indent" data-line="392"><span data-line="392"></span>Let<span data-line="392"></span>&#39;<span data-line="392"></span>s put the sample input from the puzzle description into <span data-line="392"></span><code class="code code1">input.txt</code><span data-line="392"></span> so we can try it out
 (not the actual puzzle input<span data-line="393"></span> <span data-line="393"></span>- I draw the line at publishing the answer in this blog post,
-you<span data-line="394"></span>&#39;<span data-line="394"></span>re just going to have to run the solution yourself to get that!),
-we can run our project and get<span data-line="395"></span>&#8230;<span data-line="395"></span>
+you<span data-line="394"></span>&#39;<span data-line="394"></span>re just going to have to run the solution yourself to get that!)
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="397" data-line-first="398" style="display:block"><code data-line="398">% dafny run dfyconfig.toml
+<pre class="para-block pre-fenced pre-fenced3" data-line="396" data-line-first="397" style="display:block"><code data-line="397">1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet</code></pre>
+<p class="p noindent para-continued" data-line="403"><span data-line="403"></span>Now we can run our project and get<span data-line="403"></span>&#8230;<span data-line="403"></span>
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="405" data-line-first="406" style="display:block"><code data-line="406">% dafny run dfyconfig.toml
 
 Dafny program verifier finished with <span class="constant" style="color:purple">3</span> verified, <span class="constant" style="color:purple">0</span> errors
 <span class="constant" style="color:purple">142</span></code></pre>
-<p class="p noindent para-continued" data-line="404"><span data-line="404"></span>Huzzah! We have a working solution to the first puzzle in less than 40 lines of Dafny code
+<p class="p noindent para-continued" data-line="412"><span data-line="412"></span>Huzzah! We have a working solution to the first puzzle in less than 40 lines of Dafny code
 (see below for the complete program),
 all thanks to the Dafny standard libraries.
 </p><!-- inline-dafny solution/M1 -->
 
 
 
-<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="410" data-line-first="411" style="display:block"><code data-line="411"><span style="color:blue">import</span> Std.BoundedInts
-<span style="color:blue">import</span> Std.Collections.Seq
-<span style="color:blue">import</span> Std.FileIO
-<span style="color:blue">import</span> Std.Strings
-<span style="color:blue">import</span> Std.Strings.DecimalConversion
-<span style="color:blue">import</span> Std.Unicode.UnicodeStringsWithUnicodeChar
-<span style="color:blue">import</span> Std.Wrappers
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="418" data-line-first="419" style="display:block"><code data-line="419">  <span style="color:blue">import</span> Std.BoundedInts
+  <span style="color:blue">import</span> Std.Collections.Seq
+  <span style="color:blue">import</span> Std.FileIO
+  <span style="color:blue">import</span> Std.Strings
+  <span style="color:blue">import</span> Std.Strings.DecimalConversion
+  <span style="color:blue">import</span> Std.Unicode.UnicodeStringsWithUnicodeChar
+  <span style="color:blue">import</span> Std.Wrappers
 
-<span style="color:blue">method</span> Main() {
-  <span style="color:blue">var</span> input :- expect ReadPuzzleInput();
+  <span style="color:blue">method</span> Main() {
+    <span style="color:blue">var</span> input :- expect ReadPuzzleInput();
 
-  <span style="color:blue">var</span> lines := Seq.Split(input, <span style="color:maroon">&#39;</span><span style="color:gray">\n</span><span style="color:maroon">&#39;</span>);
+    <span style="color:blue">var</span> lines := Seq.Split(input, <span style="color:maroon">&#39;</span><span style="color:gray">\n</span><span style="color:maroon">&#39;</span>);
 
-  <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
+    <span style="color:blue">var</span> calibrationValues :- expect Seq.MapWithResult(CalibrationValue, lines);
 
-  <span style="color:blue">var</span> total := Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
-  <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;</code></pre><h3 id="sec-looking-back-and-looking-ahead" class="h2" data-line="431" data-heading-depth="2" style="display:block"><span data-line="431"></span>Looking back and looking ahead</h3>
-<p class="p noindent" data-line="433"><span data-line="433"></span>The standard libraries are made possible by the recent support for
-<span data-line="434"></span><a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-doo-files">Dafny build artifacts</a><span data-line="434"></span>: 
+    <span style="color:blue">var</span> total := Seq.FoldLeft((x, y) =&gt; x + y, <span class="constant" style="color:purple">0</span>, calibrationValues);
+    <span style="color:blue">print</span> total, <span style="color:maroon">&quot;</span><span style="color:gray">\n</span><span style="color:maroon">&quot;</span>;
+  }
+
+  <span style="color:blue">method</span> ReadPuzzleInput() <span style="color:blue">returns</span> (input: Wrappers.Result&lt;<span style="color:teal">string</span>, <span style="color:teal">string</span>&gt;) {
+    <span style="color:blue">var</span> bytesAsBVs :- FileIO.ReadBytesFromFile(<span style="color:maroon">&quot;</span><span style="color:maroon">input.txt</span><span style="color:maroon">&quot;</span>);
+    <span style="color:blue">var</span> bytes := <span style="color:teal">seq</span>(|bytesAsBVs|, i <span style="color:purple">requires</span> <span class="constant" style="color:purple">0</span> &lt;= i &lt; |bytesAsBVs| =&gt; bytesAsBVs[i] <span style="color:blue">as</span> BoundedInts.uint8);
+    
+    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">Invalid UTF8</span><span style="color:maroon">&quot;</span>);
+  }
+
+  <span style="color:blue">function</span> CalibrationValue(line: <span style="color:teal">string</span>): Wrappers.Result&lt;<span style="color:teal">nat</span>, <span style="color:teal">string</span>&gt; {
+    <span style="color:blue">var</span> firstDigitIndex :- Seq.IndexByOption(line, DecimalConversion.IsDigitChar).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">No digits</span><span style="color:maroon">&quot;</span>);
+    <span style="color:blue">var</span> lastDigitIndex :- Seq.LastIndexByOption(line, DecimalConversion.IsDigitChar).ToResult(<span style="color:maroon">&quot;</span><span style="color:maroon">No digits</span><span style="color:maroon">&quot;</span>);
+
+    <span style="color:blue">var</span> resultStr := [line[firstDigitIndex], line[lastDigitIndex]];
+
+    Wrappers.Success(Strings.ToNat(resultStr))
+  }</code></pre><h3 id="sec-looking-back-and-looking-ahead" class="h2" data-line="456" data-heading-depth="2" style="display:block"><span data-line="456"></span>Looking back and looking ahead</h3>
+<p class="p noindent" data-line="458"><span data-line="458"></span>The standard libraries are made possible by the recent support for
+<span data-line="459"></span><a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-doo-files">Dafny build artifacts</a><span data-line="459"></span>: 
 compressed files containing the contents of an entire Dafny library along with metadata about how it was verified.
-These files use the extension <span data-line="436"></span><code class="code code1">.doo</code><span data-line="436"></span> for Dafny Output Object<span data-line="436"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
-&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="436"></span>.
-They play much the same role as <span data-line="437"></span><code class="code code1">.jar</code><span data-line="437"></span> files do for Java packages.
-Internally, the standard libraries are packaged up as multiple <span data-line="438"></span><code class="code code1">.doo</code><span data-line="438"></span> files
+These files use the extension <span data-line="461"></span><code class="code code1">.doo</code><span data-line="461"></span> for Dafny Output Object<span data-line="461"></span><sup id="back-fn-1" ><a href="#fn-1" title="1.This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="461"></span>.
+They play much the same role as <span data-line="462"></span><code class="code code1">.jar</code><span data-line="462"></span> files do for Java packages.
+Internally, the standard libraries are packaged up as multiple <span data-line="463"></span><code class="code code1">.doo</code><span data-line="463"></span> files
 and embedded as resources in the Dafny tool.
-When <span data-line="440"></span><code class="code code1">--standard-libraries</code><span data-line="440"></span> is switched on,
-the appropriate set of <span data-line="441"></span><code class="code code1">.doo</code><span data-line="441"></span> files are added as additional program source.
+When <span data-line="465"></span><code class="code code1">--standard-libraries</code><span data-line="465"></span> is switched on,
+the appropriate set of <span data-line="466"></span><code class="code code1">.doo</code><span data-line="466"></span> files are added as additional program source.
 </p>
-<p class="p indent" data-line="445"><span data-line="445"></span>This means the standard library source isn<span data-line="445"></span>&#39;<span data-line="445"></span>t re-verified every time your verify your Dafny project,
+<p class="p indent" data-line="470"><span data-line="470"></span>This means the standard library source isn<span data-line="470"></span>&#39;<span data-line="470"></span>t re-verified every time your verify your Dafny project,
 but the tool checks to make sure the options they were previously verified with
 are compatible with the objects in your project.
-In particular, this means if you try to use them with the older <span data-line="448"></span><code class="code code1">unicode-char = false</code><span data-line="448"></span> option,
-you<span data-line="449"></span>&#39;<span data-line="449"></span>ll get an explicit error right away,
+In particular, this means if you try to use them with the older <span data-line="473"></span><code class="code code1">unicode-char = false</code><span data-line="473"></span> option,
+you<span data-line="474"></span>&#39;<span data-line="474"></span>ll get an explicit error right away,
 rather than potentially misusing code not meant for this mode.
 </p>
-<p class="p indent" data-line="452"><span data-line="452"></span>As excited as I am about having standard libraries in Dafny,
-I<span data-line="453"></span>&#39;<span data-line="453"></span>ve also been nervous about having them for a long time:
-I<span data-line="454"></span>&#39;<span data-line="454"></span>d be sad in the future if anyone gave Dafny a pass
+<p class="p indent" data-line="477"><span data-line="477"></span>As excited as I am about having standard libraries in Dafny,
+I<span data-line="478"></span>&#39;<span data-line="478"></span>ve also been nervous about having them for a long time:
+I<span data-line="479"></span>&#39;<span data-line="479"></span>d be sad in the future if anyone gave Dafny a pass
 because its footprint had grown too bloated for their environment.
-Part of the reason the code is labelled as <span data-line="456"></span>&#8220;standard libraries&#8221;<span data-line="456"></span>, plural,
+Part of the reason the code is labelled as <span data-line="481"></span>&#8220;standard libraries&#8221;<span data-line="481"></span>, plural,
 is to hint at the fact that they may be split up into different packages in the future.
 Now that we have standard libraries in Dafny,
-we<span data-line="459"></span>&#39;<span data-line="459"></span>re also setting our sights on helping Dafny users create their own shared libraries
-and distributing them as pre-verified <span data-line="460"></span><code class="code code1">.doo</code><span data-line="460"></span> files in the future,
+we<span data-line="484"></span>&#39;<span data-line="484"></span>re also setting our sights on helping Dafny users create their own shared libraries
+and distributing them as pre-verified <span data-line="485"></span><code class="code code1">.doo</code><span data-line="485"></span> files in the future,
 so such libraries also get this layer of protection against misuse.
 </p>
-<p class="p indent" data-line="463"><span data-line="463"></span>Another great improvement over the old <span data-line="463"></span><code class="code code1">dafny-lang/libraries</code><span data-line="463"></span> repository
+<p class="p indent" data-line="488"><span data-line="488"></span>Another great improvement over the old <span data-line="488"></span><code class="code code1">dafny-lang/libraries</code><span data-line="488"></span> repository
 is that the Dafny standard libraries are well-tested for all of the programming languages
-that Dafny currently compiles to: C<span data-line="465"></span>#<span data-line="465"></span>, Go, Python, Java and JavaScript.
+that Dafny currently compiles to: C<span data-line="490"></span>#<span data-line="490"></span>, Go, Python, Java and JavaScript.
 That means even libraries that depend on target language details
-such as <span data-line="467"></span><code class="code code1">Std.FileIO</code><span data-line="467"></span> and <span data-line="467"></span><code class="code code1">Std.Concurrent</code><span data-line="467"></span>
+such as <span data-line="492"></span><code class="code code1">Std.FileIO</code><span data-line="492"></span> and <span data-line="492"></span><code class="code code1">Std.Concurrent</code><span data-line="492"></span>
 are safe to use in multi-target Dafny projects.
-</p><h3 id="sec-until-next-year" class="h2" data-line="470" data-heading-depth="2" style="display:block"><span data-line="470"></span>Until next year</h3>
-<p class="p noindent" data-line="472"><span data-line="472"></span>I<span data-line="472"></span>&#39;<span data-line="472"></span>ll leave this post at that, as I<span data-line="472"></span>&#39;<span data-line="472"></span>ve got some catching up to do in the Advent of Code challenge before time runs out!
+</p><h3 id="sec-until-next-year" class="h2" data-line="495" data-heading-depth="2" style="display:block"><span data-line="495"></span>Until next year</h3>
+<p class="p noindent" data-line="497"><span data-line="497"></span>I<span data-line="497"></span>&#39;<span data-line="497"></span>ll leave this post at that, as I<span data-line="497"></span>&#39;<span data-line="497"></span>ve got some catching up to do in the Advent of Code challenge before time runs out!
 In the meantime, install Dafny 4.4, take the standard libraries for a test drive, 
-and<span data-line="474"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/issues/new/choose">feel free to cut an issue</a><span data-line="474"></span> if you run into speed bumps.
+and<span data-line="499"></span>&nbsp;<a href="https://github.com/dafny-lang/dafny/issues/new/choose">feel free to cut an issue</a><span data-line="499"></span> if you run into speed bumps.
 Even better, if you have your own spiffy reusable Dafny code you keep in your back pocket,
-<span data-line="476"></span><a href="https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md">create a pull request</a><span data-line="476"></span> and get it into the standard libraries!
+<span data-line="501"></span><a href="https://github.com/dafny-lang/dafny/blob/master/CONTRIBUTING.md">create a pull request</a><span data-line="501"></span> and get it into the standard libraries!
 </p><span data-line=""></span>
 <div class="footnotes madoko">
 <hr >
 
-<div id="fn-1" class="footnote" data-line="443" style="line-adjust:0">
-<p class="p noindent" data-line="443"><span data-line="443"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="443"></span>This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
-<span data-line="444"></span><span data-line="444"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
+<div id="fn-1" class="footnote" data-line="468" style="line-adjust:0">
+<p class="p noindent" data-line="468"><span data-line="468"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="468"></span>This is true, but the real reason for the name is a nod to the other Daphne from Scooby Doo.
+<span data-line="469"></span><span data-line="469"></span><a href="#back-fn-1" class="footnote-backref localref">&#8617;</a></p></div></div></div>
 </body>
 
 </html>
