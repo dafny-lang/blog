@@ -1,0 +1,671 @@
+<html lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="generator" content="Madoko, version 1.2.3" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <style type="text/css"  class="link">
+  /*# sourceURL=madoko.css */
+  
+  .madoko .toc>.tocblock .tocblock .tocblock {
+    margin-left: 2.25em;
+  }
+  .madoko .toc>.tocblock .tocblock {
+    margin-left: 1.5em;
+  }
+  .madoko .toc-contents>.tocblock>.tocitem {
+    font-weight: bold;
+  }
+  .madoko .toc {
+    margin-top: 1em;
+  }
+  .madoko p.para-continue {
+    margin-bottom: 0pt;
+  }
+  .madoko .para-block+p {
+    margin-top: 0pt;
+  }
+  .madoko ul.para-block, .madoko ol.para-block {
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+  }
+  .madoko ul.para-end, .madoko ol.para-end {
+    margin-bottom: 1em;
+  }
+  .madoko dl {
+    margin-left: 0em;
+  }
+  .madoko blockquote {
+    font-style: italic;
+  }
+  .madoko a.localref {
+    text-decoration: none;
+  }
+  .madoko a.localref:hover {
+    text-decoration: underline;
+  }
+  .madoko .footnotes {
+    font-size: smaller;
+    margin-top: 2em;
+  }
+  .madoko .footnotes hr {
+    width: 50%;
+    text-align: left;
+  }
+  .madoko .footnote {
+    margin-left: 1em;
+  }
+  .madoko .footnote-before {
+    margin-left: -1em;
+    width: 1em;
+    display: inline-block;
+  }
+  .madoko .align-center, .madoko .align-center>p {
+    text-align: center !important;
+  }
+  .madoko .align-center pre {
+    text-align: left;
+  }
+  .madoko .align-center>* {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-left, .madoko .align-left>p {
+    text-align: left !important;
+  }
+  .madoko .align-left>* {
+    margin-left: 0pt !important;
+    margin-right: auto !important;
+  }
+  .madoko .align-right, .madoko .align-right>p {
+    text-align: right !important;
+  }
+  .madoko .align-right>* {
+    margin-left: auto !important;
+    margin-right: 0pt !important;
+  }
+  .madoko .align-center>table,
+  .madoko .align-left>table,
+  .madoko .align-right>table {
+    text-align: left !important;
+  }
+  .madoko .equation-before {
+    float: right;
+  }
+  .madoko .bibitem {
+    font-size: smaller;
+  }
+  .madoko .bibsearch {
+    font-size: x-small;
+    text-decoration:none;
+    color: black;
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  .madoko .block, .madoko .figure, .madoko .bibitem, .madoko .equation, .madoko div.math {
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .figure {
+    padding: 0.5em;
+    margin-left: 0pt;
+    margin-right: 0pt;
+  }
+  .madoko .hidden {
+    display: none;
+  }
+  .madoko .invisible {
+    visibility: hidden;
+  }
+  .madoko.preview .invisible {
+    visibility: visible;
+    opacity: 0.5;
+  }
+  .madoko code.code, .madoko span.code {
+    white-space: pre-wrap;
+  }
+  .madoko hr, hr.madoko {
+    border: none;
+    border-bottom: black solid 1px;
+    margin-bottom: 0.5ex;
+  }
+  .madoko .framed>*:first-child {
+    margin-top: 0pt;
+  }
+  .madoko .framed>*:last-child {
+    margin-bottom: 0pt;
+  }
+  .madoko ul.list-style-type-dash {
+      list-style-type: none !important;
+  }
+  .madoko ul.list-style-type-dash > li:before {
+      content: "\2013";
+      position: absolute;
+      margin-left: -1em;
+  }
+  .madoko table.madoko {
+    border-collapse: collapse;
+  }
+  .madoko td, .madoko th {
+    padding: 0ex 0.5ex;
+    margin: 0pt;
+    vertical-align: top;
+  }
+  .madoko .cell-border-left {
+    border-left: 1px solid black;
+  }
+  .madoko .cell-border-right {
+    border-right: 1px solid black;
+  }
+  .madoko thead>tr:first-child>.cell-line,
+  .madoko tbody:first-child>tr:first-child>.cell-line {
+    border-top: 1px solid black;
+    border-bottom: none;
+  }
+  .madoko .cell-line, .madoko .cell-double-line {
+    border-bottom: 1px solid black;
+    border-top: none;
+  }
+  .madoko .cell-double-line {
+    border-top: 1px solid black;
+    padding-top: 1.5px !important;
+  }
+  .madoko .input-mathpre .MathJax_Display {
+    text-align: left !important;
+  }
+  .madoko div.input-mathpre {
+    text-align: left;
+    margin-top: 1.5ex;
+    margin-bottom: 1ex;
+  }
+  .madoko .math-rendering {
+    text-align: left;
+    white-space: pre;
+    color: gray;
+  }
+  .madoko .mathdisplay {
+    text-align: center;
+  }
+  .madoko span.math-rendering {
+    display:inline-block;
+    width:8em;
+    overflow-x:auto;
+    font-size:70%;
+  }
+  .madoko span.math-rendering::-webkit-scrollbar {
+    width:4px;
+  }
+  .madoko .pretty table {
+    border-collapse: collapse;
+  }
+  .madoko .pretty td {
+    padding: 0em;
+  }
+  .madoko .pretty td.empty {
+    min-width: 1.5ex;
+  }
+  .madoko .pretty td.expander {
+    width: 100em;
+  }
+  body.madoko, .madoko .serif {
+    font-family: Cambria,"Times New Roman","Liberation Serif","Times",serif;
+  }
+  .madoko .sans-serif {
+    font-family: "Calibri", "Optima", sans-serif;
+  }
+  .madoko .symbol {
+    font-family: "Segoe UI Symbol", Symbola, serif;
+  }
+  body.madoko {
+    -webkit-text-size-adjust: 100%;       
+    text-rendering: optimizeLegibility;
+  }
+  body.madoko {
+    max-width: 88ex; 
+    margin: 1em auto;
+    padding: 0em 2em;
+  }
+  body.preview.madoko {
+    padding: 0em 1em;
+  }
+  .madoko p {
+    text-align: justify;
+  }
+  .madoko h1, .madoko h2, .madoko h3, .madoko h4 {
+    margin-top: 1.22em;
+    margin-bottom: 1ex;
+  }
+  .madoko h1+p, .madoko h2+p, .madoko h3+p, .madoko h4+p, .madoko h5+p  {
+    margin-top: 1ex;
+  }
+  .madoko h5, .madoko h6 {
+    margin-top: 1ex;
+    font-size: 1em;
+  }
+  .madoko h5 {
+    margin-bottom: 0.5ex;
+  }
+  .madoko h5 + p {
+    margin-top: 0.5ex;
+  }
+  .madoko h6 {
+    margin-bottom: 0pt;
+  }
+  .madoko h6 + p {
+    margin-top: 0pt;
+  }
+  .madoko pre, .madoko code, .madoko kbd, .madoko samp, .madoko tt,
+  .madoko .monospace, .madoko .token-indent, .madoko .reveal pre, .madoko .reveal code, .madoko .email {
+    font-family: Consolas,"Andale Mono WT","Andale Mono",Lucida Console,Monaco,monospace,monospace;
+    font-size: 0.85em;
+  }
+  .madoko pre code, .madoko .token-indent {
+    font-size: 0.95em;
+  }
+  .madoko pre code {
+    font-family: inherit !important;
+  }
+  .madoko ol.linenums li {
+    background-color: white;
+    list-style-type: decimal;
+  }
+  .madoko .remote {
+    background-color: #F0FFF0;
+  }
+  .madoko .remote + * {
+    margin-top: 0pt;
+  }
+  @media print {
+    body.madoko {
+      font-size: 10pt;
+    }
+    @page {
+      margin: 1in 1.5in;
+    }
+  }
+  @media only screen and (max-device-width:1024px) {
+    body.madoko {
+      padding: 0em 0.5em;
+    }
+    .madoko li {
+      text-align: left;
+    }
+  }
+  
+    </style>
+  
+  <style>
+    body.madoko {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .page-content {
+        padding: 0;
+      }
+  </style>
+  </head>
+<body class="madoko">
+
+<div class="body madoko" style="line-adjust:0">
+<h3 id="sec-introduction" class="h2" data-line="19" data-heading-depth="2" style="display:block"><span data-line="19"></span>Introduction</h3>
+<p class="p noindent" data-line="21"><span data-line="21"></span><a href="https://en.wikipedia.org/wiki/Regular_expression">Regular expressions</a><span data-line="21"></span> are one of the most ubiquitous formalisms of theoretical computer science. Commonly, they are understood in terms of their<span data-line="21"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Denotational_semantics"><em class="em-star1">denotational</em> semantics</a><span data-line="21"></span>, that is, through formal languages — the<span data-line="21"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Regular_language"><em class="em-star1">regular</em> languages</a><span data-line="21"></span>. This view is <span data-line="21"></span><em class="em-star1">inductive</em><span data-line="21"></span> in nature: two primitives are equivalent if they are <span data-line="21"></span><em class="em-star1">constructed</em><span data-line="21"></span> in the same way.  Alternatively, regular expressions can be understood in terms of their<span data-line="21"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Operational_semantics"><em class="em-star1">operational</em> semantics</a><span data-line="21"></span>, that is, through<span data-line="21"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite automata</a><span data-line="21"></span>. This view is <span data-line="21"></span><em class="em-star1">coinductive</em><span data-line="21"></span> in nature: two primitives are equivalent if they are <span data-line="21"></span><em class="em-star1">deconstructed</em><span data-line="21"></span> in the same way. It is implied by<span data-line="21"></span>&nbsp;<a href="http://www.dlsi.ua.es/~mlf/nnafmc/papers/kleene56representation.pdf">Kleene’s famous theorem</a><span data-line="21"></span> that both views are equivalent: regular languages are precisely the formal languages accepted by finite automata. In this blogpost, we utilise Dafny’s built-in inductive and coinductive reasoning capabilities to show that the two semantics of regular expressions are <span data-line="21"></span><em class="em-star1"><a href="https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf">well-behaved</a></em><span data-line="21"></span>, in the sense they are in fact one and the same, up to pointwise<span data-line="21"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Bisimulation">bisimulation</a><span data-line="21"></span>. 
+</p><h3 id="sec-denotational-semantics" class="h2" data-line="23" data-heading-depth="2" style="display:block"><span data-line="23"></span>Denotational Semantics</h3>
+<p class="p noindent" data-line="25"><span data-line="25"></span>In this section, we define regular expressions and formal languages, introduce the concept of bisimilarity, formalise the <span data-line="25"></span><em class="em-star1">denotational</em><span data-line="25"></span> semantics of regular expressions as a function from regular expressions to formal languages, and prove that the latter is an algebra homomorphism.
+</p><h4 id="sec-regular-expressions-as-datatype" class="h3" data-line="27" data-heading-depth="3" style="display:block"><span data-line="27"></span>Regular Expressions as Datatype</h4>
+<p class="p noindent" data-line="29"><span data-line="29"></span>We define the set of regular expressions parametric in an alphabet  <span data-line="29"></span><code class="code code1">A</code><span data-line="29"></span> as an inductive<span data-line="29"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-inductive-datatypes"><code class="code code1">datatype</code></a><span data-line="29"></span>:
+</p><!-- inline-dafny Expressions/Expressions0  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="33" data-line-first="34" style="display:block"><code data-line="34">  <span style="color:blue">datatype</span> Exp&lt;A&gt; = Zero | One | Char(A) | Plus(Exp, Exp) | Comp(Exp, Exp) | Star(Exp)</code></pre>
+<p class="p noindent para-continued" data-line="38"><span data-line="38"></span>Note that above, and later, we make use of Dafny<span data-line="38"></span>&#39;<span data-line="38"></span>s<span data-line="38"></span>&nbsp;<a href="https://leino.science/papers/krml270.html">type parameter completion</a><span data-line="38"></span>.
+</p>
+<p class="p indent" data-line="40"><span data-line="40"></span>The definition captures that a regular expression is either a primitive character <span data-line="40"></span><code class="code code1">Char(a)</code><span data-line="40"></span>,  a non-deterministic choice between two regular expressions <span data-line="40"></span><code class="code code1">Plus(e1, e2)</code><span data-line="40"></span>, a sequential composition of two regular expressions <span data-line="40"></span><code class="code code1">Comp(e1, e2)</code><span data-line="40"></span>,  a finite number of self-iterations <span data-line="40"></span><code class="code code1">Star(e)</code><span data-line="40"></span>, or one of the constants <span data-line="40"></span><code class="code code1">Zero</code><span data-line="40"></span> (the unit of <span data-line="40"></span><code class="code code1">Plus</code><span data-line="40"></span>) and <span data-line="40"></span><code class="code code1">One</code><span data-line="40"></span> (the unit of <span data-line="40"></span><code class="code code1">Comp</code><span data-line="40"></span>). At a higher level, the above defines  <span data-line="40"></span><code class="code code1">Exp&lt;A&gt;</code><span data-line="40"></span> as the <span data-line="40"></span><em class="em-star1">smallest</em><span data-line="40"></span> algebraic structure that is equipped with two constants, contains all elements of type <span data-line="40"></span><code class="code code1">A</code><span data-line="40"></span>, and is closed under two binary operations and one unary operation.
+</p><h4 id="sec-formal-languages-as-codatatype" class="h3" data-line="42" data-heading-depth="3" style="display:block"><span data-line="42"></span>Formal Languages as Codatatype</h4>
+<p class="p noindent" data-line="44"><span data-line="44"></span>We define the set of formal languages parametric in an alphabet <span data-line="44"></span><code class="code code1">A</code><span data-line="44"></span> as a coinductive<span data-line="44"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-coinductive-datatypes"><code class="code code1">codatatype</code></a><span data-line="44"></span>:
+</p><!-- inline-dafny Languages/Languages0  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="48" data-line-first="49" style="display:block"><code data-line="49">  <span style="color:blue">codatatype</span> Lang&lt;!A&gt; = Alpha(eps: <span style="color:teal">bool</span>, delta: A -&gt; Lang&lt;A&gt;)</code></pre>
+<p class="p noindent para-continued" data-line="53"><span data-line="53"></span>Note that we used the type-parameter mode<span data-line="53"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-type-parameter-variance"><code class="code code1">!</code></a><span data-line="53"></span>, which indicates that there could be strictly more values of type <span data-line="53"></span><code class="code code1">Lang&lt;A&gt;</code><span data-line="53"></span> than values of type <span data-line="53"></span><code class="code code1">A</code><span data-line="53"></span>, for any type <span data-line="53"></span><code class="code code1">A</code><span data-line="53"></span>, and that there is no subtype relation between <span data-line="53"></span><code class="code code1">Lang&lt;A&gt;</code><span data-line="53"></span> and <span data-line="53"></span><code class="code code1">Lang&lt;B&gt;</code><span data-line="53"></span>, for any two types <span data-line="53"></span><code class="code code1">A, B</code><span data-line="53"></span>. A more detailed explanation of the topic can be found<span data-line="53"></span>&nbsp;<a href="https://leino.science/papers/krml280.html">here</a><span data-line="53"></span>.
+</p>
+<p class="p indent" data-line="55"><span data-line="55"></span>To some, the choice above might seem odd at first sight. If you are familiar with the topic, you likely have expected a formal language to be defined more concretely as a set of finite sequences (sometimes called <span data-line="55"></span><em class="em-star1">words</em><span data-line="55"></span>), <span data-line="55"></span><code class="code code1">iset&lt;seq&lt;A&gt;&gt;</code><span data-line="55"></span>. Rest assured, we agree — up to an appropriate notion of equality! Whereas you characterise languages intrinsically, we treat them extrinsically, in terms of their universal property:<span data-line="55"></span>&nbsp;<a href="https://ir.cwi.nl/pub/28550/rutten.pdf">it is well known</a><span data-line="55"></span> that <span data-line="55"></span><code class="code code1">iset&lt;seq&lt;A&gt;&gt;</code><span data-line="55"></span> forms the <span data-line="55"></span><em class="em-star1">greatest</em><span data-line="55"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/F-coalgebra">coalgebraic</a><span data-line="55"></span> structure (think of a deterministic automaton without initial state) <span data-line="55"></span><code class="code code1">S</code><span data-line="55"></span> that is equipped with functions <span data-line="55"></span><code class="code code1">eps: S -&gt; bool</code><span data-line="55"></span> and <span data-line="55"></span><code class="code code1">delta: S → (A → S)</code><span data-line="55"></span>. Indeed, for any set <span data-line="55"></span><code class="code code1">U</code><span data-line="55"></span> of finite sequences, we can verify whether <span data-line="55"></span><code class="code code1">U</code><span data-line="55"></span> contains the empty sequence, <span data-line="55"></span><code class="code code1">U.eps == ([] in U)</code><span data-line="55"></span>, and for any <span data-line="55"></span><code class="code code1">a: A</code><span data-line="55"></span>, we can transition to the set  <span data-line="55"></span><code class="code code1">U.delta(a) == (iset s | [a] + s in U)</code><span data-line="55"></span>. Here, we choose the more abstract perspective on formal languages as it hides irrelevant specifics and thus allows us to write more elegant proofs.
+</p><h4 id="sec-an-algebra-of-formal-languages" class="h3" data-line="57" data-heading-depth="3" style="display:block"><span data-line="57"></span>An Algebra of Formal Languages</h4>
+<p class="p noindent" data-line="59"><span data-line="59"></span>If you think of formal languages as the set of all sets of finite sequences, you will soon realise that languages admit quite a bit of algebraic structure. For example, there exist two languages of distinct importance (can you already guess which ones?), and one can obtain a new language by taking e.g. the union of two languages. In fact, if you think about it for a bit longer, you’ll realise that formal languages admit exactly the same<span data-line="59"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/F-algebra">type of algebraic structure</a><span data-line="59"></span> as the one you’ve encountered when we defined regular expressions!
+</p>
+<p class="p indent" data-line="61"><span data-line="61"></span>First, there exists the empty language <span data-line="61"></span><code class="code code1">Zero()</code><span data-line="61"></span> that contains no words at all. Under the view above, we find <span data-line="61"></span><code class="code code1">Zero().eps == false</code><span data-line="61"></span> and <span data-line="61"></span><code class="code code1">Zero().delta(a) == Zero()</code><span data-line="61"></span>, since the empty set does not contain the empty sequence, and the derivative <span data-line="61"></span><code class="code code1">iset s | [a] + s in iset{}</code><span data-line="61"></span> with respect to any <span data-line="61"></span><code class="code code1">a: A</code><span data-line="61"></span> yields again the empty set, respectively. We thus define:
+</p><!-- inline-dafny Languages/Languages1  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="65" data-line-first="66" style="display:block"><code data-line="66">  <span style="color:blue">function</span> Zero&lt;A&gt;(): Lang {
+    Alpha(<span style="color:blue">false</span>, (a: A) =&gt; Zero())
+  }</code></pre>
+<p class="p noindent para-continued" data-line="72"><span data-line="72"></span>Using similar reasoning, we additionally derive the following definitions. In order, we formalise i) the language <span data-line="72"></span><code class="code code1">One()</code><span data-line="72"></span> that contains only the empty sequence; ii) for any <span data-line="72"></span><code class="code code1">a: A</code><span data-line="72"></span> the language <span data-line="72"></span><code class="code code1">Singleton(a)</code><span data-line="72"></span> that consists of only the word <span data-line="72"></span><code class="code code1">[a]</code><span data-line="72"></span>; iii) the language <span data-line="72"></span><code class="code code1">Plus(L1, L2)</code><span data-line="72"></span> which consists of the union of the languages <span data-line="72"></span><code class="code code1">L1</code><span data-line="72"></span> and <span data-line="72"></span><code class="code code1">L2</code><span data-line="72"></span>; iv) the language <span data-line="72"></span><code class="code code1">Comp(L1, L2)</code><span data-line="72"></span> that consists of all possible concatenation of words in <span data-line="72"></span><code class="code code1">L1</code><span data-line="72"></span> and <span data-line="72"></span><code class="code code1">L2</code><span data-line="72"></span>; and v) the language <span data-line="72"></span><code class="code code1">Star(L)</code><span data-line="72"></span> that consists of all finite compositions of <span data-line="72"></span><code class="code code1">L</code><span data-line="72"></span> with itself. Our definitions match what is well-known as <span data-line="72"></span><em class="em-star1"><a href="https://en.wikipedia.org/wiki/Brzozowski_derivative">Brzozowski derivatives</a></em><span data-line="72"></span>. 
+</p><!-- inline-dafny Languages/Languages2  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="76" data-line-first="77" style="display:block"><code data-line="77">  <span style="color:blue">function</span> One&lt;A&gt;(): Lang {
+    Alpha(<span style="color:blue">true</span>, (a: A) =&gt; Zero())
+  }
+
+  <span style="color:blue">function</span> Singleton&lt;A(==)&gt;(a: A): Lang {
+    Alpha(<span style="color:blue">false</span>, (b: A) =&gt; <span style="color:blue">if</span> a == b <span style="color:blue">then</span> One() <span style="color:blue">else</span> Zero())
+  }
+
+  <span style="color:blue">function</span> {<span style="color:purple">:abstemious</span>} Plus&lt;A&gt;(L1: Lang, L2: Lang): Lang {
+    Alpha(L1.eps || L2.eps, (a: A) =&gt; Plus(L1.delta(a), L2.delta(a)))
+  }
+
+  <span style="color:blue">function</span> {<span style="color:purple">:abstemious</span>} Comp&lt;A&gt;(L1: Lang, L2: Lang): Lang {
+    Alpha(
+      L1.eps &amp;&amp; L2.eps,
+      (a: A) =&gt; Plus(Comp(L1.delta(a), L2), Comp(<span style="color:blue">if</span> L1.eps <span style="color:blue">then</span> One() <span style="color:blue">else</span> Zero(), L2.delta(a)))
+    )
+  }
+
+  <span style="color:blue">function</span> Star&lt;A&gt;(L: Lang): Lang {
+    Alpha(<span style="color:blue">true</span>, (a: A) =&gt; Comp(L.delta(a), Star(L)))
+  }</code></pre>
+<p class="p noindent para-continued" data-line="102"><span data-line="102"></span>Note that the<span data-line="102"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-abstemious"><code class="code code1">{:abstemious}</code></a><span data-line="102"></span> attribute above signals that a function does not need to unfold a codatatype instance very far (perhaps just one destructor call) to prove a relevant property. Knowing this is the case can aid the proofs of properties about the function. In this case, it is needed to convince Dafny that the corecursive calls in <span data-line="102"></span><code class="code code1">Comp</code><span data-line="102"></span> and <span data-line="102"></span><code class="code code1">Star</code><span data-line="102"></span> are logically consistent.
+</p><h4 id="sec-denotational-semantics-as-induced-morphism" class="h3" data-line="104" data-heading-depth="3" style="display:block"><span data-line="104"></span>Denotational Semantics as Induced Morphism</h4>
+<p class="p noindent" data-line="106"><span data-line="106"></span>The denotational semantics of regular expressions can now be defined through induction, as a function <span data-line="106"></span><code class="code code1">Denotational: Exp -&gt; Lang</code><span data-line="106"></span>, by making use of the operations on languages we have just defined:
+</p><!-- inline-dafny Semantics/Semantics0  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="110" data-line-first="111" style="display:block"><code data-line="111">  <span style="color:blue">function</span> Denotational&lt;A(==)&gt;(e: Exp): Lang {
+    <span style="color:blue">match</span> e
+    <span style="color:blue">case</span> Zero =&gt; Languages1.Zero()
+    <span style="color:blue">case</span> One =&gt; Languages2.One()
+    <span style="color:blue">case</span> Char(a) =&gt; Languages2.Singleton(a)
+    <span style="color:blue">case</span> Plus(e1, e2) =&gt; Languages2.Plus(Denotational(e1), Denotational(e2))
+    <span style="color:blue">case</span> Comp(e1, e2) =&gt; Languages2.Comp(Denotational(e1), Denotational(e2))
+    <span style="color:blue">case</span> Star(e1) =&gt; Languages2.Star(Denotational(e1))
+  }</code></pre><h4 id="sec-bisimilarity-and-coinduction" class="h3" data-line="123" data-heading-depth="3" style="display:block"><span data-line="123"></span>Bisimilarity and Coinduction</h4>
+<p class="p noindent" data-line="125"><span data-line="125"></span>Let us briefly introduce a notion of equality between formal languages that will be useful soon. A binary relation <span data-line="125"></span><code class="code code1">R</code><span data-line="125"></span> between languages is called a <span data-line="125"></span><em class="em-star1"><a href="https://en.wikipedia.org/wiki/Bisimulation">bisimulation</a>,</em><span data-line="125"></span> if for any two languages <span data-line="125"></span><code class="code code1">L1</code><span data-line="125"></span>, <span data-line="125"></span><code class="code code1">L2</code><span data-line="125"></span> related by <span data-line="125"></span><code class="code code1">R</code><span data-line="125"></span> the following holds: i) <span data-line="125"></span><code class="code code1">L1</code><span data-line="125"></span> contains the empty word iff <span data-line="125"></span><code class="code code1">L2</code><span data-line="125"></span> does; and ii) for any <span data-line="125"></span><code class="code code1">a: A</code><span data-line="125"></span>, the derivatives <span data-line="125"></span><code class="code code1">L1.delta(a)</code><span data-line="125"></span> and <span data-line="125"></span><code class="code code1">L2.delta(a)</code><span data-line="125"></span> are again related by <span data-line="125"></span><code class="code code1">R</code><span data-line="125"></span>. As it turns out, the union of two bisimulations is again a bisimulation. In consequence, one can combine all possible bisimulations into a single relation: the <span data-line="125"></span><em class="em-star1">greatest</em><span data-line="125"></span> bisimulation. In Dafny, we can formalise the latter as a<span data-line="125"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-copredicates"><code class="code code1">greatest predicate</code></a><span data-line="125"></span>:
+</p><!-- inline-dafny Languages/Languages3  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="129" data-line-first="130" style="display:block"><code data-line="130">  <span style="color:blue">greatest</span> <span style="color:blue">predicate</span> Bisimilar&lt;A(!<span style="color:blue">new</span>)&gt;[<span style="color:teal">nat</span>](L1: Lang, L2: Lang) {
+    &amp;&amp; (L1.eps == L2.eps)
+    &amp;&amp; (<span style="color:blue">forall</span> a :: Bisimilar(L1.delta(a), L2.delta(a)))
+  }</code></pre>
+<p class="p noindent para-continued" data-line="137"><span data-line="137"></span>It is instructive to think of a <span data-line="137"></span><code class="code code1">greatest predicate</code><span data-line="137"></span> as pure syntactic sugar. Indeed, under the hood, Dafny’s compiler uses the body above to implicitly generate i) for any <span data-line="137"></span><code class="code code1">k: nat</code><span data-line="137"></span>, a <span data-line="137"></span><em class="em-star1"><a href="https://dafny.org/latest/DafnyRef/DafnyRef#514361-properties-of-prefix-predicates">prefix predicate</a></em><span data-line="137"></span> <span data-line="137"></span><code class="code code1">Bisimilar#[k](L1, L2)</code><span data-line="137"></span> that signifies that the languages <span data-line="137"></span><code class="code code1">L1</code><span data-line="137"></span> and <span data-line="137"></span><code class="code code1">L2</code><span data-line="137"></span> concur on the first <span data-line="137"></span><code class="code code1">k</code><span data-line="137"></span>-unrollings of the definition above; and ii) a predicate <span data-line="137"></span><code class="code code1">Bisimilar(L1, L2)</code><span data-line="137"></span> that is true iff  <span data-line="137"></span><code class="code code1">Bisimilar#[k](L1, L2)</code><span data-line="137"></span> is true for all <span data-line="137"></span><code class="code code1">k: nat</code><span data-line="137"></span>:
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="139" data-line-first="140" style="display:block"><code data-line="140">  <span style="color:darkgreen">/*</span><span style="color:darkgreen"> Pseudo code for illustration purposes </span><span style="color:darkgreen">*/</span>
+
+  <span style="color:blue">predicate</span> Bisimilar&lt;A(!<span style="color:blue">new</span>)&gt;(L1: Lang, L2: Lang) {
+    <span style="color:blue">forall</span> k: <span style="color:teal">nat</span> :: Bisimilar#[k](L1, L2)
+  }
+
+  <span style="color:blue">predicate</span> Bisimilar#&lt;A(!<span style="color:blue">new</span>)&gt;[k: <span style="color:teal">nat</span>](L1: Lang, L2: Lang) 
+    <span style="color:purple">decreases</span> k
+  {
+    <span style="color:blue">if</span> k == <span class="constant" style="color:purple">0</span> <span style="color:blue">then</span>
+      <span style="color:blue">true</span>
+    <span style="color:blue">else</span>
+      &amp;&amp; (L1.eps == L2.eps)
+      &amp;&amp; (<span style="color:blue">forall</span> a :: Bisimilar#[k-<span class="constant" style="color:purple">1</span>](L1.delta(a), L2.delta(a)))
+  }</code></pre>
+<p class="p noindent para-continued" data-line="157"><span data-line="157"></span>Now that we have its definition in place, let us establish a property about bisimilarity, say, that it is a<span data-line="157"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/Reflexive_relation"><em class="em-star1">reflexive</em></a><span data-line="157"></span> relation. With the<span data-line="157"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-colemmas"><code class="code code1">greatest lemma</code></a><span data-line="157"></span> construct, Dafny is able to able to derive a proof completely on its own:
+</p><!-- inline-dafny Languages/Languages4  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="161" data-line-first="162" style="display:block"><code data-line="162">  <span style="color:blue">greatest</span> <span style="color:blue">lemma</span> BisimilarityIsReflexive&lt;A(!<span style="color:blue">new</span>)&gt;[<span style="color:teal">nat</span>](L: Lang)
+    <span style="color:purple">ensures</span> Bisimilar(L, L)
+  {}</code></pre>
+<p class="p noindent para-continued" data-line="168"><span data-line="168"></span>Once again, it is instructive to think of a <span data-line="168"></span><code class="code code1">greatest lemma</code><span data-line="168"></span> as pure syntactic sugar. Under the hood, Dafny’s compiler uses the body of the <span data-line="168"></span><code class="code code1">greatest lemma</code><span data-line="168"></span> to generate i) for any <span data-line="168"></span><code class="code code1">k: nat</code><span data-line="168"></span>, a <span data-line="168"></span><em class="em-star1"><a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-prefix-lemmas">prefix lemma</a></em><span data-line="168"></span> <span data-line="168"></span><code class="code code1">BisimilarityIsReflexive#[k](L)</code><span data-line="168"></span> that ensures the prefix predicate <span data-line="168"></span><code class="code code1">Bisimilar#[k](L, L)</code><span data-line="168"></span>; and ii) a lemma <span data-line="168"></span><code class="code code1">BisimilarityIsReflexive(L)</code><span data-line="168"></span> that ensures <span data-line="168"></span><code class="code code1">Bisimilar(L, L)</code><span data-line="168"></span> by calling <span data-line="168"></span><code class="code code1">Bisimilar#[k](L, L)</code><span data-line="168"></span> for all <span data-line="168"></span><code class="code code1">k: nat</code><span data-line="168"></span>:
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-dafny lang-dafny dafny colorized" data-line="170" data-line-first="171" style="display:block"><code data-line="171">  <span style="color:darkgreen">/*</span><span style="color:darkgreen"> Pseudo code for illustration purposes </span><span style="color:darkgreen">*/</span>
+
+  <span style="color:blue">lemma</span> BisimilarityIsReflexive&lt;A(!<span style="color:blue">new</span>)&gt;(L: Lang) 
+    <span style="color:purple">ensures</span> Bisimilar(L, L)
+  {
+    <span style="color:blue">forall</span> k: <span style="color:teal">nat</span>
+      <span style="color:purple">ensures</span> Bisimilar#[k](L, L)
+    {
+      BisimilarityIsReflexive#[k](L);
+    }
+  }
+
+  <span style="color:blue">lemma</span> BisimilarityIsReflexive#&lt;A(!<span style="color:blue">new</span>)&gt;[k: <span style="color:teal">nat</span>](L: Lang)
+    <span style="color:purple">ensures</span> Bisimilar#[k](L, L)
+    <span style="color:purple">decreases</span> k
+  {
+    <span style="color:blue">if</span> k == <span class="constant" style="color:purple">0</span> {
+    } <span style="color:blue">else</span> {
+      <span style="color:blue">forall</span> a
+        <span style="color:purple">ensures</span> Bisimilar#[k-<span class="constant" style="color:purple">1</span>](L.delta(a), L.delta(a)) 
+      {
+        BisimilarityIsReflexive#[k-<span class="constant" style="color:purple">1</span>](L.delta(a));
+      }
+    }
+  } </code></pre>
+<p class="p noindent para-continued" data-line="198"><span data-line="198"></span>If you are interested in the full details, we recommend taking a look at<span data-line="198"></span>&nbsp;<a href="https://leino.science/papers/krml285.html">this note on coinduction, predicates, and ordinals</a><span data-line="198"></span>.
+</p><h4 id="sec-denotational-semantics-as-algebra-homomorphism" class="h3" data-line="200" data-heading-depth="3" style="display:block"><span data-line="200"></span>Denotational Semantics as Algebra Homomorphism</h4>
+<p class="p noindent" data-line="202"><span data-line="202"></span>For a moment, consider the function <span data-line="202"></span><code class="code code1">var f: nat -&gt; nat := (n: nat) =&gt; n + n</code><span data-line="202"></span> which maps a natural number to twice its value. The function <span data-line="202"></span><code class="code code1">f</code><span data-line="202"></span> is <span data-line="202"></span><em class="em-star1">structure-preserving</em><span data-line="202"></span>: for any <span data-line="202"></span><code class="code code1">m: nat</code><span data-line="202"></span> we have <span data-line="202"></span><code class="code code1">f(m * n) == m * f(n)</code><span data-line="202"></span>, i.e. <span data-line="202"></span><code class="code code1">f</code><span data-line="202"></span> commutes with the (left-)multiplication of naturals. In this section, we are interested in functions of type <span data-line="202"></span><code class="code code1">f: Exp -&gt; Lang</code><span data-line="202"></span> (more precisely, in <span data-line="202"></span><code class="code code1">Denotational: Exp -&gt; Lang</code><span data-line="202"></span>) that commute with the algebraic structures we encountered in<span data-line="202"></span>&nbsp;<a href="#sec-regular-expressions-as-datatype" class="localref">Regular Expressions as Datatype</a><span data-line="202"></span> and<span data-line="202"></span>&nbsp;<a href="#sec-an-algebra-of-formal-languages" class="localref">An Algebra of Formal Languages</a><span data-line="202"></span>, respectively. We call such structure-preserving functions <span data-line="202"></span><em class="em-star1">algebra homomorphisms</em><span data-line="202"></span>. To define pointwise commutativity in this context, we’ll have to be able to compare languages for equality. As you probably guessed, bisimilarity will do the job: 
+</p><!-- inline-dafny Semantics/Semantics1  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="206" data-line-first="207" style="display:block"><code data-line="207">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> IsAlgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;(f: Exp -&gt; Lang) {
+    <span style="color:blue">forall</span> e :: IsAlgebraHomomorphismPointwise(f, e)
+  }
+
+  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> IsAlgebraHomomorphismPointwise&lt;A(!<span style="color:blue">new</span>)&gt;(f: Exp -&gt; Lang, e: Exp) {
+    Bisimilar&lt;A&gt;(
+      f(e),
+      <span style="color:blue">match</span> e
+      <span style="color:blue">case</span> Zero =&gt; Languages1.Zero()
+      <span style="color:blue">case</span> One =&gt; Languages2.One()
+      <span style="color:blue">case</span> Char(a) =&gt; Languages2.Singleton(a)
+      <span style="color:blue">case</span> Plus(e1, e2) =&gt; Languages2.Plus(f(e1), f(e2))
+      <span style="color:blue">case</span> Comp(e1, e2) =&gt; Languages2.Comp(f(e1), f(e2))
+      <span style="color:blue">case</span> Star(e1) =&gt; Languages2.Star(f(e1))
+    )
+  }</code></pre>
+<p class="p noindent para-continued" data-line="226"><span data-line="226"></span>Note that we used the<span data-line="226"></span>&nbsp;<a href="https://dafny.org/latest/DafnyRef/DafnyRef#sec-declaration-modifier"><code class="code code1">ghost</code></a><span data-line="226"></span> modifier (which signals that an entity is meant for specification only, not for compilation). A <span data-line="226"></span><code class="code code1">greatest predicate</code><span data-line="226"></span> is always ghost, so <span data-line="226"></span><code class="code code1">IsAlgebraHomomorphismPointwise</code><span data-line="226"></span> must be declared ghost to call <span data-line="226"></span><code class="code code1">Bisimilar</code><span data-line="226"></span>, and <span data-line="226"></span><code class="code code1">IsAlgebraHomomorphism</code><span data-line="226"></span> must be declared ghost to call <span data-line="226"></span><code class="code code1">IsAlgebraHomomorphismPointwise</code><span data-line="226"></span>.
+</p>
+<p class="p indent" data-line="228"><span data-line="228"></span>The proof that <span data-line="228"></span><code class="code code1">Denotational</code><span data-line="228"></span> is an algebra homomorphism is straightforward: it essentially follows from bisimilarity being reflexive:
+</p><!-- inline-dafny Semantics/Semantics2  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="232" data-line-first="233" style="display:block"><code data-line="233">  <span style="color:blue">lemma</span> DenotationalIsAlgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;()
+    <span style="color:purple">ensures</span> IsAlgebraHomomorphism&lt;A&gt;(Denotational)
+  {
+    <span style="color:blue">forall</span> e
+      <span style="color:purple">ensures</span> IsAlgebraHomomorphismPointwise&lt;A&gt;(Denotational, e)
+    {
+      BisimilarityIsReflexive&lt;A&gt;(Denotational(e));
+    }
+  }</code></pre><h3 id="sec-operational-semantics" class="h2" data-line="245" data-heading-depth="2" style="display:block"><span data-line="245"></span>Operational Semantics</h3>
+<p class="p noindent" data-line="247"><span data-line="247"></span>In this section, we provide an alternative perspective on the semantics of regular expressions. We equip the set of regular expressions with a coalgebraic structure, formalise its <span data-line="247"></span><em class="em-star1">operational</em><span data-line="247"></span> semantics as a function from regular expressions to formal languages, and prove that the latter is a coalgebra homomorphism.
+</p><h4 id="sec-a-coalgebra-of-regular-expressions" class="h3" data-line="249" data-heading-depth="3" style="display:block"><span data-line="249"></span>A Coalgebra of Regular Expressions</h4>
+<p class="p noindent" data-line="251"><span data-line="251"></span>In<span data-line="251"></span>&nbsp;<a href="#sec-an-algebra-of-formal-languages" class="localref">An Algebra of Formal Languages</a><span data-line="251"></span> we equipped the set of formal languages with an algebraic structure that resembles the one of regular expressions. Now, we are aiming for the reverse: we would like to equip the set of regular expressions with a coalgebraic structure that resembles the one of formal languages. More concretely, we would like to turn the set of regular expressions into a deterministic automaton (without initial state) in which a state <span data-line="251"></span><code class="code code1">e</code><span data-line="251"></span> is i) accepting iff <span data-line="251"></span><code class="code code1">Eps(e) == true</code><span data-line="251"></span> and ii) transitions to a state <span data-line="251"></span><code class="code code1">Delta(e)(a)</code><span data-line="251"></span> if given the input <span data-line="251"></span><code class="code code1">a: A</code><span data-line="251"></span>. Note how our definitions resemble the Brzozowski derivatives we previously encountered:
+</p><!-- inline-dafny Expressions/Expressions1  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="255" data-line-first="256" style="display:block"><code data-line="256">  <span style="color:blue">function</span> Eps&lt;A&gt;(e: Exp): <span style="color:teal">bool</span> {
+    <span style="color:blue">match</span> e
+    <span style="color:blue">case</span> Zero =&gt; <span style="color:blue">false</span>
+    <span style="color:blue">case</span> One =&gt; <span style="color:blue">true</span>
+    <span style="color:blue">case</span> Char(a) =&gt; <span style="color:blue">false</span>
+    <span style="color:blue">case</span> Plus(e1, e2) =&gt; Eps(e1) || Eps(e2)
+    <span style="color:blue">case</span> Comp(e1, e2) =&gt; Eps(e1) &amp;&amp; Eps(e2)
+    <span style="color:blue">case</span> Star(e1) =&gt; <span style="color:blue">true</span>
+  }
+
+  <span style="color:blue">function</span> Delta&lt;A(==)&gt;(e: Exp): A -&gt; Exp {
+    (a: A) =&gt;
+      <span style="color:blue">match</span> e
+      <span style="color:blue">case</span> Zero =&gt; Zero
+      <span style="color:blue">case</span> One =&gt; Zero
+      <span style="color:blue">case</span> Char(b) =&gt; <span style="color:blue">if</span> a == b <span style="color:blue">then</span> One <span style="color:blue">else</span> Zero
+      <span style="color:blue">case</span> Plus(e1, e2) =&gt; Plus(Delta(e1)(a), Delta(e2)(a))
+      <span style="color:blue">case</span> Comp(e1, e2) =&gt; Plus(Comp(Delta(e1)(a), e2), Comp(<span style="color:blue">if</span> Eps(e1) <span style="color:blue">then</span> One <span style="color:blue">else</span> Zero, Delta(e2)(a)))
+      <span style="color:blue">case</span> Star(e1) =&gt; Comp(Delta(e1)(a), Star(e1))
+  }</code></pre><h4 id="sec-operational-semantics-as-induced-morphism" class="h3" data-line="279" data-heading-depth="3" style="display:block"><span data-line="279"></span>Operational Semantics as Induced Morphism</h4>
+<p class="p noindent" data-line="281"><span data-line="281"></span>The operational semantics of regular expressions can now be defined via coinduction, as a function <span data-line="281"></span><code class="code code1">Operational: Exp -&gt; Lang</code><span data-line="281"></span>, by making use of the coalgebraic structure on expressions we have just defined:
+</p><!-- inline-dafny Semantics/Semantics3  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="285" data-line-first="286" style="display:block"><code data-line="286">  <span style="color:blue">function</span> Operational&lt;A(==)&gt;(e: Exp): Lang {
+    Alpha(Eps(e), (a: A) =&gt; Operational(Delta(e)(a)))
+  }</code></pre><h4 id="sec-operational-semantics-as-coalgebra-homomorphism" class="h3" data-line="292" data-heading-depth="3" style="display:block"><span data-line="292"></span>Operational Semantics as Coalgebra Homomorphism</h4>
+<p class="p noindent" data-line="294"><span data-line="294"></span>In<span data-line="294"></span>&nbsp;<a href="#sec-denotational-semantics-as-algebra-homomorphism" class="localref">Denotational Semantics as Algebra Homomorphism</a><span data-line="294"></span> we defined algebra homomorphisms as functions <span data-line="294"></span><code class="code code1">f: Exp -&gt; Lang</code><span data-line="294"></span> that commute with the algebraic structures of regular expressions and formal languages, respectively. Analogously, let us now call a function of the same type a <span data-line="294"></span><em class="em-star1">coalgebra homomorphism</em><span data-line="294"></span>, if it commutes with the <span data-line="294"></span><em class="em-star1">coalgebraic</em><span data-line="294"></span> structures of regular expressions and formal languages, respectively:
+</p><!-- inline-dafny Semantics/Semantics4  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="298" data-line-first="299" style="display:block"><code data-line="299">  <span style="color:blue">ghost</span> <span style="color:blue">predicate</span> IsCoalgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;(f: Exp -&gt; Lang) {
+    &amp;&amp; (<span style="color:blue">forall</span> e :: f(e).eps == Eps(e))
+    &amp;&amp; (<span style="color:blue">forall</span> e, a :: Bisimilar(f(e).delta(a), f(Delta(e)(a))))
+  }</code></pre>
+<p class="p noindent para-continued" data-line="306"><span data-line="306"></span>It is straightforward to prove that <span data-line="306"></span><code class="code code1">Operational</code><span data-line="306"></span> is a coalgebra homomorphism: once again, the central argument is that bisimilarity is a reflexive relation.
+</p><!-- inline-dafny Semantics/Semantics5  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="310" data-line-first="311" style="display:block"><code data-line="311">  <span style="color:blue">lemma</span> OperationalIsCoalgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;()
+    <span style="color:purple">ensures</span> IsCoalgebraHomomorphism&lt;A&gt;(Operational)
+  {
+    <span style="color:blue">forall</span> e, a
+      <span style="color:purple">ensures</span> Bisimilar&lt;A&gt;(Operational(e).delta(a), Operational(Delta(e)(a)))
+    {
+      BisimilarityIsReflexive(Operational(e).delta(a));
+    }
+  }</code></pre><h3 id="sec-well-behaved-semantics" class="h2" data-line="323" data-heading-depth="2" style="display:block"><span data-line="323"></span>Well-Behaved Semantics</h3>
+<p class="p noindent" data-line="325"><span data-line="325"></span>So far, we have seen two dual approaches for assigning a formal language semantics to regular expressions:
+</p>
+<ul class="ul list-star compact" data-line="327">
+<li class="li ul-li list-star-li compact-li" data-line="327"><span data-line="327"></span><code class="code code1">Denotational</code><span data-line="327"></span>: an algebra homomorphism obtained via induction
+</li>
+<li class="li ul-li list-star-li compact-li" data-line="328"><span data-line="328"></span><code class="code code1">Operational</code><span data-line="328"></span>: a coalgebra homomorphism obtained via coinduction
+</li></ul>
+
+<p class="p noindent" data-line="330"><span data-line="330"></span>Next, we show that the denotational and operational semantics of regular expressions are <span data-line="330"></span><em class="em-star1">well-behaved</em><span data-line="330"></span>: they constitute two sides of the same coin. First, we show that <span data-line="330"></span><code class="code code1">Denotational</code><span data-line="330"></span> is also a coalgebra homomorphism, and that coalgebra homomorphisms are unique up to bisimulation. We then deduce from the former that <span data-line="330"></span><code class="code code1">Denotational</code><span data-line="330"></span> and <span data-line="330"></span><code class="code code1">Operational</code><span data-line="330"></span> coincide pointwise, up to bisimulation. Finally, we show that <span data-line="330"></span><code class="code code1">Operational</code><span data-line="330"></span> is also an algebra homomorphism.
+</p><h4 id="sec-denotational-semantics-as-coalgebra-homomorphism" class="h3" data-line="332" data-heading-depth="3" style="display:block"><span data-line="332"></span>Denotational Semantics as Coalgebra Homomorphism</h4>
+<p class="p noindent" data-line="334"><span data-line="334"></span>In this section, we establish that <span data-line="334"></span><code class="code code1">Denotational</code><span data-line="334"></span> not only commutes with the algebraic structures of regular expressions and formal languages, but also with their coalgebraic structures:
+</p><!-- inline-dafny Semantics/Semantics6  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="338" data-line-first="339" style="display:block"><code data-line="339">  <span style="color:blue">lemma</span> DenotationalIsCoalgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;()
+    <span style="color:purple">ensures</span> IsCoalgebraHomomorphism&lt;A&gt;(Denotational)</code></pre>
+<p class="p noindent para-continued" data-line="344"><span data-line="344"></span>The proof of the lemma is a bit more elaborate than the ones we have encountered so far. It can be divided into two subproofs, both of which make use of induction. One of the subproofs is straightforward, the other, more difficult one, again uses the reflexivity of bisimilarity, but also that the latter is a <span data-line="344"></span><em class="em-star1">congruence</em><span data-line="344"></span> relation with respect to <span data-line="344"></span><code class="code code1">Plus</code><span data-line="344"></span> and <span data-line="344"></span><code class="code code1">Comp</code><span data-line="344"></span>:
+</p><!-- inline-dafny Languages/Languages5  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="348" data-line-first="349" style="display:block"><code data-line="349">  <span style="color:blue">greatest</span> <span style="color:blue">lemma</span> PlusCongruence&lt;A(!<span style="color:blue">new</span>)&gt;[<span style="color:teal">nat</span>](L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
+    <span style="color:purple">requires</span> Bisimilar(L1a, L1b)
+    <span style="color:purple">requires</span> Bisimilar(L2a, L2b)
+    <span style="color:purple">ensures</span> Bisimilar(Plus(L1a, L2a), Plus(L1b, L2b))
+  {}
+
+  <span style="color:blue">lemma</span> CompCongruence&lt;A(!<span style="color:blue">new</span>)&gt;(L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
+    <span style="color:purple">requires</span> Bisimilar(L1a, L1b)
+    <span style="color:purple">requires</span> Bisimilar(L2a, L2b)
+    <span style="color:purple">ensures</span> Bisimilar(Comp(L1a, L2a), Comp(L1b, L2b))</code></pre>
+<p class="p noindent para-continued" data-line="362"><span data-line="362"></span>Dafny is able to prove <span data-line="362"></span><code class="code code1">PlusCongruence</code><span data-line="362"></span> on its own, as it can take advantage of the syntactic sugaring of the <span data-line="362"></span><code class="code code1">greatest lemma</code><span data-line="362"></span> construct. For <span data-line="362"></span><code class="code code1">CompCongruence</code><span data-line="362"></span> we have to put in a bit of manual work ourselves.
+</p><h4 id="sec-coalgebra-homomorphisms-are-unique" class="h3" data-line="364" data-heading-depth="3" style="display:block"><span data-line="364"></span>Coalgebra Homomorphisms Are Unique</h4>
+<p class="p noindent" data-line="366"><span data-line="366"></span>The aim of this section is to show that, up to pointwise bisimilarity, there only exists <span data-line="366"></span><em class="em-star1">one</em><span data-line="366"></span> coalgebra homomorphism of type <span data-line="366"></span><code class="code code1">Exp -&gt; Lang</code><span data-line="366"></span>:
+</p><!-- inline-dafny Semantics/Semantics7  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="370" data-line-first="371" style="display:block"><code data-line="371">  <span style="color:blue">lemma</span> UniqueCoalgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;(f: Exp -&gt; Lang, g: Exp -&gt; Lang, e: Exp)
+    <span style="color:purple">requires</span> IsCoalgebraHomomorphism(f)
+    <span style="color:purple">requires</span> IsCoalgebraHomomorphism(g)
+    <span style="color:purple">ensures</span> Bisimilar(f(e), g(e))</code></pre>
+<p class="p noindent para-continued" data-line="378"><span data-line="378"></span><a href="https://ir.cwi.nl/pub/28550/rutten.pdf">As is well-known</a><span data-line="378"></span>, the statement may in fact be strengthened to: for <span data-line="378"></span><em class="em-star1">any</em><span data-line="378"></span> coalgebra <span data-line="378"></span><code class="code code1">C</code><span data-line="378"></span> there exists exactly one coalgebra homomorphism of type <span data-line="378"></span><code class="code code1">C -&gt; Lang</code><span data-line="378"></span> , up to pointwise bisimulation. For our purposes, the weaker statement above will be sufficient. At the heart of the proof lies the observation that bisimilarity is transitive:
+</p><!-- inline-dafny Languages/Languages6  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="382" data-line-first="383" style="display:block"><code data-line="383">  <span style="color:blue">greatest</span> <span style="color:blue">lemma</span> BisimilarityIsTransitive&lt;A&gt;[<span style="color:teal">nat</span>](L1: Lang, L2: Lang, L3: Lang)
+    <span style="color:purple">requires</span> Bisimilar(L1, L2) &amp;&amp; Bisimilar(L2, L3)
+    <span style="color:purple">ensures</span> Bisimilar(L1, L3)
+  {}</code></pre>
+<p class="p noindent para-continued" data-line="390"><span data-line="390"></span>In fact, in practice, we actually use a slightly more fine grained formalisation of transitivity, as is illustrated below by the proof of <span data-line="390"></span><code class="code code1">UniqueCoalgebraHomomorphismHelperPointwise</code><span data-line="390"></span>, which is used in the proof of <span data-line="390"></span><code class="code code1">UniqueCoalgebraHomomorphism</code><span data-line="390"></span>:
+</p><!-- inline-dafny Semantics/Semantics8  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="394" data-line-first="395" style="display:block"><code data-line="395">  <span style="color:blue">lemma</span> UniqueCoalgebraHomomorphismHelperPointwise&lt;A(!<span style="color:blue">new</span>)&gt;(k: <span style="color:teal">nat</span>, f: Exp -&gt; Lang, g: Exp -&gt; Lang, L1: Lang, L2: Lang)
+    <span style="color:purple">requires</span> IsCoalgebraHomomorphism(f)
+    <span style="color:purple">requires</span> IsCoalgebraHomomorphism(g)
+    <span style="color:purple">requires</span> <span style="color:blue">exists</span> e :: Bisimilar#[k](L1, f(e)) &amp;&amp; Bisimilar#[k](L2, g(e))
+    <span style="color:purple">ensures</span> Bisimilar#[k](L1, L2)
+  {
+    <span style="color:blue">var</span> e :| Bisimilar#[k](L1, f(e)) &amp;&amp; Bisimilar#[k](L2, g(e));
+    <span style="color:blue">if</span> k != <span class="constant" style="color:purple">0</span> {
+      <span style="color:blue">forall</span> a
+        <span style="color:purple">ensures</span> Bisimilar#[k-<span class="constant" style="color:purple">1</span>](L1.delta(a), L2.delta(a))
+      {
+        BisimilarityIsTransitivePointwise(k-<span class="constant" style="color:purple">1</span>, L1.delta(a),  f(e).delta(a), f(Delta(e)(a)));
+        BisimilarityIsTransitivePointwise(k-<span class="constant" style="color:purple">1</span>, L2.delta(a),  g(e).delta(a), g(Delta(e)(a)));
+        UniqueCoalgebraHomomorphismHelperPointwise(k-<span class="constant" style="color:purple">1</span>, f, g, L1.delta(a), L2.delta(a));
+      }
+    }
+  }
+
+  <span style="color:blue">lemma</span> BisimilarityIsTransitivePointwise&lt;A(!<span style="color:blue">new</span>)&gt;(k: <span style="color:teal">nat</span>, L1: Lang, L2: Lang, L3: Lang)
+    <span style="color:purple">ensures</span> Bisimilar#[k](L1, L2) &amp;&amp; Bisimilar#[k](L2, L3) ==&gt; Bisimilar#[k](L1, L3)
+  {
+    <span style="color:blue">if</span> k != <span class="constant" style="color:purple">0</span> {
+      <span style="color:blue">if</span> Bisimilar#[k](L1, L2) &amp;&amp; Bisimilar#[k](L2, L3) {
+        <span style="color:blue">assert</span> Bisimilar#[k](L1, L3) <span style="color:blue">by</span> {
+          <span style="color:blue">forall</span> a
+            <span style="color:purple">ensures</span> Bisimilar#[k-<span class="constant" style="color:purple">1</span>](L1.delta(a), L3.delta(a))
+          {
+            BisimilarityIsTransitivePointwise(k-<span class="constant" style="color:purple">1</span>, L1.delta(a), L2.delta(a), L3.delta(a));
+          }
+        }
+      }
+    }
+  }</code></pre><h4 id="sec-denotational-and-operational-semantics-are-bisimilar" class="h3" data-line="431" data-heading-depth="3" style="display:block"><span data-line="431"></span>Denotational and Operational Semantics Are Bisimilar</h4>
+<p class="p noindent" data-line="433"><span data-line="433"></span>We are done! From the previous results, we can immediately deduce that denotational and operational semantics are the same, up to pointwise bisimilarity:
+</p><!-- inline-dafny Semantics/Semantics9  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="437" data-line-first="438" style="display:block"><code data-line="438">  <span style="color:blue">lemma</span> OperationalAndDenotationalAreBisimilar&lt;A(!<span style="color:blue">new</span>)&gt;(e: Exp)
+    <span style="color:purple">ensures</span> Bisimilar&lt;A&gt;(Operational(e), Denotational(e))
+  {
+    OperationalIsCoalgebraHomomorphism&lt;A&gt;();
+    DenotationalIsCoalgebraHomomorphism&lt;A&gt;();
+    UniqueCoalgebraHomomorphism&lt;A&gt;(Operational, Denotational, e);
+  }</code></pre><h4 id="sec-operational-semantics-as-algebra-homomorphism" class="h3" data-line="448" data-heading-depth="3" style="display:block"><span data-line="448"></span>Operational Semantics as Algebra Homomorphism</h4>
+<p class="p noindent" data-line="450"><span data-line="450"></span>As a bonus, for the sake of symmetry, let us also prove that <span data-line="450"></span><code class="code code1">Operational</code><span data-line="450"></span> is an algebra homomorphism. (We already know that it is a coalgebra homomorphism, and that <span data-line="450"></span><code class="code code1">Denotational</code><span data-line="450"></span> is both an algebra and coalgebra homomorphism.)
+</p><!-- inline-dafny Semantics/Semantics10  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="454" data-line-first="455" style="display:block"><code data-line="455">  <span style="color:blue">lemma</span> OperationalIsAlgebraHomomorphism&lt;A(!<span style="color:blue">new</span>)&gt;()
+    <span style="color:purple">ensures</span> IsAlgebraHomomorphism&lt;A&gt;(Operational)</code></pre>
+<p class="p noindent para-continued" data-line="460"><span data-line="460"></span>The idea of the proof is to take advantage of <span data-line="460"></span><code class="code code1">Denotational</code><span data-line="460"></span> being an algebra homomorphism, by translating its properties to <span data-line="460"></span><code class="code code1">Operational</code><span data-line="460"></span> via the lemma in<span data-line="460"></span>&nbsp;<a href="#sec-denotational-and-operational-semantics-are-bisimilar" class="localref">Denotational and Operational Semantics Are Bisimilar</a><span data-line="460"></span>.  The relevant new statements capture that bisimilarity is symmetric and a congruence with respect to the <span data-line="460"></span><code class="code code1">Star</code><span data-line="460"></span> operation:
+</p><!-- inline-dafny Languages/Languages7  -->
+
+
+
+<pre class="para-block pre-fenced pre-fenced3 language-dafnyx lang-dafnyx dafnyx colorized" data-line="464" data-line-first="465" style="display:block"><code data-line="465">  <span style="color:blue">greatest</span> <span style="color:blue">lemma</span> BisimilarityIsSymmetric&lt;A(!<span style="color:blue">new</span>)&gt;[<span style="color:teal">nat</span>](L1: Lang, L2: Lang)
+    <span style="color:purple">ensures</span> Bisimilar(L1, L2) ==&gt; Bisimilar(L2, L1)
+    <span style="color:purple">ensures</span> Bisimilar(L1, L2) &lt;== Bisimilar(L2, L1)
+  {}
+
+  <span style="color:blue">lemma</span> StarCongruence&lt;A(!<span style="color:blue">new</span>)&gt;(L1: Lang, L2: Lang)
+    <span style="color:purple">requires</span> Bisimilar(L1, L2)
+    <span style="color:purple">ensures</span> Bisimilar(Star(L1), Star(L2))</code></pre><h3 id="sec-conclusion" class="h2" data-line="476" data-heading-depth="2" style="display:block"><span data-line="476"></span>Conclusion</h3>
+<p class="p noindent" data-line="478"><span data-line="478"></span>We have used Dafny’s built-in inductive and coinductive reasoning capabilities to define two language semantics for regular expressions: denotational and operational semantics. Through a number of dualities — construction and deconstruction, algebras and coalgebras, and congruence and bisimilarity — we have proven the semantics to be two sides of the same coin. The blogpost is inspired by research in the field of<span data-line="478"></span>&nbsp;<a href="https://en.wikipedia.org/wiki/F-coalgebra">Coalgebra</a><span data-line="478"></span>, which was pioneered by<span data-line="478"></span>&nbsp;<a href="https://pdf.sciencedirectassets.com/271538/1-s2.0-S0304397500X01466/1-s2.0-S0304397500000566/main.pdf">Rutten</a><span data-line="478"></span>,<span data-line="478"></span>&nbsp;<a href="https://www.researchgate.net/publication/2614339_Elements_Of_The_General_Theory_Of_Coalgebras">Gumm</a><span data-line="478"></span>, and others. The concept of well-behaved semantics goes back to<span data-line="478"></span>&nbsp;<a href="https://homepages.inf.ed.ac.uk/gdp/publications/Math_Op_Sem.pdf">Turi and Plotkin</a><span data-line="478"></span> and was adapted by<span data-line="478"></span>&nbsp;<a href="https://link.springer.com/chapter/10.1007/11780274_20">Jacobs</a><span data-line="478"></span> to the case of regular expressions. We heavily used automata theoretic constructions from the 1960s, originally investigated by<span data-line="478"></span>&nbsp;<a href="https://dl.acm.org/doi/10.1145/321239.321249">Brzozowski</a><span data-line="478"></span> (a more modern presentation can be found e.g.<span data-line="478"></span>&nbsp;<a href="https://alexandrasilva.org/files/thesis.pdf">here</a><span data-line="478"></span>). Our presentation focused on the most important intuitive aspects of the proofs. To dive deep, please take a look at the full Dafny source code, which is available<span data-line="478"></span>&nbsp;<a href="../../../../assets/src/semantics-of-regular-expressions/Languages.dfy">here</a><span data-line="478"></span>,<span data-line="478"></span>&nbsp;<a href="../../../../assets/src/semantics-of-regular-expressions/Semantics.dfy">here</a><span data-line="478"></span>, and<span data-line="478"></span>&nbsp;<a href="../../../../assets/src/semantics-of-regular-expressions/Expressions.dfy">here</a><span data-line="478"></span>.
+</p><span data-line=""></span></div>
+</body>
+
+</html>
