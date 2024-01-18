@@ -21,7 +21,7 @@ The coding interview problem is described to us in natural language. As we would
 
 Intuitively, a *permutation* of a sequence is a second sequence that contains the same elements as the first one, but potentially in a different order. In other words, after *one forgets about the order* of the elements, both structures are identical.  For example, the sequence `[1,0,0]` is a permutation of the sequence `[0,0,1]`. In Dafny, a sequence without an order can be modeled by the type [`multiset`](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-multisets). Multisets are generalisations of sets in the way that they can contain elements *multi*ple times, instead of just once. The multiset that models both of the above sequences is `multiset{0,0,1}` . Note that this multiset is different from the set  `set{0,0,1} == set{0,1}`. You may think of multisets that contain elements of type `T` as functions `f: T -> nat` , where `f(t)` specifies how many occurrences of the element `t` the multiset contains. In Dafny, the conversion of a sequence `s` into a multiset is denoted by `multiset(s)` . We define a sequence `p` to be a permutation of a sequence `s` (both with elements of a generic type `T`) if they satisfy the following predicate:
 
-``` dafny
+```
 predicate IsPermutationOf<T(==)>(p: seq<T>, s: seq<T>) {
   multiset(p) == multiset(s)
 }
@@ -29,7 +29,7 @@ predicate IsPermutationOf<T(==)>(p: seq<T>, s: seq<T>) {
 
 Note that a predicate is a function that returns a `bool`ean — that is, either `true` or `false`. To compare two multisets for equality, we need to be able to compare their elements for equality. For this reason, we require the type `T` to have the characteristic [`(==)`](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-equality-supporting). Given above, the naive definition of the set that contains all permutations of a sequence `s` is immediate:
 
-``` dafny
+```
 ghost function AllPermutationsOf<T(!new)>(s: seq<T>): iset<seq<T>> {
   iset p | IsPermutationOf(p, s)
 }
@@ -39,13 +39,13 @@ Note that `AllPermutationsOf` returns a potentially *infinite* set of sequences.
 
 We are now able to formally state the problem task: Define the body of a function with the signature
 
-``` dafny
+```
 function CalculateAllPermutationsOf<T(==)>(s: seq<T>): set<seq<T>>
 ```
 
 and show that it is *correct*, in the sense that there exists a proof for the lemma
 
-``` dafny
+```
 lemma Correctness<T(!new)>(s: seq<T>)
   ensures (iset p | p in CalculateAllPermutationsOf(s)) == AllPermutationsOf(s)
 ```
@@ -54,7 +54,7 @@ lemma Correctness<T(!new)>(s: seq<T>)
 
 There are many potential solutions to the problem. Here, we propose a purely functional approach that defines the set of all unique permutations of a sequence recursively. In the base case, when the sequence `s` has length zero, we simply return the singleton set that contains `s`. In the case that `s` is of length greater than zero, we first recursively calculate the set of all the permutations of the subsequence of `s` that starts at the second element, before inserting, via a separate function `InsertAt`, the first element of `s` into all the permutations in that set, at every possible position.
 
-``` dafny
+```
 function CalculateAllPermutationsOf<T(==)>(s: seq<T>): set<seq<T>> {
   if |s| == 0 then
     {s}
@@ -72,7 +72,7 @@ function InsertAt<T>(s: seq<T>, x: T, i: nat): seq<T>
 
 For example, to compute the set of all permutations of the sequence `s := [0,0,1]` , we first compute the set of all unique permutations of the subsequence `s[1..] == [0,1]` , which leads to `{[0,1], [1,0]}`. Then we insert the first element `s[0] == 0` into all the sequences of that set, at every possible position. In this case, the resulting set is `{[0,0,1], [0,1,0], [1,0,0]}`, as indicated below:
 
-``` dafny
+```
 {
  [0] + [0,1], [0] + [0] + [1], [0,1] + [0], // inserting 0 into [0,1]
  [0] + [1,0], [1] + [0] + [0], [1,0] + [0]  // inserting 0 into [1,0]
@@ -85,7 +85,7 @@ During a coding interview, the focus would now typically shift to an analysis of
 
 To establish correctness, we need to prove, for all sequences `s`, the equality of the two (infinite) sets `A(s) := iset p | p in CalculateAllPermutationsOf(s)` and `B(s) := AllPermutationsOf(s)`. That is, we have to establish the validity of two implications, for all sequences `p`: i) if `p` is in `A(s)` , then it also is in `B(s)`; and ii) if `p` is in `B(s)` , then it also is in `A(s)`. We prove the two cases in separate lemmas `CorrectnessImplicationOne(s, p)` and `CorrectnessImplicationTwo(s, p)`, respectively:
 
-``` dafny
+```
 lemma Correctness<T(!new)>(s: seq<T>)
   ensures (iset p | p in CalculateAllPermutationsOf(s)) == AllPermutationsOf(s)
 {
@@ -118,7 +118,7 @@ The first implication is arguably the more intuitive or simpler one to prove. It
 
 As is typical for Dafny, the proof of the lemma follows the structure of the function that it reasons about. In this case, we mimic the function `CalculateAllPermutationsOf` by mirroring its recursive nature as a proof via induction. In particular, this means that we copy its case-split. In the case that `s` is of length zero (the induction base), Dafny is able to prove the claim automatically: 
 
-``` dafny
+```
 lemma CorrectnessImplicationOne<T(!new)>(s: seq<T>, p: seq<T>)
   ensures p in CalculateAllPermutationsOf(s) ==> p in AllPermutationsOf(s)
 {
@@ -150,7 +150,7 @@ lemma CorrectnessImplicationOne<T(!new)>(s: seq<T>, p: seq<T>)
 
 In the case that `s` is of length greater than zero (the induction step), we need to help Dafny a bit. Assuming that `p` is an element in `CalculateAllPermutationsOf(s)`, we aim to show that  `multiset(p)` and `multiset(s)` are equal. What information about `p` do we have to derive such an equality? A close inspection of the recursive call in `CalculateAllPermutationsOf` indicates the existence of a second sequence `p’`  that lives in `CalculateAllPermutationsOf(s[1..])` and an index `i` of `p’` such that  `p == InsertAt(p', s[0], i)` . To transform `multiset(p) == multiset(InsertAt(p', s[0], i))` into something that’s closer to `multiset(s)`, we establish the following additional lemma:
 
-``` dafny
+```
 lemma MultisetAfterInsertAt<T>(s: seq<T>, x: T, i: nat)
   requires i <= |s|
   ensures multiset(InsertAt(s, x, i)) == multiset([x]) + multiset(s)
@@ -178,7 +178,7 @@ The second implication states that any permutation `p` of `s` is an element of `
 
 As with the first implication, the structure of the proof for `CorrectnessImplicationTwo` mimics the definition of `CalculateAllPermutationsOf`. In the case that `s` is of length zero (the induction base), Dafny is again able to prove the claim automatically. In the case that `s` is of length greater than zero (the induction step), we aim to establish that `p` is an element in `CalculateAllPermutationsOf(s)`, if it is a permutation of `s`:
 
-``` dafny
+```
 lemma CorrectnessImplicationTwo<T(!new)>(s: seq<T>, p: seq<T>)
   ensures p in CalculateAllPermutationsOf(s) <== p in AllPermutationsOf(s)
 {
@@ -207,7 +207,7 @@ lemma CorrectnessImplicationTwo<T(!new)>(s: seq<T>, p: seq<T>)
 
 An inspection of the definition of `CalculateAllPermutationsOf` shows that this means we have to construct a permutation `p'` that is in `CalculateAllPermutationsOf(s[1..])` and some index `i` of `p'` , such that `p == InsertAt(p’, s[0], i)`. How do we find `p'` and `i`? Intuitively, the idea is as follows: we define `i` as the index of the first occurrence of `s[0]` in `p` (which we know exists, since `p`, as permutation, contains the same elements as `s`) and `p'` as the sequence that one obtains when deleting the `i`-th element of `p`. To formalise this idea, we introduce the following two functions:
 
-``` dafny
+```
 function FirstOccurrence<T(==)>(p: seq<T>, x: T): (i: nat)
   requires x in multiset(p)
   ensures i < |p|
@@ -230,7 +230,7 @@ To conclude the proof, it remains to establish that i) `p' in CalculateAllPermut
 
 For i), the idea is to apply the induction hypothesis `CorrectnessImplicationTwo(s[1..], p')`, which yields the desired result if `p'` is a permutation of `s[1..]`. Since `p` was a permutation of `s`, and `p'` was obtained from `p` by deleting its first element, the statement is intuitively true. Formally, we establish it with the call  `PermutationBeforeAndAfterDeletionAt(p, s, i, 0)` to the following, slightly more general, lemma:
 
-``` dafny
+```
 lemma PermutationBeforeAndAfterDeletionAt<T>(p: seq<T>, s: seq<T>, i: nat, j: nat)
   requires IsPermutationOf(p, s)
   requires i < |p|
@@ -263,7 +263,7 @@ The proof of `PermutationBeforeAndAfterDeletionAt` is mostly a direct consequenc
 
 To establish ii), that is, the equality `p == InsertAt(p’, s[0], i)`, we recall that by construction `p' == DeleteAt(p, i)`. Substituting `p’` for its definition and using the postcondition `p[i] == s[0]` of `FirstOccurrence` thus leads us to the following lemma, which states that deleting an element of a sequence, before inserting it again at the same position, leaves the initial sequence unchanged:
 
-``` dafny
+```
 lemma InsertAfterDeleteAt<T>(s: seq<T>, i: nat)
   requires i < |s|
   ensures s == InsertAt(DeleteAt(s, i), s[i], i)
