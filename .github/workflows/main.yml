@@ -27,7 +27,7 @@ jobs:
       - name: "Install Dafny"
         run: |
           git clone https://github.com/dafny-lang/dafny.git
-          cd dafny && make z3-mac && make exe
+          cd dafny && make z3-mac-arm && make exe
 
       - name: "Test Blogposts"
         run: |
