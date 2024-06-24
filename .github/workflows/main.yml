@@ -19,6 +19,14 @@ jobs:
           fetch-depth: 0
           submodules: 'true'
 
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore tools
+        run: dotnet tool restore
+
       - name: "Install Node.js"
         uses: actions/setup-node@v3
         with:
