@@ -27,7 +27,7 @@ Now that we have definitions for all relevant chess rules, let us generate some 
 
 Let us first define the method we want to test, called `Describe`, which prints whether or not a check or a checkmate has occurred. I annotate this method with the `{:testEntry}` attribute to mark it as an entry point for the generated tests. This method receives as input an arbitrary configuration of pieces on the board.  In order to satisfy the chosen coverage criterion, Dafny will have to come up with such configurations of pieces when generating tests.
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 // {:testEntry} tells Dafny to use this method as an entry point
 method {:testEntry} Describe(board: ValidBoard) {
@@ -45,7 +45,6 @@ method {:testEntry} Describe(board: ValidBoard) {
   }
 }
 ```
-</div><!--.file-->
 
 Note that I also added an `expect` statement in the code. An `expect` statement is checked to be true at runtime and triggers a runtime exception if the check fails. In our case, the `expect` statement is trivially true (a checkmate always implies a check) and every test we generate passes it. In fact, if you were to turn this `expect` statement into an assertion, Dafny would prove it. Not every `expect` statement can be proven, however, especially in the presence of external libraries. You can read more about `expect` statements <a href="https://dafny.org/dafny/DafnyRef/DafnyRef#sec-expect-statement">here</a>.
 
@@ -59,7 +58,7 @@ The `Block` keyword in the command tells Dafny to generate tests that together c
 
 In particular, running the command above results in the following two Dafny tests (formatted manually for this blog post). Don’t read too closely into the code just yet, we will visualize these tests soon. My point here is that Dafny produces tests written in Dafny itself and they can be translated to any of the languages the Dafny compiler supports.
 
-<div class="file" name="tests.dfy">
+<!-- tests.dfy -->
 ```
 include "chess.dfy"
 module Tests {
@@ -82,7 +81,6 @@ module Tests {
   }
 }
 ```
-</div><!--.file-->
 
 Note also that Dafny annotates the two test methods with the `{:test}` attribute. This means that after saving the tests to a file (`tests.dfy`), you can then use the `dafny test tests.dfy` command to compile and execute them. The default compilation target is C# but you can pick a different one using the `--target` option - read more about the `dafny-test` command [here](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-dafny-test).
 
@@ -115,14 +113,13 @@ The first two tests are essentially equivalent to the ones we got before. Only t
 <br>
 By default, Dafny test generation only guarantees coverage of statements or paths **within** the method annotated with `{:testEntry}` attribute. This means, in our case, that test generation would not differentiate between a check delivered by a pawn and one delivered by a knight, since the distinction between the two cases is hidden inside the `CheckedByPlayer` function. In order to cover these additional cases that are hidden within the callees of the test entry method, you need to *inline* them using the `{:testInline}` attribute as in the code snippet below.
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 predicate {:testInline} CheckedByPlayer(board: ValidBoard, king: Piece, byPlayer: Color) {
   || CheckedByPiece(board, king, Knight(byPlayer))
   || CheckedByPiece(board, king, Pawn(byPlayer))
 }
 ```
-</div><!--.file-->
 
 Adding this annotation and running test generation while targeting path coverage wins us two more tests on top of the three we already had. We now have two checkmates, one for each piece leading the attack, and two checks. 
 
@@ -160,7 +157,7 @@ Large Dafny programs often make use of quantifiers, recursion, or loops. These c
 
 To illustrate these rules, let us condense a part of the Dafny chess model by making use of quantifiers. As a reminder, here is the unnecessarily verbose definition of the `ValidBoard` predicate we have been using so far to specify what kind of chess boards we are interested in:
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 datatype Board = Board(pieces: seq<Piece>) 
 predicate BoardIsValid(board: Board) { // See Section 4 for how we can simplify this
@@ -176,11 +173,10 @@ predicate BoardIsValid(board: Board) { // See Section 4 for how we can simplify 
   && board.pieces[3].at != board.pieces[4].at
 }
 ```
-</div><!--.file-->
 
 There is a lot of repetition in the code above. In order to forbid two pieces from sharing the same square, we enumerate all 15 pairs of pieces! Worse, if we wanted to change the number of pieces on the board, we would have to rewrite the `BoardIsValid` predicate from scratch. A much more intuitive approach would be to use a universal quantifier over all pairs of pieces:
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 datatype Board = Board(pieces: seq<Piece>) 
 predicate BoardIsValid(board: Board) { // No two pieces on a single square
@@ -190,11 +186,10 @@ predicate BoardIsValid(board: Board) { // No two pieces on a single square
 }
 type ValidBoard = board: Board | BoardIsValid(board) witness Board([])
 ```
-</div><!--.file-->
 
 Similarly, we can use an existential quantifier within the body of the CheckedByPiece predicate, which returns true if the king is checked by a piece of a certain kind:
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
   exists i: int :: 
@@ -203,11 +198,10 @@ predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
     && board.pieces[i].Threatens(king.at)
 }
 ```
-</div><!--.file-->
 
 If we want to require our board to have a king, two knights, and two pawns, like we did before, we can now separate this constraint into a separate predicate `BoardPreset` and require it to be true at the entry to the   `Describe` method:
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 predicate BoardPreset(board: Board) {
   && |board.pieces| == 5
@@ -216,13 +210,12 @@ predicate BoardPreset(board: Board) {
   && board.pieces[3].kind == Pawn(Black)   && board.pieces[4].kind == Pawn(Black)
 }
 ```
-</div><!--.file-->
 
 This definition plays one crucial role that might be not immediately apparent. It explicitly enumerates all elements within the pieces sequence thereby *triggering* the quantifiers in `BoardIsValid` and `CheckedByPiece` predicates above. In other words, we tell Dafny that we know for a fact there are elements with indices `0`, `1`, etc. in this sequence and force the verifier to substitute these elements in the quantified axioms. The full theory of triggers and quantifiers is beyond the scope of this post, but if you want to combine test generation and quantifiers in your code, you must understand this point. I recommend reading [this part of the Dafny reference manual](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-trigger) and/or [this FAQ](https://github.com/dafny-lang/dafny/wiki/FAQ#how-does-dafny-handle-quantifiers-ive-heard-about-triggers-what-are-those) that discusses the trigger selection process in Dafny.
 
 While Dafny can compile a subset of quantified expressions, it does not currently support inlining of such expressions for test generation purposes. This presents a challenge, as it means that we cannot immediately inline the `CheckedByPiece` predicate above. In order to inline such functions, we have to provide them with an alternative implementation, e.g. by turning the function into a [function-by-method](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-function-by-method) and using a loop, like so: 
 
-<div class="file" name="chess.dfy">
+<!-- chess.dfy -->
 ```
 predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
   exists i: int :: 
@@ -241,7 +234,6 @@ predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
   return false;
 } 
 ```
-</div><!--.file-->
 
 Alternatively, we could have rewritten `CheckedByPiece` as a recursive function and put a `{:testInline 6}` annotation on it to unroll the recursion 6 times (6 is the maximum recursion depth for our example because it is one more than the number of pieces on the board). The test generation engine will then perform bounded model checking to produce system level tests. In general, reasoning about recursion and loops in bounded model checking context is known to be difficult, and so, while you have access to these "control knobs" that let you unroll the recursion in this manner (or unroll loops via the `-—loop-unroll` command line option), I would be cautious when combining these features with test generation. You can read [the paper](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_24) on the test generation toolkit to get an idea about some of the challenges. Another consideration in deciding whether or not to unroll recursion and loops is your time budget. Unrolling increases the number of paths through the program and gives you better coverage but it also increases the time it takes to generate any given test. In the end, you will likely need to experiment with these settings to figure out what works best.
 <br><br>
