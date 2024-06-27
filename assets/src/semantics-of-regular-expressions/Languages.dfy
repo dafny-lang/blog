@@ -139,7 +139,7 @@ module Languages5WithProof refines Languages5 {
     }
   }
 
-  lemma PlusCongruenceAlternative<A>(k: nat, L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
+  lemma PlusCongruenceAlternative<A(!new)>(k: nat, L1a: Lang, L1b: Lang, L2a: Lang, L2b: Lang)
     requires Bisimilar#[k](L1a, L1b)
     requires Bisimilar#[k](L2a, L2b)
     ensures Bisimilar#[k](Plus(L1a, L2a), Plus(L1b, L2b))
@@ -182,7 +182,7 @@ module Languages6 {
   import opened Languages4
   import opened Languages5WithProof
 
-  greatest lemma BisimilarityIsTransitive<A>[nat](L1: Lang, L2: Lang, L3: Lang)
+  greatest lemma BisimilarityIsTransitive<A(!new)>[nat](L1: Lang, L2: Lang, L3: Lang)
     requires Bisimilar(L1, L2) && Bisimilar(L2, L3)
     ensures Bisimilar(L1, L3)
   {}
