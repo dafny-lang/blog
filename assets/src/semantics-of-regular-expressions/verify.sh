@@ -16,5 +16,5 @@ cd "$(dirname "$0")"
 for file in `ls *.dfy`
 do 
   echo "Verifying $file..." 
-  dafny verify $file
+  dafny verify  --allow-warnings $file
 done
