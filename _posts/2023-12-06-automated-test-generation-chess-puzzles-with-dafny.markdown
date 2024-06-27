@@ -27,7 +27,8 @@ Now that we have definitions for all relevant chess rules, let us generate some 
 
 Let us first define the method we want to test, called `Describe`, which prints whether or not a check or a checkmate has occurred. I annotate this method with the `{:testEntry}` attribute to mark it as an entry point for the generated tests. This method receives as input an arbitrary configuration of pieces on the board.  In order to satisfy the chosen coverage criterion, Dafny will have to come up with such configurations of pieces when generating tests.
 
-```dafny
+<!-- chess.dfy -->
+```
 // {:testEntry} tells Dafny to use this method as an entry point
 method {:testEntry} Describe(board: ValidBoard) {
   var whiteKing := board.pieces[0];
@@ -57,7 +58,8 @@ The `Block` keyword in the command tells Dafny to generate tests that together c
 
 In particular, running the command above results in the following two Dafny tests (formatted manually for this blog post). Don’t read too closely into the code just yet, we will visualize these tests soon. My point here is that Dafny produces tests written in Dafny itself and they can be translated to any of the languages the Dafny compiler supports.
 
-```dafny
+<!-- tests.dfy -->
+```
 include "chess.dfy"
 module Tests {
   import opened Chess
@@ -111,7 +113,8 @@ The first two tests are essentially equivalent to the ones we got before. Only t
 <br>
 By default, Dafny test generation only guarantees coverage of statements or paths **within** the method annotated with `{:testEntry}` attribute. This means, in our case, that test generation would not differentiate between a check delivered by a pawn and one delivered by a knight, since the distinction between the two cases is hidden inside the `CheckedByPlayer` function. In order to cover these additional cases that are hidden within the callees of the test entry method, you need to *inline* them using the `{:testInline}` attribute as in the code snippet below.
 
-```dafny
+<!-- chess.dfy -->
+```
 predicate {:testInline} CheckedByPlayer(board: ValidBoard, king: Piece, byPlayer: Color) {
   || CheckedByPiece(board, king, Knight(byPlayer))
   || CheckedByPiece(board, king, Pawn(byPlayer))
@@ -154,7 +157,8 @@ Large Dafny programs often make use of quantifiers, recursion, or loops. These c
 
 To illustrate these rules, let us condense a part of the Dafny chess model by making use of quantifiers. As a reminder, here is the unnecessarily verbose definition of the `ValidBoard` predicate we have been using so far to specify what kind of chess boards we are interested in:
 
-```dafny
+<!-- chess.dfy -->
+```
 datatype Board = Board(pieces: seq<Piece>) 
 predicate BoardIsValid(board: Board) { // See Section 4 for how we can simplify this
   // We want boards with specific pieces on it:
@@ -172,7 +176,8 @@ predicate BoardIsValid(board: Board) { // See Section 4 for how we can simplify 
 
 There is a lot of repetition in the code above. In order to forbid two pieces from sharing the same square, we enumerate all 15 pairs of pieces! Worse, if we wanted to change the number of pieces on the board, we would have to rewrite the `BoardIsValid` predicate from scratch. A much more intuitive approach would be to use a universal quantifier over all pairs of pieces:
 
-```dafny
+<!-- chess.dfy -->
+```
 datatype Board = Board(pieces: seq<Piece>) 
 predicate BoardIsValid(board: Board) { // No two pieces on a single square
   forall i: nat, j: nat :: 
@@ -184,7 +189,8 @@ type ValidBoard = board: Board | BoardIsValid(board) witness Board([])
 
 Similarly, we can use an existential quantifier within the body of the CheckedByPiece predicate, which returns true if the king is checked by a piece of a certain kind:
 
-```dafny
+<!-- chess.dfy -->
+```
 predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
   exists i: int :: 
     && 0 <= i < |board.pieces| 
@@ -195,7 +201,8 @@ predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
 
 If we want to require our board to have a king, two knights, and two pawns, like we did before, we can now separate this constraint into a separate predicate `BoardPreset` and require it to be true at the entry to the   `Describe` method:
 
-```dafny
+<!-- chess.dfy -->
+```
 predicate BoardPreset(board: Board) {
   && |board.pieces| == 5
   && board.pieces[0].kind == King(White) 
@@ -208,7 +215,8 @@ This definition plays one crucial role that might be not immediately apparent. I
 
 While Dafny can compile a subset of quantified expressions, it does not currently support inlining of such expressions for test generation purposes. This presents a challenge, as it means that we cannot immediately inline the `CheckedByPiece` predicate above. In order to inline such functions, we have to provide them with an alternative implementation, e.g. by turning the function into a [function-by-method](https://dafny.org/dafny/DafnyRef/DafnyRef#sec-function-by-method) and using a loop, like so: 
 
-```dafny
+<!-- chess.dfy -->
+```
 predicate CheckedByPiece(board: ValidBoard, king: Piece, byPiece: Kind) {
   exists i: int :: 
     && 0 <= i < |board.pieces| 
