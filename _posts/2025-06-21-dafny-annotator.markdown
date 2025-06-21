@@ -2,7 +2,7 @@
 layout: post
 title:  "dafny-annotator: AI-Assisted Verification for Dafny"
 author: Nada Amin and Gabriel Poesia
-date:   2025-06-23 18:00:00 +0100
+date:   2025-06-21 10:00:00 +0100
 ---
 
 ## The Cost of Bugs and of Verification
