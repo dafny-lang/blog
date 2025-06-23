@@ -89,7 +89,7 @@ The graph starts with a single root node with empty content, and grows through t
 
 At every step, Dafny itself acts as a validation filter, ensuring that any proposed annotations are logically sound.
 
-We spent just $10 in OpenAI API credits to generate a dataset comparable in size to DafnyBench. The resulting DafnySynth dataset contains 699 compilable Dafny programs, with 46 fully verified methods (Dafny can prove the post-conditions of all methods), and the rest partially verified. From these, we extracted 1107 valid annotations (678 invariants, 281 assertions, and 148 decreases clauses), of which 923 were syntactically unique. Each of these unique annotations, paired with the program where it was removed, becomes a training example for our fine-tuning process, just like when extracting examples from DafnyBench.
+We spent just $10 in OpenAI API credits to generate a dataset comparable in size to DafnyBench. The resulting DafnySynth dataset contains 699 compilable Dafny programs, with 46 fully verified methods (Dafny can prove the postconditions of all methods), and the rest partially verified. From these, we extracted 1107 valid annotations (678 invariants, 281 assertions, and 148 decreases clauses), of which 923 were syntactically unique. Each of these unique annotations, paired with the program where it was removed, becomes a training example for our fine-tuning process, just like when extracting examples from DafnyBench.
 
 ## Results: Combining Real and Synthetic Data
 
