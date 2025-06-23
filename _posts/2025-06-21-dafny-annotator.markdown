@@ -32,7 +32,7 @@ Dafny shines in reducing the burden of proofs compared to most interactive theor
       }
     }
 
-Dafny cannot verify the method fully automatically. This might be (a) because the specification is wrong, (b) because the implementation is wrong, or (c) because we need to manually add annotations to guide the verifier. Here, we're in case (c) --- the program and specification are correct ---, which is the case that dafny-annotator currently targets. It suffices to add `invariant r*r <= N` before the body of the while loop for Z3 to be able to prove the method's post-condition. dafny-annotator uses LLMs to attempt to insert these annotations automatically in the body of an existing method.
+Dafny cannot verify the method fully automatically. This might be (a) because the specification is wrong, (b) because the implementation is wrong, or (c) because we need to manually add annotations to guide the verifier. Here, we're in case (c) --- the program and specification are correct ---, which is the case that dafny-annotator currently targets. It suffices to add `invariant r*r <= N` before the body of the while loop for Z3 to be able to prove the method's postcondition. dafny-annotator uses LLMs to attempt to insert these annotations automatically in the body of an existing method.
 
 # dafny-annotator
 
@@ -47,7 +47,7 @@ The basic idea in dafny-annotator is to use an LLM to propose candidate annotati
 
 ## Fine-Tuning for Annotation Generation
 
-While general-purpose LLMs like CodeLLaMA can generate plausible annotations, their performance improves significantly when fine-tuned on task-specific data. To create a fine-tuning dataset for annotation prediction, we leveraged existing annotated Dafny programs. In particular, we looked at [DafnyBench](https://arxiv.org/abs/2406.08467), a dataset of 1326 stand-alone Dafny files collected from Github.
+While general-purpose LLMs like Code Llama can generate plausible annotations, their performance improves significantly when fine-tuned on task-specific data. To create a fine-tuning dataset for annotation prediction, we leveraged existing annotated Dafny programs. In particular, we looked at [DafnyBench](https://arxiv.org/abs/2406.08467), a dataset of 1326 stand-alone Dafny files collected from Github.
 
 Since we will use the LLM for predicting annotations, that is the task on which we should fine-tune it. Thus, we used a simple method for extracting training examples for this annotation prediction task out of existing programs. This works as follows:
 1- Start with a verified Dafny program P containing annotations A₁, A₂, ..., Aₙ
@@ -59,16 +59,16 @@ This approach simulates the exact task dafny-annotator performs during inference
 
 ## Initial results
 
-To see how well this works, we conducted experiments using DafnyBench. We split the 1326 total programs in DafnyBench into 1000 programs for training and held out 326 for testing. After stripping all annotations from the test programs, only 83 actually failed to verify (i.e., for the others, Z3 can prove the specification without help, even if the human-written programs still contained annotations). These 83 programs become our evaluation set: we measured how many of these, after stripping all annotations, was dafny-annotator able to verify.
+To see how well this works, we conducted experiments using DafnyBench. We split the 1326 total programs in DafnyBench into 1000 programs for training and held out 326 for testing. After stripping all annotations from the test programs, only 83 actually failed to verify (i.e., for the others, Z3 can prove the specification without help, even if the human-written programs still contained annotations). These 83 programs become our evaluation set: we measured how many of these, after stripping all annotations, dafny-annotator was able to verify.
 
-Our experiments used [LLaMa 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B) and [CodeLlama 7B](https://huggingface.co/codellama/CodeLlama-7b-hf) to guide dafny-annotator. The base LlaMa 3.1 8B model had a success rate of only 15.7% on this test set, with fine-tuning pushing it to 20.5%. CodeLlama had an even bigger improvement from fine-tuning: it initially was able to verify only 6% of the programs, which improved to 39.8% after fine-tuning.
+Our experiments used [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B) and [Code Llama 7B](https://huggingface.co/codellama/CodeLlama-7b-hf) to guide dafny-annotator. The base Llama 3.1 8B model had a success rate of only 15.7% on this test set, with fine-tuning pushing it to 20.5%. Code Llama had an even bigger improvement from fine-tuning: it initially was able to verify only 6% of the programs, which improved to 39.8% after fine-tuning.
 
 Generally, the path to improving LLMs on a given task involves training them on more data. 
 This presents a challenge for languages like Dafny, where the number of available programs is orders of magnitude smaller than for the most popular unverified languages, like Python. How, then, can we improve?
 
 # DafnySynth: Scalable Synthetic Training Data for Dafny
 
-To overcome the data scarcity problem for this task, we developed DafnySynth: a method (and an initial dataset) for synthesizing an arbitrarily large number of valid Dafny programs in principle. The approach follows a simple yet powerful observation: large programs are often written as a series of smaller edits to existing, smaller programs. Thus, the key idea will be to use an LLM to both propose small initial programs and iteratively grow them through edits, in an open-ended fashion. There is no exact goal to this process other than generate a large number of correct Dafny programs (which we can check) for later training dafny-annotator.
+To overcome the data scarcity problem for this task, we developed DafnySynth: a method (and an initial dataset) for synthesizing an arbitrarily large number of valid Dafny programs in principle. The approach follows a simple yet powerful observation: large programs are often written as a series of smaller edits to existing, smaller programs. Thus, the key idea will be to use an LLM to both propose small initial programs and iteratively grow them through edits, in an open-ended fashion. There is no exact goal to this process other than to generate a large number of correct Dafny programs (which we can check) for later training dafny-annotator.
 
 ## The Edit Graph Architecture
 
@@ -89,11 +89,11 @@ The graph starts with a single root node with empty content, and grows through t
 
 At every step, Dafny itself acts as a validation filter, ensuring that any proposed annotations are logically sound.
 
-We spent just $10 in OpenAI API credits to generate a dataset comparable in size to DafnyBench. The resulting DafnySynth dataset contains 699 compilable Dafny programs, with 46 fully verified methods (Dafny can prove the post-conditions of all methods), and the rest partially verified. From these, we extracted 1107 valid annotations (678 invariants, 281 assertions, and 148 decreases clauses), of which 923 were syntactically unique. Each of these unique annotations, paired with the program where it was removed, becomes a training example for our fine-tuning process, just like when extracting examples from DafnyBench.
+We spent just $10 in OpenAI API credits to generate a dataset comparable in size to DafnyBench. The resulting DafnySynth dataset contains 699 compilable Dafny programs, with 46 fully verified methods (Dafny can prove the postconditions of all methods), and the rest partially verified. From these, we extracted 1107 valid annotations (678 invariants, 281 assertions, and 148 decreases clauses), of which 923 were syntactically unique. Each of these unique annotations, paired with the program where it was removed, becomes a training example for our fine-tuning process, just like when extracting examples from DafnyBench.
 
 ## Results: Combining Real and Synthetic Data
 
-When we fine-tuned LLaMa 3.1 8B on both DafnyBench (the training set) and DafnySynth datasets together, dafny-annotator's success rate increased dramatically to 50.6% — the best result in our experiments. Interestingly, the same combination didn't yield similar improvements for CodeLlama 7B which hit a plateau at 39.8%, suggesting that general code pre-training isn't always more helpful for verification-specific tasks like generating Dafny annotations.
+When we fine-tuned Llama 3.1 8B on both DafnyBench (the training set) and DafnySynth datasets together, dafny-annotator's success rate increased dramatically to 50.6% — the best result in our experiments. Interestingly, the same combination didn't yield similar improvements for Code Llama 7B, which hit a plateau at 39.8%, suggesting that general code pre-training isn't always more helpful for verification-specific tasks like generating Dafny annotations.
 Overall, our approach demonstrates that synthetic data generation can effectively augment limited real-world examples, providing a promising path to improve LLM-based verification assistants if scaled up further. Given how little we had to spend to be able to see initial promising results, we're excited to push this direction further and see how far it can go.
 
 # Conclusion: The Future of AI Assistance for Program Verification
@@ -106,7 +106,7 @@ While we focused only on generating logical annotations, we believe that AI migh
 - Lemma suggestion: Generating and proving auxiliary lemmas to help prove more complex properties. In our experiments, we assumed all necessary lemmas to already be present in the file, which is not necessarily the case during development.
 - Implementation assistance: Proposing code given a formal specification, especially making the implementation easier to verify. Examples for this task can also be extracted from DafnySynth, since the resulting programs contain both specifications and their respective implementations.
 
-An important aspect of building AI-assisted software is to communicate the domain with the tool. From our experience with dafny-annotator, we emphasize the following.
+An important aspect of building AI-assisted software is to communicate the domain with the tool. From our experience with dafny-annotator, we emphasize the following:
 
 - The role of synthetic datasets: they can boost performance and can be easily created with discovery systems interleaving verification and generation (possibly with a stronger LLM than the targeted one). For us, it was a cheap experiment to boost from 15.7% to 50.6% success rate by using a synthetic dataset.
 - Discovery systems like DafnySynth and Minimo can help create synthetic datasets tailored to train for specific needs.
