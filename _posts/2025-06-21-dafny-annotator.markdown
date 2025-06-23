@@ -32,7 +32,7 @@ Dafny shines in reducing the burden of proofs compared to most interactive theor
       }
     }
 
-Dafny cannot verify the method fully automatically. This might be (a) because the specification is wrong, (b) because the implementation is wrong, or (c) because we need to manually add annotations to guide the verifier. Here, we're in case (c) --- the program and specification are correct ---, which is the case that dafny-annotator currently targets. It suffices to add `invariant r*r <= N` before the body of the while loop for Z3 to be able to prove the method's post-condition. dafny-annotator uses LLMs to attempt to insert these annotations automatically in the body of an existing method.
+Dafny cannot verify the method fully automatically. This might be (a) because the specification is wrong, (b) because the implementation is wrong, or (c) because we need to manually add annotations to guide the verifier. Here, we're in case (c) --- the program and specification are correct ---, which is the case that dafny-annotator currently targets. It suffices to add `invariant r*r <= N` before the body of the while loop for Z3 to be able to prove the method's postcondition. dafny-annotator uses LLMs to attempt to insert these annotations automatically in the body of an existing method.
 
 # dafny-annotator
 
