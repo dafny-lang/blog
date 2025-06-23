@@ -59,7 +59,7 @@ This approach simulates the exact task dafny-annotator performs during inference
 
 ## Initial results
 
-To see how well this works, we conducted experiments using DafnyBench. We split the 1326 total programs in DafnyBench into 1000 programs for training and held out 326 for testing. After stripping all annotations from the test programs, only 83 actually failed to verify (i.e., for the others, Z3 can prove the specification without help, even if the human-written programs still contained annotations). These 83 programs become our evaluation set: we measured how many of these, after stripping all annotations, was dafny-annotator able to verify.
+To see how well this works, we conducted experiments using DafnyBench. We split the 1326 total programs in DafnyBench into 1000 programs for training and held out 326 for testing. After stripping all annotations from the test programs, only 83 actually failed to verify (i.e., for the others, Z3 can prove the specification without help, even if the human-written programs still contained annotations). These 83 programs become our evaluation set: we measured how many of these, after stripping all annotations, dafny-annotator was able to verify.
 
 Our experiments used [LLaMa 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B) and [CodeLlama 7B](https://huggingface.co/codellama/CodeLlama-7b-hf) to guide dafny-annotator. The base LlaMa 3.1 8B model had a success rate of only 15.7% on this test set, with fine-tuning pushing it to 20.5%. CodeLlama had an even bigger improvement from fine-tuning: it initially was able to verify only 6% of the programs, which improved to 39.8% after fine-tuning.
 
