@@ -106,7 +106,7 @@ While we focused only on generating logical annotations, we believe that AI migh
 - Lemma suggestion: Generating and proving auxiliary lemmas to help prove more complex properties. In our experiments, we assumed all necessary lemmas to already be present in the file, which is not necessarily the case during development.
 - Implementation assistance: Proposing code given a formal specification, especially making the implementation easier to verify. Examples for this task can also be extracted from DafnySynth, since the resulting programs contain both specifications and their respective implementations.
 
-An important aspect of building AI-assisted software is to communicate the domain with the tool. From our experience with dafny-annotator, we emphasize the following.
+An important aspect of building AI-assisted software is to communicate the domain with the tool. From our experience with dafny-annotator, we emphasize the following:
 
 - The role of synthetic datasets: they can boost performance and can be easily created with discovery systems interleaving verification and generation (possibly with a stronger LLM than the targeted one). For us, it was a cheap experiment to boost from 15.7% to 50.6% success rate by using a synthetic dataset.
 - Discovery systems like DafnySynth and Minimo can help create synthetic datasets tailored to train for specific needs.
