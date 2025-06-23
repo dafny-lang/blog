@@ -68,7 +68,7 @@ This presents a challenge for languages like Dafny, where the number of availabl
 
 # DafnySynth: Scalable Synthetic Training Data for Dafny
 
-To overcome the data scarcity problem for this task, we developed DafnySynth: a method (and an initial dataset) for synthesizing an arbitrarily large number of valid Dafny programs in principle. The approach follows a simple yet powerful observation: large programs are often written as a series of smaller edits to existing, smaller programs. Thus, the key idea will be to use an LLM to both propose small initial programs and iteratively grow them through edits, in an open-ended fashion. There is no exact goal to this process other than generate a large number of correct Dafny programs (which we can check) for later training dafny-annotator.
+To overcome the data scarcity problem for this task, we developed DafnySynth: a method (and an initial dataset) for synthesizing an arbitrarily large number of valid Dafny programs in principle. The approach follows a simple yet powerful observation: large programs are often written as a series of smaller edits to existing, smaller programs. Thus, the key idea will be to use an LLM to both propose small initial programs and iteratively grow them through edits, in an open-ended fashion. There is no exact goal to this process other than to generate a large number of correct Dafny programs (which we can check) for later training dafny-annotator.
 
 ## The Edit Graph Architecture
 
