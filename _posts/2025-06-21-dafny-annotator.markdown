@@ -93,7 +93,7 @@ We spent just $10 in OpenAI API credits to generate a dataset comparable in size
 
 ## Results: Combining Real and Synthetic Data
 
-When we fine-tuned LLaMa 3.1 8B on both DafnyBench (the training set) and DafnySynth datasets together, dafny-annotator's success rate increased dramatically to 50.6% — the best result in our experiments. Interestingly, the same combination didn't yield similar improvements for CodeLlama 7B which hit a plateau at 39.8%, suggesting that general code pre-training isn't always more helpful for verification-specific tasks like generating Dafny annotations.
+When we fine-tuned Llama 3.1 8B on both DafnyBench (the training set) and DafnySynth datasets together, dafny-annotator's success rate increased dramatically to 50.6% — the best result in our experiments. Interestingly, the same combination didn't yield similar improvements for Code Llama 7B, which hit a plateau at 39.8%, suggesting that general code pre-training isn't always more helpful for verification-specific tasks like generating Dafny annotations.
 Overall, our approach demonstrates that synthetic data generation can effectively augment limited real-world examples, providing a promising path to improve LLM-based verification assistants if scaled up further. Given how little we had to spend to be able to see initial promising results, we're excited to push this direction further and see how far it can go.
 
 # Conclusion: The Future of AI Assistance for Program Verification
