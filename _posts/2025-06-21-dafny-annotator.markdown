@@ -47,7 +47,7 @@ The basic idea in dafny-annotator is to use an LLM to propose candidate annotati
 
 ## Fine-Tuning for Annotation Generation
 
-While general-purpose LLMs like CodeLLaMA can generate plausible annotations, their performance improves significantly when fine-tuned on task-specific data. To create a fine-tuning dataset for annotation prediction, we leveraged existing annotated Dafny programs. In particular, we looked at [DafnyBench](https://arxiv.org/abs/2406.08467), a dataset of 1326 stand-alone Dafny files collected from Github.
+While general-purpose LLMs like Code Llama can generate plausible annotations, their performance improves significantly when fine-tuned on task-specific data. To create a fine-tuning dataset for annotation prediction, we leveraged existing annotated Dafny programs. In particular, we looked at [DafnyBench](https://arxiv.org/abs/2406.08467), a dataset of 1326 stand-alone Dafny files collected from Github.
 
 Since we will use the LLM for predicting annotations, that is the task on which we should fine-tune it. Thus, we used a simple method for extracting training examples for this annotation prediction task out of existing programs. This works as follows:
 1- Start with a verified Dafny program P containing annotations A₁, A₂, ..., Aₙ
