@@ -4,6 +4,7 @@ title:  "Verifying Selection Sort: an Introduction to Program Verification in Da
 author: Jean-Baptiste Tristan
 date:   2023-10-11 11:00:00 -0500
 categories:
+published: false
 ---
 
 {% include insertion-sort.html %}
