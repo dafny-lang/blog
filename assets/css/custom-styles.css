@@ -1,0 +1,24 @@
+---
+---
+
+/* Custom styling for larger headings */
+h1 {
+  font-size: 2.5em !important;
+  font-weight: bold !important;
+  margin-bottom: 0.5em !important;
+  margin-top: 1em !important;
+}
+
+h2 {
+  font-size: 2em !important;
+  font-weight: bold !important;
+  margin-bottom: 0.4em !important;
+  margin-top: 0.8em !important;
+}
+
+h3 {
+  font-size: 1.5em !important;
+  font-weight: bold !important;
+  margin-bottom: 0.3em !important;
+  margin-top: 0.6em !important;
+}

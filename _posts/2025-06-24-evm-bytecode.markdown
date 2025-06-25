@@ -34,7 +34,7 @@ The EVM supports around 150 opcodes, covering a wide range of functionality, inc
 ## Objective
 
 
-At the beginning of 2022, the Trustworthy Smart Contracts team at [ConsenSys](https://consensys.io) began developing a formal and executable semantics of the Ethereum Virtual Machine (EVM) [1].
+At the beginning of 2022, the Trustworthy Smart Contracts team at [ConsenSys](https://consensys.io) began developing a formal and executable semantics of the Ethereum Virtual Machine (EVM) [[1]](#ref1).
 
 Our objective was to provide a **rigorous framework for reasoning about EVM bytecode**. Achieving this requires two key components: a **formal semantics** of the EVM and a **verification engine** capable of expressing and proving properties over that semantics. For this purpose, we chose [Dafny](https://dafny.org), a verification-aware programming language.
  Our choice of Dafny was motivated by two main factors:
@@ -444,24 +444,24 @@ The examples we have given so far are relatively small and we can instrument or 
 
 But what about real-world smart contracts with thousands of instructions? 
 To be able to formally reason about arbitrary EVM bytecode, we need to build an artefact that encodes the semantics of the bytecode and can be reasoned about.
-A step into this direction is proposed in [2]: build _proof objects_ that are representations of EVM bytecode using the Dafny-EVM semantics.
+A step into this direction is proposed in [[2]](#ref2): build _proof objects_ that are representations of EVM bytecode using the Dafny-EVM semantics.
 In a nutshell, we generate instrumented EVM bytecode automatically by disassembling and analysing (resolving dynamic JUMPs) the bytecode.
-The technique proposed in [2] and implemented in Dafny in [this github repository](https://github.com/franck44/evm-dis) can disassemble real-world contracts (benchmarks of ~3000 lines of codes) and perform some verification. The automatic verification is for now limited to checking the absence of stack underflows/overflows but can certainly be extended to functional properties.
+The technique proposed in [[2]](#ref2) and implemented in Dafny in [this github repository](https://github.com/franck44/evm-dis) can disassemble real-world contracts (benchmarks of ~3000 lines of codes) and perform some verification. The automatic verification is for now limited to checking the absence of stack underflows/overflows but can certainly be extended to functional properties.
 
 The proof objects can be further manually annotated with functional specifications and reasoned about like any Dafny program. This is certainly doable for relatively small pieces of code but there are still several hurdles to reason about EVM bytecode:
 - the bytecode does not (usually) contain information about the high-level source code. For example, an addition in Solidity source code like `a + b` is compiled into and EVM bytecode using `PUSHes, POPs,` and `ADD` manipulating the stack, but there is no easy way in the bytecode to figure out that say `stack[1]` is `b` and `stack[0]` is `a`. This makes it hard to transfer high-level specification (in Solidity or Vyper) to EVM bytecode. 
 - memory locations of elements of data structures like `maps` in high-level code (Solidity or Vyper) are computed in the bytecode using _hashes_. This makes it very hard to reason about any program that uses memory as the addresses of reads and writes are hard to evaluate. 
-- the EVM has some instructions to dynamically call another contract.  In many instances, the called contracts are not known at compile-time, and it is almost impossible to include them in the verification model. To a certain extent, it is possible to reason about external calls in an adversarial environment as we have demonstrated in [3] and [4] using Dafny, but this is done at the source level (Dafny).
+- the EVM has some instructions to dynamically call another contract.  In many instances, the called contracts are not known at compile-time, and it is almost impossible to include them in the verification model. To a certain extent, it is possible to reason about external calls in an adversarial environment as we have demonstrated in [[3]](#ref3) and [[4]](#ref4) using Dafny, but this is done at the source level (Dafny).
 
 
 # References
 
-[1] Franck Cassez, Joanne Fuller, Milad K. Ghale, David J. Pearce, and Horacio M. A. Quiles. 2023. Formal and Executable Semantics of the Ethereum Virtual Machine in Dafny. In Formal Methods: 25th International Symposium, FM 2023, Lübeck, Germany, March 6–10, 2023, Proceedings. Springer-Verlag, Berlin, Heidelberg, 571–583. https://doi.org/10.1007/978-3-031-27481-7_32
+<a id="ref1"></a>[1] Franck Cassez, Joanne Fuller, Milad K. Ghale, David J. Pearce, and Horacio M. A. Quiles. 2023. Formal and Executable Semantics of the Ethereum Virtual Machine in Dafny. In Formal Methods: 25th International Symposium, FM 2023, Lübeck, Germany, March 6–10, 2023, Proceedings. Springer-Verlag, Berlin, Heidelberg, 571–583. [https://doi.org/10.1007/978-3-031-27481-7_32](https://doi.org/10.1007/978-3-031-27481-7_32)
 
-[2]  Franck Cassez. ByteSpector: A Verifying disassembler for EVM bytecode. OASIcs, Volume 129. Forthcoming, Proceedings of Formal Methods for Blockchains (FMBC'25). https://drops.dagstuhl.de/entities/document/10.4230/OASIcs.FMBC.2025.4
+<a id="ref2"></a>[2]  Franck Cassez. ByteSpector: A Verifying disassembler for EVM bytecode. OASIcs, Volume 129. Forthcoming, Proceedings of Formal Methods for Blockchains (FMBC'25). [https://drops.dagstuhl.de/entities/document/10.4230/OASIcs.FMBC.2025.4](https://drops.dagstuhl.de/entities/document/10.4230/OASIcs.FMBC.2025.4)
 
-[3] Franck Cassez, Joanne Fuller, and Horacio M. A. Quiles. 2022. Deductive Verification of Smart Contracts with Dafny. In: Groote, J.F., Huisman, M. (eds) Formal Methods for Industrial Critical Systems. FMICS 2022. Lecture Notes in Computer Science, vol 13487. Springer, Cham. https://doi.org/10.1007/978-3-031-15008-1_5
+<a id="ref3"></a>[3] Franck Cassez, Joanne Fuller, and Horacio M. A. Quiles. 2022. Deductive Verification of Smart Contracts with Dafny. In: Groote, J.F., Huisman, M. (eds) Formal Methods for Industrial Critical Systems. FMICS 2022. Lecture Notes in Computer Science, vol 13487. Springer, Cham. [https://doi.org/10.1007/978-3-031-15008-1_5](https://doi.org/10.1007/978-3-031-15008-1_5)
 
-[4] Franck Cassez, Joanne Fuller, and Horacio M. A. Quiles. 2024. Deductive verification of smart contracts with Dafny. Int. Journal Software Tools Technology Transfer 26, 131–145. https://doi.org/10.1007/s10009-024-00738-1
+<a id="ref4"></a>[4] Franck Cassez, Joanne Fuller, and Horacio M. A. Quiles. 2024. Deductive verification of smart contracts with Dafny. Int. Journal Software Tools Technology Transfer 26, 131–145. [https://doi.org/10.1007/s10009-024-00738-1](https://doi.org/10.1007/s10009-024-00738-1)
 
 [^fn]: 
