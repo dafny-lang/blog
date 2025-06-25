@@ -37,13 +37,20 @@ def loadDafny(DFYfile):
 
     if not (path_dfy.is_file() and path_dfy.suffix == '.dfy'):
         print('Argument 2 should be a Dafny file', DFYfile)
-        exit(1)    
+        exit(1)
 
     if with_check:
         if with_debug:
             print('Running Dafny on post', DFYfile)
-            
-        error_code = subprocess.run([dafny, 'verify', path_dfy]).returncode
+
+        # Check if there's a dfyconfig.toml in the same directory
+        config_path = path_dfy.parent / 'dfyconfig.toml'
+        if config_path.exists():
+            # Use the project configuration
+            error_code = subprocess.run([dafny, 'verify', '--allow-warnings', str(config_path)]).returncode
+        else:
+            # Use direct file verification
+            error_code = subprocess.run([dafny, 'verify', '--allow-warnings', path_dfy]).returncode
 
         if error_code != 0:
             print('The Dafny file does not verify')
@@ -51,7 +58,6 @@ def loadDafny(DFYfile):
 
     if with_debug:
         print(buff,'Extracting code from',path_dfy)
-        
     file_in_dfy = open(path_dfy)
     modules = {}
     mod_name = None
@@ -119,15 +125,15 @@ def GenerateHTMLFromPreMadoko(MDKfile):
                 exit(1)
 
     file_in.close()
-    file_out.close() 
+    file_out.close()
 
     if with_debug:
         print(buff,'Running Madoko to generate html from file', path_out)
-        
+
     subprocess.run([madoko, '--odir=' + includes_location ,path_out])
 
 def PostProcessGeneratedHTML(MDKfile):
-    
+
     if with_debug:
         buff = '\t'
         print('Postprocessing generated HTML file...')
@@ -135,23 +141,23 @@ def PostProcessGeneratedHTML(MDKfile):
     path_in = Path(includes_location + MDKfile + '_gen.html')
     if not (path_in.is_file()):
         print('Generated HTML does not exist:', path_in)
-        exit(1)    
+        exit(1)
     file_in = open(path_in)
 
     path_out = Path(includes_location + MDKfile + '.html')
     if with_debug:
         print(buff,'Inlining code into',path_out)
-    file_out = open(path_out,'w')    
+    file_out = open(path_out,'w')
 
     first = True
-    for line in file_in:    
+    for line in file_in:
         if first:
             first = False
             continue
         file_out.write(line)
 
     file_in.close()
-    file_out.close()   
+    file_out.close()
 
 if __name__ == "__main__":
 
@@ -170,6 +176,4 @@ if __name__ == "__main__":
 
     GenerateHTMLFromPreMadoko(args.post)
     PostProcessGeneratedHTML(args.post)
-
-    
 

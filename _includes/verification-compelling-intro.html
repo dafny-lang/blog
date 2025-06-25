@@ -54,15 +54,15 @@ Without changing the code above, we now remove the <code>--no-verify</code> opti
 By running <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you now get the following output:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
-euclidian.dfy(6,15): Error: cannot prove termination; try supplying a decreases clause
+euclidian.dfy(6,30): Error: cannot prove termination; try supplying a decreases clause
   |
 6 |     var q', r' := EuclidianDiv(a - b, b);
-  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |                               ^
 
-euclidian.dfy(6,15): Error: decreases expression at index 0 must be bounded below by 0
+euclidian.dfy(6,30): Error: decreases expression at index 0 must be bounded below by 0
   |
 6 |     var q', r' := EuclidianDiv(a - b, b);
-  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |                               ^
 
 euclidian.dfy(1,20): Related location
   |
@@ -111,10 +111,10 @@ type check, which is pretty nice.
 If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following output:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
-euclidian.dfy(9,15): Error: decreases clause might not decrease
+euclidian.dfy(9,30): Error: decreases clause might not decrease
   |
 9 |     var q', r' := EuclidianDiv(a - b, b);
-  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |                               ^
 
 
 Dafny program verifier finished with 1 verified, 1 error
@@ -150,10 +150,10 @@ method Main() {
 If you run <code><span class="command">dafny run --show-snippets euclidian.dfy</span><!--.command--></code>, you get the following output:
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
-euclidian.dfy(9,11): Error: assertion might not hold
+euclidian.dfy(9,4): Error: assertion might not hold
   |
 9 |     assert a - b < a;        // Just added
-  |            ^^^^^^^^^
+  |     ^^^^^^
 
 
 Dafny program verifier finished with 1 verified, 1 error
@@ -238,14 +238,11 @@ If you now run <code><span class="command">dafny run --show-snippets euclidian.d
 <!--The following is tested, and can also be overriden -->
 <pre class="output">
 euclidian.dfy(6,0): Error: a postcondition could not be proved on this return path
-  |
-6 | {
-  | ^
-
-euclidian.dfy(5,15): Related location: this is the postcondition that could not be proved
+No Dafny location information, so snippet can't be generated.
+euclidian.dfy(5,17): Related location: this is the postcondition that could not be proved
   |
 5 |   ensures 0 <= r < b      // Just added
-  |                ^^^^^
+  |                  ^
 
 
 Dafny program verifier finished with 1 verified, 1 error

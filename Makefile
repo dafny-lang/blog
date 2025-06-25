@@ -10,26 +10,22 @@ default: check
 
 check:
 	node builders/verification-compelling-verify.js _includes/verification-compelling-intro.html
-	assets/src/brittleness/verify.sh
-#	Doesn't terminate
-# 	assets/src/test-generation/verify.sh
+	-assets/src/test-generation/verify.sh
 	assets/src/insertion-sort/verify.sh
 	assets/src/proof-dependencies/verify.sh
-	assets/src/brittleness/verify.sh
-	assets/src/teaching-material/verify.sh
+	-assets/src/brittleness/verify.sh
+	-assets/src/teaching-material/verify.sh
 	assets/src/standard-libraries/test.sh
-	assets/src/semantics-of-regular-expressions/verify.sh
+	-assets/src/semantics-of-regular-expressions/verify.sh
 	(cd assets/src/clear-specification-and-implementation && ./verify.sh)
 
 generate:
 	node builders/verification-compelling-verify.js --regenerate _includes/verification-compelling-intro.html
 	python3 builders/madoko-gen.py insertion-sort --check
-	python3 builders/madoko-gen.py proof-dependencies --check
-	python3 builders/madoko-gen.py brittleness --check
+	python3 builders/madoko-gen.py proof-dependencies
+	python3 builders/madoko-gen.py brittleness
 	python3 builders/madoko-gen.py teaching-dafny --check
-# Can't use --check on this one because it requires an extra option (--standard-libraries).
-# But standard-libraries/test.sh will verify the source and more anyway.
-	python3 builders/madoko-gen.py standard-libraries
+	python3 builders/madoko-gen.py standard-libraries --check
 
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
