@@ -6,7 +6,7 @@ date:   2025-06-24 18:00:00 +0100
 ---
 
 The [Ethereum network](https://ethereum.org/en/what-is-ethereum/) provides a decentralised execution environment powered by the [Ethereum Virtual Machine](https://ethereum.org/en/developers/docs/evm/) (EVM).
-The EVM executes _smart contracts_, the programs that encode the business logics of decentralised applications (dApps) running on the network.
+The EVM executes _smart contracts_, the programs that encode the business logic of decentralised applications (dApps) running on the network.
 Smart contracts on Ethereum can be written in high-level languages like [Solidity](https://docs.soliditylang.org/) or [Vyper](https://vyperlang.org), but must be compiled to **EVM bytecode** to be executed by the EVM. 
 
 A single vulnerability in a smart contract can result in huge financial losses.
@@ -17,13 +17,13 @@ Most security efforts focus on testing and auditing high-level source (Solidity 
 The EVM has execution-level behaviours that are not visible in high-level Solidity or Vyper code, such as:
 
 - **Stack overflows/underflows**. The EVM is a stack machine with a **fixed size stack**. Exceeding the maximum stack size (1024) results in an exception reverting execution without effect on the state of the system. Stack underflows may indicate issues in the compiler or bytecode generation, where an operation is executed without the required number of operands on the stack. In contrast, stack overflows are typically the result of executing deeply nested or recursive contract code that pushes too many values without sufficient pops. Both cases must be detected and handled by the EVM to ensure safe and predictable execution.
-- **Gas consumption**. EVM execution is metered in [gas units]((https://ethereum.org/en/developers/docs/gas/)), that track resource usage. A program must declare before execution its maximum gas budget. If a program runs out of gas, it triggers an _out-of-gas exception_, reverting execution without effect on the state of the system. Analyzing gas usage at the bytecode level helps prevent unexpected failures due to insufficient gas.
+- **Gas consumption**. EVM execution is metered in [gas units](https://ethereum.org/en/developers/docs/gas/), that track resource usage. A program must declare before execution its maximum gas budget. If a program runs out of gas, it triggers an _out-of-gas exception_, reverting execution without effect on the state of the system. Analyzing gas usage at the bytecode level helps prevent unexpected failures due to insufficient gas.
 
 ### Compiler Bugs
 
 Compilers may introduce errors during compilation, leading to incorrect or vulnerable bytecode. Recent examples include:
 - 2023: A Vyper compiler reentrancy bug was exploited, resulting in $26M stolen  [The Vyper Compiler Saga: Unraveling the Reentrancy Bug that Shook DeFi](https://medium.com/rektify-ai/the-vyper-compiler-saga-unraveling-the-reentrancy-bug-that-shook-defi-86ade6c54265).
-- 2022: A Solidity memory optimization issue mistakenly removed operations affecting computation [Overly Optimistic Optimizer -- Certora Bug Disclosure](https://medium.com/certora/overly-optimistic-optimizer-certora-bug-disclosure-2101e3f7994d) 
+- 2022: A Solidity memory optimization issue mistakenly removed operations affecting computation [Overly Optimistic Optimizer -- Certora Bug Disclosure](https://medium.com/certora/overly-optimistic-optimizer-certora-bug-disclosure-2101e3f7994d).
 - 2021: A Solidity dynamic array bug caused potential memory corruption [Bug Disclosure -- Solidity Code Generation Bug Can Cause Memory Corruption](https://medium.com/certora/bug-disclosure-solidity-code-generation-bug-can-cause-memory-corruption-bf65468d2b34).
 
 
@@ -54,7 +54,7 @@ The Dafny-EVM is the first formal specification of the EVM that can be reasoned 
 
 # The Dafny-EVM
 
-We have defined a formal and executable semantics, the **Dafny-EVM**, which is publicly available in the following repository [evm-dafny](github.com/Consensys/evm-dafny).
+We have defined a formal and executable semantics, the **Dafny-EVM**, which is publicly available in the following repository [evm-dafny](https://github.com/Consensys/evm-dafny).
 The main features of the Dafny-EVM are presented in this section. 
 
 
@@ -70,7 +70,7 @@ When a user submits a transaction, they also specify a **maximum gas budget**. I
 
 
 We have specified the state of the EVM as the datatype `State`:
-```dafny=
+```dafny
 module EvmState {
 
   datatype State = 
@@ -122,7 +122,7 @@ The advantage is that it is readable, language-agnostic (we use mathematical fun
 The opcodes semantics are defined in the `Bytecode` module in [bytecode.dfy](https://github.com/Consensys/evm-dafny/blob/master/src/dafny/bytecode.dfy).
 For example the [semantics of the ADD](https://github.com/Consensys/evm-dafny/blob/e2e52e86d6623d48d0849f5ce1664f88c8f0e547/src/dafny/bytecode.dfy#L45) opcode is as follows:
 
-```dafny=
+```dafny
 module Bytecode {
 
   ...
@@ -148,7 +148,7 @@ module Bytecode {
   ...
 ```
 First note that we can only apply this function to an `ExecutingState` and as Dafny is statically typed, this prevents us from
-accidently calling the `Add` function with an error state.
+accidentally calling the `Add` function with an error state.
 Second the definition of the semantics of `ADD` (lines 14-21) distinguishes two cases: 
 1. **success**: if the stack has enough operands (`st.Operands >= 2`), the addition takes two arguments at the top of the stack, pops them, adds them and pushes the result on top the stack. It also advances the program counter to the next instruction (`Next`).
 2. **exception**: if `st.Operands < 2`, the instruction cannot be executed and we reach an `ERROR` state.
@@ -167,7 +167,7 @@ The `EVM` module in [evm.dfy](https://github.com/Consensys/evm-dafny/blob/master
 execute the next instruction of the bytecode. 
 The execution of an opcode is provided by the `ExecuteBytecode` function that matches a `u8` (byte) opcode to its semantics and applies the semantics to the state:
 
-```dafny=
+```dafny
  /**
   * Execute a given bytecode from the executing state.  This assumes gas has
   * already been deducted.  Again, this may or may not result in an executing
@@ -205,7 +205,7 @@ function ExecuteBytecode(op: u8, st: ExecutingState): State {
 The bytecode to execute is part of the (`EXECUTING`) state of the EVM in the `code` section.
 Given a state `st: ExecutingState`, `st.evm.code` contains the sequence of bytes that correspond to the bytecode, and `st.evm.pc` the current value of the program counter. The `Execute` function decodes the next instruction and computes the next state of the EVM:
 
-```dafny=
+```dafny
 /**
  * Execute the next bytecode as determined by the current machine's state.
  * This requires decoding the bytecode at the current PC location.
@@ -229,7 +229,7 @@ function Execute(st: ExecutingState): State {
 ```
 This function performs the following checks:
 - the opcode is valid for the given fork (line 10). EVM opcodes may be added or removed and the fork (A fork is a point in time where changes can be applied to the Ethereum infrastructure, including the EVM.) identifies the version that should be used to interpret the opcodes.  
-- there is enough _gas_ to execute the next instruction (line 13). The `DeductGas` function returns an `ERROR` state is there is not enough gas to execute the opcode. If there is enough gas the cost of executing the opcode is deducted from the current gas budget and the corresponding new state is returned.
+- there is enough _gas_ to execute the next instruction (line 13). The `DeductGas` function returns an `ERROR` state if there is not enough gas to execute the opcode. If there is enough gas the cost of executing the opcode is deducted from the current gas budget and the corresponding new state is returned.
 
 
 The Dafny-EVM separates the functional semantics of each opcode from the gas accounting, allowing for a clean, modular structure. This separation improves clarity, simplifies reasoning about correctness, and makes it easier to test or verify either aspect independently.
@@ -239,7 +239,7 @@ The Dafny-EVM separates the functional semantics of each opcode from the gas acc
 In this section we show how to use the Dafny-EVM to formally prove some properties of bytecode.
 
 ## Overflow checker
-The EVM computes modulo 2^256 and as a result it does not aborts on arithmetic overflows (this is in contrast to other VMs for smart contracts like the MoveVM).
+The EVM computes modulo 2^256 and as a result it does not abort on arithmetic overflows (this is in contrast to other VMs for smart contracts like the MoveVM).
 To detect arithmetic overflows the compiler (Solidity or Vyper) has to generate instrumented bytecode. For example detecting an overflow in an addition (opcode `ADD`) is done using the following bytecode snippet (assuming the two operands are top of the stack):
 
 ```assembly=
@@ -259,7 +259,7 @@ Address|Instruction|Stack
 ```
 The bytecode above uses the necessary and sufficient condition specified by lemma `AddOverflowNSC`:
 
-```dafny=
+```dafny
 /** Necessary and sufficient condition for detecting overflow
  *  in ADD.
  */
@@ -270,11 +270,11 @@ lemma AddOverflowNSC(x: u256, y: u256)
   //  Thanks Dafny
 }
 ```
-For two 256-bit unsigned integers `x, y: u256`, To detect whether `x + y` overflows we just need to check whether the result of the addition modulo 2^256 is less than `x` (or `y`).
+For two 256-bit unsigned integers `x, y: u256`, to detect whether `x + y` overflows we just need to check whether the result of the addition modulo 2^256 is less than `x` (or `y`).
 We can formally prove that the instrumented code correctly detects overflows, and also that the lemma `AddOverflowNSC` is correct (thanks Dafny!).
 
-First we define the bytecode as a sequence of opcodes for readability (the comments specifiy the content of the stack):
-```dafny=
+First we define the bytecode as a sequence of opcodes for readability (the comments specify the content of the stack):
+```dafny
 /** Code snippet that detects overflow in addition. */
 const OVERFLOW_CHECK := Code.Create(
   [
@@ -299,8 +299,8 @@ const OVERFLOW_CHECK := Code.Create(
   ]
 )
 ```
-Next we create a Dafny program that starts in a arbitrary `EXECUTING` state and executes the code `OVERFLOW_CHECK`:
-```dafny=18
+Next we create a Dafny program that starts in an arbitrary `EXECUTING` state and executes the code `OVERFLOW_CHECK`:
+```dafny
 /**
  *  This is a pattern that is used to detect overflows for ADD.
  *
@@ -353,14 +353,14 @@ First, the body of the method `OverflowCheck` executes the bytecode as follows:
 - after the four steps, we reach program counter `0x05`(verified at line 47). The instruction at `0x05` is a conditional jump `JUMPI` the semantics of which is: if the second element of the stack is non-zero, we jump (goto) to the address at the top of the stack; otherwise we continue to the instruction at `0x06`. 
 - from `0x05`, there are two execution paths:
   * the `if-else` statement at line 49/54 verifies that if the second element of the stack `st'.Peek(1)` is non-zero, we jump to the instruction at `0x07` and otherwise we jump to `0x06`. 
-  * depending on the path taken we execute one instruction (line 52) or 4 instructions (lines 57) to complete the execution of the bytecode. The assertions at lines 53 and 58 provdie some guarantees about the type of the final state.
+  * depending on the path taken we execute one instruction (line 52) or 4 instructions (lines 57) to complete the execution of the bytecode. The assertions at lines 53 and 58 provide some guarantees about the type of the final state.
 
 
 Second, the post-conditions (`ensures` lines 38--43) specifies the correctness of the overflow checker:
-- the execution either succeeds with a `RETURNS` (normal state) or an exception of type `REVERTS` (error state). This rules out the out-of-gas-exception and this is why we provide enough gas (line 33) to executer the code.
+- the execution either succeeds with a `RETURNS` (normal state) or an exception of type `REVERTS` (error state). This rules out the out-of-gas-exception and this is why we provide enough gas (line 33) to execute the code.
 - the execution reverts if and only if there is an overflow. 
 
-This simple example demonstrates how the Dafny-EVM can be used to check real-life code albeit short, but code that is used repeateadly to detect exceptions and is critical to the correctness of the contracts.
+This simple example demonstrates how the Dafny-EVM can be used to check real-life code albeit short, but code that is used repeatedly to detect exceptions and is critical to the correctness of the contracts.
 A more detailed presentation of this example is available in this [Dafny-EVM github section](https://github.com/Consensys/evm-dafny/blob/master/VERIFICATION.md#an-overflow-checker).
 
 ## Optimisations
@@ -376,7 +376,7 @@ As Dafny can prove that this method `Proposition12b` is correct, we get a formal
 
 Note that the proof is valid for any `N` between `1 <= N <= 16` which covers the range of the `SWAPN` instructions available in the EVM. 
 
-```dafny=
+```dafny
 /**
  *
  *  Proposition 12: 
@@ -451,7 +451,7 @@ The technique proposed in [2] and implemented in Dafny in [this github repositor
 The proof objects can be further manually annotated with functional specifications and reasoned about like any Dafny program. This is certainly doable for relatively small pieces of code but there are still several hurdles to reason about EVM bytecode:
 - the bytecode does not (usually) contain information about the high-level source code. For example, an addition in Solidity source code like `a + b` is compiled into and EVM bytecode using `PUSHes, POPs,` and `ADD` manipulating the stack, but there is no easy way in the bytecode to figure out that say `stack[1]` is `b` and `stack[0]` is `a`. This makes it hard to transfer high-level specification (in Solidity or Vyper) to EVM bytecode. 
 - memory locations of elements of data structures like `maps` in high-level code (Solidity or Vyper) are computed in the bytecode using _hashes_. This makes it very hard to reason about any program that uses memory as the addresses of reads and writes are hard to evaluate. 
-- the EVM has some instructions to dynamically call another contract.  In many instances, the called contracts are not known at compile-time, and it is almost impossible to include them in the verification model. To a certain extent, it is possible to reason about external calls in an adversarial environement as we have demonstrated in [3] and [4] using Dafny, but this is done at the source level (Dafny).
+- the EVM has some instructions to dynamically call another contract.  In many instances, the called contracts are not known at compile-time, and it is almost impossible to include them in the verification model. To a certain extent, it is possible to reason about external calls in an adversarial environment as we have demonstrated in [3] and [4] using Dafny, but this is done at the source level (Dafny).
 
 
 # References
