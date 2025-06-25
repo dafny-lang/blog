@@ -332,7 +332,7 @@ hey you never know, later puzzles might have proper UTF8 content!
     var bytesAsBVs :- FileIO.ReadBytesFromFile("input.txt");
     
     var bytes := seq(|bytesAsBVs|, i requires 0 <= i < |bytesAsBVs| => bytesAsBVs[i] as BoundedInts.uint8);
-    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult("Invalid UTF8");
+    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes);
   }
 ```
 
@@ -347,9 +347,6 @@ A few notes:
   This is a side effect of the Dafny standard libraries having multiple independent contributions from various
   projects, and you can expect future versions of Dafny to provide more versions of common utilities
   to make combining things a bit smoother.
-* `FromUTF8Checked` returns an `Option<string>`, but `FileIO.File` returns a `Result<seq<bv8>, string>`.
-  To unify with a common result type, we use `Option.ToResult` to convert the former value to a `Result`,
-  which is a handy and common trick. See [the documentation for `Std.Wrappers`](https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Wrappers.md) for more details.
 
 ## Sprinting to the finish
 

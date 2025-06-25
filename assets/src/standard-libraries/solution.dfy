@@ -24,7 +24,7 @@ module M1 {
     var bytesAsBVs :- FileIO.ReadBytesFromFile("input.txt");
     var bytes := seq(|bytesAsBVs|, i requires 0 <= i < |bytesAsBVs| => bytesAsBVs[i] as BoundedInts.uint8);
     
-    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes).ToResult("Invalid UTF8");
+    input := UnicodeStringsWithUnicodeChar.FromUTF8Checked(bytes);
   }
 
   function CalibrationValue(line: string): Wrappers.Result<nat, string> {
