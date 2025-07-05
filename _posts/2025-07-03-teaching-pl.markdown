@@ -70,14 +70,14 @@ assignment, and suddenly they're motivated to work through the details.
 We've learned that throwing students into the deep end of programming language theory and verification doesn't work. 
 Instead, we use carefully structured assignments that build confidence and understanding step by step.
 
-**Assignment 1**: Dafny warm-up using the  Dafny-based [*Program Proofs*](https://a.co/d/aQF3pvQ) textbook to practice reasoning about weakest preconditions, datatypes, specifications, and inductive proofs.
+**Assignment 1**: Dafny warm-up using the [*Program Proofs*](https://mitpress.mit.edu/9780262546232/program-proofs/) textbook to practice reasoning about weakest preconditions, datatypes, specifications, and inductive proofs.
 
 **Assignment 2**: Two problems that bridge from simple verification to program-level reasoning. First, the students implement and verify a primality checker against a specification they've been given. Second, they take a complex existing program with an English-level specification, formalize the specification in Dafny, and prove the program meets the specification (without changing the program itself).
 
-**Assignment 3**: The big one, our Mini-C formalization.  Rather than asking the students to start from scratch, they're asked to fill in carefully chosen gaps in the code and proofs we provide. They 
+**Assignment 3**: The big one: our Mini-C formalization. Rather than asking the students to start from scratch, they're asked to fill in carefully chosen gaps in the code and proofs we provide. They
 implement semantics for conditionals and I/O, complete typing rules for binary expressions, and prove the corresponding portions of type safety.  The pattern repeats for security: they implement security typing rules, and then prove non-interference properties. 
 
-To further tie the course concepts together, the students revisit the notion of
+To tie the course concepts together further, the students revisit the notion of
 dynamic taint tracking introduced in the first quarter of the class.  With
 similar scaffolding as above, they complete the implementation in Dafny of a
 dynamic taint tracker and prove that it too enforces a non-interference property.
