@@ -62,7 +62,7 @@ where x is a Low (public) variable and y is High (secret). Intuitively, this sho
 
 We then propose adding a rule that allows High commands to be "lowered" to Low commands. But how do we know it's actually safe to add this rule? 
 
-"This is why we prove things", I tell them. "Proofs let us be confident that our optimizations don't break security." The proof itself becomes a homework 
+"This is why we prove things," I tell them. "Proofs let us be confident that our optimizations don't break security." The proof itself becomes a homework 
 assignment, and suddenly they're motivated to work through the details.
 
 ## Scaffolding Assignments To Build Understanding
