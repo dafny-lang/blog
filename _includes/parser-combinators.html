@@ -31,7 +31,8 @@
   }
 
   /* Preserve whitespace in parser output spans */
-  [id$="-parsed"], [id$="-remaining"] {
+  [id$="-parsed"],
+  [id$="-remaining"] {
     white-space: pre-wrap;
   }
 
@@ -113,23 +114,70 @@
   Each example below includes an interactive demo where you can test the parser with your own input.
 </p>
 
-<h3>Basic Parsers</h3>
+<h3>Building Parsers Step by Step</h3>
 
 <p>
-  Let's start with some of the simplest parsers:
+  Let's build up to the S-expression parser by starting with the most fundamental building blocks and gradually combining them into more complex parsers.
 </p>
+
+<h4>Character Testing (CharTest)</h4>
+
+<p>
+  The <code>CharTest</code> combinator is the foundation of most parsers. It takes a predicate function and succeeds if the next character satisfies that condition. Let's start with something fun - parsing emoji!
+</p>
+
+<pre><code class="parser-definition">const EmojiParser := CharTest(c => '😀' <= c <= '🙏', "emoji")</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter some text starting with an emoji (😀, 😃, 🎉, etc.)</p>
+  <textarea id="emoji-input" class="input-area" placeholder="😀 Hello world!">😀 Hello world!</textarea>
+
+  <div class="output-container">
+    <div>
+      <button id="emoji-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="emoji-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="emoji-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Repetition (Rep)</h4>
+
+<p>
+  The <code>Rep</code> combinator applies a parser zero or more times. Let's use it to parse multiple digits:
+</p>
+
+<pre><code class="parser-definition">const DigitsParser := CharTest(c => '0' <= c <= '9', "digit").Rep()</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter some digits followed by other characters</p>
+  <textarea id="digits-input" class="input-area" placeholder="12345abc">12345abc</textarea>
+
+  <div class="output-container">
+    <div>
+      <button id="digits-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="digits-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="digits-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
 
 <h4>Whitespace Parser (WS)</h4>
 
 <p>
-  The <code>WS</code> parser matches zero or more whitespace characters (spaces, tabs, newlines).
+  Now we can understand how the built-in <code>WS</code> parser works - it's actually defined using <code>CharTest</code> and <code>Rep</code>:
 </p>
 
-<pre><code class="parser-definition">const WSParser := WS</code></pre>
+<pre><code class="parser-definition">// WS is roughly equivalent to:
+// CharTest(c => c == ' ' || c == '\t' || c == '\n' || c == '\r', "whitespace").Rep()
+const WSParser := WS</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter some text with whitespace (the parser will match the whitespace at the beginning)
-  </p>
+  <p><strong>Try it:</strong> Enter some text with whitespace at the beginning</p>
   <textarea id="ws-input" class="input-area" placeholder="   Hello world">   Hello world</textarea>
 
   <div class="output-container">
@@ -143,33 +191,33 @@
   </div>
 </div>
 
-<h4>String Parser (S)</h4>
+<h4>Identifier Parser</h4>
 
 <p>
-  The <code>S</code> parser matches a specific string.
+  Let's build an identifier parser that will be crucial for S-expressions. An identifier starts with a letter and can contain letters, digits, and some special characters:
 </p>
 
-<pre><code class="parser-definition">const HelloParser := S("Hello")</code></pre>
+<pre><code class="parser-definition">const IdentifierParser := CharTest(c => 'a' <= c <= 'z' || 'A' <= c <= 'Z', "letter").Rep1()</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter text that starts with "Hello"</p>
-  <textarea id="string-input" class="input-area" placeholder="Hello world">Hello world</textarea>
+  <p><strong>Try it:</strong> Enter identifiers like "factorial", "list-length", "+"</p>
+  <textarea id="identifier-input" class="input-area" placeholder="factorial">factorial</textarea>
 
   <div class="output-container">
     <div>
-      <button id="string-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="string-parsed" class="output-area"
+      <button id="identifier-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="identifier-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="string-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="identifier-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
 </div>
 
-<h4>Concatenation (<code>I_I</code>, <code>I_e</code>, <code>e_I</code>)</h4>
+<h4>Concatenation - Building S-Expression Structure</h4>
 
 <p>
-  The concatenation operators combine parsers in sequence:
+  Now let's use concatenation to start building the structure we need for S-expressions. The concatenation operators combine parsers in sequence:
 </p>
 <ul>
   <li><code>I_I</code>: Keeps both results</li>
@@ -177,24 +225,28 @@
   <li><code>e_I</code>: Keeps only the right result</li>
 </ul>
 
-<pre><code class="parser-definition">// Both results: returns ("Hello", " ")
-const HelloSpace_I_I := S("Hello").I_I(S(" "))
+<p>
+  Let's build a parser that recognizes the start of an S-expression: an opening parenthesis followed by an identifier (like "(define" or "(lambda"):
+</p>
 
-// Left only: returns "Hello"
-const HelloSpace_I_e := S("Hello").I_e(S(" "))
+<pre><code class="parser-definition">// Parse "(" followed by an identifier - the start of an S-expression!
+const SExprStart_I_I := S("(").I_I(IdentifierParser)
 
-// Right only: returns " "
-const HelloSpace_e_I := S("Hello").e_I(S(" "))</code></pre>
+// Just keep the identifier, discard the "("
+const SExprStart_e_I := S("(").e_I(IdentifierParser)
+
+// Just keep the "(", discard the identifier  
+const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter "Hello " to see the different concatenation results</p>
-  <textarea id="concat-input" class="input-area" placeholder="Hello world">Hello world</textarea>
+  <p><strong>Try it:</strong> Enter S-expression starts like "(define", "(lambda", "(list"</p>
+  <textarea id="concat-input" class="input-area" placeholder="(define">(define</textarea>
 
   <div class="controls">
     <select id="concat-type">
-      <option value="HelloSpace_I_I">I_I (both)</option>
-      <option value="HelloSpace_I_e">I_e (left only)</option>
-      <option value="HelloSpace_e_I">e_I (right only)</option>
+      <option value="SExprStart_I_I">I_I (both "(" and identifier)</option>
+      <option value="SExprStart_e_I">e_I (just identifier)</option>
+      <option value="SExprStart_I_e">I_e (just "(")</option>
     </select>
   </div>
 
@@ -209,56 +261,18 @@ const HelloSpace_e_I := S("Hello").e_I(S(" "))</code></pre>
   </div>
 </div>
 
-<h4>Repetition (Rep, Rep1)</h4>
+<h4>Choice - Atoms vs Lists</h4>
 
 <p>
-  The repetition operators apply a parser multiple times:
-</p>
-<ul>
-  <li><code>Rep</code>: Applies a parser zero or more times</li>
-  <li><code>Rep1</code>: Applies a parser one or more times (at least once)</li>
-</ul>
-
-<pre><code class="parser-definition">// Match zero or more digits
-const Digits := CharTest(c => '0' <= c <= '9', "digit").Rep()
-
-// Match one or more digits
-const Digits1 := CharTest(c => '0' <= c <= '9', "digit").Rep1()</code></pre>
-
-<div class="demo-container">
-  <p><strong>Try it:</strong> Enter some digits (or not) to see how Rep and Rep1 differ</p>
-  <textarea id="rep-input" class="input-area" placeholder="123abc">123abc</textarea>
-
-  <div class="controls">
-    <select id="rep-type">
-      <option value="Digits">Rep (zero or more)</option>
-      <option value="Digits1">Rep1 (one or more)</option>
-    </select>
-  </div>
-
-  <div class="output-container">
-    <div>
-      <button id="rep-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="rep-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="rep-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-    </div>
-  </div>
-</div>
-
-<h4>Choice (O)</h4>
-
-<p>
-  The <code>O</code> operator tries each parser in sequence until one succeeds.
+  The <code>O</code> (choice) operator tries each parser in sequence until one succeeds. This is perfect for S-expressions, which can be either atoms (identifiers/numbers) or lists. Let's build a simple atom parser:
 </p>
 
-<pre><code class="parser-definition">// Match either "Hello" or "Hi"
-const Greeting := O([S("Hello"), S("Hi")])</code></pre>
+<pre><code class="parser-definition">// An atom can be either an identifier or a number
+const AtomParser := O([IdentifierParser, CharTest(c => '0' <= c <= '9', "digit").Rep1()])</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter "Hello" or "Hi" to see the choice parser in action</p>
-  <textarea id="choice-input" class="input-area" placeholder="Hello world">Hello world</textarea>
+  <p><strong>Try it:</strong> Enter atoms like "factorial", "123", "+", "define"</p>
+  <textarea id="choice-input" class="input-area" placeholder="factorial">factorial</textarea>
 
   <div class="output-container">
     <div>
@@ -270,6 +284,22 @@ const Greeting := O([S("Hello"), S("Hi")])</code></pre>
     </div>
   </div>
 </div>
+
+<h4>Putting It Together</h4>
+
+<p>
+  Now we have all the building blocks for S-expressions! We can parse:
+</p>
+<ul>
+  <li><strong>Atoms</strong>: identifiers and numbers</li>
+  <li><strong>List starts</strong>: "(" followed by an identifier</li>
+  <li><strong>Whitespace</strong>: to separate elements</li>
+  <li><strong>Repetition</strong>: to handle multiple elements</li>
+</ul>
+
+<p>
+  The full S-expression parser combines all these concepts using recursion to handle nested structures. Let's see how it all comes together!
+</p>
 
 <h2>S-Expressions</h2>
 

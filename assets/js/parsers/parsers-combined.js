@@ -13074,33 +13074,37 @@ let ParserSnippets = (function() {
       }
       return result;
     }
-    static get WSParser() {
-      return Std_Parsers_StringBuilders.__default.WS;
+    static get IdentifierParser() {
+      return Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return (((new _dafny.CodePoint('a'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('z'.codePointAt(0))))) || (((new _dafny.CodePoint('A'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('Z'.codePointAt(0)))));
+      }, _dafny.Seq.UnicodeFromString("letter")));
     };
-    static get HelloParser() {
-      return Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("Hello"));
+    static get SExprStart__I__I() {
+      return Std_Parsers_StringBuilders.B.I__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
     };
-    static get HelloSpace__I__I() {
-      return Std_Parsers_StringBuilders.B.I__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("Hello")), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(" ")));
+    static get SExprStart__e__I() {
+      return Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
     };
-    static get HelloSpace__I__e() {
-      return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("Hello")), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(" ")));
+    static get SExprStart__I__e() {
+      return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
     };
-    static get HelloSpace__e__I() {
-      return Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("Hello")), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(" ")));
+    static get AtomParser() {
+      return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(ParserSnippets.__default.IdentifierParser, Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((new _dafny.CodePoint('0'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('9'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("digit")))));
     };
-    static get Digits() {
+    static get EmojiParser() {
+      return Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((new _dafny.CodePoint('😀'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('🙏'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("emoji"));
+    };
+    static get DigitsParser() {
       return Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
         return ((new _dafny.CodePoint('0'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('9'.codePointAt(0))));
       }, _dafny.Seq.UnicodeFromString("digit")));
     };
-    static get Digits1() {
-      return Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return ((new _dafny.CodePoint('0'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('9'.codePointAt(0))));
-      }, _dafny.Seq.UnicodeFromString("digit")));
-    };
-    static get Greeting() {
-      return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("Hello")), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("Hi"))));
+    static get WSParser() {
+      return Std_Parsers_StringBuilders.__default.WS;
     };
   };
 
