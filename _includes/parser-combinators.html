@@ -1,0 +1,497 @@
+<style>
+  /* Styles for the interactive demo */
+  .demo-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+  }
+
+  .input-area {
+    width: 100%;
+    height: 1em;
+    font-family: monospace;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .output-area {
+    width: 100%;
+    min-height: 100px;
+    font-family: monospace;
+    background-color: #f0f0f0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+
+  /* Preserve whitespace in parser output spans */
+  [id$="-parsed"], [id$="-remaining"] {
+    white-space: pre-wrap;
+  }
+
+  .error-display {
+    color: #d9534f;
+    margin-top: 10px;
+    font-family: monospace;
+  }
+
+  .controls {
+    margin: 10px 0;
+  }
+
+  button {
+    background-color: #337ab7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  button:hover {
+    background-color: #286090;
+  }
+</style>
+
+<h2>Introduction</h2>
+
+<p>
+  Parser combinators are a powerful technique for building parsers by composing smaller parsing functions.
+  They provide a clean, modular approach to parsing that aligns well with functional programming principles.
+  In this blog post, we'll explore Dafny's standard parser combinators library and demonstrate how to use it
+  to build a formatter for S-expressions (symbolic expressions), which are the foundation of languages like LISP.
+  We'll include an interactive JavaScript demo that you can use to experiment with the formatter directly in your
+  browser.
+</p>
+
+<h2>Parser Builders DSL in Dafny</h2>
+
+<p>
+  Parser combinators are higher-order functions that accept parsers as input and return new parsers as output.
+  This approach allows you to build complex parsers by combining simpler ones. Dafny's standard library provides
+  a concise Domain-Specific Language (DSL) for building parsers that uses minimal syntax to make complex parser
+  definitions more readable.
+</p>
+
+<p>
+  To use the parser builders DSL in Dafny, you need to import:
+</p>
+
+<pre><code>import opened Std.Parsers.StringBuilders</code></pre>
+
+<p>
+  This gives you access to a set of short, expressive combinators that reduce syntactic noise and highlight the parser
+  logic.
+  Some of the most commonly used combinators in this DSL include:
+</p>
+
+<ul>
+  <li><code>S</code>: Creates a parser that matches a specific string</li>
+  <li><code>CharTest</code>: Creates a parser that succeeds if the input character satisfies a given predicate</li>
+  <li><code>Rep</code>: Applies a parser zero or more times</li>
+  <li><code>Rep1</code>: Applies a parser one or more times (at least once)</li>
+  <li><code>O</code>: Tries each parser in sequence until one succeeds (Or)</li>
+  <li><code>I_I</code>: Concatenates two parsers, keeping both results (Concat)</li>
+  <li><code>e_I</code>: Concatenates two parsers, discarding the left result</li>
+  <li><code>I_e</code>: Concatenates two parsers, discarding the right result</li>
+  <li><code>M</code>: Transforms the result of a parser (Map)</li>
+  <li><code>Rec</code>: Creates a recursive parser</li>
+</ul>
+
+<h2>Interactive Parser Examples</h2>
+
+<p>
+  Before diving into the full S-expression parser, let's explore some basic parser components and see how they work
+  individually.
+  Each example below includes an interactive demo where you can test the parser with your own input.
+</p>
+
+<h3>Basic Parsers</h3>
+
+<p>
+  Let's start with some of the simplest parsers:
+</p>
+
+<h4>Whitespace Parser (WS)</h4>
+
+<p>
+  The <code>WS</code> parser matches zero or more whitespace characters (spaces, tabs, newlines).
+</p>
+
+<pre><code class="parser-definition">const WSParser := WS</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter some text with whitespace (the parser will match the whitespace at the beginning)
+  </p>
+  <textarea id="ws-input" class="input-area" placeholder="   Hello world">   Hello world</textarea>
+
+  <div class="output-container">
+    <div>
+      <button id="ws-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="ws-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="ws-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h4>String Parser (S)</h4>
+
+<p>
+  The <code>S</code> parser matches a specific string.
+</p>
+
+<pre><code class="parser-definition">const HelloParser := S("Hello")</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter text that starts with "Hello"</p>
+  <textarea id="string-input" class="input-area" placeholder="Hello world">Hello world</textarea>
+
+  <div class="output-container">
+    <div>
+      <button id="string-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="string-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="string-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Concatenation (<code>I_I</code>, <code>I_e</code>, <code>e_I</code>)</h4>
+
+<p>
+  The concatenation operators combine parsers in sequence:
+</p>
+<ul>
+  <li><code>I_I</code>: Keeps both results</li>
+  <li><code>I_e</code>: Keeps only the left result</li>
+  <li><code>e_I</code>: Keeps only the right result</li>
+</ul>
+
+<pre><code class="parser-definition">// Both results: returns ("Hello", " ")
+const HelloSpace_I_I := S("Hello").I_I(S(" "))
+
+// Left only: returns "Hello"
+const HelloSpace_I_e := S("Hello").I_e(S(" "))
+
+// Right only: returns " "
+const HelloSpace_e_I := S("Hello").e_I(S(" "))</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter "Hello " to see the different concatenation results</p>
+  <textarea id="concat-input" class="input-area" placeholder="Hello world">Hello world</textarea>
+
+  <div class="controls">
+    <select id="concat-type">
+      <option value="HelloSpace_I_I">I_I (both)</option>
+      <option value="HelloSpace_I_e">I_e (left only)</option>
+      <option value="HelloSpace_e_I">e_I (right only)</option>
+    </select>
+  </div>
+
+  <div class="output-container">
+    <div>
+      <button id="concat-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="concat-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="concat-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Repetition (Rep, Rep1)</h4>
+
+<p>
+  The repetition operators apply a parser multiple times:
+</p>
+<ul>
+  <li><code>Rep</code>: Applies a parser zero or more times</li>
+  <li><code>Rep1</code>: Applies a parser one or more times (at least once)</li>
+</ul>
+
+<pre><code class="parser-definition">// Match zero or more digits
+const Digits := CharTest(c => '0' <= c <= '9', "digit").Rep()
+
+// Match one or more digits
+const Digits1 := CharTest(c => '0' <= c <= '9', "digit").Rep1()</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter some digits (or not) to see how Rep and Rep1 differ</p>
+  <textarea id="rep-input" class="input-area" placeholder="123abc">123abc</textarea>
+
+  <div class="controls">
+    <select id="rep-type">
+      <option value="Digits">Rep (zero or more)</option>
+      <option value="Digits1">Rep1 (one or more)</option>
+    </select>
+  </div>
+
+  <div class="output-container">
+    <div>
+      <button id="rep-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="rep-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="rep-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Choice (O)</h4>
+
+<p>
+  The <code>O</code> operator tries each parser in sequence until one succeeds.
+</p>
+
+<pre><code class="parser-definition">// Match either "Hello" or "Hi"
+const Greeting := O([S("Hello"), S("Hi")])</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Enter "Hello" or "Hi" to see the choice parser in action</p>
+  <textarea id="choice-input" class="input-area" placeholder="Hello world">Hello world</textarea>
+
+  <div class="output-container">
+    <div>
+      <button id="choice-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="choice-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="choice-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h2>S-Expressions</h2>
+
+<p>
+  Now that we understand the basic parsers, let's see how we can combine them to build a more complex parser.
+  We'll create a parser for S-expressions, which will demonstrate how the individual parser components we've explored
+  can work together to handle a recursive, nested structure.
+</p>
+
+<p>
+  S-expressions (symbolic expressions) are a notation for representing nested data structures, originally used in the
+  LISP programming language.
+  They have a simple syntax: an S-expression is either an atom (like a symbol or number) or a list of S-expressions
+  enclosed in parentheses.
+  Here's a simple example of an S-expression:
+</p>
+
+<pre><code>(define (factorial n)
+  (if (= n 0)
+      1
+      (* n (factorial (- n 1)))))</code></pre>
+
+<p>
+  In this blog post, we'll build a parser and formatter for S-expressions, including:
+</p>
+
+<ul>
+  <li>Atoms (identifiers like <code>factorial</code>, <code>n</code>)</li>
+  <li>Numbers (integers like <code>0</code>, <code>1</code>)</li>
+  <li>Lists (like <code>(define (factorial n) ...)</code>)</li>
+</ul>
+
+<h2>Building an S-Expression Parser</h2>
+
+<p>
+  Let's look at how we can build an S-expression parser using Dafny's parser combinators. The parser will handle both
+  atoms and nested expressions.
+</p>
+
+<p>
+  First, we'll define our data structure for S-expressions:
+</p>
+
+<pre><code>module ExampleParsers.SExprParser {
+  import opened Std.Parsers.StringBuilders
+
+  datatype SExpr =
+    | Atom(name: string)
+    | List(items: seq&lt;SExpr&gt;)
+}</code></pre>
+
+<p>
+  Next, we'll define a parser for whitespace and comments:
+</p>
+
+<pre><code>  // Parse whitespace and comments
+  const WSOrComment := 
+    WS.I_I(
+      S(";").I_I(CharTest((c: char) => c != '\n', "anything except newline").Rep())
+      .I_I(O([S("\n"), EOS.M(x => "")])).Rep()
+    )</code></pre>
+
+<p>
+  Now, let's define the main parser for S-expressions. This is where the power of parser combinators really shines:
+</p>
+
+<pre><code>  // Parse an S-expression
+  const parserSExpr := 
+    Rec((SExpr: B&lt;SExpr&gt;) =>
+      O([
+        // Either a list: (expr1 expr2 ...)
+        S("(").e_I(WSOrComment).Then(
+          (r: string) =>
+            SExpr.I_e(WSOrComment)
+            .Rep().I_e(S(")")).I_e(WSOrComment)
+        ).M((r: seq&lt;SExpr&gt;) => List(r)),
+        
+        // Or an atom: symbol
+        CharTest((c: char) => c != '(' && c != ')' && !isWhitespace(c), "atom character")
+        .Rep1().M((r: string) => Atom(r)).I_e(WSOrComment)
+      ])
+    )</code></pre>
+
+<p>
+  This parser uses the <code>Rec</code> combinator to create a recursive parser that can handle nested expressions.
+  The parser first tries to match a list (expressions enclosed in parentheses) and if that fails, it tries to match an
+  atom.
+</p>
+
+<p>
+  We can also add a method to format S-expressions nicely:
+</p>
+
+<pre><code>  function ToString(expr: SExpr, indent: string := ""): string {
+    match expr {
+      case Atom(name) => name
+      case List(items) =>
+        if |items| == 0 then
+          "()"
+        else
+          "(" + 
+          String.Join(
+            seq(|items|, i requires 0 <= i < |items| => 
+              if i == 0 then ToString(items[i], indent + "  ")
+              else "\n" + indent + "  " + ToString(items[i], indent + "  ")
+            ),
+            ""
+          ) + ")"
+    }
+  }</code></pre>
+
+<p>
+  The formatting function above uses a recursive approach to pretty-print S-expressions. Here's how it works:
+</p>
+
+<ul>
+  <li>For atoms, it simply returns the name of the atom.</li>
+  <li>For empty lists, it returns "()".</li>
+  <li>For non-empty lists, it formats the first item on the same line as the opening parenthesis, and each subsequent
+    item on a new line with proper indentation.</li>
+  <li>The indentation increases by two spaces for each level of nesting, making the structure clear and readable.</li>
+  <li>The function uses Dafny's sequence comprehension to build the formatted string for each item in the list.</li>
+</ul>
+
+<p>
+  This formatting approach is particularly useful for complex, nested S-expressions, as it makes the structure visually
+  apparent.
+</p>
+
+<p>
+  Finally, we can add a test method to verify our parser works correctly:
+</p>
+
+<pre><code>  method TestParser() {
+    var input := "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
+    var result := parserSExpr.Apply(input);
+    
+    match result {
+      case ParseSuccess(value, _) =>
+        print "Parsed successfully: ", ToString(value), "\n";
+      case ParseFailure(error, _) =>
+        print "Parse error: ", error, "\n";
+    }
+  }</code></pre>
+
+<h2>Interactive Demo</h2>
+
+<p>
+  Below is an interactive demo where you can enter S-expressions and see them parsed and formatted:
+</p>
+
+<div class="demo-container">
+  <textarea id="input-area" class="input-area"
+    placeholder="Enter an S-expression here, e.g., (define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))"></textarea>
+
+  <div class="controls">
+    <button id="parse-button">Parse & Format</button>
+    <label>
+      <input type="checkbox" id="pretty-print" checked> Pretty Print
+    </label>
+    <select id="example-select">
+      <option value="">-- Select Example --</option>
+      <option value="(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))">Factorial Function</option>
+      <option value="(let ((x 5) (y 10)) (+ x y))">Let Binding</option>
+      <option value="(lambda (x) (* x x))">Lambda Function</option>
+      <option value="(list 1 2 3 4 5)">Simple List</option>
+    </select>
+  </div>
+
+  <div id="output-area" class="output-area">Formatted output will appear here</div>
+  <div id="error-display" class="error-display"></div>
+</div>
+
+<!-- Load the required libraries and Dafny-compiled JavaScript -->
+<script src="/blog/assets/js/bignumber.js"></script>
+<script>
+  // Mock require() function for browser compatibility
+  window.require = function (module) {
+    switch (module) {
+      case 'bignumber.js':
+        return window.BigNumber;
+      case 'buffer':
+        return { Buffer: window.Buffer || {} };
+      case 'fs':
+        return {};
+      case 'path':
+        return {};
+      case 'process':
+        return { argv: [] };
+      default:
+        console.warn('Unhandled require() call for module:', module);
+        return {};
+    }
+  };
+  window.process = {
+    argv: [],
+    stdout: {
+      write: console.log
+    }
+  };
+</script>
+<script src="/blog/assets/js/parsers/parsers-combined.js"></script>
+<script src="/blog/assets/js/parsers/parser-integration.js"></script>
+</script>
+
+<h2>Conclusion</h2>
+
+<p>
+  In this blog post, we've introduced Dafny's parser combinators library and demonstrated how to use it to build
+  a parser and formatter for S-expressions. We've also shown how to compile Dafny code to JavaScript and integrate
+  it into a web page to create an interactive demo.
+</p>
+
+<p>
+  Parser combinators provide a powerful, modular approach to parsing that aligns well with functional programming
+  principles.
+  By using Dafny's standard library, you can leverage these techniques in your own projects, whether you're targeting
+  JavaScript, C#, or other supported platforms.
+</p>
+
+<p>
+  For more information on Dafny's standard libraries, including the parser combinators library, check out the
+  <a href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries
+    repository</a>.
+</p>
