@@ -99,10 +99,10 @@
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Initialize all example buttons
     document.querySelectorAll('.example-btn').forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         // Find the demo container this button belongs to
         const demoContainer = this.closest('.demo-container');
         if (!demoContainer) {
@@ -677,3 +677,34 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
   <a href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries
     repository</a>.
 </p>
+
+<!-- Load the required libraries and Dafny-compiled JavaScript -->
+<script src="/blog/assets/js/bignumber.js"></script>
+<script>
+  // Mock require() function for browser compatibility
+  window.require = function (module) {
+    switch (module) {
+      case 'bignumber.js':
+        return window.BigNumber;
+      case 'buffer':
+        return { Buffer: window.Buffer || {} };
+      case 'fs':
+        return {};
+      case 'path':
+        return {};
+      case 'process':
+        return { argv: [] };
+      default:
+        console.warn('Unhandled require() call for module:', module);
+        return {};
+    }
+  };
+  window.process = {
+    argv: [],
+    stdout: {
+      write: console.log
+    }
+  };
+</script>
+<script src="/blog/assets/js/parsers/parsers-combined.js"></script>
+<script src="/blog/assets/js/parsers/parser-integration.js"></script>
