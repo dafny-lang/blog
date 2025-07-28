@@ -101,6 +101,18 @@
 <script>
   function setInput(inputId, value) {
     document.getElementById(inputId).value = value;
+    // Trigger the parser automatically after setting the input
+    const parseButtonId = inputId.replace('-input', '-parse-button');
+    const parseButton = document.getElementById(parseButtonId);
+    if (parseButton) {
+      parseButton.click();
+    }
+  }
+</script>
+
+<script>
+  function setInput(inputId, value) {
+    document.getElementById(inputId).value = value;
     // Trigger the parser if there's a parse button
     const parseButtonId = inputId.replace('-input', '-parse-button');
     const parseButton = document.getElementById(parseButtonId);
@@ -163,8 +175,8 @@
 </p>
 
 <pre><code>datatype ParseResult&lt;T&gt; = 
-  | ParseSuccess(value: T, remaining: string)
-  | ParseFailure(error: string, position: int)</code></pre>
+  | ParseSuccess(result: T, remaining: Input)
+  | ParseFailure(level: FailureLevel, data: FailureData)</code></pre>
 
 <p>
   When a parser succeeds, it returns the parsed value and the remaining unconsumed characters. When it fails, it returns an error message and the position where parsing failed.
