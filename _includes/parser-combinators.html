@@ -100,17 +100,30 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Initialize all example buttons
+    // Initialize all example buttons for building block demos
     document.querySelectorAll('.example-btn').forEach(button => {
       button.addEventListener('click', function () {
-        // Find the demo container this button belongs to
+        // Check if this is an S-expression demo button (has data-example attribute)
+        if (this.hasAttribute('data-example')) {
+          const inputArea = document.getElementById('input-area');
+          const parseButton = document.getElementById('parse-button');
+          
+          if (inputArea && parseButton) {
+            // Set the input value to the example
+            inputArea.value = this.getAttribute('data-example');
+            // Trigger the parse button to format immediately
+            parseButton.click();
+          }
+          return;
+        }
+
+        // Handle building block demo buttons (existing logic)
         const demoContainer = this.closest('.demo-container');
         if (!demoContainer) {
           console.warn('Demo container not found for button:', this);
           return;
         }
 
-        // Find the input and parse button within this container
         const input = demoContainer.querySelector('textarea.input-area, input.input-area');
         const parseButton = demoContainer.querySelector('button[id$="-parse-button"]');
 
@@ -135,18 +148,60 @@
 
 
 
-<h2>Introduction</h2>
+<h2>Why Parser Combinators Matter</h2>
 
 <p>
-  Parser combinators are a powerful technique for building parsers by composing smaller parsing functions.
-  They provide a clean, modular approach to parsing that aligns well with functional programming principles.
-  In this blog post, we'll explore Dafny's standard parser combinators library and demonstrate how to use it
-  to build a formatter for S-expressions (symbolic expressions), which are the foundation of languages like LISP.
-  We'll include an interactive JavaScript demo that you can use to experiment with the formatter directly in your
-  browser.
+  Imagine you need to parse and format complex nested structures like this LISP factorial function:
 </p>
 
-<h2>Parser Builders DSL in Dafny</h2>
+<pre><code>(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))</code></pre>
+
+<p>
+  Most parsing approaches would require hundreds of lines of complex, error-prone code. But with parser combinators, you
+  can build an elegant, working parser in just a few dozen lines. Even better - it compiles to JavaScript and runs in
+  your browser!
+</p>
+
+<h2>Interactive S-Expression Formatter</h2>
+
+<p>
+  Try it yourself! Enter any S-expression below and watch it get parsed and beautifully formatted:
+</p>
+
+<div class="demo-container">
+  <textarea id="input-area" class="input-area"
+    placeholder="Enter an S-expression here, e.g., (define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))"></textarea>
+
+  <div class="controls">
+    <button id="parse-button">Parse & Format</button>
+  </div>
+
+  <div class="example-buttons">
+    <button class="example-btn positive" data-example="(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))">Factorial Function</button>
+    <button class="example-btn positive" data-example="(let ((x 5) (y 10)) (+ x y))">Let Binding</button>
+    <button class="example-btn positive" data-example="(lambda (x) (* x x))">Lambda Function</button>
+    <button class="example-btn positive" data-example="(list 1 2 3 4 5)">Simple List</button>
+    <button class="example-btn positive" data-example="(if (> x 0) (+ x 1) (- x 1))">Conditional</button>
+    <button class="example-btn positive" data-example="(map (lambda (x) (* x x)) (list 1 2 3 4))">Higher-Order Function</button>
+    <button class="example-btn positive" data-example="; Fibonacci with comments
+(define (fib n)
+  ; Base cases
+  (if (<= n 1)
+      n
+      ; Recursive case
+      (+ (fib (- n 1)) (fib (- n 2)))))">With Comments</button>
+  </div>
+
+  <div id="output-area" class="output-area">Formatted output will appear here</div>
+  <div id="error-display" class="error-display"></div>
+</div>
+
+<p>
+  This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable
+  pieces. How is this possible? Let's explore the building blocks.
+</p>
+
+<h2>Parser Combinators: Building Complex from Simple</h2>
 
 <p>
   Parser combinators are higher-order functions that accept parsers as input and return new parsers as output.
@@ -163,29 +218,15 @@
 
 <p>
   This gives you access to a set of short, expressive combinators that reduce syntactic noise and highlight the parser
-  logic.
-  Some of the most commonly used combinators in this DSL include:
+  logic. Let's see how these simple pieces combine to create the powerful formatter above.
 </p>
 
-<ul>
-  <li><code>S</code>: Creates a parser that matches a specific string</li>
-  <li><code>CharTest</code>: Creates a parser that succeeds if the input character satisfies a given predicate</li>
-  <li><code>Rep</code>: Applies a parser zero or more times</li>
-  <li><code>Rep1</code>: Applies a parser one or more times (at least once)</li>
-  <li><code>O</code>: Tries each parser in sequence until one succeeds (Or)</li>
-  <li><code>I_I</code>: Concatenates two parsers, keeping both results (Concat)</li>
-  <li><code>e_I</code>: Concatenates two parsers, discarding the left result</li>
-  <li><code>I_e</code>: Concatenates two parsers, discarding the right result</li>
-  <li><code>M</code>: Transforms the result of a parser (Map)</li>
-  <li><code>Rec</code>: Creates a recursive parser</li>
-</ul>
 
-<h2>Interactive Parser Examples</h2>
+<h2>The Building Blocks</h2>
 
 <p>
-  Before diving into the full S-expression parser, let's explore some basic parser components and see how they work
-  individually. Each parser has an <code>Apply</code> method that takes an input string and returns a
-  <code>ParseResult</code>:
+  Let's explore the fundamental parser components that make the S-expression formatter possible. Each parser has an
+  <code>Apply</code> method that takes an input string and returns a <code>ParseResult</code>:
 </p>
 
 <pre><code>datatype ParseResult&lt;T&gt; = 
@@ -194,15 +235,8 @@
 
 <p>
   When a parser succeeds, it returns the parsed value and the remaining unconsumed characters. When it fails, it returns
-  an error message and the position where parsing failed.
-  Each example below includes an interactive demo where you can test the parser with your own input.
-</p>
-
-<h3>Building Parsers Step by Step</h3>
-
-<p>
-  Let's build up to the S-expression parser by starting with the most fundamental building blocks and gradually
-  combining them into more complex parsers.
+  an error message and the position where parsing failed. Each example below includes an interactive demo where you can
+  experiment with the parser.
 </p>
 
 <h4>Character Testing (CharTest) - Parsing Anger</h4>
@@ -212,7 +246,12 @@
   the next character satisfies that condition. Let's start with something fun - parsing anger characters!
 </p>
 
-<pre><code class="parser-definition">const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "Angry Smily")</code></pre>
+<pre><code class="parser-definition">const AngerParser := CharTest(
+  c => c == '😠'
+    || c == '😡'
+    || c == '🤬'
+    || c == '😤',
+  "Angry Smily")</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -246,7 +285,13 @@
   characters:
 </p>
 
-<pre><code class="parser-definition">const JoyParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()</code></pre>
+<pre><code class="parser-definition">const JoyParser := CharTest(
+  c => c == '😀'
+    || c == '😃'
+    || c == '😄'
+    || c == '😁'
+    || c == '🥳',
+  "joy").Rep()</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -279,7 +324,13 @@
   points for each joyful character:
 </p>
 
-<pre><code class="parser-definition">const JoyScoreParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)</code></pre>
+<pre><code class="parser-definition">const JoyScoreParser := CharTest(
+  c => c == '😀'
+    || c == '😃'
+    || c == '😄'
+    || c == '😁'
+    || c == '🥳',
+  "joy").Rep().M(joyString => |joyString| * 2)</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -440,43 +491,31 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
 <h4>Putting It Together</h4>
 
 <p>
-  Now we have all the building blocks for S-expressions! We can parse:
+  Now we have all the building blocks! We can parse:
 </p>
 <ul>
-  <li><strong>Atoms</strong>: identifiers and numbers</li>
-  <li><strong>List starts</strong>: "(" followed by an identifier</li>
-  <li><strong>Whitespace</strong>: to separate elements</li>
-  <li><strong>Repetition</strong>: to handle multiple elements</li>
+  <li><strong>Individual characters</strong> with predicates (CharTest)</li>
+  <li><strong>Sequences</strong> with repetition (Rep)</li>
+  <li><strong>Transformations</strong> with mapping (M)</li>
+  <li><strong>Combinations</strong> with concatenation (I_I, e_I, I_e)</li>
+  <li><strong>Alternatives</strong> with choice (O)</li>
 </ul>
 
 <p>
-  The full S-expression parser combines all these concepts using recursion to handle nested structures. Let's see how it
-  all comes together!
+  The S-expression formatter you tried above combines all these concepts using recursion to handle nested structures.
+  Let's see how it works under the hood.
 </p>
 
-<h2>S-Expressions</h2>
-
-<p>
-  Now that we understand the basic parsers, let's see how we can combine them to build a more complex parser.
-  We'll create a parser for S-expressions, which will demonstrate how the individual parser components we've explored
-  can work together to handle a recursive, nested structure.
-</p>
+<h2>How the S-Expression Parser Works</h2>
 
 <p>
   S-expressions (symbolic expressions) are a notation for representing nested data structures, originally used in the
-  LISP programming language.
-  They have a simple syntax: an S-expression is either an atom (like a symbol or number) or a list of S-expressions
-  enclosed in parentheses.
-  Here's a simple example of an S-expression:
+  LISP programming language. They have a simple syntax: an S-expression is either an atom (like a symbol or number) or a
+  list of S-expressions enclosed in parentheses.
 </p>
 
-<pre><code>(define (factorial n)
-  (if (= n 0)
-      1
-      (* n (factorial (- n 1)))))</code></pre>
-
 <p>
-  In this blog post, we'll build a parser and formatter for S-expressions, including:
+  The parser handles:
 </p>
 
 <ul>
@@ -485,7 +524,7 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
   <li>Lists (like <code>(define (factorial n) ...)</code>)</li>
 </ul>
 
-<h2>Building an S-Expression Parser</h2>
+<h2>Implementation Details</h2>
 
 <p>
   Let's look at how we can build an S-expression parser using Dafny's parser combinators. The parser will handle both
@@ -598,33 +637,7 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
     }
   }</code></pre>
 
-<h2>Interactive Demo</h2>
 
-<p>
-  Below is an interactive demo where you can enter S-expressions and see them parsed and formatted:
-</p>
-
-<div class="demo-container">
-  <textarea id="input-area" class="input-area"
-    placeholder="Enter an S-expression here, e.g., (define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))"></textarea>
-
-  <div class="controls">
-    <button id="parse-button">Parse & Format</button>
-    <label>
-      <input type="checkbox" id="pretty-print" checked> Pretty Print
-    </label>
-    <select id="example-select">
-      <option value="">-- Select Example --</option>
-      <option value="(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))">Factorial Function</option>
-      <option value="(let ((x 5) (y 10)) (+ x y))">Let Binding</option>
-      <option value="(lambda (x) (* x x))">Lambda Function</option>
-      <option value="(list 1 2 3 4 5)">Simple List</option>
-    </select>
-  </div>
-
-  <div id="output-area" class="output-area">Formatted output will appear here</div>
-  <div id="error-display" class="error-display"></div>
-</div>
 
 <!-- Load the required libraries and Dafny-compiled JavaScript -->
 <script src="/blog/assets/js/bignumber.js"></script>
