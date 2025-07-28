@@ -6,11 +6,14 @@
 module ParserSnippets {
   import opened Std.Parsers.StringBuilders
 
-  // Parser: EmojiParser
-  const EmojiParser := CharTest(c => '😀' <= c <= '🙏', "emoji")
+  // Parser: AngerParser
+  const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "anger")
 
-  // Parser: DigitsParser
-  const DigitsParser := CharTest(c => '0' <= c <= '9', "digit").Rep()
+  // Parser: JoyParser
+  const JoyParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()
+
+  // Parser: JoyScoreParser
+  const JoyScoreParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)
 
   // Parser: WSParser
   const WSParser := WS
@@ -27,8 +30,8 @@ module ParserSnippets {
   // Parser: SExprStart_I_e
   const SExprStart_I_e := S("(").I_e(IdentifierParser)
 
-  // Parser: AtomParser
-  const AtomParser := O([IdentifierParser, CharTest(c => '0' <= c <= '9', "digit").Rep1()])
+  // Parser: EmotionParser
+  const EmotionParser := O([AngerParser, CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy")])
 
   // Generic result type for parser results
   datatype Result<T> = 

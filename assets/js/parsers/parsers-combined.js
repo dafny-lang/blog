@@ -13088,20 +13088,27 @@ let ParserSnippets = (function() {
     static get SExprStart__I__e() {
       return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
     };
-    static get AtomParser() {
-      return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(ParserSnippets.__default.IdentifierParser, Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return ((new _dafny.CodePoint('0'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('9'.codePointAt(0))));
-      }, _dafny.Seq.UnicodeFromString("digit")))));
-    };
-    static get EmojiParser() {
+    static get AngerParser() {
       return Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return ((new _dafny.CodePoint('😀'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('🙏'.codePointAt(0))));
-      }, _dafny.Seq.UnicodeFromString("emoji"));
+        return (((_dafny.areEqual(_0_c, new _dafny.CodePoint('😠'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😡'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🤬'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😤'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("anger"));
     };
-    static get DigitsParser() {
+    static get EmotionParser() {
+      return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(ParserSnippets.__default.AngerParser, Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((((_dafny.areEqual(_0_c, new _dafny.CodePoint('😀'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😃'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😄'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😁'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🥳'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("joy"))));
+    };
+    static get JoyParser() {
       return Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return ((new _dafny.CodePoint('0'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('9'.codePointAt(0))));
-      }, _dafny.Seq.UnicodeFromString("digit")));
+        return ((((_dafny.areEqual(_0_c, new _dafny.CodePoint('😀'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😃'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😄'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😁'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🥳'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("joy")));
+    };
+    static get JoyScoreParser() {
+      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((((_dafny.areEqual(_0_c, new _dafny.CodePoint('😀'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😃'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😄'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😁'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🥳'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("joy"))), function (_1_joyString) {
+        return (new BigNumber((_1_joyString).length)).multipliedBy(new BigNumber(2));
+      });
     };
     static get WSParser() {
       return Std_Parsers_StringBuilders.__default.WS;

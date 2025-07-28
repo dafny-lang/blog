@@ -59,7 +59,56 @@
   button:hover {
     background-color: #286090;
   }
+
+  /* Example button styles */
+  .example-buttons {
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .example-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: monospace;
+  }
+
+  .example-btn.positive {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .example-btn.positive:hover {
+    background-color: #c3e6cb;
+  }
+
+  .example-btn.negative {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .example-btn.negative:hover {
+    background-color: #f5c6cb;
+  }
 </style>
+
+<script>
+  function setInput(inputId, value) {
+    document.getElementById(inputId).value = value;
+    // Trigger the parser if there's a parse button
+    const parseButtonId = inputId.replace('-input', '-parse-button');
+    const parseButton = document.getElementById(parseButtonId);
+    if (parseButton) {
+      parseButton.click();
+    }
+  }
+</script>
 
 <h2>Introduction</h2>
 
@@ -110,7 +159,15 @@
 
 <p>
   Before diving into the full S-expression parser, let's explore some basic parser components and see how they work
-  individually.
+  individually. Each parser has an <code>Apply</code> method that takes an input string and returns a <code>ParseResult</code>:
+</p>
+
+<pre><code>datatype ParseResult&lt;T&gt; = 
+  | ParseSuccess(value: T, remaining: string)
+  | ParseFailure(error: string, position: int)</code></pre>
+
+<p>
+  When a parser succeeds, it returns the parsed value and the remaining unconsumed characters. When it fails, it returns an error message and the position where parsing failed.
   Each example below includes an interactive demo where you can test the parser with your own input.
 </p>
 
@@ -120,47 +177,96 @@
   Let's build up to the S-expression parser by starting with the most fundamental building blocks and gradually combining them into more complex parsers.
 </p>
 
-<h4>Character Testing (CharTest)</h4>
+<h4>Character Testing (CharTest) - Parsing Anger</h4>
 
 <p>
-  The <code>CharTest</code> combinator is the foundation of most parsers. It takes a predicate function and succeeds if the next character satisfies that condition. Let's start with something fun - parsing emoji!
+  The <code>CharTest</code> combinator is the foundation of most parsers. It takes a predicate function and succeeds if the next character satisfies that condition. Let's start with something fun - parsing anger characters!
 </p>
 
-<pre><code class="parser-definition">const EmojiParser := CharTest(c => '😀' <= c <= '🙏', "emoji")</code></pre>
+<pre><code class="parser-definition">const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "anger")</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter some text starting with an emoji (😀, 😃, 🎉, etc.)</p>
-  <textarea id="emoji-input" class="input-area" placeholder="😀 Hello world!">😀 Hello world!</textarea>
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+  
+  <div class="example-buttons">
+    <button class="example-btn positive" onclick="setInput('anger-input', '😠 I am angry!')">😠 I am angry!</button>
+    <button class="example-btn positive" onclick="setInput('anger-input', '😡Hello')">😡Hello</button>
+    <button class="example-btn positive" onclick="setInput('anger-input', '🤬!!!')">🤬!!!</button>
+    <button class="example-btn positive" onclick="setInput('anger-input', '😤 Huffing!')">😤 Huffing!</button>
+    <button class="example-btn negative" onclick="setInput('anger-input', '😀 Happy')">😀 Happy</button>
+    <button class="example-btn negative" onclick="setInput('anger-input', 'No emoji')">No emoji</button>
+  </div>
+  
+  <textarea id="anger-input" class="input-area" placeholder="😠 I am angry!">😠 I am angry!</textarea>
 
   <div class="output-container">
     <div>
-      <button id="emoji-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="emoji-parsed" class="output-area"
+      <button id="anger-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="anger-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="emoji-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="anger-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
 </div>
 
-<h4>Repetition (Rep)</h4>
+<h4>Repetition (Rep) - Parsing Joy</h4>
 
 <p>
-  The <code>Rep</code> combinator applies a parser zero or more times. Let's use it to parse multiple digits:
+  The <code>Rep</code> combinator applies a parser zero or more times. Let's use it to parse sequences of joyful characters:
 </p>
 
-<pre><code class="parser-definition">const DigitsParser := CharTest(c => '0' <= c <= '9', "digit").Rep()</code></pre>
+<pre><code class="parser-definition">const JoyParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter some digits followed by other characters</p>
-  <textarea id="digits-input" class="input-area" placeholder="12345abc">12345abc</textarea>
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+  
+  <div class="example-buttons">
+    <button class="example-btn positive" onclick="setInput('joy-input', '😀😃😄 Happy day!')">😀😃😄 Happy day!</button>
+    <button class="example-btn positive" onclick="setInput('joy-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So happy!</button>
+    <button class="example-btn positive" onclick="setInput('joy-input', 'No joy here')">No joy here</button>
+    <button class="example-btn negative" onclick="setInput('joy-input', '😠😡 Angry')">😠😡 Angry</button>
+  </div>
+  
+  <textarea id="joy-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
 
   <div class="output-container">
     <div>
-      <button id="digits-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="digits-parsed" class="output-area"
+      <button id="joy-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="joy-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="digits-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="joy-remaining" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Mapping (M) - Joy Score Calculator</h4>
+
+<p>
+  The <code>M</code> combinator transforms the result of a parser. Let's create a joy score calculator that gives 2 points for each joyful character:
+</p>
+
+<pre><code class="parser-definition">const JoyScoreParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+  
+  <div class="example-buttons">
+    <button class="example-btn positive" onclick="setInput('joyscore-input', '😀😃😄 Happy day!')">😀😃😄 Happy day! (6 points)</button>
+    <button class="example-btn positive" onclick="setInput('joyscore-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So happy! (10 points)</button>
+    <button class="example-btn positive" onclick="setInput('joyscore-input', 'No joy here')">No joy here (0 points)</button>
+    <button class="example-btn negative" onclick="setInput('joyscore-input', '😠😡 Angry')">😠😡 Angry (0 points)</button>
+  </div>
+  
+  <textarea id="joyscore-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
+
+  <div class="output-container">
+    <div>
+      <button id="joyscore-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="joyscore-parsed" class="output-area"
+        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+      <strong>Remaining:</strong> <span id="joyscore-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
@@ -261,25 +367,34 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
   </div>
 </div>
 
-<h4>Choice - Atoms vs Lists</h4>
+<h4>Choice (O) - Anger or Joy</h4>
 
 <p>
-  The <code>O</code> (choice) operator tries each parser in sequence until one succeeds. This is perfect for S-expressions, which can be either atoms (identifiers/numbers) or lists. Let's build a simple atom parser:
+  The <code>O</code> (choice) operator tries each parser in sequence until one succeeds. Let's combine our anger and joy parsers to parse any emotional emoji:
 </p>
 
-<pre><code class="parser-definition">// An atom can be either an identifier or a number
-const AtomParser := O([IdentifierParser, CharTest(c => '0' <= c <= '9', "digit").Rep1()])</code></pre>
+<pre><code class="parser-definition">const EmotionParser := O([AngerParser, CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy")])</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter atoms like "factorial", "123", "+", "define"</p>
-  <textarea id="choice-input" class="input-area" placeholder="factorial">factorial</textarea>
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+  
+  <div class="example-buttons">
+    <button class="example-btn positive" onclick="setInput('emotion-input', '😠 Angry!')">😠 Angry!</button>
+    <button class="example-btn positive" onclick="setInput('emotion-input', '😃 Happy!')">😃 Happy!</button>
+    <button class="example-btn positive" onclick="setInput('emotion-input', '🤬 Furious!')">🤬 Furious!</button>
+    <button class="example-btn positive" onclick="setInput('emotion-input', '🥳 Party!')">🥳 Party!</button>
+    <button class="example-btn negative" onclick="setInput('emotion-input', '😐 Neutral')">😐 Neutral</button>
+    <button class="example-btn negative" onclick="setInput('emotion-input', 'No emoji')">No emoji</button>
+  </div>
+  
+  <textarea id="emotion-input" class="input-area" placeholder="😠 Angry!">😠 Angry!</textarea>
 
   <div class="output-container">
     <div>
-      <button id="choice-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="choice-parsed" class="output-area"
+      <button id="emotion-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="emotion-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="choice-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="emotion-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
