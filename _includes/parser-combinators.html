@@ -99,46 +99,41 @@
 </style>
 
 <script>
-  function setInput(inputId, value) {
-    // Set the input value
-    document.getElementById(inputId).value = value;
-    
-    // Find the corresponding parse button by replacing '-input' with '-parse-button'
-    const parseButtonId = inputId.replace('-input', '-parse-button');
-    const parseButton = document.getElementById(parseButtonId);
-    
-    if (parseButton) {
-      // Trigger the parse button click
-      parseButton.click();
-    } else {
-      console.warn('Parse button not found for input:', inputId, 'Expected button ID:', parseButtonId);
-    }
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all example buttons
+    document.querySelectorAll('.example-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Find the demo container this button belongs to
+        const demoContainer = this.closest('.demo-container');
+        if (!demoContainer) {
+          console.warn('Demo container not found for button:', this);
+          return;
+        }
+
+        // Find the input and parse button within this container
+        const input = demoContainer.querySelector('textarea.input-area, input.input-area');
+        const parseButton = demoContainer.querySelector('button[id$="-parse-button"]');
+
+        if (input && parseButton) {
+          // Set the input value to the button's text content
+          input.value = this.textContent;
+          // Trigger the parse button
+          parseButton.click();
+        } else {
+          console.warn('Input or parse button not found in container:', {
+            input: !!input,
+            parseButton: !!parseButton,
+            container: demoContainer
+          });
+        }
+      });
+    });
+  });
 </script>
 
-<script>
-  function setInput(inputId, value) {
-    document.getElementById(inputId).value = value;
-    // Trigger the parser automatically after setting the input
-    const parseButtonId = inputId.replace('-input', '-parse-button');
-    const parseButton = document.getElementById(parseButtonId);
-    if (parseButton) {
-      parseButton.click();
-    }
-  }
-</script>
 
-<script>
-  function setInput(inputId, value) {
-    document.getElementById(inputId).value = value;
-    // Trigger the parser if there's a parse button
-    const parseButtonId = inputId.replace('-input', '-parse-button');
-    const parseButton = document.getElementById(parseButtonId);
-    if (parseButton) {
-      parseButton.click();
-    }
-  }
-</script>
+
+
 
 <h2>Introduction</h2>
 
@@ -223,12 +218,12 @@
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive" onclick="setInput('anger-input', '😠 I am angry!')">😠 I am angry!</button>
-    <button class="example-btn positive" onclick="setInput('anger-input', '😡Hello')">😡Hello</button>
-    <button class="example-btn positive" onclick="setInput('anger-input', '🤬!!!')">🤬!!!</button>
-    <button class="example-btn positive" onclick="setInput('anger-input', '😤 Huffing!')">😤 Huffing!</button>
-    <button class="example-btn negative" onclick="setInput('anger-input', '😀 Happy')">😀 Happy</button>
-    <button class="example-btn negative" onclick="setInput('anger-input', 'No emoji')">No emoji</button>
+    <button class="example-btn positive">😠 I am angry!</button>
+    <button class="example-btn positive">😡Hello</button>
+    <button class="example-btn positive">🤬!!!</button>
+    <button class="example-btn positive">😤 Huffing!</button>
+    <button class="example-btn negative">😀 Happy</button>
+    <button class="example-btn negative">No emoji</button>
   </div>
 
   <textarea id="anger-input" class="input-area" placeholder="😠 I am angry!">😠 I am angry!</textarea>
@@ -257,11 +252,10 @@
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive" onclick="setInput('joy-input', '😀😃😄 Happy day!')">😀😃😄 Happy day!</button>
-    <button class="example-btn positive" onclick="setInput('joy-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So
-      happy!</button>
-    <button class="example-btn positive" onclick="setInput('joy-input', 'No joy here')">No joy here</button>
-    <button class="example-btn negative" onclick="setInput('joy-input', '😠😡 Angry')">😠😡 Angry</button>
+    <button class="example-btn positive">😀😃😄 Happy day!</button>
+    <button class="example-btn positive">😁😁😁😁🥳 So happy!</button>
+    <button class="example-btn positive">No joy here</button>
+    <button class="example-btn negative">😠😡 Angry</button>
   </div>
 
   <textarea id="joy-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
@@ -290,14 +284,10 @@
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive" onclick="setInput('joyscore-input', '😀😃😄 Happy day!')">😀😃😄 Happy day! (6
-      points)</button>
-    <button class="example-btn positive" onclick="setInput('joyscore-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So
-      happy! (10 points)</button>
-    <button class="example-btn positive" onclick="setInput('joyscore-input', 'No joy here')">No joy here (0
-      points)</button>
-    <button class="example-btn negative" onclick="setInput('joyscore-input', '😠😡 Angry')">😠😡 Angry (0
-      points)</button>
+    <button class="example-btn positive">😀😃😄 Happy day! (6 points)</button>
+    <button class="example-btn positive">😁😁😁😁🥳 So happy! (10 points)</button>
+    <button class="example-btn positive">No joy here (0 points)</button>
+    <button class="example-btn negative">😠😡 Angry (0 points)</button>
   </div>
 
   <textarea id="joyscore-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
