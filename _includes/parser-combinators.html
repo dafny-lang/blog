@@ -100,6 +100,24 @@
 
 <script>
   function setInput(inputId, value) {
+    // Set the input value
+    document.getElementById(inputId).value = value;
+    
+    // Find the corresponding parse button by replacing '-input' with '-parse-button'
+    const parseButtonId = inputId.replace('-input', '-parse-button');
+    const parseButton = document.getElementById(parseButtonId);
+    
+    if (parseButton) {
+      // Trigger the parse button click
+      parseButton.click();
+    } else {
+      console.warn('Parse button not found for input:', inputId, 'Expected button ID:', parseButtonId);
+    }
+  }
+</script>
+
+<script>
+  function setInput(inputId, value) {
     document.getElementById(inputId).value = value;
     // Trigger the parser automatically after setting the input
     const parseButtonId = inputId.replace('-input', '-parse-button');
@@ -171,7 +189,8 @@
 
 <p>
   Before diving into the full S-expression parser, let's explore some basic parser components and see how they work
-  individually. Each parser has an <code>Apply</code> method that takes an input string and returns a <code>ParseResult</code>:
+  individually. Each parser has an <code>Apply</code> method that takes an input string and returns a
+  <code>ParseResult</code>:
 </p>
 
 <pre><code>datatype ParseResult&lt;T&gt; = 
@@ -179,27 +198,30 @@
   | ParseFailure(level: FailureLevel, data: FailureData)</code></pre>
 
 <p>
-  When a parser succeeds, it returns the parsed value and the remaining unconsumed characters. When it fails, it returns an error message and the position where parsing failed.
+  When a parser succeeds, it returns the parsed value and the remaining unconsumed characters. When it fails, it returns
+  an error message and the position where parsing failed.
   Each example below includes an interactive demo where you can test the parser with your own input.
 </p>
 
 <h3>Building Parsers Step by Step</h3>
 
 <p>
-  Let's build up to the S-expression parser by starting with the most fundamental building blocks and gradually combining them into more complex parsers.
+  Let's build up to the S-expression parser by starting with the most fundamental building blocks and gradually
+  combining them into more complex parsers.
 </p>
 
 <h4>Character Testing (CharTest) - Parsing Anger</h4>
 
 <p>
-  The <code>CharTest</code> combinator is the foundation of most parsers. It takes a predicate function and succeeds if the next character satisfies that condition. Let's start with something fun - parsing anger characters!
+  The <code>CharTest</code> combinator is the foundation of most parsers. It takes a predicate function and succeeds if
+  the next character satisfies that condition. Let's start with something fun - parsing anger characters!
 </p>
 
 <pre><code class="parser-definition">const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "anger")</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
-  
+
   <div class="example-buttons">
     <button class="example-btn positive" onclick="setInput('anger-input', '😠 I am angry!')">😠 I am angry!</button>
     <button class="example-btn positive" onclick="setInput('anger-input', '😡Hello')">😡Hello</button>
@@ -208,7 +230,7 @@
     <button class="example-btn negative" onclick="setInput('anger-input', '😀 Happy')">😀 Happy</button>
     <button class="example-btn negative" onclick="setInput('anger-input', 'No emoji')">No emoji</button>
   </div>
-  
+
   <textarea id="anger-input" class="input-area" placeholder="😠 I am angry!">😠 I am angry!</textarea>
 
   <div class="output-container">
@@ -225,21 +247,23 @@
 <h4>Repetition (Rep) - Parsing Joy</h4>
 
 <p>
-  The <code>Rep</code> combinator applies a parser zero or more times. Let's use it to parse sequences of joyful characters:
+  The <code>Rep</code> combinator applies a parser zero or more times. Let's use it to parse sequences of joyful
+  characters:
 </p>
 
 <pre><code class="parser-definition">const JoyParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
-  
+
   <div class="example-buttons">
     <button class="example-btn positive" onclick="setInput('joy-input', '😀😃😄 Happy day!')">😀😃😄 Happy day!</button>
-    <button class="example-btn positive" onclick="setInput('joy-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So happy!</button>
+    <button class="example-btn positive" onclick="setInput('joy-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So
+      happy!</button>
     <button class="example-btn positive" onclick="setInput('joy-input', 'No joy here')">No joy here</button>
     <button class="example-btn negative" onclick="setInput('joy-input', '😠😡 Angry')">😠😡 Angry</button>
   </div>
-  
+
   <textarea id="joy-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
 
   <div class="output-container">
@@ -256,21 +280,26 @@
 <h4>Mapping (M) - Joy Score Calculator</h4>
 
 <p>
-  The <code>M</code> combinator transforms the result of a parser. Let's create a joy score calculator that gives 2 points for each joyful character:
+  The <code>M</code> combinator transforms the result of a parser. Let's create a joy score calculator that gives 2
+  points for each joyful character:
 </p>
 
 <pre><code class="parser-definition">const JoyScoreParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
-  
+
   <div class="example-buttons">
-    <button class="example-btn positive" onclick="setInput('joyscore-input', '😀😃😄 Happy day!')">😀😃😄 Happy day! (6 points)</button>
-    <button class="example-btn positive" onclick="setInput('joyscore-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So happy! (10 points)</button>
-    <button class="example-btn positive" onclick="setInput('joyscore-input', 'No joy here')">No joy here (0 points)</button>
-    <button class="example-btn negative" onclick="setInput('joyscore-input', '😠😡 Angry')">😠😡 Angry (0 points)</button>
+    <button class="example-btn positive" onclick="setInput('joyscore-input', '😀😃😄 Happy day!')">😀😃😄 Happy day! (6
+      points)</button>
+    <button class="example-btn positive" onclick="setInput('joyscore-input', '😁😁😁😁🥳 So happy!')">😁😁😁😁🥳 So
+      happy! (10 points)</button>
+    <button class="example-btn positive" onclick="setInput('joyscore-input', 'No joy here')">No joy here (0
+      points)</button>
+    <button class="example-btn negative" onclick="setInput('joyscore-input', '😠😡 Angry')">😠😡 Angry (0
+      points)</button>
   </div>
-  
+
   <textarea id="joyscore-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
 
   <div class="output-container">
@@ -287,7 +316,8 @@
 <h4>Whitespace Parser (WS)</h4>
 
 <p>
-  Now we can understand how the built-in <code>WS</code> parser works - it's actually defined using <code>CharTest</code> and <code>Rep</code>:
+  Now we can understand how the built-in <code>WS</code> parser works - it's actually defined using
+  <code>CharTest</code> and <code>Rep</code>:
 </p>
 
 <pre><code class="parser-definition">// WS is roughly equivalent to:
@@ -312,7 +342,8 @@ const WSParser := WS</code></pre>
 <h4>Identifier Parser</h4>
 
 <p>
-  Let's build an identifier parser that will be crucial for S-expressions. An identifier starts with a letter and can contain letters, digits, and some special characters:
+  Let's build an identifier parser that will be crucial for S-expressions. An identifier starts with a letter and can
+  contain letters, digits, and some special characters:
 </p>
 
 <pre><code class="parser-definition">const IdentifierParser := CharTest(c => 'a' <= c <= 'z' || 'A' <= c <= 'Z', "letter").Rep1()</code></pre>
@@ -335,7 +366,8 @@ const WSParser := WS</code></pre>
 <h4>Concatenation - Building S-Expression Structure</h4>
 
 <p>
-  Now let's use concatenation to start building the structure we need for S-expressions. The concatenation operators combine parsers in sequence:
+  Now let's use concatenation to start building the structure we need for S-expressions. The concatenation operators
+  combine parsers in sequence:
 </p>
 <ul>
   <li><code>I_I</code>: Keeps both results</li>
@@ -344,7 +376,8 @@ const WSParser := WS</code></pre>
 </ul>
 
 <p>
-  Let's build a parser that recognizes the start of an S-expression: an opening parenthesis followed by an identifier (like "(define" or "(lambda"):
+  Let's build a parser that recognizes the start of an S-expression: an opening parenthesis followed by an identifier
+  (like "(define" or "(lambda"):
 </p>
 
 <pre><code class="parser-definition">// Parse "(" followed by an identifier - the start of an S-expression!
@@ -382,14 +415,15 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
 <h4>Choice (O) - Anger or Joy</h4>
 
 <p>
-  The <code>O</code> (choice) operator tries each parser in sequence until one succeeds. Let's combine our anger and joy parsers to parse any emotional emoji:
+  The <code>O</code> (choice) operator tries each parser in sequence until one succeeds. Let's combine our anger and joy
+  parsers to parse any emotional emoji:
 </p>
 
 <pre><code class="parser-definition">const EmotionParser := O([AngerParser, CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy")])</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
-  
+
   <div class="example-buttons">
     <button class="example-btn positive" onclick="setInput('emotion-input', '😠 Angry!')">😠 Angry!</button>
     <button class="example-btn positive" onclick="setInput('emotion-input', '😃 Happy!')">😃 Happy!</button>
@@ -398,7 +432,7 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
     <button class="example-btn negative" onclick="setInput('emotion-input', '😐 Neutral')">😐 Neutral</button>
     <button class="example-btn negative" onclick="setInput('emotion-input', 'No emoji')">No emoji</button>
   </div>
-  
+
   <textarea id="emotion-input" class="input-area" placeholder="😠 Angry!">😠 Angry!</textarea>
 
   <div class="output-container">
@@ -425,7 +459,8 @@ const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
 </ul>
 
 <p>
-  The full S-expression parser combines all these concepts using recursion to handle nested structures. Let's see how it all comes together!
+  The full S-expression parser combines all these concepts using recursion to handle nested structures. Let's see how it
+  all comes together!
 </p>
 
 <h2>S-Expressions</h2>
