@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function initializeParserDemo(container) {
     // Look for parser demo elements
     const input = container.querySelector('textarea, input[type="text"]');
-    const parseButton = container.querySelector('button');
+    const parseButton = container.querySelector('button[id$="-parse-button"]');
     const parsedSpan = container.querySelector('[id$="-parsed"]');
     const remainingSpan = container.querySelector('[id$="-remaining"]');
     const outputArea = container.querySelector('[id$="-area"], [id="output-area"]');
