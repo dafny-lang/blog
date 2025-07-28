@@ -6,14 +6,24 @@
 module ParserSnippets {
   import opened Std.Parsers.StringBuilders
 
+  // Helper function to check if character is an anger emoji
+  predicate IsAngerEmoji(c: char) {
+    c == '😠' || c == '😡' || c == '🤬' || c == '😤'
+  }
+
+  // Helper function to check if character is a joy emoji
+  predicate IsJoyEmoji(c: char) {
+    c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳'
+  }
+
   // Parser: AngerParser
-  const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "anger")
+  const AngerParser := CharTest(IsAngerEmoji, "Angry Smily")
 
   // Parser: JoyParser
-  const JoyParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()
+  const JoyParser := CharTest(IsJoyEmoji, "joy").Rep()
 
   // Parser: JoyScoreParser
-  const JoyScoreParser := CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)
+  const JoyScoreParser := CharTest(IsJoyEmoji, "joy").Rep().M(joyString => |joyString| * 2)
 
   // Parser: WSParser
   const WSParser := WS
@@ -31,7 +41,7 @@ module ParserSnippets {
   const SExprStart_I_e := S("(").I_e(IdentifierParser)
 
   // Parser: EmotionParser
-  const EmotionParser := O([AngerParser, CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy")])
+  const EmotionParser := O([AngerParser, CharTest(IsJoyEmoji, "joy")])
 
   // Generic result type for parser results
   datatype Result<T> = 

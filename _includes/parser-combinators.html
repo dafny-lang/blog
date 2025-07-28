@@ -212,7 +212,7 @@
   the next character satisfies that condition. Let's start with something fun - parsing anger characters!
 </p>
 
-<pre><code class="parser-definition">const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "anger")</code></pre>
+<pre><code class="parser-definition">const AngerParser := CharTest(c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "Angry Smily")</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -254,6 +254,7 @@
   <div class="example-buttons">
     <button class="example-btn positive">😀😃😄 Happy day!</button>
     <button class="example-btn positive">😁😁😁😁🥳 So happy!</button>
+    <button class="example-btn positive">😀😃🥳😠😡 Joy then anger!</button>
     <button class="example-btn positive">No joy here</button>
     <button class="example-btn negative">😠😡 Angry</button>
   </div>
