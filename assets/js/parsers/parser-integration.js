@@ -98,38 +98,101 @@ function parseWithSnippet(parserName, input) {
 // Wrapper function for S-expression parser
 function parseSExpr(input) {
     try {
-        return _dafny.SExprParser.ParseSExprJS(ToDafnyString(input));
+        const result = SExprParser.__default.ParseSExprJS(ToDafnyString(input));
+        // Convert Dafny string result to JavaScript string
+        return FromDafnyString(result);
     } catch (error) {
         return 'Error: ' + error.message;
     }
 }
 
+
+
+// Initialize the main S-expression demo (the compelling demo at the top)
+function initializeMainSExprDemo() {
+    const input = document.getElementById('input-area');
+    const parseButton = document.getElementById('parse-button');
+    const outputArea = document.getElementById('output-area');
+    const errorDisplay = document.getElementById('error-display');
+
+    if (!input || !parseButton || !outputArea) {
+        return; // Main demo not found on this page
+    }
+
+    // Set default example if not already set
+    if (!input.value) {
+        input.value = "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
+    }
+
+    function runParser() {
+        try {
+            const inputValue = input.value;
+            if (!inputValue.trim()) {
+                if (errorDisplay) errorDisplay.textContent = 'Please enter an S-expression';
+                outputArea.textContent = '';
+                return;
+            }
+
+            if (errorDisplay) errorDisplay.textContent = '';
+            
+            // Add parsing animation to output area
+            outputArea.classList.add('parsing');
+            parseButton.disabled = true;
+            parseButton.textContent = 'Parsing...';
+
+            setTimeout(() => {
+                try {
+                    const result = parseSExpr(inputValue);
+                    // For the main demo, just show the formatted result or error
+                    outputArea.textContent = result;
+                    if (errorDisplay) errorDisplay.textContent = '';
+                } catch (parseError) {
+                    if (errorDisplay) errorDisplay.textContent = 'Parse Error: ' + parseError.message;
+                    outputArea.textContent = '';
+                } finally {
+                    // Remove parsing animation
+                    outputArea.classList.remove('parsing');
+                    parseButton.disabled = false;
+                    parseButton.textContent = 'Parse & Format';
+                }
+            }, 10);
+        } catch (err) {
+            if (errorDisplay) errorDisplay.textContent = 'Error: ' + err.message;
+            outputArea.textContent = '';
+            outputArea.classList.remove('parsing');
+            parseButton.disabled = false;
+            parseButton.textContent = 'Parse & Format';
+        }
+    }
+
+    parseButton.addEventListener('click', runParser);
+
+    // Initialize with current input
+    runParser();
+}
+
 // Initialize all parser examples when the page loads
 document.addEventListener('DOMContentLoaded', function () {
-    // Discover and initialize all parser demo containers
+    // Initialize the main S-expression demo separately
+    initializeMainSExprDemo();
+    
+    // Initialize building block demos
     document.querySelectorAll('.demo-container').forEach(container => {
-        initializeParserDemo(container);
+        initializeBuildingBlockDemo(container);
     });
 });
 
-// Generic function to initialize any parser demo based on its structure
-function initializeParserDemo(container) {
-    // Look for parser demo elements
+// Initialize building block demos (the educational examples)
+function initializeBuildingBlockDemo(container) {
+    // Look for building block demo elements
     const input = container.querySelector('textarea, input[type="text"]');
     const parseButton = container.querySelector('button[id$="-parse-button"]');
     const parsedSpan = container.querySelector('[id$="-parsed"]');
     const remainingSpan = container.querySelector('[id$="-remaining"]');
-    const outputArea = container.querySelector('[id$="-area"], [id="output-area"]');
-    const errorDisplay = container.querySelector('[id$="-display"], [class*="error"]');
     const selector = container.querySelector('select');
 
-    // Determine if this is an S-expression demo or a parser snippet demo
-    const isSExprDemo = container.querySelector('[id="input-area"]') ||
-        container.querySelector('[id="parse-button"]');
-
-    if (isSExprDemo) {
-        initializeSExprDemo(container, input, parseButton, outputArea, errorDisplay, selector);
-    } else if (input && parseButton && parsedSpan && remainingSpan) {
+    // Only initialize if this looks like a building block demo
+    if (input && parseButton && parsedSpan && remainingSpan) {
         initializeSnippetDemo(container, input, parseButton, parsedSpan, remainingSpan, selector);
     }
 }
@@ -188,69 +251,7 @@ function initializeSnippetDemo(container, input, parseButton, parsedSpan, remain
     runParser();
 }
 
-// Initialize S-expression demo (complex parser)
-function initializeSExprDemo(container, input, parseButton, outputArea, errorDisplay, exampleSelect) {
-    if (!input || !parseButton || !outputArea) {
-        return;
-    }
 
-    // Set default example if not already set
-    if (!input.value) {
-        input.value = "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
-    }
-
-    const prettyPrintCheckbox = container.querySelector('[id="pretty-print"]');
-
-    function runParser() {
-        try {
-            const inputValue = input.value;
-            if (!inputValue.trim()) {
-                if (errorDisplay) errorDisplay.textContent = 'Please enter an S-expression';
-                return;
-            }
-
-            if (errorDisplay) errorDisplay.textContent = '';
-            outputArea.textContent = 'Parsing...';
-
-            parseButton.disabled = true;
-            parseButton.textContent = 'Parsing...';
-
-            setTimeout(() => {
-                try {
-                    const result = parseSExpr(inputValue);
-                    const formattedResult = (prettyPrintCheckbox && prettyPrintCheckbox.checked) ?
-                        result : result.replace(/\n\s*/g, ' ');
-                    outputArea.textContent = formattedResult;
-                } catch (parseError) {
-                    if (errorDisplay) errorDisplay.textContent = 'Error: ' + parseError.message;
-                    outputArea.textContent = '';
-                } finally {
-                    parseButton.disabled = false;
-                    parseButton.textContent = 'Parse & Format';
-                }
-            }, 10);
-        } catch (err) {
-            if (errorDisplay) errorDisplay.textContent = 'Error: ' + err.message;
-            outputArea.textContent = '';
-            parseButton.disabled = false;
-            parseButton.textContent = 'Parse & Format';
-        }
-    }
-
-    parseButton.addEventListener('click', runParser);
-
-    if (exampleSelect) {
-        exampleSelect.addEventListener('change', function () {
-            if (exampleSelect.value) {
-                input.value = exampleSelect.value;
-                runParser();
-            }
-        });
-    }
-
-    // Initialize with current input
-    runParser();
-}
 
 // Helper function to extract parser names from const definitions in parser-definition code blocks
 function extractParserNamesFromContent(container) {

@@ -10,12 +10,14 @@
 
   .input-area {
     width: 100%;
-    height: 1em;
+    min-height: 2em;
     font-family: monospace;
     margin-bottom: 10px;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    resize: vertical;
+    overflow-y: hidden;
   }
 
   .output-area {
@@ -28,6 +30,23 @@
     border-radius: 4px;
     margin-top: 10px;
     white-space: pre-wrap;
+    transition: border-color 0.3s ease;
+  }
+
+  .output-area.parsing {
+    border-color: #337ab7;
+    animation: parsing-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes parsing-pulse {
+    0%, 100% {
+      border-color: #337ab7;
+      box-shadow: 0 0 0 0 rgba(51, 122, 183, 0.4);
+    }
+    50% {
+      border-color: #286090;
+      box-shadow: 0 0 0 4px rgba(51, 122, 183, 0.1);
+    }
   }
 
   /* Preserve whitespace in parser output spans */
@@ -58,6 +77,12 @@
 
   button:hover {
     background-color: #286090;
+  }
+
+  /* Hide parse buttons for live parsing */
+  button[id$="-parse-button"],
+  button[id="parse-button"] {
+    display: none;
   }
 
   /* Example button styles */
@@ -99,18 +124,61 @@
 </style>
 
 <script>
+  // Auto-resize textarea function
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.max(textarea.scrollHeight, 40) + 'px';
+  }
+
+  // Debounce function for live parsing
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
-    // Initialize all example buttons for building block demos
+    // Initialize auto-resize and live parsing for all textareas
+    document.querySelectorAll('textarea.input-area').forEach(textarea => {
+      // Initial resize
+      autoResize(textarea);
+
+      // Auto-resize on input
+      textarea.addEventListener('input', function () {
+        autoResize(this);
+
+        // Find associated parse button and trigger parsing
+        const container = this.closest('.demo-container');
+        if (container) {
+          const parseButton = container.querySelector('button[id$="-parse-button"], button[id="parse-button"]');
+          if (parseButton) {
+            // Debounced parsing for performance
+            const debouncedParse = debounce(() => parseButton.click(), 300);
+            debouncedParse();
+          }
+        }
+      });
+    });
+
+    // Initialize all example buttons
     document.querySelectorAll('.example-btn').forEach(button => {
       button.addEventListener('click', function () {
         // Check if this is an S-expression demo button (has data-example attribute)
         if (this.hasAttribute('data-example')) {
           const inputArea = document.getElementById('input-area');
           const parseButton = document.getElementById('parse-button');
-          
+
           if (inputArea && parseButton) {
             // Set the input value to the example
             inputArea.value = this.getAttribute('data-example');
+            // Auto-resize the textarea
+            autoResize(inputArea);
             // Trigger the parse button to format immediately
             parseButton.click();
           }
@@ -130,6 +198,10 @@
         if (input && parseButton) {
           // Set the input value to the button's text content
           input.value = this.textContent;
+          // Auto-resize if it's a textarea
+          if (input.tagName === 'TEXTAREA') {
+            autoResize(input);
+          }
           // Trigger the parse button
           parseButton.click();
         } else {
@@ -177,19 +249,21 @@
   </div>
 
   <div class="example-buttons">
-    <button class="example-btn positive" data-example="(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))">Factorial Function</button>
+    <button class="example-btn positive"
+      data-example="(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))">Factorial Function</button>
     <button class="example-btn positive" data-example="(let ((x 5) (y 10)) (+ x y))">Let Binding</button>
     <button class="example-btn positive" data-example="(lambda (x) (* x x))">Lambda Function</button>
     <button class="example-btn positive" data-example="(list 1 2 3 4 5)">Simple List</button>
     <button class="example-btn positive" data-example="(if (> x 0) (+ x 1) (- x 1))">Conditional</button>
-    <button class="example-btn positive" data-example="(map (lambda (x) (* x x)) (list 1 2 3 4))">Higher-Order Function</button>
+    <button class="example-btn positive" data-example="(map (lambda (x) (* x x)) (list 1 2 3 4))">Higher-Order
+      Function</button>
     <button class="example-btn positive" data-example="; Fibonacci with comments
 (define (fib n)
-  ; Base cases
-  (if (<= n 1)
-      n
-      ; Recursive case
-      (+ (fib (- n 1)) (fib (- n 2)))))">With Comments</button>
+; Base cases
+(if (<= n 1)
+n
+; Recursive case
+(+ (fib (- n 1)) (fib (- n 2)))))">With Comments</button>
   </div>
 
   <div id="output-area" class="output-area">Formatted output will appear here</div>
@@ -197,8 +271,7 @@
 </div>
 
 <p>
-  This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable
-  pieces. How is this possible? Let's explore the building blocks.
+  This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable pieces (21 lines of parser combinators + 42 lines of datatypes and helpers). How is this possible? Let's explore the building blocks.
 </p>
 
 <h2>Parser Combinators: Building Complex from Simple</h2>
@@ -355,134 +428,144 @@
   </div>
 </div>
 
-<h4>Whitespace Parser (WS)</h4>
+<h4>Atoms - The Building Blocks of S-Expressions</h4>
 
 <p>
-  Now we can understand how the built-in <code>WS</code> parser works - it's actually defined using
-  <code>CharTest</code> and <code>Rep</code>:
+  S-expressions are made of <strong>atoms</strong> (like <code>factorial</code>, <code>+</code>, <code>42</code>) and <strong>lists</strong> (like <code>(+ 1 2)</code>). 
+  Let's start by parsing atoms - any sequence of characters that isn't a parenthesis or semicolon:
 </p>
 
-<pre><code class="parser-definition">// WS is roughly equivalent to:
-// CharTest(c => c == ' ' || c == '\t' || c == '\n' || c == '\r', "whitespace").Rep()
-const WSParser := WS</code></pre>
+<pre><code class="parser-definition">const AtomParser := CharTest(c => c != '(' && c != ')' && c != ';' && c != ' ' && c != '\t' && c != '\n', "atom character").Rep1()</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter some text with whitespace at the beginning</p>
-  <textarea id="ws-input" class="input-area" placeholder="   Hello world">   Hello world</textarea>
+  <p><strong>Try it:</strong> Click an example or enter your own atoms:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">factorial</button>
+    <button class="example-btn positive">+</button>
+    <button class="example-btn positive">list-length</button>
+    <button class="example-btn positive">42</button>
+    <button class="example-btn positive">>=</button>
+    <button class="example-btn negative">(not-an-atom</button>
+  </div>
+
+  <textarea id="atom-input" class="input-area" placeholder="factorial">factorial</textarea>
 
   <div class="output-container">
     <div>
-      <button id="ws-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="ws-parsed" class="output-area"
+      <button id="atom-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="atom-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="ws-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="atom-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
 </div>
 
-<h4>Identifier Parser</h4>
+<h4>Numbers vs Symbols - Choice in Action</h4>
 
 <p>
-  Let's build an identifier parser that will be crucial for S-expressions. An identifier starts with a letter and can
-  contain letters, digits, and some special characters:
+  The <code>O</code> (choice) combinator tries parsers in sequence until one succeeds. Let's use it to distinguish between numbers and symbols:
 </p>
 
-<pre><code class="parser-definition">const IdentifierParser := CharTest(c => 'a' <= c <= 'z' || 'A' <= c <= 'Z', "letter").Rep1()</code></pre>
+<pre><code class="parser-definition">const NumberOrSymbol := O([
+  CharTest(c => '0' <= c <= '9', "digit").Rep1().M(digits => "NUMBER:" + digits),
+  AtomParser.M(atom => "SYMBOL:" + atom)
+])</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter identifiers like "factorial", "list-length", "+"</p>
-  <textarea id="identifier-input" class="input-area" placeholder="factorial">factorial</textarea>
+  <p><strong>Try it:</strong> See how the parser chooses between numbers and symbols:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">42</button>
+    <button class="example-btn positive">factorial</button>
+    <button class="example-btn positive">123</button>
+    <button class="example-btn positive">+</button>
+    <button class="example-btn positive">0</button>
+    <button class="example-btn positive">hello-world</button>
+  </div>
+
+  <textarea id="choice-input" class="input-area" placeholder="42">42</textarea>
 
   <div class="output-container">
     <div>
-      <button id="identifier-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="identifier-parsed" class="output-area"
+      <button id="choice-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="choice-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="identifier-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="choice-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
 </div>
 
-<h4>Concatenation - Building S-Expression Structure</h4>
+<h4>Lists - Parsing S-Expression Structure</h4>
 
 <p>
-  Now let's use concatenation to start building the structure we need for S-expressions. The concatenation operators
-  combine parsers in sequence:
+  S-expressions use parentheses to create lists. Let's build a parser that recognizes the start of a function call - 
+  an opening parenthesis followed by a function name. The concatenation operators let us combine parsers:
 </p>
 <ul>
   <li><code>I_I</code>: Keeps both results</li>
-  <li><code>I_e</code>: Keeps only the left result</li>
-  <li><code>e_I</code>: Keeps only the right result</li>
+  <li><code>e_I</code>: Keeps only the right result (discard left)</li>
+  <li><code>I_e</code>: Keeps only the left result (discard right)</li>
 </ul>
 
-<p>
-  Let's build a parser that recognizes the start of an S-expression: an opening parenthesis followed by an identifier
-  (like "(define" or "(lambda"):
-</p>
-
-<pre><code class="parser-definition">// Parse "(" followed by an identifier - the start of an S-expression!
-const SExprStart_I_I := S("(").I_I(IdentifierParser)
-
-// Just keep the identifier, discard the "("
-const SExprStart_e_I := S("(").e_I(IdentifierParser)
-
-// Just keep the "(", discard the identifier  
-const SExprStart_I_e := S("(").I_e(IdentifierParser)</code></pre>
+<pre><code class="parser-definition">const FunctionCall := S("(").e_I(AtomParser).M(name => "CALL:" + name)</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter S-expression starts like "(define", "(lambda", "(list"</p>
-  <textarea id="concat-input" class="input-area" placeholder="(define">(define</textarea>
+  <p><strong>Try it:</strong> Enter function calls like "(+", "(factorial", "(if":</p>
 
-  <div class="controls">
-    <select id="concat-type">
-      <option value="SExprStart_I_I">I_I (both "(" and identifier)</option>
-      <option value="SExprStart_e_I">e_I (just identifier)</option>
-      <option value="SExprStart_I_e">I_e (just "(")</option>
-    </select>
+  <div class="example-buttons">
+    <button class="example-btn positive">(+</button>
+    <button class="example-btn positive">(factorial</button>
+    <button class="example-btn positive">(if</button>
+    <button class="example-btn positive">(define</button>
+    <button class="example-btn positive">(lambda</button>
+    <button class="example-btn negative">no-paren</button>
   </div>
+
+  <textarea id="function-input" class="input-area" placeholder="(+">(+</textarea>
 
   <div class="output-container">
     <div>
-      <button id="concat-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="concat-parsed" class="output-area"
+      <button id="function-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="function-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="concat-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="function-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>
 </div>
 
-<h4>Choice (O) - Anger or Joy</h4>
+<h4>Whitespace - The Invisible Glue</h4>
 
 <p>
-  The <code>O</code> (choice) operator tries each parser in sequence until one succeeds. Let's combine our anger and joy
-  parsers to parse any emotional emoji:
+  S-expressions need whitespace to separate atoms. The built-in <code>WS</code> parser handles spaces, tabs, and newlines.
+  Let's see how it works with our atoms:
 </p>
 
-<pre><code class="parser-definition">const EmotionParser := O([AngerParser, CharTest(c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy")])</code></pre>
+<pre><code class="parser-definition">const AtomWithSpaces := AtomParser.I_e(WS)</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+  <p><strong>Try it:</strong> See how whitespace gets consumed after parsing atoms:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive" onclick="setInput('emotion-input', '😠 Angry!')">😠 Angry!</button>
-    <button class="example-btn positive" onclick="setInput('emotion-input', '😃 Happy!')">😃 Happy!</button>
-    <button class="example-btn positive" onclick="setInput('emotion-input', '🤬 Furious!')">🤬 Furious!</button>
-    <button class="example-btn positive" onclick="setInput('emotion-input', '🥳 Party!')">🥳 Party!</button>
-    <button class="example-btn negative" onclick="setInput('emotion-input', '😐 Neutral')">😐 Neutral</button>
-    <button class="example-btn negative" onclick="setInput('emotion-input', 'No emoji')">No emoji</button>
+    <button class="example-btn positive">factorial   </button>
+    <button class="example-btn positive">+	next</button>
+    <button class="example-btn positive">42
+newline</button>
+    <button class="example-btn positive">hello world</button>
+    <button class="example-btn negative">no-space-after</button>
   </div>
 
-  <textarea id="emotion-input" class="input-area" placeholder="😠 Angry!">😠 Angry!</textarea>
+  <textarea id="whitespace-input" class="input-area" placeholder="factorial   ">factorial   </textarea>
 
   <div class="output-container">
     <div>
-      <button id="emotion-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="emotion-parsed" class="output-area"
+      <button id="whitespace-parse-button">Parse</button>
+      <strong>Parsed:</strong> <span id="whitespace-parsed" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="emotion-remaining" class="output-area"
+      <strong>Remaining:</strong> <span id="whitespace-remaining" class="output-area"
         style="display: inline-block; min-height: 20px; width: 200px;"></span>
     </div>
   </div>

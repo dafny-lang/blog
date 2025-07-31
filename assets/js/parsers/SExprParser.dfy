@@ -5,9 +5,11 @@
 module SExprParser {
   import opened Std.Parsers.StringBuilders
 
+  // LOC_MARKER_START: DATATYPES_AND_HELPERS
   datatype SExpr =
     | Atom(name: string)
     | List(items: seq<SExpr>)
+    | Comment(comment: string)
   {
     function ToString(indent: string := ""): string {
       match this {
@@ -16,48 +18,69 @@ module SExprParser {
           if |items| == 0 then
             "()"
           else
-            "(" + 
-            JoinSExprs(items, indent + "  ") + 
+            "(" +
+            JoinItems(items, indent + "  ") +
             ")"
+        case Comment(comment) => ";" + comment
       }
     }
   }
 
-  function JoinSExprs(items: seq<SExpr>, indent: string): string {
-    if |items| == 0 then ""
-    else if |items| == 1 then items[0].ToString(indent)
-    else items[0].ToString(indent) + "\n" + indent + JoinSExprs(items[1..], indent)
+  datatype TopLevelExpr =
+    | TopLevel(items: seq<SExpr>)
+  {
+    function ToString(indent: string := ""): string {
+      match this {
+        case TopLevel(items) =>
+          if |items| == 0 then
+            ""
+          else
+            JoinTopLevelItems(items, indent)
+      }
+    }
   }
 
-  const charNotParenNotSpace :=
-    CharTest((c: char) => c !in "\r\n \t)" && c != '(', "non-space and not a parenthesis")
-    
+  function JoinItems(items: seq<SExpr>, indent: string): string {
+    if |items| == 0 then ""
+    else if |items| == 1 then items[0].ToString(indent)
+    else items[0].ToString(indent) + "\n" + indent + JoinItems(items[1..], indent)
+  }
+
+  function JoinTopLevelItems(items: seq<SExpr>, indent: string): string {
+    if |items| == 0 then ""
+    else if |items| == 1 then items[0].ToString(indent)
+    else items[0].ToString(indent) + "\n" + JoinTopLevelItems(items[1..], indent)
+  }
+  // LOC_MARKER_END: DATATYPES_AND_HELPERS
+
+  // LOC_MARKER_START: PARSER_COMBINATORS
   const noParensNoSpace :=
-    charNotParenNotSpace.I_I(charNotParenNotSpace.Rep()).M((r: (char, string)) => [r.0] + r.1)
-    
+    CharTest((c: char) => c != '(' && c != ')' && c != ' ' && c != '\t' && c != '\n' && c != '\r', "atom character").Rep1()
+
   const notNewline :=
-    CharTest((c: char) => c !in "\n", "anything except newline")
+    CharTest((c: char) => c != '\n', "anything except newline")
 
-  const WSOrComment: B<string> :=
-    WS
+  const commentParser: B<SExpr> :=
+    S(";").e_I(notNewline.Rep()).M((commentText: string) => Comment(commentText))
+    .I_e(O([S("\n"), EOS.M(x => "")]))
 
-  // Parse an S-expression
   const parserSExpr: B<SExpr> :=
     Rec((SExpr: B<SExpr>) =>
-      O([
-        // Either a list: (expr1 expr2 ...)
-        S("(").e_I(WSOrComment).Then(
-          (r: string) =>
-            SExpr.I_e(WSOrComment)
-            .Rep().I_e(S(")")).I_e(WSOrComment)
-        ).M((r: seq<SExpr>) => List(r)),
-        
-        // Or an atom: symbol
-        noParensNoSpace.M((r: string) => Atom(r)).I_e(WSOrComment)
-      ]))
+          O([ commentParser,
+              S("(").e_I(WS).Then(
+                (r: string) =>
+                  SExpr.I_e(WS)
+                  .Rep().I_e(S(")")).I_e(WS)
+              ).M((r: seq<SExpr>) => List(r)),
+              noParensNoSpace.M((r: string) => Atom(r)).I_e(WS)
+            ]))
 
   const p: B<SExpr> :=
-    parserSExpr.I_e(WSOrComment).End()
+    parserSExpr.I_e(WS).End()
+
+  const topLevelParser: B<TopLevelExpr> :=
+    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M((items: seq<SExpr>) => TopLevel(items))
+  // LOC_MARKER_END: PARSER_COMBINATORS
 
   method ParseSExpr(input: string) returns (result: string)
   {
@@ -66,19 +89,30 @@ module SExprParser {
       case ParseSuccess(value, _) =>
         result := value.ToString();
       case ParseFailure(error, _) =>
-        result := "Parse error";
+        result := FailureToString(input, parseResult);
     }
   }
 
-  method {:extern "SExprParser", "ParseSExprJS"} 
-  ParseSExprJS(input: string) returns (result: string)
+  method ParseTopLevel(input: string) returns (result: string)
   {
-    result := ParseSExpr(input);
+    var parseResult := topLevelParser.Apply(input);
+    match parseResult {
+      case ParseSuccess(value, _) =>
+        result := value.ToString();
+      case ParseFailure(error, _) =>
+        result := FailureToString(input, parseResult);
+    }
+  }
+
+  method {:extern "SExprParser", "ParseSExprJS"}
+    ParseSExprJS(input: string) returns (result: string)
+  {
+    result := ParseTopLevel(input);
   }
 
   method Main() {
     var input := "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
-    var result := ParseSExpr(input);
+    var result := ParseTopLevel(input);
     print "Parsed: ", result, "\n";
   }
 }

@@ -6,42 +6,26 @@
 module ParserSnippets {
   import opened Std.Parsers.StringBuilders
 
-  // Helper function to check if character is an anger emoji
-  predicate IsAngerEmoji(c: char) {
-    c == '😠' || c == '😡' || c == '🤬' || c == '😤'
-  }
-
-  // Helper function to check if character is a joy emoji
-  predicate IsJoyEmoji(c: char) {
-    c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳'
-  }
-
   // Parser: AngerParser
-  const AngerParser := CharTest(IsAngerEmoji, "Angry Smily")
+  const AngerParser := CharTest( c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "Angry Smily")
 
   // Parser: JoyParser
-  const JoyParser := CharTest(IsJoyEmoji, "joy").Rep()
+  const JoyParser := CharTest( c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()
 
   // Parser: JoyScoreParser
-  const JoyScoreParser := CharTest(IsJoyEmoji, "joy").Rep().M(joyString => |joyString| * 2)
+  const JoyScoreParser := CharTest( c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)
 
-  // Parser: WSParser
-  const WSParser := WS
+  // Parser: AtomParser
+  const AtomParser := CharTest(c => c != '(' && c != ')' && c != ';' && c != ' ' && c != '\t' && c != '\n', "atom character").Rep1()
 
-  // Parser: IdentifierParser
-  const IdentifierParser := CharTest(c => 'a' <= c <= 'z' || 'A' <= c <= 'Z', "letter").Rep1()
+  // Parser: NumberOrSymbol
+  const NumberOrSymbol := O([ CharTest(c => '0' <= c <= '9', "digit").Rep1().M(digits => "NUMBER:" + digits), AtomParser.M(atom => "SYMBOL:" + atom) ])
 
-  // Parser: SExprStart_I_I
-  const SExprStart_I_I := S("(").I_I(IdentifierParser)
+  // Parser: FunctionCall
+  const FunctionCall := S("(").e_I(AtomParser).M(name => "CALL:" + name)
 
-  // Parser: SExprStart_e_I
-  const SExprStart_e_I := S("(").e_I(IdentifierParser)
-
-  // Parser: SExprStart_I_e
-  const SExprStart_I_e := S("(").I_e(IdentifierParser)
-
-  // Parser: EmotionParser
-  const EmotionParser := O([AngerParser, CharTest(IsJoyEmoji, "joy")])
+  // Parser: AtomWithSpaces
+  const AtomWithSpaces := AtomParser.I_e(WS)
 
   // Generic result type for parser results
   datatype Result<T> = 

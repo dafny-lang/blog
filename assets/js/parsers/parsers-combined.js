@@ -2606,11 +2606,11 @@ let Std_Frames = (function() {
     _parentTraits() {
       return [];
     }
-    constructor(value) {
-      let _this = this;
-      (_this).value = value;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(value) {
+    // let _this = this;
+    // (_this).value = value;
+    // return;
+    // }
   };
   return $module;
 })(); // end of module Std_Frames
@@ -3060,14 +3060,14 @@ let Std_DynamicArray = (function() {
     _parentTraits() {
       return [];
     }
-    constructor() {
-      let _this = this;
-      (_this).size = _dafny.ZERO;
-      (_this).capacity = _dafny.ZERO;
-      let _nw0 = Array((_dafny.ZERO).toNumber());
-      (_this).data = _nw0;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor() {
+    // let _this = this;
+    // (_this).size = _dafny.ZERO;
+    // (_this).capacity = _dafny.ZERO;
+    // let _nw0 = Array((_dafny.ZERO).toNumber());
+    // (_this).data = _nw0;
+    // return;
+    // }
     At(index) {
       let _this = this;
       return (_this.data)[index];
@@ -3212,11 +3212,11 @@ let Std_Actions = (function() {
     _parentTraits() {
       return [Std_Actions.Action, Std_GenericActions.GenericAction, Std_Frames.Validatable];
     }
-    constructor(f) {
-      let _this = this;
-      (_this)._f = f;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(f) {
+    // let _this = this;
+    // (_this)._f = f;
+    // return;
+    // }
     Invoke(i) {
       let _this = this;
       let o = undefined;
@@ -3247,12 +3247,12 @@ let Std_Actions = (function() {
     _parentTraits() {
       return [Std_Actions.Action, Std_GenericActions.GenericAction, Std_Frames.Validatable];
     }
-    constructor(first, second) {
-      let _this = this;
-      (_this)._first = first;
-      (_this)._second = second;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(first, second) {
+    // let _this = this;
+    // (_this)._first = first;
+    // (_this)._second = second;
+    // return;
+    // }
     Invoke(i) {
       let _this = this;
       let o = undefined;
@@ -3381,12 +3381,12 @@ let Std_Consumers = (function() {
       _out1 = Std_Consumers.Consumer.Accept(_this, t);
       return _out1;
     }
-    constructor(n) {
-      let _this = this;
-      (_this)._n = n;
-      (_this).consumedCount = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(n) {
+    // let _this = this;
+    // (_this)._n = n;
+    // (_this).consumedCount = _dafny.ZERO;
+    // return;
+    // }
     Capacity() {
       let _this = this;
       return Std_Wrappers.Option.create_Some(((_this).n).minus(_this.consumedCount));
@@ -3423,12 +3423,12 @@ let Std_Consumers = (function() {
       _out2 = Std_Consumers.Consumer.Accept(_this, t);
       return _out2;
     }
-    constructor(storage) {
-      let _this = this;
-      (_this)._storage = storage;
-      (_this).size = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(storage) {
+    // let _this = this;
+    // (_this)._storage = storage;
+    // (_this).size = _dafny.ZERO;
+    // return;
+    // }
     Capacity() {
       let _this = this;
       return Std_Wrappers.Option.create_Some((new BigNumber(((_this).storage).length)).minus(_this.size));
@@ -3465,15 +3465,15 @@ let Std_Consumers = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    constructor() {
-      let _this = this;
-      let _0_a;
-      let _nw0 = new Std_DynamicArray.DynamicArray();
-      _nw0.constructor();
-      _0_a = _nw0;
-      (_this).storage = _0_a;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor() {
+    // let _this = this;
+    // let _0_a;
+    // let _nw0 = new Std_DynamicArray.DynamicArray();
+    // _nw0.constructor();
+    // _0_a = _nw0;
+    // (_this).storage = _0_a;
+    // return;
+    // }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -3497,12 +3497,12 @@ let Std_Consumers = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    constructor(init, f) {
-      let _this = this;
-      (_this)._f = f;
-      (_this).value = init;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(init, f) {
+    // let _this = this;
+    // (_this)._f = f;
+    // (_this).value = init;
+    // return;
+    // }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -3523,10 +3523,10 @@ let Std_Consumers = (function() {
     _parentTraits() {
       return [Std_Actions.TotalActionProof, Std_Frames.Validatable];
     }
-    constructor(action) {
-      let _this = this;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(action) {
+    // let _this = this;
+    // return;
+    // }
   };
 
   $module.SeqWriter = class SeqWriter {
@@ -3542,11 +3542,11 @@ let Std_Consumers = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    constructor() {
-      let _this = this;
-      (_this).values = _dafny.Seq.of();
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor() {
+    // let _this = this;
+    // (_this).values = _dafny.Seq.of();
+    // return;
+    // }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -3675,12 +3675,12 @@ let Std_Producers = (function() {
       _out1 = Std_Producers.IProducer.Next(_this);
       return _out1;
     }
-    constructor(state, stepFn) {
-      let _this = this;
-      (_this).state = state;
-      (_this)._stepFn = stepFn;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(state, stepFn) {
+    // let _this = this;
+    // (_this).state = state;
+    // (_this)._stepFn = stepFn;
+    // return;
+    // }
     Invoke(i) {
       let _this = this;
       let o = undefined;
@@ -3763,10 +3763,10 @@ let Std_Producers = (function() {
       _out1 = Std_Producers.Producer.Next(_this);
       return _out1;
     }
-    constructor() {
-      let _this = this;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor() {
+    // let _this = this;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _dafny.ZERO;
@@ -3809,13 +3809,13 @@ let Std_Producers = (function() {
       _out2 = Std_Producers.Producer.Next(_this);
       return _out2;
     }
-    constructor(n, t) {
-      let _this = this;
-      (_this)._n = n;
-      (_this)._t = t;
-      (_this).producedCount = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(n, t) {
+    // let _this = this;
+    // (_this)._n = n;
+    // (_this)._t = t;
+    // (_this).producedCount = _dafny.ZERO;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _this.producedCount;
@@ -3870,12 +3870,12 @@ let Std_Producers = (function() {
       _out3 = Std_Producers.Producer.Next(_this);
       return _out3;
     }
-    constructor(elements) {
-      let _this = this;
-      (_this)._elements = elements;
-      (_this).index = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(elements) {
+    // let _this = this;
+    // (_this)._elements = elements;
+    // (_this).index = _dafny.ZERO;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _this.index;
@@ -3930,13 +3930,13 @@ let Std_Producers = (function() {
       _out4 = Std_Producers.Producer.Next(_this);
       return _out4;
     }
-    constructor(original, max) {
-      let _this = this;
-      (_this)._original = original;
-      (_this)._max = max;
-      (_this).produced = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(original, max) {
+    // let _this = this;
+    // (_this)._original = original;
+    // (_this)._max = max;
+    // (_this).produced = _dafny.ZERO;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _this.produced;
@@ -3996,13 +3996,13 @@ let Std_Producers = (function() {
       _out5 = Std_Producers.Producer.Next(_this);
       return _out5;
     }
-    constructor(source, filter) {
-      let _this = this;
-      (_this)._source = source;
-      (_this)._filter = filter;
-      (_this).producedCount = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(source, filter) {
+    // let _this = this;
+    // (_this)._source = source;
+    // (_this)._filter = filter;
+    // (_this).producedCount = _dafny.ZERO;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _this.producedCount;
@@ -4071,12 +4071,12 @@ let Std_Producers = (function() {
       _out6 = Std_Producers.Producer.Next(_this);
       return _out6;
     }
-    constructor(first, second) {
-      let _this = this;
-      (_this)._first = first;
-      (_this)._second = second;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(first, second) {
+    // let _this = this;
+    // (_this)._first = first;
+    // (_this)._second = second;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return (((_this).first).ProducedCount()).plus(((_this).second).ProducedCount());
@@ -4140,12 +4140,12 @@ let Std_Producers = (function() {
       _out7 = Std_Producers.Producer.Next(_this);
       return _out7;
     }
-    constructor(original, mapping) {
-      let _this = this;
-      (_this)._original = original;
-      (_this)._mapping = mapping;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(original, mapping) {
+    // let _this = this;
+    // (_this)._original = original;
+    // (_this)._mapping = mapping;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return ((_this).original).ProducedCount();
@@ -4213,12 +4213,12 @@ let Std_Producers = (function() {
       _out8 = Std_Producers.Producer.Next(_this);
       return _out8;
     }
-    constructor(original, mapping) {
-      let _this = this;
-      (_this)._original = original;
-      (_this)._mapping = mapping;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(original, mapping) {
+    // let _this = this;
+    // (_this)._original = original;
+    // (_this)._mapping = mapping;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return ((_this).original).ProducedCount();
@@ -4281,13 +4281,13 @@ let Std_Producers = (function() {
       _out9 = Std_Producers.Producer.Next(_this);
       return _out9;
     }
-    constructor(original) {
-      let _this = this;
-      (_this)._original = original;
-      (_this).currentInner = Std_Wrappers.Option.create_None();
-      (_this).producedCount = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(original) {
+    // let _this = this;
+    // (_this)._original = original;
+    // (_this).currentInner = Std_Wrappers.Option.create_None();
+    // (_this).producedCount = _dafny.ZERO;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _this.producedCount;
@@ -4380,11 +4380,11 @@ let Std_ActionsExterns = (function() {
     _parentTraits() {
       return [];
     }
-    constructor(inv) {
-      let _this = this;
-      (_this).internal = _dafny.Map.Empty.slice();
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(inv) {
+    // let _this = this;
+    // (_this).internal = _dafny.Map.Empty.slice();
+    // return;
+    // }
     Keys() {
       let _this = this;
       let keys = _dafny.Set.Empty;
@@ -4445,11 +4445,11 @@ let Std_ActionsExterns = (function() {
     _parentTraits() {
       return [];
     }
-    constructor(inv, t) {
-      let _this = this;
-      (_this).boxed = t;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(inv, t) {
+    // let _this = this;
+    // (_this).boxed = t;
+    // return;
+    // }
     Get() {
       let _this = this;
       let t = undefined;
@@ -4470,10 +4470,10 @@ let Std_ActionsExterns = (function() {
     _parentTraits() {
       return [];
     }
-    constructor() {
-      let _this = this;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor() {
+    // let _this = this;
+    // return;
+    // }
     __Lock() {
       let _this = this;
       return;
@@ -6031,12 +6031,12 @@ let Std_BulkActions = (function() {
       _out10 = Std_Producers.Producer.Next(_this);
       return _out10;
     }
-    constructor(elements) {
-      let _this = this;
-      (_this)._elements = elements;
-      (_this).index = _dafny.ZERO;
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(elements) {
+    // let _this = this;
+    // (_this)._elements = elements;
+    // (_this).index = _dafny.ZERO;
+    // return;
+    // }
     ProducedCount() {
       let _this = this;
       return _this.index;
@@ -6111,12 +6111,12 @@ let Std_BulkActions = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    constructor() {
-      let _this = this;
-      (_this).elements = _dafny.Seq.of();
-      (_this).state = Std_Wrappers.Result.create_Success(true);
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor() {
+    // let _this = this;
+    // (_this).elements = _dafny.Seq.of();
+    // (_this).state = Std_Wrappers.Result.create_Success(true);
+    // return;
+    // }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -6175,14 +6175,14 @@ let Std_BulkActions = (function() {
       _out3 = Std_Consumers.Consumer.Accept(_this, t);
       return _out3;
     }
-    constructor(storage) {
-      let _this = this;
-      (_this).storage = storage;
-      (_this).size = _dafny.ZERO;
-      (_this).otherInputs = _dafny.ZERO;
-      (_this).state = Std_Wrappers.Result.create_Success(true);
-      return;
-    }
+    // DUPLICATE CONSTRUCTOR: constructor(storage) {
+    // let _this = this;
+    // (_this).storage = storage;
+    // (_this).size = _dafny.ZERO;
+    // (_this).otherInputs = _dafny.ZERO;
+    // (_this).state = Std_Wrappers.Result.create_Success(true);
+    // return;
+    // }
     Capacity() {
       let _this = this;
       return Std_Wrappers.Option.create_Some(((new BigNumber((_this.storage).length)).minus(_this.size)).minus(_this.otherInputs));
@@ -12893,13 +12893,30 @@ let SExprParser = (function() {
     _parentTraits() {
       return [];
     }
-    static JoinSExprs(items, indent) {
+    static JoinItems(items, indent) {
       if ((new BigNumber((items).length)).isEqualTo(_dafny.ZERO)) {
         return _dafny.Seq.UnicodeFromString("");
       } else if ((new BigNumber((items).length)).isEqualTo(_dafny.ONE)) {
         return ((items)[_dafny.ZERO]).ToString(indent);
       } else {
-        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(((items)[_dafny.ZERO]).ToString(indent), _dafny.Seq.UnicodeFromString("\n")), indent), SExprParser.__default.JoinSExprs((items).slice(_dafny.ONE), indent));
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(((items)[_dafny.ZERO]).ToString(indent), _dafny.Seq.UnicodeFromString("\n")), indent), SExprParser.__default.JoinItems((items).slice(_dafny.ONE), indent));
+      }
+    };
+    static JoinTopLevelItems(items, indent) {
+      let _0___accumulator = _dafny.Seq.of();
+      TAIL_CALL_START: while (true) {
+        if ((new BigNumber((items).length)).isEqualTo(_dafny.ZERO)) {
+          return _dafny.Seq.Concat(_0___accumulator, _dafny.Seq.UnicodeFromString(""));
+        } else if ((new BigNumber((items).length)).isEqualTo(_dafny.ONE)) {
+          return _dafny.Seq.Concat(_0___accumulator, ((items)[_dafny.ZERO]).ToString(indent));
+        } else {
+          _0___accumulator = _dafny.Seq.Concat(_0___accumulator, _dafny.Seq.Concat(((items)[_dafny.ZERO]).ToString(indent), _dafny.Seq.UnicodeFromString("\n")));
+          let _in0 = (items).slice(_dafny.ONE);
+          let _in1 = indent;
+          items = _in0;
+          indent = _in1;
+          continue TAIL_CALL_START;
+        }
       }
     };
     static ParseSExpr(input) {
@@ -12917,7 +12934,27 @@ let SExprParser = (function() {
         }
         {
           let _2_error = (_source0).level;
-          result = _dafny.Seq.UnicodeFromString("Parse error");
+          result = Std_Parsers_StringBuilders.__default.FailureToString(input, _0_parseResult);
+        }
+      }
+      return result;
+    }
+    static ParseTopLevel(input) {
+      let result = _dafny.Seq.UnicodeFromString("");
+      let _0_parseResult;
+      _0_parseResult = Std_Parsers_StringBuilders.B.Apply(SExprParser.__default.topLevelParser, input);
+      let _source0 = _0_parseResult;
+      Lmatch0: {
+        {
+          if (_source0.is_ParseSuccess) {
+            let _1_value = (_source0).result;
+            result = SExprParser.TopLevelExpr.ToString(_1_value, _dafny.Seq.UnicodeFromString(""));
+            break Lmatch0;
+          }
+        }
+        {
+          let _2_error = (_source0).level;
+          result = Std_Parsers_StringBuilders.__default.FailureToString(input, _0_parseResult);
         }
       }
       return result;
@@ -12925,7 +12962,7 @@ let SExprParser = (function() {
     static ParseSExprJS(input) {
       let result = _dafny.Seq.UnicodeFromString("");
       let _out0;
-      _out0 = SExprParser.__default.ParseSExpr(input);
+      _out0 = SExprParser.__default.ParseTopLevel(input);
       result = _out0;
       return result;
     }
@@ -12934,44 +12971,48 @@ let SExprParser = (function() {
       _0_input = _dafny.Seq.UnicodeFromString("(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))");
       let _1_result;
       let _out0;
-      _out0 = SExprParser.__default.ParseSExpr(_0_input);
+      _out0 = SExprParser.__default.ParseTopLevel(_0_input);
       _1_result = _out0;
       process.stdout.write((_dafny.Seq.UnicodeFromString("Parsed: ")).toVerbatimString(false));
       process.stdout.write((_1_result).toVerbatimString(false));
       process.stdout.write((_dafny.Seq.UnicodeFromString("\n")).toVerbatimString(false));
       return;
     }
-    static get charNotParenNotSpace() {
+    static get notNewline() {
       return Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return (!_dafny.Seq.contains(_dafny.Seq.UnicodeFromString("\r\n \t)"), _0_c)) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint('('.codePointAt(0))));
-      }, _dafny.Seq.UnicodeFromString("non-space and not a parenthesis"));
+        return !_dafny.areEqual(_0_c, new _dafny.CodePoint('\n'.codePointAt(0)));
+      }, _dafny.Seq.UnicodeFromString("anything except newline"));
+    };
+    static get commentParser() {
+      return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(";")), Std_Parsers_StringBuilders.B.Rep(SExprParser.__default.notNewline)), function (_0_commentText) {
+        return SExprParser.SExpr.create_Comment(_0_commentText);
+      }), Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("\n")), Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.__default.EOS, function (_1_x) {
+        return _dafny.Seq.UnicodeFromString("");
+      }))));
     };
     static get noParensNoSpace() {
-      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.I__I(SExprParser.__default.charNotParenNotSpace, Std_Parsers_StringBuilders.B.Rep(SExprParser.__default.charNotParenNotSpace)), function (_0_r) {
-        return _dafny.Seq.Concat(_dafny.Seq.of((_0_r)[0]), (_0_r)[1]);
-      });
-    };
-    static get WSOrComment() {
-      return Std_Parsers_StringBuilders.__default.WS;
+      return Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return (((((!_dafny.areEqual(_0_c, new _dafny.CodePoint('('.codePointAt(0)))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint(')'.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint(' '.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint('\t'.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint('\n'.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint('\r'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("atom character")));
     };
     static get parserSExpr() {
       return Std_Parsers_StringBuilders.__default.Rec(function (_0_SExpr) {
-        return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Then(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), SExprParser.__default.WSOrComment), ((_1_SExpr) => function (_2_r) {
-          return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.B.I__e(_1_SExpr, SExprParser.__default.WSOrComment)), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(")"))), SExprParser.__default.WSOrComment);
+        return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(SExprParser.__default.commentParser, Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Then(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), Std_Parsers_StringBuilders.__default.WS), ((_1_SExpr) => function (_2_r) {
+          return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.B.I__e(_1_SExpr, Std_Parsers_StringBuilders.__default.WS)), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(")"))), Std_Parsers_StringBuilders.__default.WS);
         })(_0_SExpr)), function (_3_r) {
           return SExprParser.SExpr.create_List(_3_r);
         }), Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.M(SExprParser.__default.noParensNoSpace, function (_4_r) {
           return SExprParser.SExpr.create_Atom(_4_r);
-        }), SExprParser.__default.WSOrComment)));
+        }), Std_Parsers_StringBuilders.__default.WS)));
       });
     };
     static get p() {
-      return Std_Parsers_StringBuilders.B.End(Std_Parsers_StringBuilders.B.I__e(SExprParser.__default.parserSExpr, SExprParser.__default.WSOrComment));
+      return Std_Parsers_StringBuilders.B.End(Std_Parsers_StringBuilders.B.I__e(SExprParser.__default.parserSExpr, Std_Parsers_StringBuilders.__default.WS));
     };
-    static get notNewline() {
-      return Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return !_dafny.Seq.contains(_dafny.Seq.UnicodeFromString("\n"), _0_c);
-      }, _dafny.Seq.UnicodeFromString("anything except newline"));
+    static get topLevelParser() {
+      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.End(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.WS, Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.B.I__e(SExprParser.__default.parserSExpr, Std_Parsers_StringBuilders.__default.WS))), Std_Parsers_StringBuilders.__default.WS)), function (_0_items) {
+        return _0_items;
+      });
     };
   };
 
@@ -12989,15 +13030,24 @@ let SExprParser = (function() {
       $dt.items = items;
       return $dt;
     }
+    static create_Comment(comment) {
+      let $dt = new SExpr(2);
+      $dt.comment = comment;
+      return $dt;
+    }
     get is_Atom() { return this.$tag === 0; }
     get is_List() { return this.$tag === 1; }
+    get is_Comment() { return this.$tag === 2; }
     get dtor_name() { return this.name; }
     get dtor_items() { return this.items; }
+    get dtor_comment() { return this.comment; }
     toString() {
       if (this.$tag === 0) {
         return "SExprParser.SExpr.Atom" + "(" + this.name.toVerbatimString(true) + ")";
       } else if (this.$tag === 1) {
         return "SExprParser.SExpr.List" + "(" + _dafny.toString(this.items) + ")";
+      } else if (this.$tag === 2) {
+        return "SExprParser.SExpr.Comment" + "(" + this.comment.toVerbatimString(true) + ")";
       } else  {
         return "<unexpected>";
       }
@@ -13009,6 +13059,8 @@ let SExprParser = (function() {
         return other.$tag === 0 && _dafny.areEqual(this.name, other.name);
       } else if (this.$tag === 1) {
         return other.$tag === 1 && _dafny.areEqual(this.items, other.items);
+      } else if (this.$tag === 2) {
+        return other.$tag === 2 && _dafny.areEqual(this.comment, other.comment);
       } else  {
         return false; // unexpected
       }
@@ -13033,11 +13085,67 @@ let SExprParser = (function() {
         }
       }
       {
-        let _1_items = (_source0).items;
-        if ((new BigNumber((_1_items).length)).isEqualTo(_dafny.ZERO)) {
-          return _dafny.Seq.UnicodeFromString("()");
+        if (_source0.is_List) {
+          let _1_items = (_source0).items;
+          if ((new BigNumber((_1_items).length)).isEqualTo(_dafny.ZERO)) {
+            return _dafny.Seq.UnicodeFromString("()");
+          } else {
+            return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinItems(_1_items, _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))), _dafny.Seq.UnicodeFromString(")"));
+          }
+        }
+      }
+      {
+        let _2_comment = (_source0).comment;
+        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString(";"), _2_comment);
+      }
+    };
+  }
+
+  $module.TopLevelExpr = class TopLevelExpr {
+    constructor(tag) {
+      this.$tag = tag;
+    }
+    static create_TopLevel(items) {
+      let $dt = new TopLevelExpr(0);
+      $dt.items = items;
+      return $dt;
+    }
+    get is_TopLevel() { return this.$tag === 0; }
+    get dtor_items() { return this.items; }
+    toString() {
+      if (this.$tag === 0) {
+        return "SExprParser.TopLevelExpr.TopLevel" + "(" + _dafny.toString(this.items) + ")";
+      } else  {
+        return "<unexpected>";
+      }
+    }
+    equals(other) {
+      if (this === other) {
+        return true;
+      } else if (this.$tag === 0) {
+        return other.$tag === 0 && _dafny.areEqual(this.items, other.items);
+      } else  {
+        return false; // unexpected
+      }
+    }
+    static Default() {
+      return _dafny.Seq.of();
+    }
+    static Rtd() {
+      return class {
+        static get Default() {
+          return TopLevelExpr.Default();
+        }
+      };
+    }
+    static ToString(_this, indent) {
+      let _source0 = _this;
+      {
+        let _0_items = _source0;
+        if ((new BigNumber((_0_items).length)).isEqualTo(_dafny.ZERO)) {
+          return _dafny.Seq.UnicodeFromString("");
         } else {
-          return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinSExprs(_1_items, _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))), _dafny.Seq.UnicodeFromString(")"));
+          return SExprParser.__default.JoinTopLevelItems(_0_items, indent);
         }
       }
     };
@@ -13054,12 +13162,6 @@ let ParserSnippets = (function() {
     _parentTraits() {
       return [];
     }
-    static IsAngerEmoji(c) {
-      return (((_dafny.areEqual(c, new _dafny.CodePoint('😠'.codePointAt(0)))) || (_dafny.areEqual(c, new _dafny.CodePoint('😡'.codePointAt(0))))) || (_dafny.areEqual(c, new _dafny.CodePoint('🤬'.codePointAt(0))))) || (_dafny.areEqual(c, new _dafny.CodePoint('😤'.codePointAt(0))));
-    };
-    static IsJoyEmoji(c) {
-      return ((((_dafny.areEqual(c, new _dafny.CodePoint('😀'.codePointAt(0)))) || (_dafny.areEqual(c, new _dafny.CodePoint('😃'.codePointAt(0))))) || (_dafny.areEqual(c, new _dafny.CodePoint('😄'.codePointAt(0))))) || (_dafny.areEqual(c, new _dafny.CodePoint('😁'.codePointAt(0))))) || (_dafny.areEqual(c, new _dafny.CodePoint('🥳'.codePointAt(0))));
-    };
     static ParseJS(parser, input) {
       let result = ParserSnippets.Result.Default();
       let _0_parseResult;
@@ -13080,36 +13182,44 @@ let ParserSnippets = (function() {
       }
       return result;
     }
-    static get AngerParser() {
-      return Std_Parsers_StringBuilders.__default.CharTest(ParserSnippets.__default.IsAngerEmoji, _dafny.Seq.UnicodeFromString("Angry Smily"));
+    static get AtomParser() {
+      return Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return (((((!_dafny.areEqual(_0_c, new _dafny.CodePoint('('.codePointAt(0)))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint(')'.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint(';'.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint(' '.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint('\t'.codePointAt(0))))) && (!_dafny.areEqual(_0_c, new _dafny.CodePoint('\n'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("atom character")));
     };
-    static get JoyParser() {
-      return Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(ParserSnippets.__default.IsJoyEmoji, _dafny.Seq.UnicodeFromString("joy")));
+    static get NumberOrSymbol() {
+      return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((new _dafny.CodePoint('0'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('9'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("digit"))), function (_1_digits) {
+        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("NUMBER:"), _1_digits);
+      }), Std_Parsers_StringBuilders.B.M(ParserSnippets.__default.AtomParser, function (_2_atom) {
+        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("SYMBOL:"), _2_atom);
+      })));
     };
-    static get JoyScoreParser() {
-      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(ParserSnippets.__default.IsJoyEmoji, _dafny.Seq.UnicodeFromString("joy"))), function (_0_joyString) {
-        return (new BigNumber((_0_joyString).length)).multipliedBy(new BigNumber(2));
+    static get FunctionCall() {
+      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.AtomParser), function (_0_name) {
+        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("CALL:"), _0_name);
       });
     };
-    static get IdentifierParser() {
-      return Std_Parsers_StringBuilders.B.Rep1(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
-        return (((new _dafny.CodePoint('a'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('z'.codePointAt(0))))) || (((new _dafny.CodePoint('A'.codePointAt(0))).isLessThanOrEqual(_0_c)) && ((_0_c).isLessThanOrEqual(new _dafny.CodePoint('Z'.codePointAt(0)))));
-      }, _dafny.Seq.UnicodeFromString("letter")));
+    static get AtomWithSpaces() {
+      return Std_Parsers_StringBuilders.B.I__e(ParserSnippets.__default.AtomParser, Std_Parsers_StringBuilders.__default.WS);
     };
-    static get SExprStart__I__I() {
-      return Std_Parsers_StringBuilders.B.I__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
+    static get AngerParser() {
+      return Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return (((_dafny.areEqual(_0_c, new _dafny.CodePoint('😠'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😡'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🤬'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😤'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("Angry Smily"));
     };
-    static get SExprStart__e__I() {
-      return Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
+    static get JoyParser() {
+      return Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((((_dafny.areEqual(_0_c, new _dafny.CodePoint('😀'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😃'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😄'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😁'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🥳'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("joy")));
     };
-    static get SExprStart__I__e() {
-      return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.IdentifierParser);
-    };
-    static get EmotionParser() {
-      return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(ParserSnippets.__default.AngerParser, Std_Parsers_StringBuilders.__default.CharTest(ParserSnippets.__default.IsJoyEmoji, _dafny.Seq.UnicodeFromString("joy"))));
-    };
-    static get WSParser() {
-      return Std_Parsers_StringBuilders.__default.WS;
+    static get JoyScoreParser() {
+      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
+        return ((((_dafny.areEqual(_0_c, new _dafny.CodePoint('😀'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😃'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😄'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😁'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🥳'.codePointAt(0))));
+      }, _dafny.Seq.UnicodeFromString("joy"))), function (_1_joyString) {
+        return (new BigNumber((_1_joyString).length)).multipliedBy(new BigNumber(2));
+      });
     };
   };
 

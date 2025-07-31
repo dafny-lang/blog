@@ -123,19 +123,24 @@ function extractDafnySnippets() {
       .replace(/&#39;/g, "'")
       .trim();
 
-    // Extract all const definitions from this code block
-    const lines = codeBlock.split('\n');
-    const constLines = lines.filter(line => line.trim().startsWith('const '));
+    // Extract all const definitions from this code block (supporting multiline)
+    const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*((?:[^;]|;(?!\s*const\s))*?)(?=\s*(?:const\s|$))/gs;
+    let constMatch;
+    
+    while ((constMatch = constRegex.exec(codeBlock)) !== null) {
+      const parserName = constMatch[1];
+      let parserDef = constMatch[2].trim();
+      
+      // Clean up the definition - remove extra whitespace and normalize
+      parserDef = parserDef
+        .replace(/\s+/g, ' ')  // Replace multiple whitespace with single space
+        .replace(/\s*\|\|\s*/g, ' || ')  // Normalize || operators
+        .replace(/\s*=>\s*/g, ' => ')    // Normalize => operators
+        .replace(/\s*,\s*/g, ', ')       // Normalize commas
+        .trim();
 
-    for (const constLine of constLines) {
-      const constMatch = constLine.match(/const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(.+)/);
-      if (constMatch) {
-        const parserName = constMatch[1];
-        const parserDef = constMatch[2];
-
-        extractedParsers.push({ name: parserName, definition: parserDef });
-        parserNames.push(parserName);
-      }
+      extractedParsers.push({ name: parserName, definition: parserDef });
+      parserNames.push(parserName);
     }
   }
 
@@ -271,6 +276,103 @@ function fixBrowserCompatibility(filePath) {
 }
 
 /**
+ * Count lines of code between markers in SExprParser.dfy
+ * @returns {{datatypesAndHelpers: number, parserCombinators: number}}
+ */
+function countLinesOfCode() {
+  log('Counting lines of code in SExprParser.dfy...');
+  
+  if (!fileExists(config.sexprParser)) {
+    error(`SExprParser.dfy not found: ${config.sexprParser}`);
+  }
+  
+  const content = fs.readFileSync(config.sexprParser, 'utf8');
+  const lines = content.split('\n');
+  
+  let datatypesAndHelpersCount = 0;
+  let parserCombinatorsCount = 0;
+  let currentSection = null;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+    
+    // Check for section markers first
+    if (trimmedLine.includes('LOC_MARKER_START: DATATYPES_AND_HELPERS')) {
+      currentSection = 'datatypes';
+      continue;
+    } else if (trimmedLine.includes('LOC_MARKER_END: DATATYPES_AND_HELPERS')) {
+      currentSection = null;
+      continue;
+    } else if (trimmedLine.includes('LOC_MARKER_START: PARSER_COMBINATORS')) {
+      currentSection = 'combinators';
+      continue;
+    } else if (trimmedLine.includes('LOC_MARKER_END: PARSER_COMBINATORS')) {
+      currentSection = null;
+      continue;
+    }
+    
+    // Skip empty lines and comment-only lines when counting
+    if (trimmedLine === '' || trimmedLine.startsWith('//') || trimmedLine.startsWith('/*') || trimmedLine === '*/') {
+      continue;
+    }
+    
+    // Count lines in current section
+    if (currentSection === 'datatypes') {
+      datatypesAndHelpersCount++;
+    } else if (currentSection === 'combinators') {
+      parserCombinatorsCount++;
+    }
+  }
+  
+  log(`Lines of code - Datatypes and helpers: ${datatypesAndHelpersCount}, Parser combinators: ${parserCombinatorsCount}`);
+  
+  return {
+    datatypesAndHelpers: datatypesAndHelpersCount,
+    parserCombinators: parserCombinatorsCount
+  };
+}
+
+/**
+ * Update the HTML file with LoC information
+ * @param {{datatypesAndHelpers: number, parserCombinators: number}} locCounts
+ */
+function updateHtmlWithLocInfo(locCounts) {
+  log('Updating HTML file with LoC information...');
+  
+  if (!fileExists(config.htmlFile)) {
+    error(`HTML file not found: ${config.htmlFile}`);
+  }
+  
+  let htmlContent = fs.readFileSync(config.htmlFile, 'utf8');
+  
+  // Find and replace the target sentence (handle multiline)
+  const originalPattern = /This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable\s+pieces\. How is this possible\? Let's explore the building blocks\./s;
+  const newSentence = `This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable pieces (${locCounts.parserCombinators} lines of parser combinators + ${locCounts.datatypesAndHelpers} lines of datatypes and helpers). How is this possible? Let's explore the building blocks.`;
+  
+  if (originalPattern.test(htmlContent)) {
+    htmlContent = htmlContent.replace(originalPattern, newSentence);
+    fs.writeFileSync(config.htmlFile, htmlContent);
+    log(`Updated HTML file with LoC information: ${locCounts.parserCombinators} parser combinator lines, ${locCounts.datatypesAndHelpers} datatype/helper lines`);
+  } else {
+    // Try to find a similar pattern in case the sentence was already modified
+    const locPattern = /This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable pieces[^.]*\. How is this possible\? Let's explore the building blocks\./s;
+    if (locPattern.test(htmlContent)) {
+      htmlContent = htmlContent.replace(locPattern, newSentence);
+      fs.writeFileSync(config.htmlFile, htmlContent);
+      log(`Updated existing LoC information in HTML file: ${locCounts.parserCombinators} parser combinator lines, ${locCounts.datatypesAndHelpers} datatype/helper lines`);
+    } else {
+      log('Warning: Could not find the target sentence to update in HTML file');
+      log('Debug: First 500 chars of HTML content around expected location:');
+      const debugIndex = htmlContent.indexOf('This formatter handles');
+      if (debugIndex !== -1) {
+        log(htmlContent.substring(debugIndex, debugIndex + 500));
+      }
+    }
+  }
+}
+
+/**
  * Compile all Dafny files together to share runtime and avoid conflicts
  */
 function compileAllDafnyFiles() {
@@ -328,7 +430,11 @@ function main() {
   // Step 1: Extract Dafny snippets from HTML and create ParserSnippets.dfy
   extractDafnySnippets();
 
-  // Step 2: Compile all Dafny files together to share runtime and avoid conflicts
+  // Step 2: Count lines of code and update HTML
+  const locCounts = countLinesOfCode();
+  updateHtmlWithLocInfo(locCounts);
+
+  // Step 3: Compile all Dafny files together to share runtime and avoid conflicts
   compileAllDafnyFiles();
 
   // Success message
