@@ -12919,6 +12919,152 @@ let SExprParser = (function() {
         }
       }
     };
+    static UnwrapComments(expr) {
+      TAIL_CALL_START: while (true) {
+        let _source0 = expr;
+        {
+          if (_source0.is_Comment) {
+            let _0_underlyingNode = (_source0).underlyingNode;
+            let _in0 = _0_underlyingNode;
+            expr = _in0;
+            continue TAIL_CALL_START;
+          }
+        }
+        {
+          return expr;
+        }
+      }
+    };
+    static IsAtom(expr, name) {
+      let _0_unwrapped = SExprParser.__default.UnwrapComments(expr);
+      return ((_0_unwrapped).is_Atom) && (_dafny.areEqual((_0_unwrapped).dtor_name, name));
+    };
+    static GetListItems(expr) {
+      let _0_unwrapped = SExprParser.__default.UnwrapComments(expr);
+      if ((_0_unwrapped).is_List) {
+        return (_0_unwrapped).dtor_items;
+      } else {
+        return _dafny.Seq.of();
+      }
+    };
+    static FormatInfix(op, left, right, indent) {
+      return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat((left).ToString(indent), _dafny.Seq.UnicodeFromString(" ")), op), _dafny.Seq.UnicodeFromString(" ")), (right).ToString(indent));
+    };
+    static TryFormatAsInfix(items, indent) {
+      if (((new BigNumber((items).length)).isEqualTo(new BigNumber(3))) && (((((((((SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("+"))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("-")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("*")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("/")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("=")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("<")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString(">")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("<=")))) || (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString(">="))))) {
+        let _0_unwrapped = SExprParser.__default.UnwrapComments((items)[_dafny.ZERO]);
+        let _1_op = (_0_unwrapped).dtor_name;
+        return _dafny.Tuple.of(true, SExprParser.__default.FormatInfix(_1_op, (items)[_dafny.ONE], (items)[new BigNumber(2)], indent));
+      } else {
+        return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static TryFormatAsDefine(items, indent) {
+      if (((new BigNumber(3)).isLessThanOrEqualTo(new BigNumber((items).length))) && (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("define")))) {
+        let _0_funcDefItems = SExprParser.__default.GetListItems((items)[_dafny.ONE]);
+        if (((_dafny.ONE).isLessThanOrEqualTo(new BigNumber((_0_funcDefItems).length))) && (SExprParser.__default.IsAtom((_0_funcDefItems)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("")))) {
+          let _1_unwrappedFunc = SExprParser.__default.UnwrapComments((_0_funcDefItems)[_dafny.ZERO]);
+          if ((_1_unwrappedFunc).is_Atom) {
+            let _2_funcName = (_1_unwrappedFunc).dtor_name;
+            let _3_params = (((_dafny.ONE).isLessThan(new BigNumber((_0_funcDefItems).length))) ? ((_0_funcDefItems).slice(_dafny.ONE)) : (_dafny.Seq.of()));
+            let _4_paramStr = (((new BigNumber((_3_params).length)).isEqualTo(_dafny.ZERO)) ? (_dafny.Seq.UnicodeFromString("()")) : ((((new BigNumber((_3_params).length)).isEqualTo(_dafny.ONE)) ? (_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), ((_3_params)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString(""))), _dafny.Seq.UnicodeFromString(")"))) : (_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinParams(_3_params)), _dafny.Seq.UnicodeFromString(")"))))));
+            let _5_body = (((new BigNumber((items).length)).isEqualTo(new BigNumber(3))) ? (((items)[new BigNumber(2)]).ToString(_dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))) : (SExprParser.__default.JoinItems((items).slice(new BigNumber(2)), _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))));
+            return _dafny.Tuple.of(true, _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("function "), _2_funcName), _4_paramStr), _dafny.Seq.UnicodeFromString("\n")), indent), _dafny.Seq.UnicodeFromString("  ")), _5_body));
+          } else {
+            return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+          }
+        } else if ((_dafny.ONE).isLessThanOrEqualTo(new BigNumber((_0_funcDefItems).length))) {
+          let _6_unwrappedFunc = SExprParser.__default.UnwrapComments((_0_funcDefItems)[_dafny.ZERO]);
+          if ((_6_unwrappedFunc).is_Atom) {
+            let _7_funcName = (_6_unwrappedFunc).dtor_name;
+            let _8_params = (((_dafny.ONE).isLessThan(new BigNumber((_0_funcDefItems).length))) ? ((_0_funcDefItems).slice(_dafny.ONE)) : (_dafny.Seq.of()));
+            let _9_paramStr = (((new BigNumber((_8_params).length)).isEqualTo(_dafny.ZERO)) ? (_dafny.Seq.UnicodeFromString("()")) : ((((new BigNumber((_8_params).length)).isEqualTo(_dafny.ONE)) ? (_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), ((_8_params)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString(""))), _dafny.Seq.UnicodeFromString(")"))) : (_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinParams(_8_params)), _dafny.Seq.UnicodeFromString(")"))))));
+            let _10_body = (((new BigNumber((items).length)).isEqualTo(new BigNumber(3))) ? (((items)[new BigNumber(2)]).ToString(_dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))) : (SExprParser.__default.JoinItems((items).slice(new BigNumber(2)), _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))));
+            return _dafny.Tuple.of(true, _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("function "), _7_funcName), _9_paramStr), _dafny.Seq.UnicodeFromString("\n")), indent), _dafny.Seq.UnicodeFromString("  ")), _10_body));
+          } else {
+            return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+          }
+        } else {
+          return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+        }
+      } else {
+        return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static TryFormatAsIf(items, indent) {
+      if (((new BigNumber((items).length)).isEqualTo(new BigNumber(4))) && (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("if")))) {
+        let _0_condition = ((items)[_dafny.ONE]).ToString(_dafny.Seq.UnicodeFromString(""));
+        let _1_thenBranch = ((items)[new BigNumber(2)]).ToString(_dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")));
+        let _2_elseBranch = ((items)[new BigNumber(3)]).ToString(_dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")));
+        return _dafny.Tuple.of(true, _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("if "), _0_condition), _dafny.Seq.UnicodeFromString(" then\n")), indent), _dafny.Seq.UnicodeFromString("  ")), _1_thenBranch), _dafny.Seq.UnicodeFromString("\n")), indent), _dafny.Seq.UnicodeFromString("else\n")), indent), _dafny.Seq.UnicodeFromString("  ")), _2_elseBranch));
+      } else {
+        return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static JoinParams(params) {
+      if ((new BigNumber((params).length)).isEqualTo(_dafny.ZERO)) {
+        return _dafny.Seq.UnicodeFromString("");
+      } else if ((new BigNumber((params).length)).isEqualTo(_dafny.ONE)) {
+        return ((params)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString(""));
+      } else {
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(((params)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString("")), _dafny.Seq.UnicodeFromString(", ")), SExprParser.__default.JoinParams((params).slice(_dafny.ONE)));
+      }
+    };
+    static TryFormatAsLet(items, indent) {
+      if (((new BigNumber(3)).isLessThanOrEqualTo(new BigNumber((items).length))) && (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("let")))) {
+        let _0_bindings = SExprParser.__default.GetListItems((items)[_dafny.ONE]);
+        let _1_body = (((new BigNumber((items).length)).isEqualTo(new BigNumber(3))) ? (((items)[new BigNumber(2)]).ToString(_dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))) : (SExprParser.__default.JoinItems((items).slice(new BigNumber(2)), _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))));
+        let _2_bindingStr = SExprParser.__default.FormatBindings(_0_bindings, _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")));
+        return _dafny.Tuple.of(true, _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("let\n"), indent), _dafny.Seq.UnicodeFromString("  ")), _2_bindingStr), _dafny.Seq.UnicodeFromString("\n")), indent), _dafny.Seq.UnicodeFromString("in\n")), indent), _dafny.Seq.UnicodeFromString("  ")), _1_body));
+      } else {
+        return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static FormatBindings(bindings, indent) {
+      if ((new BigNumber((bindings).length)).isEqualTo(_dafny.ZERO)) {
+        return _dafny.Seq.UnicodeFromString("");
+      } else if ((new BigNumber((bindings).length)).isEqualTo(_dafny.ONE)) {
+        return SExprParser.__default.FormatBinding((bindings)[_dafny.ZERO], indent);
+      } else {
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(SExprParser.__default.FormatBinding((bindings)[_dafny.ZERO], indent), _dafny.Seq.UnicodeFromString("\n")), indent), SExprParser.__default.FormatBindings((bindings).slice(_dafny.ONE), indent));
+      }
+    };
+    static FormatBinding(binding, indent) {
+      let _0_bindingItems = SExprParser.__default.GetListItems(binding);
+      if ((new BigNumber((_0_bindingItems).length)).isEqualTo(new BigNumber(2))) {
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(((_0_bindingItems)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString("")), _dafny.Seq.UnicodeFromString(" = ")), ((_0_bindingItems)[_dafny.ONE]).ToString(_dafny.Seq.UnicodeFromString("")));
+      } else {
+        return (binding).ToString(_dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static TryFormatAsLambda(items, indent) {
+      if (((new BigNumber(3)).isLessThanOrEqualTo(new BigNumber((items).length))) && (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("lambda")))) {
+        let _0_params = SExprParser.__default.GetListItems((items)[_dafny.ONE]);
+        let _1_paramStr = (((new BigNumber((_0_params).length)).isEqualTo(_dafny.ZERO)) ? (_dafny.Seq.UnicodeFromString("()")) : ((((new BigNumber((_0_params).length)).isEqualTo(_dafny.ONE)) ? (_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), ((_0_params)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString(""))), _dafny.Seq.UnicodeFromString(")"))) : (_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinParams(_0_params)), _dafny.Seq.UnicodeFromString(")"))))));
+        let _2_body = (((new BigNumber((items).length)).isEqualTo(new BigNumber(3))) ? (((items)[new BigNumber(2)]).ToString(_dafny.Seq.UnicodeFromString(""))) : (SExprParser.__default.JoinItems((items).slice(new BigNumber(2)), _dafny.Seq.UnicodeFromString(""))));
+        return _dafny.Tuple.of(true, _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("λ"), _1_paramStr), _dafny.Seq.UnicodeFromString(" => ")), _2_body));
+      } else {
+        return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static TryFormatAsList(items, indent) {
+      if (((_dafny.ONE).isLessThanOrEqualTo(new BigNumber((items).length))) && (SExprParser.__default.IsAtom((items)[_dafny.ZERO], _dafny.Seq.UnicodeFromString("list")))) {
+        let _0_listItems = (((_dafny.ONE).isLessThan(new BigNumber((items).length))) ? ((items).slice(_dafny.ONE)) : (_dafny.Seq.of()));
+        let _1_listStr = SExprParser.__default.JoinListItems(_0_listItems);
+        return _dafny.Tuple.of(true, _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("["), _1_listStr), _dafny.Seq.UnicodeFromString("]")));
+      } else {
+        return _dafny.Tuple.of(false, _dafny.Seq.UnicodeFromString(""));
+      }
+    };
+    static JoinListItems(items) {
+      if ((new BigNumber((items).length)).isEqualTo(_dafny.ZERO)) {
+        return _dafny.Seq.UnicodeFromString("");
+      } else if ((new BigNumber((items).length)).isEqualTo(_dafny.ONE)) {
+        return ((items)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString(""));
+      } else {
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(((items)[_dafny.ZERO]).ToString(_dafny.Seq.UnicodeFromString("")), _dafny.Seq.UnicodeFromString(", ")), SExprParser.__default.JoinListItems((items).slice(_dafny.ONE)));
+      }
+    };
     static ParseSExpr(input) {
       let result = _dafny.Seq.UnicodeFromString("");
       let _0_parseResult;
@@ -12983,10 +13129,8 @@ let SExprParser = (function() {
         return !_dafny.areEqual(_0_c, new _dafny.CodePoint('\n'.codePointAt(0)));
       }, _dafny.Seq.UnicodeFromString("anything except newline"));
     };
-    static get commentParser() {
-      return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(";")), Std_Parsers_StringBuilders.B.Rep(SExprParser.__default.notNewline)), function (_0_commentText) {
-        return SExprParser.SExpr.create_Comment(_0_commentText);
-      }), Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("\n")), Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.__default.EOS, function (_1_x) {
+    static get commentText() {
+      return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(";")), Std_Parsers_StringBuilders.B.Rep(SExprParser.__default.notNewline)), Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("\n")), Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.__default.EOS, function (_0_x) {
         return _dafny.Seq.UnicodeFromString("");
       }))));
     };
@@ -12997,12 +13141,14 @@ let SExprParser = (function() {
     };
     static get parserSExpr() {
       return Std_Parsers_StringBuilders.__default.Rec(function (_0_SExpr) {
-        return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(SExprParser.__default.commentParser, Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Then(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), Std_Parsers_StringBuilders.__default.WS), ((_1_SExpr) => function (_2_r) {
-          return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.B.I__e(_1_SExpr, Std_Parsers_StringBuilders.__default.WS)), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(")"))), Std_Parsers_StringBuilders.__default.WS);
-        })(_0_SExpr)), function (_3_r) {
-          return SExprParser.SExpr.create_List(_3_r);
-        }), Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.M(SExprParser.__default.noParensNoSpace, function (_4_r) {
-          return SExprParser.SExpr.create_Atom(_4_r);
+        return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.I__I(Std_Parsers_StringBuilders.B.I__e(SExprParser.__default.commentText, Std_Parsers_StringBuilders.__default.WS), _0_SExpr), function (_1_commentAndExpr) {
+          return SExprParser.SExpr.create_Comment((_1_commentAndExpr)[0], (_1_commentAndExpr)[1]);
+        }), Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Then(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), Std_Parsers_StringBuilders.__default.WS), ((_2_SExpr) => function (_3_r) {
+          return Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.B.I__e(_2_SExpr, Std_Parsers_StringBuilders.__default.WS)), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(")"))), Std_Parsers_StringBuilders.__default.WS);
+        })(_0_SExpr)), function (_4_r) {
+          return SExprParser.SExpr.create_List(_4_r);
+        }), Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.M(SExprParser.__default.noParensNoSpace, function (_5_r) {
+          return SExprParser.SExpr.create_Atom(_5_r);
         }), Std_Parsers_StringBuilders.__default.WS)));
       });
     };
@@ -13030,9 +13176,10 @@ let SExprParser = (function() {
       $dt.items = items;
       return $dt;
     }
-    static create_Comment(comment) {
+    static create_Comment(comment, underlyingNode) {
       let $dt = new SExpr(2);
       $dt.comment = comment;
+      $dt.underlyingNode = underlyingNode;
       return $dt;
     }
     get is_Atom() { return this.$tag === 0; }
@@ -13041,13 +13188,14 @@ let SExprParser = (function() {
     get dtor_name() { return this.name; }
     get dtor_items() { return this.items; }
     get dtor_comment() { return this.comment; }
+    get dtor_underlyingNode() { return this.underlyingNode; }
     toString() {
       if (this.$tag === 0) {
         return "SExprParser.SExpr.Atom" + "(" + this.name.toVerbatimString(true) + ")";
       } else if (this.$tag === 1) {
         return "SExprParser.SExpr.List" + "(" + _dafny.toString(this.items) + ")";
       } else if (this.$tag === 2) {
-        return "SExprParser.SExpr.Comment" + "(" + this.comment.toVerbatimString(true) + ")";
+        return "SExprParser.SExpr.Comment" + "(" + this.comment.toVerbatimString(true) + ", " + _dafny.toString(this.underlyingNode) + ")";
       } else  {
         return "<unexpected>";
       }
@@ -13060,7 +13208,7 @@ let SExprParser = (function() {
       } else if (this.$tag === 1) {
         return other.$tag === 1 && _dafny.areEqual(this.items, other.items);
       } else if (this.$tag === 2) {
-        return other.$tag === 2 && _dafny.areEqual(this.comment, other.comment);
+        return other.$tag === 2 && _dafny.areEqual(this.comment, other.comment) && _dafny.areEqual(this.underlyingNode, other.underlyingNode);
       } else  {
         return false; // unexpected
       }
@@ -13090,13 +13238,56 @@ let SExprParser = (function() {
           if ((new BigNumber((_1_items).length)).isEqualTo(_dafny.ZERO)) {
             return _dafny.Seq.UnicodeFromString("()");
           } else {
-            return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinItems(_1_items, _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))), _dafny.Seq.UnicodeFromString(")"));
+            let _let_tmp_rhs0 = SExprParser.__default.TryFormatAsDefine(_1_items, indent);
+            let _2_isDefine = (_let_tmp_rhs0)[0];
+            let _3_defineStr = (_let_tmp_rhs0)[1];
+            if (_2_isDefine) {
+              return _3_defineStr;
+            } else {
+              let _let_tmp_rhs1 = SExprParser.__default.TryFormatAsIf(_1_items, indent);
+              let _4_isIf = (_let_tmp_rhs1)[0];
+              let _5_ifStr = (_let_tmp_rhs1)[1];
+              if (_4_isIf) {
+                return _5_ifStr;
+              } else {
+                let _let_tmp_rhs2 = SExprParser.__default.TryFormatAsLet(_1_items, indent);
+                let _6_isLet = (_let_tmp_rhs2)[0];
+                let _7_letStr = (_let_tmp_rhs2)[1];
+                if (_6_isLet) {
+                  return _7_letStr;
+                } else {
+                  let _let_tmp_rhs3 = SExprParser.__default.TryFormatAsLambda(_1_items, indent);
+                  let _8_isLambda = (_let_tmp_rhs3)[0];
+                  let _9_lambdaStr = (_let_tmp_rhs3)[1];
+                  if (_8_isLambda) {
+                    return _9_lambdaStr;
+                  } else {
+                    let _let_tmp_rhs4 = SExprParser.__default.TryFormatAsList(_1_items, indent);
+                    let _10_isList = (_let_tmp_rhs4)[0];
+                    let _11_listStr = (_let_tmp_rhs4)[1];
+                    if (_10_isList) {
+                      return _11_listStr;
+                    } else {
+                      let _let_tmp_rhs5 = SExprParser.__default.TryFormatAsInfix(_1_items, indent);
+                      let _12_isInfix = (_let_tmp_rhs5)[0];
+                      let _13_infixStr = (_let_tmp_rhs5)[1];
+                      if (_12_isInfix) {
+                        return _13_infixStr;
+                      } else {
+                        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinItems(_1_items, _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))), _dafny.Seq.UnicodeFromString(")"));
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
       {
-        let _2_comment = (_source0).comment;
-        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString(";"), _2_comment);
+        let _14_comment = (_source0).comment;
+        let _15_underlyingNode = (_source0).underlyingNode;
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString(";"), _14_comment), _dafny.Seq.UnicodeFromString("\n")), indent), (_15_underlyingNode).ToString(indent));
       }
     };
   }
@@ -13196,9 +13387,19 @@ let ParserSnippets = (function() {
         return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("SYMBOL:"), _2_atom);
       })));
     };
-    static get FunctionCall() {
+    static get ConcatDemo__I__I() {
+      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.I__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.AtomParser), function (_0_pair) {
+        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("BOTH: ("), (_0_pair)[0]), _dafny.Seq.UnicodeFromString(", ")), (_0_pair)[1]), _dafny.Seq.UnicodeFromString(")"));
+      });
+    };
+    static get ConcatDemo__e__I() {
       return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.AtomParser), function (_0_name) {
-        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("CALL:"), _0_name);
+        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("RIGHT: "), _0_name);
+      });
+    };
+    static get ConcatDemo__I__e() {
+      return Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("(")), ParserSnippets.__default.AtomParser), function (_0_paren) {
+        return _dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("LEFT: "), _0_paren);
       });
     };
     static get AtomWithSpaces() {

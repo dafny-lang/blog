@@ -20,33 +20,100 @@
     overflow-y: hidden;
   }
 
-  .output-area {
-    width: 100%;
-    min-height: 100px;
-    font-family: monospace;
-    background-color: #f0f0f0;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 10px;
+  .output-container {
+    margin-top: 15px;
+  }
+
+  .result-display {
+    margin-bottom: 15px;
+  }
+
+  .demo-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .result-content {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 16px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
     white-space: pre-wrap;
-    transition: border-color 0.3s ease;
+    min-height: 80px;
+    max-height: 400px;
+    overflow-y: auto;
+    transition: all 0.2s ease;
   }
 
-  .output-area.parsing {
-    border-color: #337ab7;
-    animation: parsing-pulse 1.5s ease-in-out infinite;
+  .result-content:empty::before {
+    content: "Formatted output will appear here";
+    color: #adb5bd;
+    font-style: italic;
   }
 
-  @keyframes parsing-pulse {
-    0%, 100% {
-      border-color: #337ab7;
-      box-shadow: 0 0 0 0 rgba(51, 122, 183, 0.4);
+  .result-content.parsing {
+    position: relative;
+    color: transparent;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .result-content.parsing::after {
+    content: "Parsing...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
     }
-    50% {
-      border-color: #286090;
-      box-shadow: 0 0 0 4px rgba(51, 122, 183, 0.1);
+    100% {
+      background-position: 200% 0;
     }
+  }
+
+  .error-display-section {
+    margin-top: 10px;
+  }
+
+  .error-content {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-left: 4px solid #dc3545;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #721c24;
+    white-space: pre-wrap;
+  }
+
+  .error-content::before {
+    content: "Error:";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #721c24;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
   }
 
   /* Preserve whitespace in parser output spans */
@@ -55,14 +122,73 @@
     white-space: pre-wrap;
   }
 
-  .error-display {
-    color: #d9534f;
+  /* Building block demo styling */
+  .demo-container .output-container {
     margin-top: 10px;
-    font-family: monospace;
+  }
+
+  .demo-container .output-container > div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .demo-container .output-container strong {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+  }
+
+  .demo-container [id$="-parsed"],
+  .demo-container [id$="-remaining"] {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    min-height: 20px;
+    display: block;
+    width: 100%;
+    max-width: none;
+    white-space: pre-wrap;
+    margin-top: 0;
+  }
+
+  .demo-container .parse-result-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .demo-container button[id$="-parse-button"] {
+    align-self: flex-start;
+    margin-bottom: 15px;
   }
 
   .controls {
     margin: 10px 0;
+  }
+
+  .controls label {
+    font-weight: 600;
+    margin-right: 8px;
+    font-size: 14px;
+  }
+
+  .controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    margin-right: 10px;
   }
 
   button {
@@ -223,7 +349,7 @@
 <h2>Why Parser Combinators Matter</h2>
 
 <p>
-  Imagine you need to parse and format complex nested structures like this LISP factorial function:
+  Imagine you need to parse and format complex nested structures like this <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank">LISP</a> factorial function:
 </p>
 
 <pre><code>(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))</code></pre>
@@ -266,12 +392,18 @@ n
 (+ (fib (- n 1)) (fib (- n 2)))))">With Comments</button>
   </div>
 
-  <div id="output-area" class="output-area">Formatted output will appear here</div>
-  <div id="error-display" class="error-display"></div>
+  <div class="output-container">
+    <div class="result-display" id="result-section">
+      <div id="output-area" class="result-content">Formatted output will appear here</div>
+    </div>
+    <div class="error-display-section" id="error-section" style="display: none;">
+      <div id="error-display" class="error-content"></div>
+    </div>
+  </div>
 </div>
 
 <p>
-  This formatter handles nested structures, proper indentation, and error reporting - all built from simple, composable pieces (21 lines of parser combinators + 42 lines of datatypes and helpers). How is this possible? Let's explore the building blocks.
+  This formatter handles nested structures, proper indentation, and error reporting—try adding an extra closing parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">20</span> lines of parser combinators and <span id="datatypes-helpers-loc">187</span> lines of datatypes and helpers. How is this possible? Let's explore the building blocks.
 </p>
 
 <h2>Parser Combinators: Building Complex from Simple</h2>
@@ -326,6 +458,16 @@ n
     || c == '😤',
   "Angry Smily")</code></pre>
 
+<p>
+  For educational purposes, here's what the above parser looks like in its verbose, low-level form. We don't introduce this verbose syntax as we have combinators that wrap these lambdas so that it's easier to compose them:
+</p>
+
+<pre><code class="parser-definition">const AngerParser' := (input: string) =>
+  if |input| >= 1 && (input[0] == '😠' || input[0] == '😡' || input[0] == '🤬' || input[0] == '😤') then
+    ParseSuccess(input[0], input[1..])
+  else
+    ParseFailure(Recoverable, FailureData("expected Angry Smily", input, None))</code></pre>
+
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
 
@@ -341,12 +483,14 @@ n
   <textarea id="anger-input" class="input-area" placeholder="😠 I am angry!">😠 I am angry!</textarea>
 
   <div class="output-container">
-    <div>
-      <button id="anger-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="anger-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="anger-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="anger-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="anger-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="anger-remaining"></span>
     </div>
   </div>
 </div>
@@ -380,12 +524,14 @@ n
   <textarea id="joy-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
 
   <div class="output-container">
-    <div>
-      <button id="joy-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="joy-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="joy-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="joy-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="joy-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="joy-remaining"></span>
     </div>
   </div>
 </div>
@@ -418,12 +564,14 @@ n
   <textarea id="joyscore-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
 
   <div class="output-container">
-    <div>
-      <button id="joyscore-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="joyscore-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="joyscore-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="joyscore-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="joyscore-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="joyscore-remaining"></span>
     </div>
   </div>
 </div>
@@ -435,29 +583,35 @@ n
   Let's start by parsing atoms - any sequence of characters that isn't a parenthesis or semicolon:
 </p>
 
-<pre><code class="parser-definition">const AtomParser := CharTest(c => c != '(' && c != ')' && c != ';' && c != ' ' && c != '\t' && c != '\n', "atom character").Rep1()</code></pre>
+<pre><code class="parser-definition">const AtomParser := CharTest(
+  c => c != '(' && c != ')' && c != ';' 
+    && c != ' ' && c != '\t' && c != '\n',
+  "atom character"
+).Rep1()</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own atoms:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive">factorial</button>
-    <button class="example-btn positive">+</button>
-    <button class="example-btn positive">list-length</button>
-    <button class="example-btn positive">42</button>
-    <button class="example-btn positive">>=</button>
+    <button class="example-btn positive">factorial (+ 1 2)</button>
+    <button class="example-btn positive">+ 42 hello</button>
+    <button class="example-btn positive">list-length remaining</button>
+    <button class="example-btn positive">42 more text</button>
+    <button class="example-btn positive">>= (test)</button>
     <button class="example-btn negative">(not-an-atom</button>
   </div>
 
-  <textarea id="atom-input" class="input-area" placeholder="factorial">factorial</textarea>
+  <textarea id="atom-input" class="input-area" placeholder="factorial (+ 1 2)">factorial (+ 1 2)</textarea>
 
   <div class="output-container">
-    <div>
-      <button id="atom-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="atom-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="atom-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="atom-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="atom-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="atom-remaining"></span>
     </div>
   </div>
 </div>
@@ -477,23 +631,25 @@ n
   <p><strong>Try it:</strong> See how the parser chooses between numbers and symbols:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive">42</button>
-    <button class="example-btn positive">factorial</button>
-    <button class="example-btn positive">123</button>
-    <button class="example-btn positive">+</button>
-    <button class="example-btn positive">0</button>
-    <button class="example-btn positive">hello-world</button>
+    <button class="example-btn positive">42 + 3</button>
+    <button class="example-btn positive">factorial (n)</button>
+    <button class="example-btn positive">123 abc</button>
+    <button class="example-btn positive">+ 1 2</button>
+    <button class="example-btn positive">0 remaining</button>
+    <button class="example-btn positive">hello-world test</button>
   </div>
 
-  <textarea id="choice-input" class="input-area" placeholder="42">42</textarea>
+  <textarea id="choice-input" class="input-area" placeholder="42 + 3">42 + 3</textarea>
 
   <div class="output-container">
-    <div>
-      <button id="choice-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="choice-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="choice-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="choice-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="choice-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="choice-remaining"></span>
     </div>
   </div>
 </div>
@@ -510,10 +666,28 @@ n
   <li><code>I_e</code>: Keeps only the left result (discard right)</li>
 </ul>
 
-<pre><code class="parser-definition">const FunctionCall := S("(").e_I(AtomParser).M(name => "CALL:" + name)</code></pre>
+<pre><code class="parser-definition">const ConcatDemo_I_I := S("(").I_I(AtomParser).M(
+  (pair: (string, string)) => 
+    "BOTH: (" + pair.0 + ", " + pair.1 + ")"
+)
+const ConcatDemo_e_I := S("(").e_I(AtomParser).M(
+  name => "RIGHT: " + name
+)
+const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
+  paren => "LEFT: " + paren
+)</code></pre>
 
 <div class="demo-container">
-  <p><strong>Try it:</strong> Enter function calls like "(+", "(factorial", "(if":</p>
+  <p><strong>Try it:</strong> Choose a concatenation operator and see how it affects the result:</p>
+
+  <div class="controls">
+    <label for="concat-selector">Concatenation Operator:</label>
+    <select id="concat-selector">
+      <option value="ConcatDemo_I_I">I_I (Keep both results)</option>
+      <option value="ConcatDemo_e_I" selected>e_I (Keep right, discard left)</option>
+      <option value="ConcatDemo_I_e">I_e (Keep left, discard right)</option>
+    </select>
+  </div>
 
   <div class="example-buttons">
     <button class="example-btn positive">(+</button>
@@ -527,12 +701,14 @@ n
   <textarea id="function-input" class="input-area" placeholder="(+">(+</textarea>
 
   <div class="output-container">
-    <div>
-      <button id="function-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="function-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="function-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="function-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="function-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="function-remaining"></span>
     </div>
   </div>
 </div>
@@ -561,12 +737,14 @@ newline</button>
   <textarea id="whitespace-input" class="input-area" placeholder="factorial   ">factorial   </textarea>
 
   <div class="output-container">
-    <div>
-      <button id="whitespace-parse-button">Parse</button>
-      <strong>Parsed:</strong> <span id="whitespace-parsed" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
-      <strong>Remaining:</strong> <span id="whitespace-remaining" class="output-area"
-        style="display: inline-block; min-height: 20px; width: 200px;"></span>
+    <button id="whitespace-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="whitespace-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="whitespace-remaining"></span>
     </div>
   </div>
 </div>
@@ -589,136 +767,78 @@ newline</button>
   Let's see how it works under the hood.
 </p>
 
-<h2>How the S-Expression Parser Works</h2>
+<h2>Building the Complete S-Expression Formatter</h2>
 
 <p>
-  S-expressions (symbolic expressions) are a notation for representing nested data structures, originally used in the
-  LISP programming language. They have a simple syntax: an S-expression is either an atom (like a symbol or number) or a
-  list of S-expressions enclosed in parentheses.
+  Now that you've experimented with the building blocks, let's see how they combine to create the powerful S-expression formatter you tried at the top. The magic happens through three key innovations:
 </p>
+
+<ol>
+  <li><strong>Smart Pattern Recognition</strong> - Detecting common Lisp patterns and formatting them beautifully</li>
+  <li><strong>Comment Integration</strong> - Treating comments as first-class citizens that wrap around expressions</li>
+  <li><strong>Recursive Structure</strong> - Handling arbitrarily nested expressions with proper indentation</li>
+</ol>
+
+<h3>The Data Structure</h3>
 
 <p>
-  The parser handles:
+  Our S-expression parser uses a more sophisticated data structure than basic tutorials show:
 </p>
 
-<ul>
-  <li>Atoms (identifiers like <code>factorial</code>, <code>n</code>)</li>
-  <li>Numbers (integers like <code>0</code>, <code>1</code>)</li>
-  <li>Lists (like <code>(define (factorial n) ...)</code>)</li>
-</ul>
-
-<h2>Implementation Details</h2>
-
-<p>
-  Let's look at how we can build an S-expression parser using Dafny's parser combinators. The parser will handle both
-  atoms and nested expressions.
-</p>
-
-<p>
-  First, we'll define our data structure for S-expressions:
-</p>
-
-<pre><code>module ExampleParsers.SExprParser {
-  import opened Std.Parsers.StringBuilders
-
-  datatype SExpr =
-    | Atom(name: string)
+<pre><code>datatype SExpr =
+| Atom(name: string)
     | List(items: seq&lt;SExpr&gt;)
-}</code></pre>
+    | Comment(comment: string, underlyingNode: SExpr)
+  // Comments wrap expressions!</code></pre>
 
 <p>
-  Next, we'll define a parser for whitespace and comments:
+  The <code>Comment</code> variant wraps around other expressions, preserving the logical structure while keeping comments attached to their relevant code.
 </p>
 
-<pre><code>  // Parse whitespace and comments
-  const WSOrComment := 
-    WS.I_I(
-      S(";").I_I(CharTest((c: char) => c != '\n', "anything except newline").Rep())
-      .I_I(O([S("\n"), EOS.M(x => "")])).Rep()
-    )</code></pre>
+<h3>The Core Parser</h3>
 
 <p>
-  Now, let's define the main parser for S-expressions. This is where the power of parser combinators really shines:
+  The actual parser that powers the formatter above is surprisingly concise - just <span id="parser-combinators-loc">20</span> lines! Here's the essential structure:
 </p>
 
-<pre><code>  // Parse an S-expression
-  const parserSExpr := 
-    Rec((SExpr: B&lt;SExpr&gt;) =>
-      O([
-        // Either a list: (expr1 expr2 ...)
-        S("(").e_I(WSOrComment).Then(
-          (r: string) =>
-            SExpr.I_e(WSOrComment)
-            .Rep().I_e(S(")")).I_e(WSOrComment)
-        ).M((r: seq&lt;SExpr&gt;) => List(r)),
-        
-        // Or an atom: symbol
-        CharTest((c: char) => c != '(' && c != ')' && !isWhitespace(c), "atom character")
-        .Rep1().M((r: string) => Atom(r)).I_e(WSOrComment)
-      ])
-    )</code></pre>
+<pre><code>const parserSExpr: B&lt;SExpr&gt; :=
+  Rec((SExpr: B&lt;SExpr&gt;) =&gt;
+// Try to parse a comment followed by an expression
+          O([ commentText.I_e(WS).I_I(SExpr).M((commentAndExpr: (string, SExpr)) =&gt; Comment(commentAndExpr.0, commentAndExpr.1)),
+              S(&quot;(&quot;).e_I(WS).Then(
+                (r: string) =&gt;
+                  SExpr.I_e(WS)
+                  .Rep().I_e(S(&quot;)&quot;)).I_e(WS)
+              ).M((r: seq&lt;SExpr&gt;) =&gt; List(r)),
+              noParensNoSpace.M((r: string) =&gt; Atom(r)).I_e(WS)
+            ])
+  )</code></pre>
 
 <p>
-  This parser uses the <code>Rec</code> combinator to create a recursive parser that can handle nested expressions.
-  The parser first tries to match a list (expressions enclosed in parentheses) and if that fails, it tries to match an
-  atom.
+  The <code>Rec</code> combinator creates a recursive parser that can handle arbitrarily nested structures. For parsers that might hit stack limits, Dafny also provides <code>RecNoStack</code> - see the <a href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser example</a> for usage.
 </p>
+
+<h3>Pattern Recognition and Formatting</h3>
 
 <p>
-  We can also add a method to format S-expressions nicely:
+  The parser includes pattern recognition that formats common Lisp constructs (like <code>define</code> → <code>function</code>, <code>if</code> → <code>if-then-else</code>, infix operators) for better readability. The full implementation is in the <a href="/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
 </p>
 
-<pre><code>  function ToString(expr: SExpr, indent: string := ""): string {
-    match expr {
-      case Atom(name) => name
-      case List(items) =>
-        if |items| == 0 then
-          "()"
-        else
-          "(" + 
-          String.Join(
-            seq(|items|, i requires 0 <= i < |items| => 
-              if i == 0 then ToString(items[i], indent + "  ")
-              else "\n" + indent + "  " + ToString(items[i], indent + "  ")
-            ),
-            ""
-          ) + ")"
-    }
-  }</code></pre>
+<h3>How It Works</h3>
 
 <p>
-  The formatting function above uses a recursive approach to pretty-print S-expressions. Here's how it works:
+  When you input an S-expression, the parser combinators work together:
 </p>
 
-<ul>
-  <li>For atoms, it simply returns the name of the atom.</li>
-  <li>For empty lists, it returns "()".</li>
-  <li>For non-empty lists, it formats the first item on the same line as the opening parenthesis, and each subsequent
-    item on a new line with proper indentation.</li>
-  <li>The indentation increases by two spaces for each level of nesting, making the structure clear and readable.</li>
-  <li>The function uses Dafny's sequence comprehension to build the formatted string for each item in the list.</li>
-</ul>
+<ol>
+  <li><strong>Character-by-character parsing</strong>: Each combinator consumes what it needs from the input string</li>
+  <li><strong>Tree building</strong>: Successful parsers return structured data that gets combined into larger structures</li>
+  <li><strong>Pattern recognition</strong>: The formatter detects common patterns and applies appropriate formatting</li>
+</ol>
 
 <p>
-  This formatting approach is particularly useful for complex, nested S-expressions, as it makes the structure visually
-  apparent.
+  No tokenization step - the string flows directly through the parser combinators, with each one consuming characters and building up the final syntax tree. This happens in just <strong><span id="parser-combinators-loc">20</span> lines of parser combinators + <span id="datatypes-helpers-loc">187</span> lines of datatypes and helpers</strong>.
 </p>
-
-<p>
-  Finally, we can add a test method to verify our parser works correctly:
-</p>
-
-<pre><code>  method TestParser() {
-    var input := "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
-    var result := parserSExpr.Apply(input);
-    
-    match result {
-      case ParseSuccess(value, _) =>
-        print "Parsed successfully: ", ToString(value), "\n";
-      case ParseFailure(error, _) =>
-        print "Parse error: ", error, "\n";
-    }
-  }</code></pre>
 
 
 
@@ -752,25 +872,29 @@ newline</button>
 </script>
 <script src="/blog/assets/js/parsers/parsers-combined.js"></script>
 <script src="/blog/assets/js/parsers/parser-integration.js"></script>
-</script>
 
-<h2>Conclusion</h2>
+<h2>Conclusion - The Power of Composition</h2>
 
 <p>
-  In this blog post, we've introduced Dafny's parser combinators library and demonstrated how to use it to build
-  a parser and formatter for S-expressions. We've also shown how to compile Dafny code to JavaScript and integrate
-  it into a web page to create an interactive demo.
+  From basic character tests like <code>CharTest(c => c == '😠', "Angry Smily")</code>, we built a complete S-expression parser using simple combinators:
+</p>
+
+<ul>
+  <li><code>Rep()</code> for repetition</li>
+  <li><code>M()</code> for transformation</li>
+  <li><code>O([])</code> for choice</li>
+  <li><code>I_I</code>, <code>e_I</code>, <code>I_e</code> for concatenation</li>
+  <li><code>Rec()</code> for recursion</li>
+</ul>
+
+<p>
+  <strong>207 lines of verified, composable code</strong> that parses, recognizes patterns, and formats beautifully. This is parser combinators: turning parsing from an arcane art into a compositional science.
 </p>
 
 <p>
-  Parser combinators provide a powerful, modular approach to parsing that aligns well with functional programming
-  principles.
-  By using Dafny's standard library, you can leverage these techniques in your own projects, whether you're targeting
-  JavaScript, C#, or other supported platforms.
+  Best of all, Dafny compiles to JavaScript, C#, Java, and Rust - so your parser combinators work across platforms with the same verified code.
 </p>
 
 <p>
-  For more information on Dafny's standard libraries, including the parser combinators library, check out the
-  <a href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries
-    repository</a>.
+  Start with <code>CharTest</code>, add some combinators, and see where composition takes you. Explore more in the <a href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries</a>.
 </p>

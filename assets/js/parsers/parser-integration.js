@@ -129,11 +129,15 @@ function initializeMainSExprDemo() {
             const inputValue = input.value;
             if (!inputValue.trim()) {
                 if (errorDisplay) errorDisplay.textContent = 'Please enter an S-expression';
-                outputArea.textContent = '';
+                document.getElementById('error-section').style.display = 'block';
+                document.getElementById('result-section').style.display = 'none';
                 return;
             }
 
+            // Clear previous results
             if (errorDisplay) errorDisplay.textContent = '';
+            document.getElementById('error-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
             
             // Add parsing animation to output area
             outputArea.classList.add('parsing');
@@ -143,12 +147,26 @@ function initializeMainSExprDemo() {
             setTimeout(() => {
                 try {
                     const result = parseSExpr(inputValue);
-                    // For the main demo, just show the formatted result or error
-                    outputArea.textContent = result;
-                    if (errorDisplay) errorDisplay.textContent = '';
+                    
+                    // Check if result is an error (starts with "Error:" or contains error patterns)
+                    const isError = result.startsWith('Error:') || result.includes('expected') || result.includes('failed');
+                    
+                    if (isError) {
+                        // Show error in error section
+                        if (errorDisplay) errorDisplay.textContent = result;
+                        document.getElementById('error-section').style.display = 'block';
+                        document.getElementById('result-section').style.display = 'none';
+                    } else {
+                        // Show formatted result in result section
+                        outputArea.textContent = result;
+                        if (errorDisplay) errorDisplay.textContent = '';
+                        document.getElementById('error-section').style.display = 'none';
+                        document.getElementById('result-section').style.display = 'block';
+                    }
                 } catch (parseError) {
                     if (errorDisplay) errorDisplay.textContent = 'Parse Error: ' + parseError.message;
-                    outputArea.textContent = '';
+                    document.getElementById('error-section').style.display = 'block';
+                    document.getElementById('result-section').style.display = 'none';
                 } finally {
                     // Remove parsing animation
                     outputArea.classList.remove('parsing');
@@ -158,7 +176,6 @@ function initializeMainSExprDemo() {
             }, 10);
         } catch (err) {
             if (errorDisplay) errorDisplay.textContent = 'Error: ' + err.message;
-            outputArea.textContent = '';
             outputArea.classList.remove('parsing');
             parseButton.disabled = false;
             parseButton.textContent = 'Parse & Format';
