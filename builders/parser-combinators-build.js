@@ -132,7 +132,16 @@ function injectSExprCodeSnippets() {
   // Extract datatype definition
   const datatypeMatch = dafnyContent.match(/datatype SExpr =\s*\n((?:\s*\|[^\n]*\n)*)/);
   if (datatypeMatch) {
-    const datatypeDefinition = `datatype SExpr =\n${datatypeMatch[1].trim()}\n  // Comments wrap expressions!`;
+    // Format the datatype definition with proper indentation
+    const lines = datatypeMatch[1].trim().split('\n');
+    const formattedLines = lines.map(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('|')) {
+        return '  ' + trimmed; // Indent variant lines
+      }
+      return trimmed;
+    });
+    const datatypeDefinition = `datatype SExpr =\n${formattedLines.join('\n')}`;
     htmlContent = htmlContent.replace(
       /<!-- INJECT:SEXPR_DATATYPE -->/g,
       `<pre><code>${escapeHtml(datatypeDefinition)}</code></pre>`

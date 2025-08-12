@@ -13,13 +13,13 @@ module ParserSnippets {
   const JoyParser := CharTest( c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()
 
   // Parser: JoyScoreParser
-  const JoyScoreParser := CharTest( c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M(joyString => |joyString| * 2)
+  const JoyScoreParser := CharTest( c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep().M( joyString => |joyString| * 2 )
 
   // Parser: AtomParser
   const AtomParser := CharTest( c => c != '(' && c != ')' && c != ';' && c != ' ' && c != '\t' && c != '\n', "atom character" ).Rep1()
 
   // Parser: NumberOrSymbol
-  const NumberOrSymbol := O([ CharTest(c => '0' <= c <= '9', "digit").Rep1().M(digits => "NUMBER:" + digits), AtomParser.M(atom => "SYMBOL:" + atom) ])
+  const NumberOrSymbol := O([ CharTest(c => '0' <= c <= '9', "digit") .Rep1() .M(digits => "NUMBER:" + digits), AtomParser.M(atom => "SYMBOL:" + atom) ])
 
   // Parser: ConcatDemo_I_I
   const ConcatDemo_I_I := S("(").I_I(AtomParser).M( (pair: (string, string)) => "BOTH: (" + pair.0 + ", " + pair.1 + ")" )

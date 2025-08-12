@@ -51,6 +51,8 @@
     max-height: 400px;
     overflow-y: auto;
     transition: all 0.2s ease;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
   }
 
   .result-content:empty::before {
@@ -82,6 +84,7 @@
     0% {
       background-position: -200% 0;
     }
+
     100% {
       background-position: 200% 0;
     }
@@ -127,7 +130,7 @@
     margin-top: 10px;
   }
 
-  .demo-container .output-container > div {
+  .demo-container .output-container>div {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -159,6 +162,13 @@
     max-width: none;
     white-space: pre-wrap;
     margin-top: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 200px;
+    word-break: break-all;
+    box-sizing: border-box;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
   }
 
   .demo-container .parse-result-group {
@@ -349,18 +359,23 @@
 <h2>Why Parser Combinators Matter</h2>
 
 <p>
-  Imagine you need to parse and format complex nested structures like this <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank">LISP</a> factorial function:
+  Imagine you need to parse and format complex nested structures like this <a
+    href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank">LISP</a> factorial function:
 </p>
 
 <pre><code>(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))</code></pre>
 
 <p>
-  Most parsing approaches would require hundreds of lines of complex, error-prone code. But with parser combinators, you
+  Most parsing approaches would require hundreds of lines of complex, error-prone code. Traditional parser generators
+  like <a href="https://www.antlr.org/" target="_blank">ANTLR</a> or <a href="http://www.ssw.uni-linz.ac.at/coco/"
+    target="_blank">Coco/R</a> involve separate compilation phases with grammar files, lexer specifications, and
+  generated code that's difficult to debug. But with <a href="https://en.wikipedia.org/wiki/Parser_combinator"
+    target="_blank">parser combinators</a>, you
   can build an elegant, working parser in just a few dozen lines. Even better - it compiles to JavaScript and runs in
   your browser!
 </p>
 
-<h2>Interactive S-Expression Formatter</h2>
+<h2>Interactive <a href="https://en.wikipedia.org/wiki/S-expression" target="_blank">S-Expression</a> Formatter</h2>
 
 <p>
   Try it yourself! Enter any S-expression below and watch it get parsed and beautifully formatted:
@@ -403,52 +418,40 @@ n
 </div>
 
 <p>
-  This formatter handles nested structures, proper indentation, and error reporting—try adding an extra closing parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">20</span> lines of parser combinators and <span id="datatypes-helpers-loc">187</span> lines of datatypes and helpers. How is this possible? Let's explore the building blocks.
+  This formatter handles nested structures, proper indentation, and error reporting—try adding an extra closing
+  parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">20</span> lines of
+  parser combinators and <span id="datatypes-helpers-loc">187</span> lines of datatypes and helpers. How is this
+  possible? Let's explore the building blocks.
 </p>
-
-<h2>Parser Combinators: Building Complex from Simple</h2>
-
-<p>
-  Parser combinators are higher-order functions that accept parsers as input and return new parsers as output.
-  This approach allows you to build complex parsers by combining simpler ones. Dafny's standard library provides
-  a concise Domain-Specific Language (DSL) for building parsers that uses minimal syntax to make complex parser
-  definitions more readable.
-</p>
-
-<p>
-  To use the parser builders DSL in Dafny, you need to import:
-</p>
-
-<pre><code>import opened Std.Parsers.StringBuilders</code></pre>
-
-<p>
-  This gives you access to a set of short, expressive combinators that reduce syntactic noise and highlight the parser
-  logic. Let's see how these simple pieces combine to create the powerful formatter above.
-</p>
-
 
 <h2>The Building Blocks</h2>
 
 <p>
-  Let's explore the fundamental parser components that make the S-expression formatter possible. Each parser has an
-  <code>Apply</code> method that takes an input string and returns a <code>ParseResult</code>:
+  <a href="https://en.wikipedia.org/wiki/Parser_combinator" target="_blank">Parser combinators</a> are <a
+    href="https://en.wikipedia.org/wiki/Higher-order_function" target="_blank">higher-order functions</a> that build
+  complex parsers from simple ones. Each parser returns a <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Parsers/Core/Parsers.dfy#L142">ParseResult</a>
+  with either the parsed value and remaining input, or an error. Let's see how they work:
 </p>
 
-<pre><code>datatype ParseResult&lt;T&gt; = 
-  | ParseSuccess(result: T, remaining: Input)
-  | ParseFailure(level: FailureLevel, data: FailureData)</code></pre>
-
-<p>
-  When a parser succeeds, it returns the parsed value and the remaining unconsumed characters. When it fails, it returns
-  an error message and the position where parsing failed. Each example below includes an interactive demo where you can
-  experiment with the parser.
-</p>
+<pre><code>import opened Std.Parsers.StringBuilders</code></pre>
 
 <h4>Character Testing (CharTest) - Parsing Anger</h4>
 
 <p>
-  The <code>CharTest</code> combinator is the foundation of most parsers. It takes a predicate function and succeeds if
-  the next character satisfies that condition. Let's start with something fun - parsing anger characters!
+  Let's say we want to create a parser that parses one angry smiley. Without combinators, we'd write something like
+  this:
+</p>
+
+<pre><code class="parser-example">const AngerParser := (input: string) =>
+  if |input| >= 1 && (input[0] == '😠' || input[0] == '😡' || input[0] == '🤬' || input[0] == '😤') then
+    ParseSuccess(input[0], input[1..])
+  else
+    ParseFailure(Recoverable, FailureData("expected Angry Smily", input, None))</code></pre>
+
+<p>
+  That's verbose and error-prone! The <code>CharTest</code> combinator makes this much cleaner by taking a predicate
+  function and handling all the boilerplate:
 </p>
 
 <pre><code class="parser-definition">const AngerParser := CharTest(
@@ -457,16 +460,6 @@ n
     || c == '🤬'
     || c == '😤',
   "Angry Smily")</code></pre>
-
-<p>
-  For educational purposes, here's what the above parser looks like in its verbose, low-level form. We don't introduce this verbose syntax as we have combinators that wrap these lambdas so that it's easier to compose them:
-</p>
-
-<pre><code class="parser-definition">const AngerParser' := (input: string) =>
-  if |input| >= 1 && (input[0] == '😠' || input[0] == '😡' || input[0] == '🤬' || input[0] == '😤') then
-    ParseSuccess(input[0], input[1..])
-  else
-    ParseFailure(Recoverable, FailureData("expected Angry Smily", input, None))</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -494,6 +487,12 @@ n
     </div>
   </div>
 </div>
+
+<p>
+  Notice how the combinator approach also generates nice error messages automatically! Try the last two examples above -
+  when parsing fails, you get clear feedback about what was expected. This is another advantage of combinators: they
+  handle both success and failure cases elegantly.
+</p>
 
 <h4>Repetition (Rep) - Parsing Joy</h4>
 
@@ -549,7 +548,9 @@ n
     || c == '😄'
     || c == '😁'
     || c == '🥳',
-  "joy").Rep().M(joyString => |joyString| * 2)</code></pre>
+  "joy").Rep().M(
+    joyString => |joyString| * 2
+  )</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -579,7 +580,8 @@ n
 <h4>Atoms - The Building Blocks of S-Expressions</h4>
 
 <p>
-  S-expressions are made of <strong>atoms</strong> (like <code>factorial</code>, <code>+</code>, <code>42</code>) and <strong>lists</strong> (like <code>(+ 1 2)</code>). 
+  S-expressions are made of <strong>atoms</strong> (like <code>factorial</code>, <code>+</code>, <code>42</code>) and
+  <strong>lists</strong> (like <code>(+ 1 2)</code>).
   Let's start by parsing atoms - any sequence of characters that isn't a parenthesis or semicolon:
 </p>
 
@@ -619,11 +621,14 @@ n
 <h4>Numbers vs Symbols - Choice in Action</h4>
 
 <p>
-  The <code>O</code> (choice) combinator tries parsers in sequence until one succeeds. Let's use it to distinguish between numbers and symbols:
+  The <code>O</code> (choice) combinator tries parsers in sequence until one succeeds. Let's use it to distinguish
+  between numbers and symbols:
 </p>
 
 <pre><code class="parser-definition">const NumberOrSymbol := O([
-  CharTest(c => '0' <= c <= '9', "digit").Rep1().M(digits => "NUMBER:" + digits),
+  CharTest(c => '0' <= c <= '9', "digit")
+    .Rep1()
+    .M(digits => "NUMBER:" + digits),
   AtomParser.M(atom => "SYMBOL:" + atom)
 ])</code></pre>
 
@@ -657,7 +662,7 @@ n
 <h4>Lists - Parsing S-Expression Structure</h4>
 
 <p>
-  S-expressions use parentheses to create lists. Let's build a parser that recognizes the start of a function call - 
+  S-expressions use parentheses to create lists. Let's build a parser that recognizes the start of a function call -
   an opening parenthesis followed by a function name. The concatenation operators let us combine parsers:
 </p>
 <ul>
@@ -665,6 +670,12 @@ n
   <li><code>e_I</code>: Keeps only the right result (discard left)</li>
   <li><code>I_e</code>: Keeps only the left result (discard right)</li>
 </ul>
+
+<p>
+  The naming convention: <code>I</code> means "include" and <code>e</code> means "exclude". We'd prefer Scala-style
+  arrows like <code>&lt;~</code> and <code>~&gt;</code>, but Dafny identifiers can't start with underscores, so we use
+  this readable alternative.
+</p>
 
 <pre><code class="parser-definition">const ConcatDemo_I_I := S("(").I_I(AtomParser).M(
   (pair: (string, string)) => 
@@ -716,7 +727,8 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 <h4>Whitespace - The Invisible Glue</h4>
 
 <p>
-  S-expressions need whitespace to separate atoms. The built-in <code>WS</code> parser handles spaces, tabs, and newlines.
+  S-expressions need <a href="https://en.wikipedia.org/wiki/Whitespace_character" target="_blank">whitespace</a> to
+  separate atoms. The built-in <code>WS</code> parser handles spaces, tabs, and newlines.
   Let's see how it works with our atoms:
 </p>
 
@@ -726,10 +738,10 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
   <p><strong>Try it:</strong> See how whitespace gets consumed after parsing atoms:</p>
 
   <div class="example-buttons">
-    <button class="example-btn positive">factorial   </button>
-    <button class="example-btn positive">+	next</button>
+    <button class="example-btn positive">factorial </button>
+    <button class="example-btn positive">+ next</button>
     <button class="example-btn positive">42
-newline</button>
+      newline</button>
     <button class="example-btn positive">hello world</button>
     <button class="example-btn negative">no-space-after</button>
   </div>
@@ -763,14 +775,17 @@ newline</button>
 </ul>
 
 <p>
-  The S-expression formatter you tried above combines all these concepts using recursion to handle nested structures.
+  The S-expression formatter you tried above combines all these concepts using <a
+    href="https://en.wikipedia.org/wiki/Recursion_(computer_science)" target="_blank">recursion</a> to handle nested
+  structures.
   Let's see how it works under the hood.
 </p>
 
 <h2>Building the Complete S-Expression Formatter</h2>
 
 <p>
-  Now that you've experimented with the building blocks, let's see how they combine to create the powerful S-expression formatter you tried at the top. The magic happens through three key innovations:
+  Now that you've experimented with the building blocks, let's see how they combine to create the powerful S-expression
+  formatter you tried at the top. The magic happens through three key innovations:
 </p>
 
 <ol>
@@ -786,19 +801,20 @@ newline</button>
 </p>
 
 <pre><code>datatype SExpr =
-| Atom(name: string)
-    | List(items: seq&lt;SExpr&gt;)
-    | Comment(comment: string, underlyingNode: SExpr)
-  // Comments wrap expressions!</code></pre>
+  | Atom(name: string)
+  | List(items: seq&lt;SExpr&gt;)
+  | Comment(comment: string, underlyingNode: SExpr)</code></pre>
 
 <p>
-  The <code>Comment</code> variant wraps around other expressions, preserving the logical structure while keeping comments attached to their relevant code.
+  The <code>Comment</code> variant wraps around other expressions, preserving the logical structure while keeping
+  comments attached to their relevant code.
 </p>
 
 <h3>The Core Parser</h3>
 
 <p>
-  The actual parser that powers the formatter above is surprisingly concise - just <span id="parser-combinators-loc">20</span> lines! Here's the essential structure:
+  The actual parser that powers the formatter above is surprisingly concise - just <span
+    id="parser-combinators-loc">20</span> lines! Here's the essential structure:
 </p>
 
 <pre><code>const parserSExpr: B&lt;SExpr&gt; :=
@@ -815,13 +831,18 @@ newline</button>
   )</code></pre>
 
 <p>
-  The <code>Rec</code> combinator creates a recursive parser that can handle arbitrarily nested structures. For parsers that might hit stack limits, Dafny also provides <code>RecNoStack</code> - see the <a href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser example</a> for usage.
+  The <code>Rec</code> combinator creates a recursive parser that can handle arbitrarily nested structures. For parsers
+  that might hit stack limits, Dafny also provides <code>RecNoStack</code> - see the <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser
+    example</a> for usage.
 </p>
 
 <h3>Pattern Recognition and Formatting</h3>
 
 <p>
-  The parser includes pattern recognition that formats common Lisp constructs (like <code>define</code> → <code>function</code>, <code>if</code> → <code>if-then-else</code>, infix operators) for better readability. The full implementation is in the <a href="/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
+  The parser includes pattern recognition that formats common Lisp constructs (like <code>define</code> →
+  <code>function</code>, <code>if</code> → <code>if-then-else</code>, infix operators) for better readability. The full
+  implementation is in the <a href="/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
 </p>
 
 <h3>How It Works</h3>
@@ -832,12 +853,18 @@ newline</button>
 
 <ol>
   <li><strong>Character-by-character parsing</strong>: Each combinator consumes what it needs from the input string</li>
-  <li><strong>Tree building</strong>: Successful parsers return structured data that gets combined into larger structures</li>
-  <li><strong>Pattern recognition</strong>: The formatter detects common patterns and applies appropriate formatting</li>
+  <li><strong>Tree building</strong>: Successful parsers return structured data that gets combined into larger
+    structures</li>
+  <li><strong>Pattern recognition</strong>: The formatter detects common patterns and applies appropriate formatting
+  </li>
 </ol>
 
 <p>
-  No tokenization step - the string flows directly through the parser combinators, with each one consuming characters and building up the final syntax tree. This happens in just <strong><span id="parser-combinators-loc">20</span> lines of parser combinators + <span id="datatypes-helpers-loc">187</span> lines of datatypes and helpers</strong>.
+  No <a href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">tokenization</a> step - the string flows
+  directly through the parser combinators, with each one consuming characters and building up the final <a
+    href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">syntax tree</a>. This happens in just
+  <strong><span id="parser-combinators-loc">20</span> lines of parser combinators + <span
+      id="datatypes-helpers-loc">187</span> lines of datatypes and helpers</strong>.
 </p>
 
 
@@ -876,7 +903,8 @@ newline</button>
 <h2>Conclusion - The Power of Composition</h2>
 
 <p>
-  From basic character tests like <code>CharTest(c => c == '😠', "Angry Smily")</code>, we built a complete S-expression parser using simple combinators:
+  From basic character tests like <code>CharTest(c => c == '😠', "Angry Smily")</code>, we built a complete S-expression
+  parser using simple combinators:
 </p>
 
 <ul>
@@ -888,13 +916,16 @@ newline</button>
 </ul>
 
 <p>
-  <strong>207 lines of verified, composable code</strong> that parses, recognizes patterns, and formats beautifully. This is parser combinators: turning parsing from an arcane art into a compositional science.
+  <strong>207 lines of verified, composable code</strong> that parses, recognizes patterns, and formats beautifully.
+  This is parser combinators: turning parsing from an arcane art into a compositional science.
 </p>
 
 <p>
-  Best of all, Dafny compiles to JavaScript, C#, Java, and Rust - so your parser combinators work across platforms with the same verified code.
+  Best of all, Dafny compiles to JavaScript, C# and Java - so your parser combinators work across platforms with
+  the same verified code.
 </p>
 
 <p>
-  Start with <code>CharTest</code>, add some combinators, and see where composition takes you. Explore more in the <a href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries</a>.
+  Start with <code>CharTest</code>, add some combinators, and see where composition takes you. Explore more in the <a
+    href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries</a>.
 </p>
