@@ -294,7 +294,7 @@ function extractParserNamesFromContent(container) {
         const textContent = codeBlock.textContent;
 
         // Look for const definitions: const ParserName := ...
-        const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:=/g;
+        const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g;
         let match;
 
         while ((match = constRegex.exec(textContent)) !== null) {
@@ -319,7 +319,7 @@ function getParserNameFromContext(container) {
         if (codeBlock) {
             // Extract parser name from this specific code block
             const textContent = codeBlock.textContent;
-            const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:=/;
+            const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:/;
             const match = constRegex.exec(textContent);
 
             if (match) {
@@ -336,7 +336,7 @@ function getParserNameFromContext(container) {
         const codeBlock = parent.querySelector('pre code.parser-definition');
         if (codeBlock) {
             const textContent = codeBlock.textContent;
-            const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:=/;
+            const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:/;
             const match = constRegex.exec(textContent);
 
             if (match) {

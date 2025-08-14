@@ -30,11 +30,12 @@ const { execSync } = require('child_process');
 
 // Configuration
 const config = {
-  dafnyPath: 'dafny',
+  dafnyPath: '"C:\\Users\\mimayere\\Documents\\dafny 2\\Binaries\\Dafny.exe"',
   jsOutputDir: 'assets/js/parsers',
   includesDir: '_includes',
   htmlFile: '_includes/parser-combinators.html',
   parserSnippets: 'assets/js/parsers/ParserSnippets.dfy',
+  parserSnippetsTemplate: 'assets/js/parsers/ParserSnippetsTemplate.dfy',
   sexprParser: 'assets/js/parsers/SExprParser.dfy'
 };
 
@@ -113,21 +114,16 @@ Note: This build script requires Dafny to be properly installed in the PATH.`);
 }
 
 /**
- * Extract and inject code snippets from SExprParser.dfy into HTML
+ * Shared utility: Process SExpr code injection on HTML content
+ * @param {string} htmlContent
+ * @returns {string}
  */
-function injectSExprCodeSnippets() {
-  log('Injecting SExpr code snippets from actual Dafny file...');
-
+function processSExprCodeInjection(htmlContent) {
   if (!fileExists(config.sexprParser)) {
     error(`SExprParser.dfy not found: ${config.sexprParser}`);
   }
 
-  if (!fileExists(config.htmlFile)) {
-    error(`HTML file not found: ${config.htmlFile}`);
-  }
-
   const dafnyContent = fs.readFileSync(config.sexprParser, 'utf8');
-  let htmlContent = fs.readFileSync(config.htmlFile, 'utf8');
 
   // Extract datatype definition
   const datatypeMatch = dafnyContent.match(/datatype SExpr =\s*\n((?:\s*\|[^\n]*\n)*)/);
@@ -148,43 +144,138 @@ function injectSExprCodeSnippets() {
     );
   }
 
-  // Extract main parser definition (simplified for readability)
-  const parserMatch = dafnyContent.match(/const parserSExpr: B<SExpr> :=\s*\n\s*Rec\(\(SExpr: B<SExpr>\) =>\s*\n([\s\S]*?)(?=\s*\)\s*const|\s*\)\s*\/\/)/);
-  if (parserMatch) {
-    const parserDefinition = `const parserSExpr: B<SExpr> :=\n  Rec((SExpr: B<SExpr>) =>\n${parserMatch[1].trim()}\n  )`;
+  // Extract complete parser combinators section (all 20 lines) using LOC markers
+  const parserCombinatorsMatch = dafnyContent.match(/\/\/ LOC_MARKER_START: PARSER_COMBINATORS\s*\n([\s\S]*?)\/\/ LOC_MARKER_END: PARSER_COMBINATORS/);
+  if (parserCombinatorsMatch) {
+    // Preserve indentation by only trimming trailing whitespace
+    const parserCombinatorsCode = parserCombinatorsMatch[1].replace(/\s+$/, '');
+    // Replace using the data-parser attribute marker (much more reliable)
     htmlContent = htmlContent.replace(
-      /<!-- INJECT:SEXPR_PARSER -->/g,
-      `<pre><code>${escapeHtml(parserDefinition)}</code></pre>`
+      /<code data-parser="sexpr-main">[\s\S]*?<\/code>/,
+      `<code data-parser="sexpr-main">${escapeHtml(parserCombinatorsCode)}</code>`
     );
   }
 
-  // Create a simplified ToString method for display (showing the pattern matching logic)
-  const toStringSimplified = `function ToString(indent: string := ""): string {
-  match this {
-    case List(items) =>
-      // Try special patterns first
-      var (isDefine, defineStr) := TryFormatAsDefine(items, indent);
-      if isDefine then defineStr
-      else var (isIf, ifStr) := TryFormatAsIf(items, indent);
-      if isIf then ifStr
-      else var (isList, listStr) := TryFormatAsList(items, indent);
-      if isList then listStr
-      else var (isInfix, infixStr) := TryFormatAsInfix(items, indent);
-      if isInfix then infixStr
-      else // Default parenthetical formatting
-        "(" + JoinItems(items, indent + "  ") + ")"
-    case Comment(comment, underlyingNode) => 
-      ";" + comment + "\\n" + indent + underlyingNode.ToString(indent)
-    case Atom(name) => name
+  // Extract ToString method from the actual Dafny file (if needed for HTML injection)
+  const toStringMatch = dafnyContent.match(/function ToString\(indent: string := ""\): string \{([\s\S]*?)(?=\n\s*function|\n\s*method|\n\s*\})/);
+  if (toStringMatch) {
+    const toStringMethod = `function ToString(indent: string := ""): string {\n${toStringMatch[1].trim()}\n}`;
+    htmlContent = htmlContent.replace(
+      /<!-- INJECT:SEXPR_TOSTRING -->/g,
+      `<pre><code>${escapeHtml(toStringMethod)}</code></pre>`
+    );
   }
-}`;
-  htmlContent = htmlContent.replace(
-    /<!-- INJECT:SEXPR_TOSTRING -->/g,
-    `<pre><code>${escapeHtml(toStringSimplified)}</code></pre>`
+
+  return htmlContent;
+}
+
+/**
+ * Shared utility: Generate ParserSnippets.dfy content
+ * @param {string} htmlContent
+ * @returns {string}
+ */
+function generateParserSnippetsContent(htmlContent) {
+  // Read the template file
+  if (!fileExists(config.parserSnippetsTemplate)) {
+    error(`ParserSnippetsTemplate.dfy not found: ${config.parserSnippetsTemplate}`);
+  }
+
+  let snippetsContent = fs.readFileSync(config.parserSnippetsTemplate, 'utf8');
+
+  const parserBlockRegex = /<pre><code[^>]*class="parser-definition"[^>]*>(.*?)<\/code><\/pre>/gs;
+  const extractedParsers = [];
+  let match;
+
+  while ((match = parserBlockRegex.exec(htmlContent)) !== null) {
+    let codeBlock = match[1]
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/=&gt;/g, '=>')
+      .trim();
+
+    // Extract all const definitions from this code block (supporting multiline)
+    const constRegex = /(const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*(?::\s*B<string>\s*)?:=\s*((?:[^;]|;(?!\s*const\s))*?)(?=\s*(?:const\s|$)))/gs;
+    let constMatch;
+    let found = false;
+
+    while ((constMatch = constRegex.exec(codeBlock)) !== null) {
+      const parserName = constMatch[2];
+      let fullDefinition = constMatch[1].trim();
+
+      // Clean up the definition - remove extra whitespace and normalize
+      fullDefinition = fullDefinition
+        .replace(/\s+/g, ' ')  // Replace multiple whitespace with single space
+        .replace(/\s*\|\|\s*/g, ' || ')  // Normalize || operators
+        .replace(/\s*=>\s*/g, ' => ')    // Normalize => operators
+        .replace(/\s*,\s*/g, ', ')       // Normalize commas
+        .trim();
+
+      extractedParsers.push({ name: parserName, definition: fullDefinition });
+      found = true;
+    }
+    if(!found) {
+      console.log("Not found in " + codeBlock);
+    }
+  }
+
+  if (extractedParsers.length === 0) {
+    error('No parser definitions found in HTML file');
+  }
+
+  // Generate the parser definitions
+  const parserDefinitions = extractedParsers.map(parser =>
+    `  // Parser: ${parser.name}\n  ${parser.definition}`
+  ).join('\n\n');
+
+  // Replace the injection marker with actual parser definitions
+  return snippetsContent.replace(
+    /\s*\/\/ INJECT_PARSERS_HERE.*$/m,
+    '\n' + parserDefinitions + '\n'
+  );
+}
+
+/**
+ * Shared utility: Update HTML with LoC information
+ * @param {string} htmlContent
+ * @param {{parserCombinators: number, datatypesAndHelpers: number}} locCounts
+ * @returns {string}
+ */
+function updateHtmlWithLocContent(htmlContent, locCounts) {
+  let updatedContent = htmlContent;
+
+  // Update parser combinators LoC
+  updatedContent = updatedContent.replace(
+    /<span id="parser-combinators-loc">\d+<\/span>/g,
+    `<span id="parser-combinators-loc">${locCounts.parserCombinators}</span>`
   );
 
+  // Update datatypes and helpers LoC
+  updatedContent = updatedContent.replace(
+    /<span id="datatypes-helpers-loc">\d+<\/span>/g,
+    `<span id="datatypes-helpers-loc">${locCounts.datatypesAndHelpers}</span>`
+  );
+
+  return updatedContent;
+}
+
+/**
+ * Extract and inject code snippets from SExprParser.dfy into HTML
+ */
+function injectSExprCodeSnippets() {
+  log('Injecting SExpr code snippets from actual Dafny file...');
+
+  if (!fileExists(config.htmlFile)) {
+    error(`HTML file not found: ${config.htmlFile}`);
+  }
+
+  const htmlContent = fs.readFileSync(config.htmlFile, 'utf8');
+  const updatedHtmlContent = processSExprCodeInjection(htmlContent);
+
   // Write the updated HTML back
-  fs.writeFileSync(config.htmlFile, htmlContent);
+  fs.writeFileSync(config.htmlFile, updatedHtmlContent);
   log('Successfully injected SExpr code snippets into HTML');
 
   // Note: SExprParser.dfy verification is handled during the compilation step
@@ -215,90 +306,16 @@ function extractDafnySnippets() {
   }
 
   const htmlContent = fs.readFileSync(config.htmlFile, 'utf8');
-
-  // Extract code blocks with parser-definition class
-  const parserBlockRegex = /<pre><code[^>]*class="parser-definition"[^>]*>(.*?)<\/code><\/pre>/gs;
-  /** @type {Array<{name: string, definition: string}>} */
-  const extractedParsers = [];
-  /** @type {string[]} */
-  const parserNames = [];
-  let match;
-
-  while ((match = parserBlockRegex.exec(htmlContent)) !== null) {
-    let codeBlock = match[1]
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&amp;/g, '&')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .trim();
-
-    // Extract all const definitions from this code block (supporting multiline)
-    const constRegex = /const\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*((?:[^;]|;(?!\s*const\s))*?)(?=\s*(?:const\s|$))/gs;
-    let constMatch;
-
-    while ((constMatch = constRegex.exec(codeBlock)) !== null) {
-      const parserName = constMatch[1];
-      let parserDef = constMatch[2].trim();
-
-      // Clean up the definition - remove extra whitespace and normalize
-      parserDef = parserDef
-        .replace(/\s+/g, ' ')  // Replace multiple whitespace with single space
-        .replace(/\s*\|\|\s*/g, ' || ')  // Normalize || operators
-        .replace(/\s*=>\s*/g, ' => ')    // Normalize => operators
-        .replace(/\s*,\s*/g, ', ')       // Normalize commas
-        .trim();
-
-      extractedParsers.push({ name: parserName, definition: parserDef });
-      parserNames.push(parserName);
-    }
-  }
-
-  if (extractedParsers.length === 0) {
-    error('No parsers found with class="parser-definition"');
-  }
-
-  // Generate the Dafny module
-  let snippetsContent = `/*
- * Parser Snippets in Dafny
- * This file is auto-generated from the HTML file
- * DO NOT EDIT DIRECTLY
- */
-module ParserSnippets {
-  import opened Std.Parsers.StringBuilders
-
-`;
-
-  // Add the extracted parser definitions
-  for (const parser of extractedParsers) {
-    snippetsContent += `  // Parser: ${parser.name}\n`;
-    snippetsContent += `  const ${parser.name} := ${parser.definition}\n\n`;
-  }
-
-  // Add generic result type and parse method
-  snippetsContent += `  // Generic result type for parser results
-  datatype Result<T> = 
-    | Success(value: T)
-    | Failure(error: string)
-
-  // Generic parse method that works with any parser
-  method {:extern "ParserSnippets", "ParseJS"} 
-  Parse<T>(parser: B<T>, input: string) returns (result: Result<(T, string)>)
-  {
-    var parseResult := parser.Apply(input);
-    match parseResult {
-      case ParseSuccess(value, remaining) =>
-        result := Success((value, InputToString(remaining)));
-      case ParseFailure(_, _) =>
-        result := Failure(FailureToString(input, parseResult));
-    }
-  }
-}
-`;
+  const snippetsContent = generateParserSnippetsContent(htmlContent);
 
   // Write the snippets file
   fs.writeFileSync(config.parserSnippets, snippetsContent);
-  log(`Generated ${config.parserSnippets} with ${extractedParsers.length} parsers: ${parserNames.join(', ')}`);
+
+  // Count parsers for logging
+  const parserCount = (snippetsContent.match(/\/\/ Parser:/g) || []).length;
+  const parserNames = [...snippetsContent.matchAll(/\/\/ Parser: (\w+)/g)].map(match => match[1]);
+
+  log(`Generated ${config.parserSnippets} with ${parserCount} parsers: ${parserNames.join(', ')}`);
 }
 
 /**
@@ -476,25 +493,15 @@ function updateHtmlWithLocInfo(locCounts) {
     error(`HTML file not found: ${config.htmlFile}`);
   }
 
-  let htmlContent = fs.readFileSync(config.htmlFile, 'utf8');
-  let totalUpdated = false;
+  const htmlContent = fs.readFileSync(config.htmlFile, 'utf8');
+  const updatedHtmlContent = updateHtmlWithLocContent(htmlContent, locCounts);
 
-  // Update parser combinators count
-  const parserResult = updateSpanMarker(htmlContent, 'parser-combinators-loc', locCounts.parserCombinators, 'parser combinators LoC');
-  htmlContent = parserResult.content;
-  totalUpdated = totalUpdated || parserResult.updated;
-
-  // Update datatypes and helpers count
-  const datatypesResult = updateSpanMarker(htmlContent, 'datatypes-helpers-loc', locCounts.datatypesAndHelpers, 'datatypes/helpers LoC');
-  htmlContent = datatypesResult.content;
-  totalUpdated = totalUpdated || datatypesResult.updated;
-
-  // Write the updated content back to the file
-  if (totalUpdated) {
-    fs.writeFileSync(config.htmlFile, htmlContent);
+  // Check if anything was actually updated
+  if (htmlContent !== updatedHtmlContent) {
+    fs.writeFileSync(config.htmlFile, updatedHtmlContent);
     log(`Successfully updated HTML file with LoC information: ${locCounts.parserCombinators} parser combinator lines, ${locCounts.datatypesAndHelpers} datatype/helper lines`);
   } else {
-    log('Warning: No span markers found - HTML file not updated');
+    log(`LoC information already up to date: ${locCounts.parserCombinators} parser combinator lines, ${locCounts.datatypesAndHelpers} datatype/helper lines`);
   }
 }
 
@@ -514,7 +521,8 @@ function compileAllDafnyFiles() {
 
   // Compile all files together in a single command
   const outputFile = `${config.jsOutputDir}/parsers-combined.js`;
-  const command = `${config.dafnyPath} translate js --no-verify --standard-libraries --include-runtime --output:${outputFile} ${config.sexprParser} ${config.parserSnippets}`;
+  const command = `${config.dafnyPath} translate js --standard-libraries --include-runtime --output:${outputFile} ${config.sexprParser} ${config.parserSnippets}`;
+  log("Running " + command);
   runCommand(command, `Failed to compile Dafny files`);
 
   // Fix duplicate constructors
@@ -578,10 +586,159 @@ function main() {
   log('Jekyll will automatically serve these files from /blog/assets/js/parsers/');
 }
 
-// Run the main function
+/**
+ * String version of injectSExprCodeSnippets for check mode
+ * @param {string} htmlContent
+ * @returns {string}
+ */
+function injectSExprCodeSnippetsToString(htmlContent) {
+  if (!fileExists(config.sexprParser)) {
+    error(`SExprParser.dfy not found: ${config.sexprParser}`);
+  }
+
+  const dafnyContent = fs.readFileSync(config.sexprParser, 'utf8');
+
+  // Extract datatype definition
+  const datatypeMatch = dafnyContent.match(/datatype SExpr =\s*\n((?:\s*\|[^\n]*\n)*)/);
+  if (datatypeMatch) {
+    // Format the datatype definition with proper indentation
+    const lines = datatypeMatch[1].trim().split('\n');
+    const formattedLines = lines.map(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('|')) {
+        return '  ' + trimmed; // Indent variant lines
+      }
+      return trimmed;
+    });
+    const datatypeDefinition = `datatype SExpr =\n${formattedLines.join('\n')}`;
+    htmlContent = htmlContent.replace(
+      /<!-- INJECT:SEXPR_DATATYPE -->/g,
+      `<pre><code>${escapeHtml(datatypeDefinition)}</code></pre>`
+    );
+  }
+
+  // Extract main parser definition (simplified for readability)
+  const parserMatch = dafnyContent.match(/const parserSExpr: B<SExpr> :=\s*\n\s*Rec\(\(SExpr: B<SExpr>\) =>\s*\n([\s\S]*?)(?=\s*\)\s*const|\s*\)\s*\/\/)/);
+  if (parserMatch) {
+    const parserDefinition = `const parserSExpr: B<SExpr> :=\n  Rec((SExpr: B<SExpr>) =>\n${parserMatch[1].trim()}\n  )`;
+    htmlContent = htmlContent.replace(
+      /<!-- INJECT:SEXPR_PARSER -->/g,
+      `<pre><code>${escapeHtml(parserDefinition)}</code></pre>`
+    );
+  }
+
+  // Extract ToString method from the actual Dafny file (if needed for HTML injection)
+  const toStringMatch = dafnyContent.match(/function ToString\(indent: string := ""\): string \{([\s\S]*?)(?=\n\s*function|\n\s*method|\n\s*\})/);
+  if (toStringMatch) {
+    const toStringMethod = `function ToString(indent: string := ""): string {\n${toStringMatch[1].trim()}\n}`;
+    htmlContent = htmlContent.replace(
+      /<!-- INJECT:SEXPR_TOSTRING -->/g,
+      `<pre><code>${escapeHtml(toStringMethod)}</code></pre>`
+    );
+  }
+
+  return htmlContent;
+}
+
+/**
+ * String version of updateHtmlWithLocInfo for check mode
+ * @param {string} htmlContent
+ * @param {{parserCombinators: number, datatypesHelpers: number}} locCounts
+ * @returns {string}
+ */
+function updateHtmlWithLocInfoToString(htmlContent, locCounts) {
+  let updatedContent = htmlContent;
+
+  // Update parser combinators LoC
+  updatedContent = updatedContent.replace(
+    /<span id="parser-combinators-loc">\d+<\/span>/g,
+    `<span id="parser-combinators-loc">${locCounts.parserCombinators}</span>`
+  );
+
+  // Update datatypes and helpers LoC
+  updatedContent = updatedContent.replace(
+    /<span id="datatypes-helpers-loc">\d+<\/span>/g,
+    `<span id="datatypes-helpers-loc">${locCounts.datatypesAndHelpers}</span>`
+  );
+
+  return updatedContent;
+}
+
+/**
+ * Check mode - verify files would be identical without overwriting
+ */
+function checkMode() {
+  log('Build script for parser combinators blog post (CHECK MODE)');
+  log('==========================================================');
+  log('Verifying that generated files would match existing files...');
+
+  // Check prerequisites
+  checkDafnyCompiler();
+
+  if (!fileExists(config.sexprParser)) {
+    error(`SExprParser.dfy not found: ${config.sexprParser}`);
+  }
+
+  let allMatch = true;
+  const mismatches = [];
+
+  // Step 1: Check if HTML injection would change the file
+  const originalHtml = fs.readFileSync(config.htmlFile, 'utf8');
+  const tempHtml = processSExprCodeInjection(originalHtml);
+  if (originalHtml !== tempHtml) {
+    allMatch = false;
+    mismatches.push(`${config.htmlFile} - SExpr code injection would modify file`);
+  }
+
+  // Step 2: Check if ParserSnippets.dfy would be different
+  const generatedSnippets = generateParserSnippetsContent(tempHtml);
+  if (fileExists(config.parserSnippets)) {
+    const existingSnippets = fs.readFileSync(config.parserSnippets, 'utf8');
+    if (existingSnippets !== generatedSnippets) {
+      allMatch = false;
+      mismatches.push(`${config.parserSnippets} - Generated content differs from existing file`);
+    }
+  } else {
+    allMatch = false;
+    mismatches.push(`${config.parserSnippets} - File does not exist`);
+  }
+
+  // Step 3: Check if LoC counts would change HTML
+  const locCounts = countLinesOfCode();
+  const htmlWithLoc = updateHtmlWithLocContent(tempHtml, locCounts);
+  if (tempHtml !== htmlWithLoc) {
+    allMatch = false;
+    mismatches.push(`${config.htmlFile} - LoC information would be updated`);
+  }
+
+  // Step 4: Check if compiled JS would be different (this is expensive, so we skip it in check mode)
+  // The assumption is that if the Dafny source files haven't changed, the JS output won't change
+
+  // Report results
+  if (allMatch) {
+    log('✓ All files are up to date - no changes needed');
+    process.exit(0);
+  } else {
+    log('✗ Files would be modified:');
+    mismatches.forEach(mismatch => log(`  - ${mismatch}`));
+    log('');
+    log('Run without --check to update the files');
+    process.exit(1);
+  }
+}
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const isCheckMode = args.includes('--check');
+
+// Run the appropriate function
 if (require.main === module) {
   try {
-    main();
+    if (isCheckMode) {
+      checkMode();
+    } else {
+      main();
+    }
   } catch (err) {
     error(`Unexpected error: ${err.message}`);
   }

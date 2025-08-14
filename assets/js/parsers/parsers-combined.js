@@ -2606,11 +2606,11 @@ let Std_Frames = (function() {
     _parentTraits() {
       return [];
     }
-    // DUPLICATE CONSTRUCTOR: constructor(value) {
-    // let _this = this;
-    // (_this).value = value;
-    // return;
-    // }
+    __ctor(value) {
+      let _this = this;
+      (_this).value = value;
+      return;
+    }
   };
   return $module;
 })(); // end of module Std_Frames
@@ -3060,14 +3060,14 @@ let Std_DynamicArray = (function() {
     _parentTraits() {
       return [];
     }
-    // DUPLICATE CONSTRUCTOR: constructor() {
-    // let _this = this;
-    // (_this).size = _dafny.ZERO;
-    // (_this).capacity = _dafny.ZERO;
-    // let _nw0 = Array((_dafny.ZERO).toNumber());
-    // (_this).data = _nw0;
-    // return;
-    // }
+    __ctor() {
+      let _this = this;
+      (_this).size = _dafny.ZERO;
+      (_this).capacity = _dafny.ZERO;
+      let _nw0 = Array((_dafny.ZERO).toNumber());
+      (_this).data = _nw0;
+      return;
+    }
     At(index) {
       let _this = this;
       return (_this.data)[index];
@@ -3212,11 +3212,11 @@ let Std_Actions = (function() {
     _parentTraits() {
       return [Std_Actions.Action, Std_GenericActions.GenericAction, Std_Frames.Validatable];
     }
-    // DUPLICATE CONSTRUCTOR: constructor(f) {
-    // let _this = this;
-    // (_this)._f = f;
-    // return;
-    // }
+    __ctor(f) {
+      let _this = this;
+      (_this)._f = f;
+      return;
+    }
     Invoke(i) {
       let _this = this;
       let o = undefined;
@@ -3247,12 +3247,12 @@ let Std_Actions = (function() {
     _parentTraits() {
       return [Std_Actions.Action, Std_GenericActions.GenericAction, Std_Frames.Validatable];
     }
-    // DUPLICATE CONSTRUCTOR: constructor(first, second) {
-    // let _this = this;
-    // (_this)._first = first;
-    // (_this)._second = second;
-    // return;
-    // }
+    __ctor(first, second) {
+      let _this = this;
+      (_this)._first = first;
+      (_this)._second = second;
+      return;
+    }
     Invoke(i) {
       let _this = this;
       let o = undefined;
@@ -3381,12 +3381,12 @@ let Std_Consumers = (function() {
       _out1 = Std_Consumers.Consumer.Accept(_this, t);
       return _out1;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(n) {
-    // let _this = this;
-    // (_this)._n = n;
-    // (_this).consumedCount = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(n) {
+      let _this = this;
+      (_this)._n = n;
+      (_this).consumedCount = _dafny.ZERO;
+      return;
+    }
     Capacity() {
       let _this = this;
       return Std_Wrappers.Option.create_Some(((_this).n).minus(_this.consumedCount));
@@ -3423,12 +3423,12 @@ let Std_Consumers = (function() {
       _out2 = Std_Consumers.Consumer.Accept(_this, t);
       return _out2;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(storage) {
-    // let _this = this;
-    // (_this)._storage = storage;
-    // (_this).size = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(storage) {
+      let _this = this;
+      (_this)._storage = storage;
+      (_this).size = _dafny.ZERO;
+      return;
+    }
     Capacity() {
       let _this = this;
       return Std_Wrappers.Option.create_Some((new BigNumber(((_this).storage).length)).minus(_this.size));
@@ -3465,15 +3465,15 @@ let Std_Consumers = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    // DUPLICATE CONSTRUCTOR: constructor() {
-    // let _this = this;
-    // let _0_a;
-    // let _nw0 = new Std_DynamicArray.DynamicArray();
-    // _nw0.constructor();
-    // _0_a = _nw0;
-    // (_this).storage = _0_a;
-    // return;
-    // }
+    __ctor() {
+      let _this = this;
+      let _0_a;
+      let _nw0 = new Std_DynamicArray.DynamicArray();
+      _nw0.__ctor();
+      _0_a = _nw0;
+      (_this).storage = _0_a;
+      return;
+    }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -3497,12 +3497,12 @@ let Std_Consumers = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(init, f) {
-    // let _this = this;
-    // (_this)._f = f;
-    // (_this).value = init;
-    // return;
-    // }
+    __ctor(init, f) {
+      let _this = this;
+      (_this)._f = f;
+      (_this).value = init;
+      return;
+    }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -3523,10 +3523,10 @@ let Std_Consumers = (function() {
     _parentTraits() {
       return [Std_Actions.TotalActionProof, Std_Frames.Validatable];
     }
-    // DUPLICATE CONSTRUCTOR: constructor(action) {
-    // let _this = this;
-    // return;
-    // }
+    __ctor(action) {
+      let _this = this;
+      return;
+    }
   };
 
   $module.SeqWriter = class SeqWriter {
@@ -3542,11 +3542,11 @@ let Std_Consumers = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    // DUPLICATE CONSTRUCTOR: constructor() {
-    // let _this = this;
-    // (_this).values = _dafny.Seq.of();
-    // return;
-    // }
+    __ctor() {
+      let _this = this;
+      (_this).values = _dafny.Seq.of();
+      return;
+    }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -3638,7 +3638,7 @@ let Std_Producers = (function() {
       let s = _dafny.Seq.of();
       let _0_seqWriter;
       let _nw0 = new Std_Consumers.SeqWriter();
-      _nw0.constructor();
+      _nw0.__ctor();
       _0_seqWriter = _nw0;
       (p).ForEach(_0_seqWriter);
       s = _0_seqWriter.values;
@@ -3675,12 +3675,12 @@ let Std_Producers = (function() {
       _out1 = Std_Producers.IProducer.Next(_this);
       return _out1;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(state, stepFn) {
-    // let _this = this;
-    // (_this).state = state;
-    // (_this)._stepFn = stepFn;
-    // return;
-    // }
+    __ctor(state, stepFn) {
+      let _this = this;
+      (_this).state = state;
+      (_this)._stepFn = stepFn;
+      return;
+    }
     Invoke(i) {
       let _this = this;
       let o = undefined;
@@ -3763,10 +3763,10 @@ let Std_Producers = (function() {
       _out1 = Std_Producers.Producer.Next(_this);
       return _out1;
     }
-    // DUPLICATE CONSTRUCTOR: constructor() {
-    // let _this = this;
-    // return;
-    // }
+    __ctor() {
+      let _this = this;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _dafny.ZERO;
@@ -3809,13 +3809,13 @@ let Std_Producers = (function() {
       _out2 = Std_Producers.Producer.Next(_this);
       return _out2;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(n, t) {
-    // let _this = this;
-    // (_this)._n = n;
-    // (_this)._t = t;
-    // (_this).producedCount = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(n, t) {
+      let _this = this;
+      (_this)._n = n;
+      (_this)._t = t;
+      (_this).producedCount = _dafny.ZERO;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _this.producedCount;
@@ -3870,12 +3870,12 @@ let Std_Producers = (function() {
       _out3 = Std_Producers.Producer.Next(_this);
       return _out3;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(elements) {
-    // let _this = this;
-    // (_this)._elements = elements;
-    // (_this).index = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(elements) {
+      let _this = this;
+      (_this)._elements = elements;
+      (_this).index = _dafny.ZERO;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _this.index;
@@ -3930,13 +3930,13 @@ let Std_Producers = (function() {
       _out4 = Std_Producers.Producer.Next(_this);
       return _out4;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(original, max) {
-    // let _this = this;
-    // (_this)._original = original;
-    // (_this)._max = max;
-    // (_this).produced = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(original, max) {
+      let _this = this;
+      (_this)._original = original;
+      (_this)._max = max;
+      (_this).produced = _dafny.ZERO;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _this.produced;
@@ -3996,13 +3996,13 @@ let Std_Producers = (function() {
       _out5 = Std_Producers.Producer.Next(_this);
       return _out5;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(source, filter) {
-    // let _this = this;
-    // (_this)._source = source;
-    // (_this)._filter = filter;
-    // (_this).producedCount = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(source, filter) {
+      let _this = this;
+      (_this)._source = source;
+      (_this)._filter = filter;
+      (_this).producedCount = _dafny.ZERO;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _this.producedCount;
@@ -4071,12 +4071,12 @@ let Std_Producers = (function() {
       _out6 = Std_Producers.Producer.Next(_this);
       return _out6;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(first, second) {
-    // let _this = this;
-    // (_this)._first = first;
-    // (_this)._second = second;
-    // return;
-    // }
+    __ctor(first, second) {
+      let _this = this;
+      (_this)._first = first;
+      (_this)._second = second;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return (((_this).first).ProducedCount()).plus(((_this).second).ProducedCount());
@@ -4140,12 +4140,12 @@ let Std_Producers = (function() {
       _out7 = Std_Producers.Producer.Next(_this);
       return _out7;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(original, mapping) {
-    // let _this = this;
-    // (_this)._original = original;
-    // (_this)._mapping = mapping;
-    // return;
-    // }
+    __ctor(original, mapping) {
+      let _this = this;
+      (_this)._original = original;
+      (_this)._mapping = mapping;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return ((_this).original).ProducedCount();
@@ -4213,12 +4213,12 @@ let Std_Producers = (function() {
       _out8 = Std_Producers.Producer.Next(_this);
       return _out8;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(original, mapping) {
-    // let _this = this;
-    // (_this)._original = original;
-    // (_this)._mapping = mapping;
-    // return;
-    // }
+    __ctor(original, mapping) {
+      let _this = this;
+      (_this)._original = original;
+      (_this)._mapping = mapping;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return ((_this).original).ProducedCount();
@@ -4281,13 +4281,13 @@ let Std_Producers = (function() {
       _out9 = Std_Producers.Producer.Next(_this);
       return _out9;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(original) {
-    // let _this = this;
-    // (_this)._original = original;
-    // (_this).currentInner = Std_Wrappers.Option.create_None();
-    // (_this).producedCount = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(original) {
+      let _this = this;
+      (_this)._original = original;
+      (_this).currentInner = Std_Wrappers.Option.create_None();
+      (_this).producedCount = _dafny.ZERO;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _this.producedCount;
@@ -4380,11 +4380,11 @@ let Std_ActionsExterns = (function() {
     _parentTraits() {
       return [];
     }
-    // DUPLICATE CONSTRUCTOR: constructor(inv) {
-    // let _this = this;
-    // (_this).internal = _dafny.Map.Empty.slice();
-    // return;
-    // }
+    __ctor(inv) {
+      let _this = this;
+      (_this).internal = _dafny.Map.Empty.slice();
+      return;
+    }
     Keys() {
       let _this = this;
       let keys = _dafny.Set.Empty;
@@ -4445,11 +4445,11 @@ let Std_ActionsExterns = (function() {
     _parentTraits() {
       return [];
     }
-    // DUPLICATE CONSTRUCTOR: constructor(inv, t) {
-    // let _this = this;
-    // (_this).boxed = t;
-    // return;
-    // }
+    __ctor(inv, t) {
+      let _this = this;
+      (_this).boxed = t;
+      return;
+    }
     Get() {
       let _this = this;
       let t = undefined;
@@ -4470,10 +4470,10 @@ let Std_ActionsExterns = (function() {
     _parentTraits() {
       return [];
     }
-    // DUPLICATE CONSTRUCTOR: constructor() {
-    // let _this = this;
-    // return;
-    // }
+    __ctor() {
+      let _this = this;
+      return;
+    }
     __Lock() {
       let _this = this;
       return;
@@ -5941,14 +5941,14 @@ let Std_BulkActions = (function() {
       let result = undefined;
       let _0_chunkProducer;
       let _nw0 = new Std_Producers.SeqReader();
-      _nw0.constructor(values);
+      _nw0.__ctor(values);
       _0_chunkProducer = _nw0;
       let _1_mapping;
       let _nw1 = new Std_Actions.FunctionAction();
-      _nw1.constructor(Std_BulkActions.__default.ToBatched);
+      _nw1.__ctor(Std_BulkActions.__default.ToBatched);
       _1_mapping = _nw1;
       let _nw2 = new Std_Producers.MappedProducer();
-      _nw2.constructor(_0_chunkProducer, _1_mapping);
+      _nw2.__ctor(_0_chunkProducer, _1_mapping);
       result = _nw2;
       return result;
     }
@@ -6031,12 +6031,12 @@ let Std_BulkActions = (function() {
       _out10 = Std_Producers.Producer.Next(_this);
       return _out10;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(elements) {
-    // let _this = this;
-    // (_this)._elements = elements;
-    // (_this).index = _dafny.ZERO;
-    // return;
-    // }
+    __ctor(elements) {
+      let _this = this;
+      (_this)._elements = elements;
+      (_this).index = _dafny.ZERO;
+      return;
+    }
     ProducedCount() {
       let _this = this;
       return _this.index;
@@ -6111,12 +6111,12 @@ let Std_BulkActions = (function() {
       Std_Consumers.IConsumer.Accept(_this, t);
       return ;
     }
-    // DUPLICATE CONSTRUCTOR: constructor() {
-    // let _this = this;
-    // (_this).elements = _dafny.Seq.of();
-    // (_this).state = Std_Wrappers.Result.create_Success(true);
-    // return;
-    // }
+    __ctor() {
+      let _this = this;
+      (_this).elements = _dafny.Seq.of();
+      (_this).state = Std_Wrappers.Result.create_Success(true);
+      return;
+    }
     Invoke(t) {
       let _this = this;
       let r = _dafny.Tuple.Default();
@@ -6175,14 +6175,14 @@ let Std_BulkActions = (function() {
       _out3 = Std_Consumers.Consumer.Accept(_this, t);
       return _out3;
     }
-    // DUPLICATE CONSTRUCTOR: constructor(storage) {
-    // let _this = this;
-    // (_this).storage = storage;
-    // (_this).size = _dafny.ZERO;
-    // (_this).otherInputs = _dafny.ZERO;
-    // (_this).state = Std_Wrappers.Result.create_Success(true);
-    // return;
-    // }
+    __ctor(storage) {
+      let _this = this;
+      (_this).storage = storage;
+      (_this).size = _dafny.ZERO;
+      (_this).otherInputs = _dafny.ZERO;
+      (_this).state = Std_Wrappers.Result.create_Success(true);
+      return;
+    }
     Capacity() {
       let _this = this;
       return Std_Wrappers.Option.create_Some(((new BigNumber((_this.storage).length)).minus(_this.size)).minus(_this.otherInputs));
@@ -13273,6 +13273,8 @@ let SExprParser = (function() {
                       let _13_infixStr = (_let_tmp_rhs5)[1];
                       if (_12_isInfix) {
                         return _13_infixStr;
+                      } else if (((new BigNumber((_1_items).length)).isEqualTo(new BigNumber(2))) && (((_1_items)[_dafny.ZERO]).is_Atom)) {
+                        return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.Concat(((_1_items)[_dafny.ZERO]).dtor_name, _dafny.Seq.UnicodeFromString("(")), ((_1_items)[_dafny.ONE]).ToString(_dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))), _dafny.Seq.UnicodeFromString(")"));
                       } else {
                         return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("("), SExprParser.__default.JoinItems(_1_items, _dafny.Seq.Concat(indent, _dafny.Seq.UnicodeFromString("  ")))), _dafny.Seq.UnicodeFromString(")"));
                       }
@@ -13421,6 +13423,15 @@ let ParserSnippets = (function() {
       }, _dafny.Seq.UnicodeFromString("joy"))), function (_1_joyString) {
         return (new BigNumber((_1_joyString).length)).multipliedBy(new BigNumber(2));
       });
+    };
+    static get BalancedPayment() {
+      return Std_Parsers_StringBuilders.B.End(Std_Parsers_StringBuilders.__default.Rec(function (_0_transaction) {
+        return Std_Parsers_StringBuilders.__default.O(_dafny.Seq.of(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.B.M(Std_Parsers_StringBuilders.B.I__e(Std_Parsers_StringBuilders.B.e__I(Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("$")), _0_transaction), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString("A"))), function (_1_transaction) {
+          return _dafny.Seq.Concat(_dafny.Seq.Concat(_dafny.Seq.UnicodeFromString("COIN "), _1_transaction), _dafny.Seq.UnicodeFromString("APPLE! "));
+        })), function (_2_transactions) {
+          return Std_Collections_Seq.__default.Flatten(_2_transactions);
+        }), Std_Parsers_StringBuilders.__default.S(_dafny.Seq.UnicodeFromString(""))));
+      }));
     };
   };
 

@@ -1,11 +1,11 @@
 /*
- * Parser Snippets in Dafny
- * This file is auto-generated from the HTML file
- * DO NOT EDIT DIRECTLY
+ * Parser Snippets Template in Dafny
+ * This file contains the boilerplate code for parser snippets
+ * The actual parser definitions are injected by the build script
  */
 module ParserSnippets {
   import opened Std.Parsers.StringBuilders
-
+  import Std
   // Parser: AngerParser
   const AngerParser := CharTest( c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "Angry Smily")
 
@@ -32,6 +32,10 @@ module ParserSnippets {
 
   // Parser: AtomWithSpaces
   const AtomWithSpaces := AtomParser.I_e(WS)
+
+  // Parser: BalancedPayment
+  const BalancedPayment: B<string> := Rec((transaction: B<string>) => O([ S("$").e_I(transaction).I_e(S("A")).M( (transaction: string) => "COIN " + transaction + "APPLE! " ).Rep().M((transactions: seq<string>) => Std.Collections.Seq.Flatten(transactions) ), S("") ])).End()
+
 
   // Generic result type for parser results
   datatype Result<T> = 

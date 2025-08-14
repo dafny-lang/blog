@@ -125,6 +125,8 @@
     white-space: pre-wrap;
   }
 
+
+
   /* Building block demo styling */
   .demo-container .output-container {
     margin-top: 10px;
@@ -352,12 +354,6 @@
   });
 </script>
 
-
-
-
-
-<h2>Why Parser Combinators Matter</h2>
-
 <p>
   Imagine you need to parse and format complex nested structures like this <a
     href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank">LISP</a> factorial function:
@@ -368,9 +364,9 @@
 <p>
   Most parsing approaches would require hundreds of lines of complex, error-prone code. Traditional parser generators
   like <a href="https://www.antlr.org/" target="_blank">ANTLR</a> or <a href="http://www.ssw.uni-linz.ac.at/coco/"
-    target="_blank">Coco/R</a> involve separate compilation phases with grammar files, lexer specifications, and
-  generated code that's difficult to debug. But with <a href="https://en.wikipedia.org/wiki/Parser_combinator"
-    target="_blank">parser combinators</a>, you
+    target="_blank">Coco/R</a> involve separate compilation phases with grammar files and <a
+    href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">lexer</a> specifications. But with <a
+    href="https://en.wikipedia.org/wiki/Parser_combinator" target="_blank">parser combinators</a>, you
   can build an elegant, working parser in just a few dozen lines. Even better - it compiles to JavaScript and runs in
   your browser!
 </p>
@@ -420,7 +416,7 @@ n
 <p>
   This formatter handles nested structures, proper indentation, and error reporting—try adding an extra closing
   parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">20</span> lines of
-  parser combinators and <span id="datatypes-helpers-loc">187</span> lines of datatypes and helpers. How is this
+  parser combinators and <span id="datatypes-helpers-loc">239</span> lines of datatypes and helpers. How is this
   possible? Let's explore the building blocks.
 </p>
 
@@ -743,7 +739,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
     <button class="example-btn positive">42
       newline</button>
     <button class="example-btn positive">hello world</button>
-    <button class="example-btn negative">no-space-after</button>
+    <button class="example-btn positive">no-space-after</button>
   </div>
 
   <textarea id="whitespace-input" class="input-area" placeholder="factorial   ">factorial   </textarea>
@@ -761,43 +757,75 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
   </div>
 </div>
 
-<h4>Putting It Together</h4>
+<h4>Recursion (Rec) - Balanced Payments</h4>
 
 <p>
-  Now we have all the building blocks! We can parse:
+  The <code>Rec</code> combinator makes it possible to create recursive parsers - parsers that can call themselves. Let's create a
+  fun example: parsing balanced payments where you will get exactly one apple A after each coin $ you find, but before
+  you buy an apple, you can have other transactions. You can also have multiple sequential transactions.
 </p>
-<ul>
-  <li><strong>Individual characters</strong> with predicates (CharTest)</li>
-  <li><strong>Sequences</strong> with repetition (Rep)</li>
-  <li><strong>Transformations</strong> with mapping (M)</li>
-  <li><strong>Combinations</strong> with concatenation (I_I, e_I, I_e)</li>
-  <li><strong>Alternatives</strong> with choice (O)</li>
-</ul>
+
+<pre><code class="parser-definition">const BalancedPayment: B&lt;string&gt; := Rec((transaction: B&lt;string&gt;) =&gt;
+  O([
+    S("$").e_I(transaction).I_e(S("A")).M(
+      (transaction: string) =&gt; 
+        "COIN " + transaction + "APPLE! "
+    ).Rep().M((transactions: seq&lt;string&gt;) =&gt;
+       Std.Collections.Seq.Flatten(transactions)
+    ),
+    S("")
+  ])).End()</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Test balanced and unbalanced payment patterns:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">$A</button>
+    <button class="example-btn positive">$$AA</button>
+    <button class="example-btn positive">$$A$AA</button>
+    <button class="example-btn positive">$A$A$A</button>
+    <button class="example-btn negative">$AA$$A</button>
+    <button class="example-btn negative">A</button>
+    <button class="example-btn negative">$$A</button>
+    <button class="example-btn negative">$AA</button>
+  </div>
+
+  <textarea id="payment-input" class="input-area" placeholder="$A">$A</textarea>
+
+  <div class="output-container">
+    <button id="payment-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="payment-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="payment-remaining"></span>
+    </div>
+  </div>
+</div>
 
 <p>
-  The S-expression formatter you tried above combines all these concepts using <a
-    href="https://en.wikipedia.org/wiki/Recursion_(computer_science)" target="_blank">recursion</a> to handle nested
-  structures.
-  Let's see how it works under the hood.
+  Notice how <code>Rec</code> allows the parser to call itself! The <code>BalancedPayment</code> parser can contain another
+  <code>BalancedPayment</code>, creating nested structures. This is exactly how parentheses work in programming languages - each
+  opening parenthesis must have a matching closing one.
+</p>
+
+<p>
+  <strong>Important:</strong> Since Dafny programs must terminate, <code>Rec</code> includes built-in protection against
+  infinite recursion. If a recursive parser made no progress (doesn't consume any input), Dafny will return a parse error.
 </p>
 
 <h2>Building the Complete S-Expression Formatter</h2>
 
 <p>
-  Now that you've experimented with the building blocks, let's see how they combine to create the powerful S-expression
-  formatter you tried at the top. The magic happens through three key innovations:
+  From parsing angry emojis to balanced payments, you've seen how simple combinators compose into powerful parsers. The S-expression formatter combines these same building blocks.
 </p>
-
-<ol>
-  <li><strong>Smart Pattern Recognition</strong> - Detecting common Lisp patterns and formatting them beautifully</li>
-  <li><strong>Comment Integration</strong> - Treating comments as first-class citizens that wrap around expressions</li>
-  <li><strong>Recursive Structure</strong> - Handling arbitrarily nested expressions with proper indentation</li>
-</ol>
 
 <h3>The Data Structure</h3>
 
 <p>
-  Our S-expression parser uses a more sophisticated data structure than basic tutorials show:
+  Our S-expression parser uses a data structure that handles comments as first-class citizens:
 </p>
 
 <pre><code>datatype SExpr =
@@ -814,57 +842,55 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 
 <p>
   The actual parser that powers the formatter above is surprisingly concise - just <span
-    id="parser-combinators-loc">20</span> lines! Here's the essential structure:
+    id="parser-combinators-loc">20</span> lines! Here's the complete parser combinators code:
 </p>
 
-<pre><code>const parserSExpr: B&lt;SExpr&gt; :=
-  Rec((SExpr: B&lt;SExpr&gt;) =&gt;
-// Try to parse a comment followed by an expression
-          O([ commentText.I_e(WS).I_I(SExpr).M((commentAndExpr: (string, SExpr)) =&gt; Comment(commentAndExpr.0, commentAndExpr.1)),
-              S(&quot;(&quot;).e_I(WS).Then(
-                (r: string) =&gt;
-                  SExpr.I_e(WS)
-                  .Rep().I_e(S(&quot;)&quot;)).I_e(WS)
-              ).M((r: seq&lt;SExpr&gt;) =&gt; List(r)),
-              noParensNoSpace.M((r: string) =&gt; Atom(r)).I_e(WS)
-            ])
-  )</code></pre>
+<pre><code data-parser="sexpr-main">  const noParensNoSpace :=
+    CharTest((c: char) =&gt; c != &#39;(&#39; &amp;&amp; c != &#39;)&#39; &amp;&amp; c != &#39; &#39; &amp;&amp; c != &#39;\t&#39; &amp;&amp; c != &#39;\n&#39; &amp;&amp; c != &#39;\r&#39;, &quot;atom character&quot;).Rep1()
+
+  const notNewline :=
+    CharTest((c: char) =&gt; c != &#39;\n&#39;, &quot;anything except newline&quot;)
+
+  const commentText: B&lt;string&gt; :=
+    S(&quot;;&quot;).e_I(notNewline.Rep()).I_e(O([S(&quot;\n&quot;), EOS.M(x =&gt; &quot;&quot;)]))
+
+  const parserSExpr: B&lt;SExpr&gt; :=
+    Rec(
+      (SExpr: B&lt;SExpr&gt;) =&gt;
+        O([ commentText.I_e(WS).I_I(SExpr).M(
+              (commentAndExpr: (string, SExpr)) =&gt;
+                Comment(commentAndExpr.0, commentAndExpr.1)),
+            S(&quot;(&quot;).e_I(WS).Then(
+              (r: string) =&gt; SExpr.I_e(WS).Rep().I_e(S(&quot;)&quot;)).I_e(WS)
+            ).M((r: seq&lt;SExpr&gt;) =&gt; List(r)),
+            noParensNoSpace.M((r: string) =&gt; Atom(r)).I_e(WS)]))
+
+  const p: B&lt;SExpr&gt; :=
+    parserSExpr.I_e(WS).End()
+
+  const topLevelParser: B&lt;TopLevelExpr&gt; :=
+    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M((items: seq&lt;SExpr&gt;) =&gt; TopLevel(items))</code></pre>
 
 <p>
-  The <code>Rec</code> combinator creates a recursive parser that can handle arbitrarily nested structures. For parsers
-  that might hit stack limits, Dafny also provides <code>RecNoStack</code> - see the <a
+  You can see the <code>Rec</code> combinator in action here - just like in the balanced payment example, it allows the
+  parser to call itself to handle arbitrarily nested structures. For parsers that might hit stack limits, Dafny also
+  provides <code>RecNoStack</code> - see the <a
     href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser
     example</a> for usage.
 </p>
 
-<h3>Pattern Recognition and Formatting</h3>
+<h3>Syntactic Sugar</h3>
 
 <p>
-  The parser includes pattern recognition that formats common Lisp constructs (like <code>define</code> →
+  The formatter generates syntactic sugar for common Lisp constructs (like <code>define</code> →
   <code>function</code>, <code>if</code> → <code>if-then-else</code>, infix operators) for better readability. The full
   implementation is in the <a href="/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
 </p>
 
-<h3>How It Works</h3>
-
-<p>
-  When you input an S-expression, the parser combinators work together:
-</p>
-
-<ol>
-  <li><strong>Character-by-character parsing</strong>: Each combinator consumes what it needs from the input string</li>
-  <li><strong>Tree building</strong>: Successful parsers return structured data that gets combined into larger
-    structures</li>
-  <li><strong>Pattern recognition</strong>: The formatter detects common patterns and applies appropriate formatting
-  </li>
-</ol>
-
 <p>
   No <a href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">tokenization</a> step - the string flows
   directly through the parser combinators, with each one consuming characters and building up the final <a
-    href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">syntax tree</a>. This happens in just
-  <strong><span id="parser-combinators-loc">20</span> lines of parser combinators + <span
-      id="datatypes-helpers-loc">187</span> lines of datatypes and helpers</strong>.
+    href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">syntax tree</a>.
 </p>
 
 
@@ -916,7 +942,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 </ul>
 
 <p>
-  <strong>207 lines of verified, composable code</strong> that parses, recognizes patterns, and formats beautifully.
+  <strong>207 lines of verified, composable code</strong> that parses, and emit beautiful syntactic sugar.
   This is parser combinators: turning parsing from an arcane art into a compositional science.
 </p>
 
@@ -927,5 +953,12 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 
 <p>
   Start with <code>CharTest</code>, add some combinators, and see where composition takes you. Explore more in the <a
-    href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries">Dafny Standard Libraries</a>.
+    href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries/src/Std/Parsers/README.md">Dafny
+    Standard Libraries</a>.
+</p>
+
+<p>
+  Need to debug your parser combinators? Check out the <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Parsers/DEBUGGING.md"
+    target="_blank">debugging guide</a> for tips on troubleshooting parser issues and understanding failure modes.
 </p>
