@@ -20,8 +20,6 @@
  * - Version-safe (Dafny upgrades automatically reflected)
  * - Compilation tested (extracted from working code)
  * - Zero maintenance (no manual sync needed)
- * 
- * @template T
  */
 
 const fs = require('fs');
@@ -30,7 +28,7 @@ const { execSync } = require('child_process');
 
 // Configuration
 const config = {
-  dafnyPath: '"C:\\Users\\mimayere\\Documents\\dafny 2\\Binaries\\Dafny.exe"',
+  dafnyPath: 'dafny',
   jsOutputDir: 'assets/js/parsers',
   includesDir: '_includes',
   htmlFile: '_includes/parser-combinators.html',

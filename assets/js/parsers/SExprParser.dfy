@@ -282,7 +282,9 @@ module SExprParser {
 
   // LOC_MARKER_START: PARSER_COMBINATORS
   const noParensNoSpace :=
-    CharTest((c: char) => c != '(' && c != ')' && c != ' ' && c != '\t' && c != '\n' && c != '\r', "atom character").Rep1()
+    CharTest((c: char) =>
+      c != '(' && c != ')' && c != ' ' && c != '\t'
+      && c != '\n' && c != '\r', "atom character").Rep1()
 
   const notNewline :=
     CharTest((c: char) => c != '\n', "anything except newline")
@@ -305,7 +307,8 @@ module SExprParser {
     parserSExpr.I_e(WS).End()
 
   const topLevelParser: B<TopLevelExpr> :=
-    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M((items: seq<SExpr>) => TopLevel(items))
+    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M(
+      (items: seq<SExpr>) => TopLevel(items))
   // LOC_MARKER_END: PARSER_COMBINATORS
 
   method ParseSExpr(input: string) returns (result: string)

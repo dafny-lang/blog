@@ -368,7 +368,7 @@
     href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">lexer</a> specifications. But with <a
     href="https://en.wikipedia.org/wiki/Parser_combinator" target="_blank">parser combinators</a>, you
   can build an elegant, working parser in just a few dozen lines. Even better - it compiles to JavaScript and runs in
-  your browser!
+  your browser! Plus, it's available as a new Dafny standard library using <code>--standard-libraries</code>.
 </p>
 
 <h2>Interactive <a href="https://en.wikipedia.org/wiki/S-expression" target="_blank">S-Expression</a> Formatter</h2>
@@ -415,7 +415,7 @@ n
 
 <p>
   This formatter handles nested structures, proper indentation, and error reporting—try adding an extra closing
-  parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">20</span> lines of
+  parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">23</span> lines of
   parser combinators and <span id="datatypes-helpers-loc">239</span> lines of datatypes and helpers. How is this
   possible? Let's explore the building blocks.
 </p>
@@ -432,7 +432,7 @@ n
 
 <pre><code>import opened Std.Parsers.StringBuilders</code></pre>
 
-<h4>Character Testing (CharTest) - Parsing Anger</h4>
+<h4>Character Testing (<code>CharTest</code>) - Parsing Anger</h4>
 
 <p>
   Let's say we want to create a parser that parses one angry smiley. Without combinators, we'd write something like
@@ -443,7 +443,7 @@ n
   if |input| >= 1 && (input[0] == '😠' || input[0] == '😡' || input[0] == '🤬' || input[0] == '😤') then
     ParseSuccess(input[0], input[1..])
   else
-    ParseFailure(Recoverable, FailureData("expected Angry Smily", input, None))</code></pre>
+    ParseFailure(Recoverable, FailureData("expected Angry Smiley", input, None))</code></pre>
 
 <p>
   That's verbose and error-prone! The <code>CharTest</code> combinator makes this much cleaner by taking a predicate
@@ -455,7 +455,7 @@ n
     || c == '😡'
     || c == '🤬'
     || c == '😤',
-  "Angry Smily")</code></pre>
+  "Angry Smiley")</code></pre>
 
 <div class="demo-container">
   <p><strong>Try it:</strong> Click an example or enter your own text:</p>
@@ -578,7 +578,7 @@ n
 <p>
   S-expressions are made of <strong>atoms</strong> (like <code>factorial</code>, <code>+</code>, <code>42</code>) and
   <strong>lists</strong> (like <code>(+ 1 2)</code>).
-  Let's start by parsing atoms - any sequence of characters that isn't a parenthesis or semicolon:
+  Let's start by parsing atoms - any non-empty sequence (<code>Rep1</code>) of characters that isn't a parenthesis or semicolon:
 </p>
 
 <pre><code class="parser-definition">const AtomParser := CharTest(
@@ -617,7 +617,7 @@ n
 <h4>Numbers vs Symbols - Choice in Action</h4>
 
 <p>
-  The <code>O</code> (choice) combinator tries parsers in sequence until one succeeds. Let's use it to distinguish
+  The letter <code>O</code> (choice) combinator tries parsers in sequence until one succeeds. Let's use it to distinguish
   between numbers and symbols:
 </p>
 
@@ -724,7 +724,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 
 <p>
   S-expressions need <a href="https://en.wikipedia.org/wiki/Whitespace_character" target="_blank">whitespace</a> to
-  separate atoms. The built-in <code>WS</code> parser handles spaces, tabs, and newlines.
+  separate atoms. The built-in <code>WS</code> parser <a href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Parsers/String/StringParsers.dfy#L89" target="_blank">handles spaces (including unicode spaces), tabs, and newlines</a>.
   Let's see how it works with our atoms:
 </p>
 
@@ -740,6 +740,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
       newline</button>
     <button class="example-btn positive">hello world</button>
     <button class="example-btn positive">no-space-after</button>
+    <button class="example-btn negative"> space-first</button>
   </div>
 
   <textarea id="whitespace-input" class="input-area" placeholder="factorial   ">factorial   </textarea>
@@ -760,7 +761,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 <h4>Recursion (Rec) - Balanced Payments</h4>
 
 <p>
-  The <code>Rec</code> combinator makes it possible to create recursive parsers - parsers that can call themselves. Let's create a
+  The <code>Rec</code> combinator makes it possible to create recursive parsers - parsers that can call themselves. Instead of the usual balanced parentheses parsing example, let's create a
   fun example: parsing balanced payments where you will get exactly one apple A after each coin $ you find, but before
   you buy an apple, you can have other transactions. You can also have multiple sequential transactions.
 </p>
@@ -816,6 +817,13 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
   infinite recursion. If a recursive parser made no progress (doesn't consume any input), Dafny will return a parse error.
 </p>
 
+<p>
+ For parsers that might hit stack limits, Dafny also
+  provides <code>RecNoStack</code> - see the <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser
+    example</a> for usage.
+</p>
+
 <h2>Building the Complete S-Expression Formatter</h2>
 
 <p>
@@ -846,7 +854,9 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 </p>
 
 <pre><code data-parser="sexpr-main">  const noParensNoSpace :=
-    CharTest((c: char) =&gt; c != &#39;(&#39; &amp;&amp; c != &#39;)&#39; &amp;&amp; c != &#39; &#39; &amp;&amp; c != &#39;\t&#39; &amp;&amp; c != &#39;\n&#39; &amp;&amp; c != &#39;\r&#39;, &quot;atom character&quot;).Rep1()
+    CharTest((c: char) =&gt;
+      c != &#39;(&#39; &amp;&amp; c != &#39;)&#39; &amp;&amp; c != &#39; &#39; &amp;&amp; c != &#39;\t&#39;
+      &amp;&amp; c != &#39;\n&#39; &amp;&amp; c != &#39;\r&#39;, &quot;atom character&quot;).Rep1()
 
   const notNewline :=
     CharTest((c: char) =&gt; c != &#39;\n&#39;, &quot;anything except newline&quot;)
@@ -869,14 +879,12 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
     parserSExpr.I_e(WS).End()
 
   const topLevelParser: B&lt;TopLevelExpr&gt; :=
-    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M((items: seq&lt;SExpr&gt;) =&gt; TopLevel(items))</code></pre>
+    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M(
+      (items: seq&lt;SExpr&gt;) =&gt; TopLevel(items))</code></pre>
 
 <p>
   You can see the <code>Rec</code> combinator in action here - just like in the balanced payment example, it allows the
-  parser to call itself to handle arbitrarily nested structures. For parsers that might hit stack limits, Dafny also
-  provides <code>RecNoStack</code> - see the <a
-    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser
-    example</a> for usage.
+  parser to call itself to handle arbitrarily nested structures.
 </p>
 
 <h3>Syntactic Sugar</h3>
@@ -884,13 +892,13 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 <p>
   The formatter generates syntactic sugar for common Lisp constructs (like <code>define</code> →
   <code>function</code>, <code>if</code> → <code>if-then-else</code>, infix operators) for better readability. The full
-  implementation is in the <a href="/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
+  implementation is in the <a href="https://github.com/dafny-lang/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
 </p>
 
 <p>
   No <a href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">tokenization</a> step - the string flows
   directly through the parser combinators, with each one consuming characters and building up the final <a
-    href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">syntax tree</a>.
+    href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">syntax tree</a>. If that is scaring, note that you can always create a parser to tokenize before creating a parser that builds the tree out of the tokens. Note also that <a href="https://github.com/dafny-lang/b3">B3</a> is a project that successfully used these parser combiantors and does not have a lexer.
 </p>
 
 
@@ -929,7 +937,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 <h2>Conclusion - The Power of Composition</h2>
 
 <p>
-  From basic character tests like <code>CharTest(c => c == '😠', "Angry Smily")</code>, we built a complete S-expression
+  From basic character tests like <code>CharTest(c => c == '😠', "Angry Smiley")</code>, we built a complete S-expression
   parser using simple combinators:
 </p>
 
@@ -942,7 +950,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 </ul>
 
 <p>
-  <strong>207 lines of verified, composable code</strong> that parses, and emit beautiful syntactic sugar.
+  <strong>207 lines of verified, composable code</strong> that parses and emits beautiful syntactic sugar.
   This is parser combinators: turning parsing from an arcane art into a compositional science.
 </p>
 

@@ -7,7 +7,7 @@ module ParserSnippets {
   import opened Std.Parsers.StringBuilders
   import Std
   // Parser: AngerParser
-  const AngerParser := CharTest( c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "Angry Smily")
+  const AngerParser := CharTest( c => c == '😠' || c == '😡' || c == '🤬' || c == '😤', "Angry Smiley")
 
   // Parser: JoyParser
   const JoyParser := CharTest( c => c == '😀' || c == '😃' || c == '😄' || c == '😁' || c == '🥳', "joy").Rep()

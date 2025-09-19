@@ -13410,7 +13410,7 @@ let ParserSnippets = (function() {
     static get AngerParser() {
       return Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
         return (((_dafny.areEqual(_0_c, new _dafny.CodePoint('😠'.codePointAt(0)))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😡'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('🤬'.codePointAt(0))))) || (_dafny.areEqual(_0_c, new _dafny.CodePoint('😤'.codePointAt(0))));
-      }, _dafny.Seq.UnicodeFromString("Angry Smily"));
+      }, _dafny.Seq.UnicodeFromString("Angry Smiley"));
     };
     static get JoyParser() {
       return Std_Parsers_StringBuilders.B.Rep(Std_Parsers_StringBuilders.__default.CharTest(function (_0_c) {
