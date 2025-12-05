@@ -204,7 +204,7 @@ We use this extensively in our test suite (`TestStatistics.dfy`) to ensure that 
 
 ## Order statistics: median and range
 
-Beyond mean and variance, a statistics library should also provide basic order statistics such as median and range. Since Dafny’s standard collections already provide a merge sort (`MergeSortBy`), we reuse it rather than re–implement ordering ourselves.
+Beyond mean and variance, a statistics library should also provide basic order statistics such as median and range. Since Dafny’s standard collections already provide a merge sort ([MergeSortBy](https://github.com/dafny-lang/dafny/blob/68fb5ed04006b9be9601695d3d74687bbe3800b4/Source/DafnyStandardLibraries/src/Std/Collections/Seq.dfy#L1041)), we reuse it rather than re–implement ordering ourselves . This is exactly the kind of situation where strong libraries make a difference: instead of proving sorting correctness again, we can build directly on a verified component and focus on the statistical logic itself.
 
 The median is defined as:
 
@@ -227,7 +227,7 @@ A few things to note:
 - For odd lengths, the median is the middle element.
 - For even lengths, we average the two middle elements.
 
-The `Range` function is defined in a similar spirit: sort the sequence and subtract the minimum from the maximum.
+The `Range` function is defined in a similar way: sort the sequence and subtract the minimum from the maximum.
 
 {% highlight dafny %}
   // The function for calcluating range for a sequence which is the max element - min element
@@ -240,7 +240,7 @@ The `Range` function is defined in a similar spirit: sort the sequence and subtr
   }
 {% endhighlight %}
 
-
+This section clearly shows how important these reusable components become and we hope that the statistics library becomes useful for our Dafny community in the same way.
 
 ## Computing mode in linear time
 
@@ -271,6 +271,28 @@ The frequency table is built with a tail–recursive function:
       FrequencyTable(s[1..], newM)
   }
 {% endhighlight %}
+
+You remember our first line, What looks simple in code often becomes interesting the moment you try to prove it. This is one of the cases where we faced such an issue. Our FrequencyTable function seemed simple: take a sequence and build a map counting occurrences.
+Now , Formally, we wanted Dafny to verify:
+
+{% highlight dafny %}
+ensures forall x :: x in s ==> x in FrequencyTable(s, m)
+{% endhighlight %}
+
+But this postcondition would not verify, even though the implementation was correct.
+
+After some debugging and a very helpful review from our sponsor Robin, we realized the issue:
+our specification never told Dafny how the accumulator m relates to the output.
+Nothing guaranteed that keys already present in m must still appear in the final map.
+
+The missing piece was a single line:
+
+{% highlight dafny %}
+ensures m.Keys <= FrequencyTable(s, m).Keys
+{% endhighlight %}
+
+This states that the result must at least preserve all existing keys.
+With this, Dafny finally had enough structure to prove the main postcondition, and the entire function verified cleanly, a perfect example of how small specification details matter deeply when writing verified code.
 
 Given this frequency map, we compute the mode by scanning the sequence with `ModeHelper` and tying everything together in the public `Mode` function:
 
@@ -315,7 +337,6 @@ This design has a few advantages:
 - The preconditions make verification smoother: `ModeHelper` assumes that every `keys[i]` is a key in `freq`, which is guaranteed by the `FrequencyTable` postcondition.
 
 
-
 ## Testing the library
 
 Dafny’s `{:test}` attribute and our small test helper module let us write executable tests that also serve as documentation.
@@ -336,11 +357,34 @@ Here is an excerpt from our test suite:
     AssertAndExpect(AreNear(StdDevPopulation(data) * StdDevPopulation(data), 2.0, eps));
     AssertAndExpect(AreNear(StdDevSample(data) * StdDevSample(data), 2.5, eps));
   }
+
+  method {:test} {:rlimit 50000} Test_Median_Odd_Case() {
+    AssertAndExpect(Median([3.0, 1.0, 2.0]) == 2.0);
+  }
+
+  // Testcase for median in even case
+  method {:test} {:rlimit 1000000} Test_Median_Even_Case() {
+    AssertAndExpect(Median([4.0, 2.0, 3.0, 1.0]) == (2.0 + 3.0) / 2.0);
+  }
+
+  method {:test} Test_Mode() {
+    expect Mode([1.0, 2.0, 2.0, 3.0]) == 2.0;
+  }
+
+  // Testcase for checking mode with multiple occurences for multiple elements
+  method {:test} Test_Mode_Multiple() {
+    expect Mode([5.0, 5.0, 7.0, 7.0, 7.0, 9.0]) == 7.0;
+  }
+
+  method {:test}  {:rlimit 50000} Test_Range() {
+    AssertAndExpect(Range([1.0, 3.0, 5.0]) == 4.0);
+  }
 {% endhighlight %}
 
-We also test Median and Range with both sorted and unsorted inputs, different sizes, and edge cases such as single–element sequences.
 
 These tests are not a substitute for formal proofs, Dafny already proves the specifications but they provide an extra layer of confidence and serve as concrete usage examples for future users of the library.
+
+They also show how simple it is to work with the module: you can call Mean, Median, VariancePopulation, Mode, and the rest just like any normal function without worrying about the underlying proofs. In that sense, the tests double as a quick “how to use this library” guide while demonstrating its correctness on real data.
 
 
 ## Acknowledgments
