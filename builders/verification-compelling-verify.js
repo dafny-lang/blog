@@ -65,7 +65,7 @@ function Main() {
     });
   } else {
     var exit_code = ProcessOneFile(fileName, regenerate);
-    process.exit(exit_code);
+    process.exit(typeof exit_code === 'boolean' ? (exit_code ? 0 : 1) : exit_code);
   }
 }
 
@@ -82,7 +82,8 @@ function ProcessOneFile(fileName, regenerate,) {
     }
     return exit_code;
   } else {
-    return RegenerateOutput(steps, fileName, fileContent);
+    var result = RegenerateOutput(steps, fileName, fileContent);
+    return result ? 0 : 1;
   }
 }
 

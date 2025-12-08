@@ -4,3 +4,12 @@ _site
 .jekyll-metadata
 vendor
 /**/.DS_STORE
+
+# Generated files from make generate
+*_gen.html
+*_gen.mdk
+*.dll
+*.runtimeconfig.json
+*.dfy.out
+euclidian*
+obj/
