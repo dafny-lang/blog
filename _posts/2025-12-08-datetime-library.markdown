@@ -5,6 +5,234 @@ author: Jerry Zhou, Yuyang Liu, Jules Wang
 date:   2025-12-08 09:00:00 +0000
 categories: standard-libraries
 ---
+
+# Local Date Time Library
+
+Date and time handling is one of the most error-prone areas in software development.
+
+From leap year calculations to parsing failures, temporal data presents edge cases that can corrupt application logic. This becomes critical in verification languages like Dafny, where correctness is mathematically proven.
+
+We built `Std.LocalDateTime`, a comprehensive module providing timezone-agnostic date-time operations with full formal verification. This post covers:
+
+* design principles behind safe temporal arithmetic,
+* validation and bounded integer types,
+* parsing and formatting with formal contracts,
+* epoch-based arithmetic for reliable calculations,
+* verification challenges we solved.
+
+
+## Design principles
+
+Our design balances mathematical precision with real-world complexity:
+
+1. **Safety through types:** Bounded integer types (`int32`, `uint8`, `uint16`) prevent overflow while maintaining verification guarantees.
+
+2. **Explicit validation:** Every LocalDateTime instance must satisfy `IsValidLocalDateTime(dt)`, checking leap years, month boundaries, and time constraints.
+
+3. **Immutability:** Pure functions like `WithYear`, `WithMonth` return new validated instances instead of mutation.
+
+4. **Epoch-based arithmetic:** Date arithmetic converts to epoch milliseconds, performs calculation, then converts back—avoiding calendar complexity.
+
+5. **Parse-don't-validate:** Parsing functions return `Result<LocalDateTime, string>`, forcing explicit error handling.
+
+
+## The core datatype and validation
+
+The `LocalDateTime` datatype uses bounded integer types for safety:
+
+{% highlight dafny %}
+datatype LocalDateTime = LocalDateTime(
+  year: int32,
+  month: uint8,
+  day: uint8,
+  hour: uint8,
+  minute: uint8,
+  second: uint8,
+  millisecond: uint16
+)
+{% endhighlight %}
+
+Bounded types prevent overflow while the validation predicate ensures semantic correctness:
+
+{% highlight dafny %}
+predicate IsValidLocalDateTime(dt: LocalDateTime)
+{
+  DTUtils.IsValidDateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.millisecond)
+}
+{% endhighlight %}
+
+This checks month boundaries (1-12), days within each month (including leap years), time ranges (0-23 hours, 0-59 minutes), and supports leap seconds. Every function requires valid input and ensures valid output—creating a **verification firewall**.
+
+{% highlight dafny %}
+function Of(year: int32, month: uint8, day: uint8, hour: uint8, minute: uint8, second: uint8, millisecond: uint16): Result<LocalDateTime, string>
+{
+  if DTUtils.IsValidDateTime(year, month, day, hour, minute, second, millisecond) then
+    Success(FromComponents(year, month, day, hour, minute, second, millisecond))
+  else
+    Failure(DTUtils.GetValidationError(year, month, day, hour, minute, second, millisecond))
+}
+{% endhighlight %}
+
+
+## Immutable transformations
+
+LocalDateTime provides transformation functions with **defensive clamping**:
+
+{% highlight dafny %}
+function WithYear(dt: LocalDateTime, newYear: int32): LocalDateTime
+  requires IsValidLocalDateTime(dt) && MIN_YEAR <= newYear <= MAX_YEAR
+  ensures IsValidLocalDateTime(WithYear(dt, newYear))
+{
+  var newDay := DTUtils.ClampDay(newYear, dt.month, dt.day);
+  FromComponents(newYear, dt.month, newDay, dt.hour, dt.minute, dt.second, dt.millisecond)
+}
+{% endhighlight %}
+
+`ClampDay` ensures validity: February 29th, 2020 becomes February 28th, 2021 when changing to a non-leap year. This prevents invalid dates while maintaining predictable behavior.
+
+
+## Parsing with validation
+
+Parsing uses algebraic data types and explicit validation steps:
+
+{% highlight dafny %}
+datatype ParseFormat =
+  | ISO8601       // yyyy-MM-ddTHH:mm:ss.fff
+  | DateOnly      // yyyy-MM-dd
+
+function Parse(text: string, format: ParseFormat): Result<LocalDateTime, string>
+{
+  match format {
+    case ISO8601 => ParseISO8601(text)
+    case DateOnly => ParseDateOnly(text)
+  }
+}
+{% endhighlight %}
+
+The ISO8601 parser validates in layers: length, separators, numeric components, range, and semantic validity. Each step provides descriptive error messages for malformed input.
+
+
+## Epoch-based arithmetic
+
+We avoid calendar arithmetic complexity by converting to epoch milliseconds, performing math, then converting back:
+
+{% highlight dafny %}
+function Plus(dt: LocalDateTime, millisToAdd: int): Result<LocalDateTime, string>
+  requires IsValidLocalDateTime(dt)
+{
+  var epochMillisResult := DTUtils.ToEpochTimeMilliseconds(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.millisecond);
+  if epochMillisResult.Failure? then
+    Failure(epochMillisResult.error)
+  else
+    var newEpochMillis := epochMillisResult.value + millisToAdd;
+    var components := DTUtils.FromEpochTimeMillisecondsFunc(newEpochMillis);
+    if IsValidComponentRange(components) && DTUtils.IsValidDateTime(components[0], components[1] as uint8, components[2] as uint8, components[3] as uint8, components[4] as uint8, components[5] as uint8, components[6] as uint16) then
+      Success(FromSequenceComponents(components))
+    else
+      Failure("Result date/time is out of valid range")
+}
+{% endhighlight %}
+
+This provides consistency (same operation always gives same result), simplicity (fewer edge cases), and verifiability (Dafny reasons about integers easily). All convenience methods delegate to this core function:
+
+{% highlight dafny %}
+function PlusDays(dt: LocalDateTime, days: int): Result<LocalDateTime, string>
+{
+  Plus(dt, days * (MILLISECONDS_PER_DAY as int))
+}
+{% endhighlight %}
+
+
+## Comparison 
+
+Lexicographic ordering compares components by significance and provides three-way comparison (-1, 0, 1):
+
+{% highlight dafny %}
+function CompareLocal(dt1: LocalDateTime, dt2: LocalDateTime): int
+{
+  if dt1.year != dt2.year then
+    if dt1.year < dt2.year then -1 else 1
+  else if dt1.month != dt2.month then
+    if dt1.month < dt2.month then -1 else 1
+  // ... continues for all components
+  else
+    0
+}
+{% endhighlight %}
+
+All comparison predicates (`IsBefore`, `IsAfter`, `IsEqual`) delegate to this single function, simplifying verification.
+
+## Formatting
+
+Formatting supports multiple output formats through algebraic data types:
+
+{% highlight dafny %}
+datatype DateFormat =
+  | ISO8601                    // yyyy-MM-ddTHH:mm:ss.fff
+  | DateOnly                   // yyyy-MM-dd
+  | TimeOnly                   // HH:mm:ss
+  | DateSlashDDMMYYYY          // dd/MM/yyyy
+{% endhighlight %}
+
+
+## Testing and integration
+
+The module includes comprehensive tests using Dafny's `{:test}` attribute:
+
+{% highlight dafny %}
+method {:test} TestOfFunctionValidCases()
+{
+  var result1 := LDT.Of(2023, 6, 15, 14, 30, 45, 123);
+  if result1.Success? {
+    var dt1 := result1.value;
+    AssertAndExpect(dt1.year == 2023 && dt1.month == 6 && dt1.day == 15);
+    AssertAndExpect(LDT.IsValidLocalDateTime(dt1));
+  }
+
+  var leapYearResult := LDT.Of(2020, 2, 29, 0, 0, 0, 0);
+  expect leapYearResult.Success?;
+}
+{% endhighlight %}
+
+Integration with Duration enables rich temporal arithmetic:
+
+{% highlight dafny %}
+function PlusDuration(dt: LocalDateTime, duration: Duration.Duration): Result<LocalDateTime, string>
+{
+  var totalMillis := (duration.seconds as int) * (MILLISECONDS_PER_SECOND as int) + (duration.millis as int);
+  Plus(dt, totalMillis)
+}
+{% endhighlight %}
+
+
+## Lessons learned
+
+Building a verified temporal library revealed key insights:
+
+1. **Bounded types prevent overflow** while maintaining efficiency and verification guarantees.
+
+2. **Validation predicates create firewalls** ensuring invalid dates cannot propagate through the system.
+
+3. **Immutability simplifies reasoning** - pure functions with explicit preconditions are easier to verify than mutable operations.
+
+4. **Epoch arithmetic avoids calendar complexity** by converting to integers, performing math, then converting back.
+
+5. **Parse-don't-validate handles errors explicitly** through Result types, preventing silent failures.
+
+
+## Looking ahead
+
+The LocalDateTime module provides timezone-agnostic temporal operations with formal verification guarantees. Future enhancements could include:
+
+- **Timezone-aware operations** with ZonedDateTime
+- **Calendar operations** for business days and holidays  
+- **Period arithmetic** with configurable overflow behavior
+- **Format extensibility** for custom patterns and locales
+
+This module demonstrates how formal verification makes traditionally error-prone domains like date-time handling both safer and more reliable, while maintaining performance and usability.
+
+The LocalDateTime module is available in Dafny's standard libraries, providing verified temporal operations you can trust.
+
 # Zoned Date Time Library
 
 ## Why a Zoned Date Time library for Dafny?
