@@ -250,13 +250,6 @@ The current Std.ZonedDateTime focuses on predictable, verifiable operations. Nat
 
 Our hope is that this module makes time-zone work boring—in the best possible way. *If it compiles and verifies, you can trust it*.
 
----
-layout: post
-title: "A Verified Duration Library for Dafny"
-author: Jules Wang
-date: 2025-12-08 10:00:00 +0000
-categories: standard-libraries
----
 
 ## Why a Duration library for Dafny?
 
