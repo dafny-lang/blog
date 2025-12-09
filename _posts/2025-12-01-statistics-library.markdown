@@ -22,7 +22,7 @@ In a language like Dafny, where the whole point is to prove that code behaves as
 
 * What would a small, well–designed, fully verified Statistics library look like in Dafny’s standard library?
 
-This post tells the story of how we designed and implemented `Std.Statistics`, which is a new module that provides mathematically defined, formally verified statistical functions such as Mean, VariancePopulation, VarianceSample, Median, Mode, and Range, together with some supporting helpers for standard deviation and approximate comparisons.
+This post tells the story of how we designed and implemented `Std.Statistics`, which is a new module that provides mathematically-defined, formally-verified statistical functions such as `Mean`, `VariancePopulation`, `VarianceSample`, `Median`, `Mode`, and `Range`, together with some supporting helpers for standard deviation and approximate comparisons.
 
 We will walk through:
 
