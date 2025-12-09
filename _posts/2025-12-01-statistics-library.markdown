@@ -389,7 +389,7 @@ They also show how simple it is to work with the module: you can call Mean, Medi
 
 ## Acknowledgments
 
-We would like to extend our sincere gratitude to **Robin Salkeld**, **Olivier**, and **Michael**, our points of contact and mentors at AWS. Their guidance on API design, performance optimization, and proof stability was instrumental in bringing this library to the Dafny community.
+We would like to extend our sincere gratitude to **Robin Salkeld**, **Olivier Bouissou**, and **Mikael Mayer**, our points of contact and mentors at AWS. Their guidance on API design, performance optimization, and proof stability was instrumental in bringing this library to the Dafny community.
 
 ## Looking ahead
 
