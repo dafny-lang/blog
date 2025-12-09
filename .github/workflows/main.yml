@@ -33,11 +33,10 @@ jobs:
           node-version: 21.1
 
       - name: "Install Dafny"
-        run: |
-          git clone https://github.com/dafny-lang/dafny.git
-          cd dafny && make z3-mac-arm && make exe
+        uses: dafny-lang/setup-dafny-action@v1.9.1
+        with:
+          dafny-version: "4.11.0"
 
       - name: "Test Blogposts"
         run: |
-          export PATH=/Users/runner/work/blog/blog/dafny/Binaries:$PATH
           make check
