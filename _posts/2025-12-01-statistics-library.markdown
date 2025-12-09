@@ -154,7 +154,7 @@ We implemented both to avoid ambiguity.
 Because our helper `SumSquaredDifferences` is proven non-negative, Dafny automatically verifies that `VariancePopulation` and `VarianceSample` are also non-negative. Note that `VarianceSample` requires `|s| > 1`, because dividing by N - 1 where N is 1 would cause a division by zero!
 
 ### 5. Standard Deviation
- Finally, we arrive at Standard Deviation, which is the square root of the Variance. At the time of development, Dafny did not expose a built-in square root operation for the `real` type. To bridge this gap, we defined an `extern` function in a separate module.
+ Finally, we arrive at Standard Deviation, which is the square root of the Variance. At the time of development, Dafny did not have a built-in square root operation for the `real` type. To bridge this gap, we defined an `extern` function in a separate module.
 
 {% highlight dafny %}
   // A function to calculate Population Standard Deviation
@@ -272,8 +272,8 @@ The frequency table is built with a tail–recursive function:
   }
 {% endhighlight %}
 
-You remember our first line: "What looks simple in code often becomes interesting the moment you try to prove it. This is one of the cases where we faced such an issue." Our FrequencyTable function seemed simple: take a sequence and build a map counting occurrences.
-Now , Formally, we wanted Dafny to verify:
+You remember our first line: "What looks simple in code often becomes interesting the moment you try to prove it." This is one of the cases where we faced such an issue. Our FrequencyTable function seemed simple: take a sequence and build a map counting occurrences.
+To ensure correctness, we formally had to verify that:
 
 {% highlight dafny %}
 ensures forall x :: x in s ==> x in FrequencyTable(s, m)
