@@ -204,22 +204,6 @@ function PlusDuration(dt: LocalDateTime, duration: Duration.Duration): Result<Lo
 }
 {% endhighlight %}
 
-
-## Lessons learned
-
-Building a verified temporal library revealed key insights:
-
-1. **Bounded types prevent overflow** while maintaining efficiency and verification guarantees.
-
-2. **Validation predicates create firewalls** ensuring invalid dates cannot propagate through the system.
-
-3. **Immutability simplifies reasoning** - pure functions with explicit preconditions are easier to verify than mutable operations.
-
-4. **Epoch arithmetic avoids calendar complexity** by converting to integers, performing math, then converting back.
-
-5. **Parse-don't-validate handles errors explicitly** through Result types, preventing silent failures.
-
-
 ## Looking ahead
 
 The LocalDateTime module provides timezone-agnostic temporal operations with formal verification guarantees. Future enhancements could include:
