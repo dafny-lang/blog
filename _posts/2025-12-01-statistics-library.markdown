@@ -154,7 +154,7 @@ We implemented both to avoid ambiguity.
 Because our helper `SumSquaredDifferences` is proven non-negative, Dafny automatically verifies that `VariancePopulation` and `VarianceSample` are also non-negative. Note that `VarianceSample` requires `|s| > 1`, because dividing by N - 1 where N is 1 would cause a division by zero!
 
 ### 5. Standard Deviation
- Finally, we arrive at Standard Deviation, which is the square root of the Variance. Since Dafny doesn't have a built-in square root, we define an `extern` function in a separate module.
+ Finally, we arrive at Standard Deviation, which is the square root of the Variance. At the time of development, Dafny did not expose a built-in square root operation for the `real` type. To bridge this gap, we defined an `extern` function in a separate module.
 
 {% highlight dafny %}
   // A function to calculate Population Standard Deviation
@@ -272,7 +272,7 @@ The frequency table is built with a tail–recursive function:
   }
 {% endhighlight %}
 
-You remember our first line, What looks simple in code often becomes interesting the moment you try to prove it. This is one of the cases where we faced such an issue. Our FrequencyTable function seemed simple: take a sequence and build a map counting occurrences.
+You remember our first line: "What looks simple in code often becomes interesting the moment you try to prove it. This is one of the cases where we faced such an issue." Our FrequencyTable function seemed simple: take a sequence and build a map counting occurrences.
 Now , Formally, we wanted Dafny to verify:
 
 {% highlight dafny %}
@@ -386,17 +386,17 @@ These tests are not a substitute for formal proofs, Dafny already proves the spe
 
 They also show how simple it is to work with the module: you can call Mean, Median, VariancePopulation, Mode, and the rest just like any normal function without worrying about the underlying proofs. In that sense, the tests double as a quick “how to use this library” guide while demonstrating its correctness on real data.
 
-
-## Acknowledgments
-
-We would like to extend our sincere gratitude to **Robin Salkeld**, **Olivier Bouissou**, and **Mikael Mayer**, our points of contact and mentors at AWS. Their guidance on API design, performance optimization, and proof stability was instrumental in bringing this library to the Dafny community.
-
 ## Looking ahead
 
 The current `Std.Statistics` module focuses on core, widely used operations. In the future, it could be extended with:
 
-- covariance and correlation,
-- z–scores and normalization helpers,
-- higher–order utilities for working with sequences of records.
+- Covariance and Correlation,
+- Z–scores and Normalization Helpers,
+- Higher–order utilities for working with sequences of records.
+- Adopting Dafny's new floating-point types: switching to `fp32` and `fp64` would allow us to use built-in operations like `Sqrt`, removing the need for `extern` functions.
 
 Our hope is that this library lowers the barrier for Dafny users who need basic statistical functionality, while preserving Dafny’s promise: *if it compiles and verifies, you can trust it*.
+
+## Acknowledgments
+
+We would like to extend our sincere gratitude to **Robin Salkeld**, **Olivier Bouissou**, and **Mikael Mayer**, our points of contact and mentors at AWS. Their guidance on API design, performance optimization, and proof stability was instrumental in bringing this library to the Dafny community.
