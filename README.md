@@ -55,6 +55,11 @@ To test the blog posts, run:
 
 `make check`
 
+Note that the `check` target does not automatically locate blog posts to test;
+if you are writing a new blog post (or moving an existing one),
+then you will need to add or update the `check` target
+to run the appropriate test/verification commands.
+
 If `make check` does not work, `make generate` might be able to fix things if ran locally, committed and pushed.
 
 # Publish the blog post
