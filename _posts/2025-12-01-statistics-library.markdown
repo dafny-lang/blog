@@ -242,7 +242,7 @@ The `Range` function is defined in a similar way: sort the sequence and subtract
 
 This section clearly shows how important these reusable components become and we hope that the statistics library becomes useful for our Dafny community in the same way.
 
-## Computing mode in linear time
+## Computing mode 
 
 The *mode* of a dataset is the value that occurs most frequently. A naive implementation might, for each element, count how many times it appears in the sequence, leading to quadratic behaviour.
 
@@ -332,7 +332,7 @@ Given this frequency map, we compute the mode by scanning the sequence with `Mod
 {% endhighlight %}
 
 This design has a few advantages:
-- It runs in *O(n)* time: one pass to build the frequency map and one pass to find the best.
+- It is significantly faster than our original quadratic approach. While immutability of Dafny maps means updates are not strictly O(n), this design still performs far better in practice and is much easier for Dafny to verify.
 - It naturally supports *deterministic tie–breaking*: if two values have the same frequency, the one encountered first in the sequence remains the mode.
 - The preconditions make verification smoother: `ModeHelper` assumes that every `keys[i]` is a key in `freq`, which is guaranteed by the `FrequencyTable` postcondition.
 
