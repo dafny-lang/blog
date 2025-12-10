@@ -36,7 +36,7 @@ Our design balances mathematical precision with real-world complexity:
 
 5. **Parse-don't-validate:** Parsing functions return `Result<T, string>`, forcing explicit error handling.
 
-6. **First-class DST semantics (ZonedDateTime):** Ambiguity is explicit: we model states Unique | Overlap | Gap and take a preference for resolution. No hidden heuristics.
+6. **First-class DST semantics (ZonedDateTime):** Ambiguity is explicit: we model states StatusUnique | StatusOverlap | StatusGap | StatusError and take two preferences (OverlapResolutionPreference & GapResolutionPreference) for resolution. No hidden heuristics.
 
 
 ## The core datatypes and validation
@@ -73,13 +73,13 @@ The `ZonedDateTime` datatype adds timezone context through a zone identifier and
 datatype ZonedDateTime = ZonedDateTime(
     local: LDT.LocalDateTime,
     zoneId: string,
-    offsetMinutes: int
+    offsetMinutes: int16
 )
 
 predicate IsValidZonedDateTime(zd: ZonedDateTime)
 {
   LDT.IsValidLocalDateTime(zd.local) &&
-  -18*60 <= zd.offsetMinutes <= 18*60 &&
+  MIN_OFFSET_MINUTES <= zd.offsetMinutes <= MAX_OFFSET_MINUTES &&
   0 <= |zd.zoneId|
 }
 
@@ -111,50 +111,56 @@ function Of(year: int32, month: uint8, day: uint8,
 ZonedDateTime construction requires DST ambiguity resolution. We represent the outcome explicitly:
 
 {% highlight dafny %}
-datatype Status = StatusUnique | StatusOverlap | StatusGap
-type Preference = int
-const PREFER_EARLIER: Preference := -1
-const PREFER_LATER:   Preference :=  1
-const SHIFT_FORWARD:  Preference :=  0
+  datatype Status = StatusUnique | StatusOverlap | StatusGap | StatusError
+
+  datatype OverlapResolutionPreference =
+    | PreferEarlier
+    | PreferLater
+    | ERROR
+
+  datatype GapResolutionPreference =
+    | ShiftForward
+    | ERROR
 {% endhighlight %}
 
 The constructor uses a single extern to perform platform-aware resolution:
 
 {% highlight dafny %}
-function {:extern "ZonedDateTimeImpl.__default", "ResolveLocal"} {:axiom}
-ResolveLocalImpl(zoneId: string,
-                year: int32, month: uint8, day: uint8,
-                hour: uint8, minute: uint8, second: uint8, millisecond: uint16,
-                preference: int) : seq
+function {:extern "ZonedDateTimeImpl.__default", "ResolveLocal"} {:axiom} ResolveLocalImpl(zoneId: string,
+                                                                                           year: int32, month: uint8, day: uint8, hour: uint8, 
+                                                                                           minute: uint8, second: uint8, millisecond: uint16,
+                                                                                           overlapPreferenceIndex: int8, gapPreferenceIndex: int8) : (result: seq<int32>)
+    ensures |result| == 9 && LDT.IsValidComponentRange(result[2..9]) && -18*60 <= result[1] <= 18*60
 // returns [status, offsetMinutes, normYear, normMonth, normDay,
 //          normHour, normMinute, normSecond, normMillisecond]
-ensures |ResolveLocalImpl(zoneId, year, month, day, hour, minute,
-                         second, millisecond, preference)| == 9
 {% endhighlight %}
 
 We wrap it in a verified `Of` that produces a ZonedDateTime and the Status:
 
 {% highlight dafny %}
-function Of(zoneId: string, local: LDT.LocalDateTime, preference: Preference)
-: (Result<ZonedDateTime, string>, Status)
-requires LDT.IsValidLocalDateTime(local)
-{
+function Of(zoneId: string, local: LDT.LocalDateTime, 
+    overlapPreference: OverlapResolutionPreference := OverlapResolutionPreference.ERROR, gapPreference: GapResolutionPreference := GapResolutionPreference.ERROR): 
+    (Result<ZonedDateTime, string>, Status)
+    requires LDT.IsValidLocalDateTime(local)
+  {
     // Calls ResolveLocalImpl and builds a normalized ZonedDateTime
-    // Status: 0=Unique, 1=Overlap, 2=Gap
+    // Status: 0=Unique, 1=Overlap, 2=Gap, 3=Error
     …
-}
+  }
 {% endhighlight %}
 
 ### What the preferences mean
 
 On **Overlap** (clocks set back, two valid instants for the same "wall time"):
 
-* `PREFER_EARLIER` picks the earlier UTC instant (the first occurrence),
-* `PREFER_LATER` picks the later UTC instant (the second occurrence).
+* `PreferEarlier` picks the earlier UTC instant (the first occurrence),
+* `PreferLater` picks the later UTC instant (the second occurrence).
+* `ERROR` raises error if overlap occurs (default)
 
 On **Gap** (clocks jump forward, a "wall time" doesn't exist):
 
-* `SHIFT_FORWARD` moves forward to the next valid minute.
+* `ShiftForward` moves forward to the next valid minute.
+* `ERROR` raises error if gap occurs (default)
 
 These rules are implemented once in the extern and reflected in verified postconditions inside Dafny.
 
@@ -180,12 +186,11 @@ function WithYear(dt: LocalDateTime, newYear: int32): LocalDateTime
 ZonedDateTime provides similar transformations, but they must account for timezone context. When changing date components, the offset may need to be recalculated if the new date falls in a different DST regime:
 
 {% highlight dafny %}
-function WithYear(zd: ZonedDateTime, newYear: int32,
-                 preference: Preference): (Result<ZonedDateTime, string>, Status)
-  requires IsValidZonedDateTime(zd)
+function WithYear(dt: ZonedDateTime, newYear: int32): ZonedDateTime
+  requires IsValidZonedDateTime(dt) && MIN_YEAR <= newYear <= MAX_YEAR
+  ensures IsValidZonedDateTime(WithYear(dt, newYear))
 {
-  var newLocal := LDT.WithYear(zd.local, newYear);
-  Of(zd.zoneId, newLocal, preference)
+  ZonedDateTime(LDT.WithYear(dt.local, newYear), dt.zoneId, dt.offsetMinutes)
 }
 {% endhighlight %}
 
@@ -285,18 +290,16 @@ For timezone-aware times, epoch conversion accounts for the UTC offset. This is 
 
 {% highlight dafny %}
 function ToEpochTimeMilliseconds(year: int32, month: uint8, day: uint8,
-                                hour: uint8, minute: uint8, second: uint8,
-                                millisecond: uint16, offsetMinutes: int)
-: Result<int, string>
+                                   hour: uint8, minute: uint8, second: uint8,
+                                   millisecond: uint16, offsetMinutes: int16): Result<int, string>
 {
-    var localEpochResult := DTUtils.ToEpochTimeMilliseconds(
-        year, month, day, hour, minute, second, millisecond);
-    if localEpochResult.Failure? then
-        Failure(localEpochResult.error)
-    else
-        var offsetMillis := offsetMinutes * 60 * 1000;
-        var utcEpoch := localEpochResult.value - offsetMillis;
-        Success(utcEpoch)
+  var (isError, epochMilliseconds, errorMsg) := INTERNAL__ToEpochTimeMilliseconds(year, month, day,
+                                                                                  hour, minute, second,
+                                                                                  millisecond, offsetMinutes);
+  if isError then
+    Failure(errorMsg)
+  else
+    Success(epochMilliseconds)
 }
 {% endhighlight %}
 
@@ -307,21 +310,30 @@ When adding time to a ZonedDateTime, we:
 4. Re-resolve the local time in the timezone (in case we crossed a DST boundary)
 
 {% highlight dafny %}
-function PlusDays(dt: ZonedDateTime, n: int): Result<ZonedDateTime, string>
-  requires IsValidZonedDateTime(dt)
-{
-    var millisToAdd := n * (MILLISECONDS_PER_DAY as int);
-    var epochResult := ToEpochTimeMilliseconds(
-        dt.local.year, dt.local.month, dt.local.day,
-        dt.local.hour, dt.local.minute, dt.local.second, dt.local.millisecond,
-        dt.offsetMinutes);
-
-    if epochResult.Failure? then
-        Failure(epochResult.error)
+function Plus(dt: ZonedDateTime, millisToAdd: int): Result<ZonedDateTime, string>
+    requires IsValidZonedDateTime(dt)
+    ensures Plus(dt, millisToAdd).Success? ==> IsValidZonedDateTime(Plus(dt, millisToAdd).value)
+  {
+    var epochMillisResult := ToEpochTimeMilliseconds(dt.local.year, dt.local.month, dt.local.day,
+                                                     dt.local.hour, dt.local.minute, dt.local.second,
+                                                     dt.local.millisecond, dt.offsetMinutes);
+    if epochMillisResult.Failure? then
+      Failure(epochMillisResult.error)
     else
-        var newEpoch := epochResult.value + millisToAdd;
-        FromEpochTimeMilliseconds(dt.zoneId, newEpoch)
-}
+      var newEpochMillis := epochMillisResult.value + millisToAdd;
+      var components := FromEpochTimeMillisecondsFunc(newEpochMillis, dt.offsetMinutes);
+      if LDT.IsValidComponentRange(components) &&
+         DTUtils.IsValidDateTime(components[0],
+                                 components[1] as uint8,
+                                 components[2] as uint8,
+                                 components[3] as uint8,
+                                 components[4] as uint8,
+                                 components[5] as uint8,
+                                 components[6] as uint16) then
+        Success(ZonedDateTime(LDT.FromSequenceComponents(components), dt.zoneId, dt.offsetMinutes))
+      else
+        Failure("Result date/time is out of valid range")
+  }
 {% endhighlight %}
 
 ## Comparison
@@ -344,35 +356,6 @@ function CompareLocal(dt1: LocalDateTime, dt2: LocalDateTime): int
 {% endhighlight %}
 
 All comparison predicates (`IsBefore`, `IsAfter`, `IsEqual`) delegate to this single function, simplifying verification.
-
-### ZonedDateTime comparison
-
-ZonedDateTime comparison must account for timezone offsets. Two times are equal if they represent the same instant in UTC:
-
-{% highlight dafny %}
-function Compare(zd1: ZonedDateTime, zd2: ZonedDateTime): Result<int, string>
-  requires IsValidZonedDateTime(zd1) && IsValidZonedDateTime(zd2)
-{
-    var epoch1Result := ToEpochTimeMilliseconds(
-        zd1.local.year, zd1.local.month, zd1.local.day,
-        zd1.local.hour, zd1.local.minute, zd1.local.second, zd1.local.millisecond,
-        zd1.offsetMinutes);
-    var epoch2Result := ToEpochTimeMilliseconds(
-        zd2.local.year, zd2.local.month, zd2.local.day,
-        zd2.local.hour, zd2.local.minute, zd2.local.second, zd2.local.millisecond,
-        zd2.offsetMinutes);
-
-    if epoch1Result.Failure? then
-        Failure(epoch1Result.error)
-    else if epoch2Result.Failure? then
-        Failure(epoch2Result.error)
-    else
-        var e1 := epoch1Result.value;
-        var e2 := epoch2Result.value;
-        Success(if e1 < e2 then -1 else if e1 > e2 then 1 else 0)
-}
-{% endhighlight %}
-
 
 ## Formatting
 
@@ -412,8 +395,8 @@ requires IsValidZonedDateTime(dt)
         var hh := absOffset / 60;
         var mm := absOffset % 60;
         var sign := if dt.offsetMinutes < 0 then "-" else "+";
-        sign + (if hh < 10 then "0" + OfInt(hh) else OfInt(hh)) + ":" +
-        (if mm < 10 then "0" + OfInt(mm) else OfInt(mm))
+        sign + (if hh < 10 then "0" + OfInt(hh as int) else OfInt(hh as int)) + ":" +
+        (if mm < 10 then "0" + OfInt(mm as int) else OfInt(mm as int))
 }
 
 function Format(dt: ZonedDateTime, format: DateFormat): string
