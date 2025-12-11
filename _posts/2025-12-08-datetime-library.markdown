@@ -34,9 +34,9 @@ Our design balances mathematical precision with real-world complexity:
 
 4. **Epoch-based arithmetic:** Date arithmetic converts to epoch milliseconds, performs calculation, then converts back—avoiding calendar complexity.
 
-5. **Parse-don't-validate:** Parsing functions return `Result<T, string>`, forcing explicit error handling.
+5. **Parsing with validation:** Parsing functions return `Result<T, string>`, performing runtime validation checks and forcing explicit error handling.
 
-6. **First-class DST semantics (ZonedDateTime):** Ambiguity is explicit: we model states StatusUnique | StatusOverlap | StatusGap | StatusError and take two preferences (OverlapResolutionPreference & GapResolutionPreference) for resolution. No hidden heuristics.
+6. **First-class DST semantics (ZonedDateTime):** Ambiguity is explicit: we model states StatusUnique, StatusOverlap, StatusGap, StatusError and take two preferences (OverlapResolutionPreference & GapResolutionPreference) for resolution. No hidden heuristics.
 
 
 ## The core datatypes and validation
@@ -45,7 +45,7 @@ Our design balances mathematical precision with real-world complexity:
 
 The `LocalDateTime` datatype represents a calendar date and wall-clock time without timezone information:
 
-{% highlight dafny %}
+```dafny
 datatype LocalDateTime = LocalDateTime(
   year: int32,
   month: uint8,
@@ -61,7 +61,7 @@ predicate IsValidLocalDateTime(dt: LocalDateTime)
   DTUtils.IsValidDateTime(dt.year, dt.month, dt.day,
     dt.hour, dt.minute, dt.second, dt.millisecond)
 }
-{% endhighlight %}
+```
 
 This checks month boundaries (1-12), days within each month (including leap years), time ranges (0-23 hours, 0-59 minutes), and supports leap seconds.
 
@@ -69,7 +69,7 @@ This checks month boundaries (1-12), days within each month (including leap year
 
 The `ZonedDateTime` datatype adds timezone context through a zone identifier and explicit offset:
 
-{% highlight dafny %}
+```dafny
 datatype ZonedDateTime = ZonedDateTime(
     local: LDT.LocalDateTime,
     zoneId: string,
@@ -83,7 +83,7 @@ predicate IsValidZonedDateTime(zd: ZonedDateTime)
   0 <= |zd.zoneId|
 }
 
-{% endhighlight %}
+```
 
 We cap offsets at ±18 hours (1080 minutes) to align with practical timezone limits. Every function requires valid input and ensures valid output.
 
@@ -94,7 +94,7 @@ We cap offsets at ±18 hours (1080 minutes) to align with practical timezone lim
 
 LocalDateTime construction validates components and returns a Result:
 
-{% highlight dafny %}
+```dafny
 function Of(year: int32, month: uint8, day: uint8,
            hour: uint8, minute: uint8, second: uint8,
            millisecond: uint16): Result<LocalDateTime, string>
@@ -104,42 +104,40 @@ function Of(year: int32, month: uint8, day: uint8,
   else
     Failure(DTUtils.GetValidationError(year, month, day, hour, minute, second, millisecond))
 }
-{% endhighlight %}
+```
 
 ### ZonedDateTime: DST-aware construction
 
 ZonedDateTime construction requires DST ambiguity resolution. We represent the outcome explicitly:
 
-{% highlight dafny %}
+```dafny
   datatype Status = StatusUnique | StatusOverlap | StatusGap | StatusError
 
   datatype OverlapResolutionPreference =
     | PreferEarlier
     | PreferLater
-    | ERROR
+    | Error
 
   datatype GapResolutionPreference =
     | ShiftForward
-    | ERROR
-{% endhighlight %}
+    | Error
+```
 
 The constructor uses a single extern to perform platform-aware resolution:
 
-{% highlight dafny %}
+```dafny
 function {:extern "ZonedDateTimeImpl.__default", "ResolveLocal"} {:axiom} ResolveLocalImpl(zoneId: string,
                                                                                            year: int32, month: uint8, day: uint8, hour: uint8, 
                                                                                            minute: uint8, second: uint8, millisecond: uint16,
                                                                                            overlapPreferenceIndex: int8, gapPreferenceIndex: int8) : (result: seq<int32>)
     ensures |result| == 9 && LDT.IsValidComponentRange(result[2..9]) && -18*60 <= result[1] <= 18*60
-// returns [status, offsetMinutes, normYear, normMonth, normDay,
-//          normHour, normMinute, normSecond, normMillisecond]
-{% endhighlight %}
+```
 
 We wrap it in a verified `Of` that produces a ZonedDateTime and the Status:
 
-{% highlight dafny %}
+```dafny
 function Of(zoneId: string, local: LDT.LocalDateTime, 
-    overlapPreference: OverlapResolutionPreference := OverlapResolutionPreference.ERROR, gapPreference: GapResolutionPreference := GapResolutionPreference.ERROR): 
+    overlapPreference: OverlapResolutionPreference := OverlapResolutionPreference.Error, gapPreference: GapResolutionPreference := GapResolutionPreference.Error): 
     (Result<ZonedDateTime, string>, Status)
     requires LDT.IsValidLocalDateTime(local)
   {
@@ -147,7 +145,7 @@ function Of(zoneId: string, local: LDT.LocalDateTime,
     // Status: 0=Unique, 1=Overlap, 2=Gap, 3=Error
     …
   }
-{% endhighlight %}
+```
 
 ### What the preferences mean
 
@@ -155,12 +153,12 @@ On **Overlap** (clocks set back, two valid instants for the same "wall time"):
 
 * `PreferEarlier` picks the earlier UTC instant (the first occurrence),
 * `PreferLater` picks the later UTC instant (the second occurrence).
-* `ERROR` raises error if overlap occurs (default)
+* `Error` raises error if overlap occurs (default)
 
 On **Gap** (clocks jump forward, a "wall time" doesn't exist):
 
 * `ShiftForward` moves forward to the next valid minute.
-* `ERROR` raises error if gap occurs (default)
+* `Error` raises error if gap occurs (default)
 
 These rules are implemented once in the extern and reflected in verified postconditions inside Dafny.
 
@@ -169,7 +167,7 @@ These rules are implemented once in the extern and reflected in verified postcon
 
 ### LocalDateTime transformations
 
-{% highlight dafny %}
+```dafny
 function WithYear(dt: LocalDateTime, newYear: int32): LocalDateTime
   requires IsValidLocalDateTime(dt) && MIN_YEAR <= newYear <= MAX_YEAR
   ensures IsValidLocalDateTime(WithYear(dt, newYear))
@@ -177,7 +175,7 @@ function WithYear(dt: LocalDateTime, newYear: int32): LocalDateTime
   var newDay := DTUtils.ClampDay(newYear, dt.month, dt.day);
   FromComponents(newYear, dt.month, newDay, dt.hour, dt.minute, dt.second, dt.millisecond)
 }
-{% endhighlight %}
+```
 
 `ClampDay` ensures validity: February 29th, 2020 becomes February 28th, 2021 when changing to a non-leap year. This prevents invalid dates while maintaining predictable behavior.
 
@@ -185,21 +183,21 @@ function WithYear(dt: LocalDateTime, newYear: int32): LocalDateTime
 
 ZonedDateTime provides similar transformations, but they must account for timezone context. When changing date components, the offset may need to be recalculated if the new date falls in a different DST regime:
 
-{% highlight dafny %}
+```dafny
 function WithYear(dt: ZonedDateTime, newYear: int32): ZonedDateTime
   requires IsValidZonedDateTime(dt) && MIN_YEAR <= newYear <= MAX_YEAR
   ensures IsValidZonedDateTime(WithYear(dt, newYear))
 {
   ZonedDateTime(LDT.WithYear(dt.local, newYear), dt.zoneId, dt.offsetMinutes)
 }
-{% endhighlight %}
+```
 
 
 ## Parsing with validation
 
 ### LocalDateTime parsing
 
-{% highlight dafny %}
+```dafny
 datatype ParseFormat =
   | ISO8601       // yyyy-MM-ddTHH:mm:ss.fff
   | DateOnly      // yyyy-MM-dd
@@ -211,7 +209,7 @@ function Parse(text: string, format: ParseFormat): Result<LocalDateTime, string>
     case DateOnly => ParseDateOnly(text)
   }
 }
-{% endhighlight %}
+```
 
 The ISO8601 parser validates in layers: length, separators, numeric components, range, and semantic validity. Each step provides descriptive error messages for malformed input.
 
@@ -219,7 +217,7 @@ The ISO8601 parser validates in layers: length, separators, numeric components, 
 
 ZonedDateTime parsing is stricter, requiring explicit offset suffixes:
 
-{% highlight dafny %}
+```dafny
 datatype ParseFormat =
   | ISO8601      // yyyy-MM-ddTHH:mm:ss.fffZ or yyyy-MM-ddTHH:mm:ss.fff±HH:mm
   | DateOnly     // yyyy-MM-ddZ or yyyy-MM-dd±HH:mm
@@ -240,7 +238,7 @@ function ParseOffsetMinutesSuffix(suffix: string): Result<int, string>
         …
     else Failure("Invalid offset: expected 'Z' or ±HH:mm")
 }
-{% endhighlight %}
+```
 
 ISO-8601 zoned format: `yyyy-MM-ddTHH:mm:ss.fffZ` or `yyyy-MM-ddTHH:mm:ss.fff±HH:mm` (length 24 or 29, with a 3-digit millisecond component and an explicit Z/offset suffix). Offset suffixes are validated and range-checked (±18:00, with 18:xx disallowed).
 
@@ -251,9 +249,9 @@ We avoid calendar arithmetic complexity by converting to epoch milliseconds, per
 
 ### LocalDateTime arithmetic
 
-For timezone-agnostic times, we convert to epoch milliseconds in a "floating" reference frame:
+For timezone-agnostic times, we convert to epoch milliseconds without timezone context (treating the local time as if it were UTC):
 
-{% highlight dafny %}
+```dafny
 function Plus(dt: LocalDateTime, millisToAdd: int): Result<LocalDateTime, string>
   requires IsValidLocalDateTime(dt)
 {
@@ -273,22 +271,22 @@ function Plus(dt: LocalDateTime, millisToAdd: int): Result<LocalDateTime, string
     else
       Failure("Result date/time is out of valid range")
 }
-{% endhighlight %}
+```
 
 All convenience methods delegate to this core function:
 
-{% highlight dafny %}
+```dafny
 function PlusDays(dt: LocalDateTime, days: int): Result<LocalDateTime, string>
 {
   Plus(dt, days * (MILLISECONDS_PER_DAY as int))
 }
-{% endhighlight %}
+```
 
 ### ZonedDateTime arithmetic: The critical difference
 
 For timezone-aware times, epoch conversion accounts for the UTC offset. This is where ZonedDateTime gets more complex and interesting:
 
-{% highlight dafny %}
+```dafny
 function ToEpochTimeMilliseconds(year: int32, month: uint8, day: uint8,
                                    hour: uint8, minute: uint8, second: uint8,
                                    millisecond: uint16, offsetMinutes: int16): Result<int, string>
@@ -301,7 +299,7 @@ function ToEpochTimeMilliseconds(year: int32, month: uint8, day: uint8,
   else
     Success(epochMilliseconds)
 }
-{% endhighlight %}
+```
 
 When adding time to a ZonedDateTime, we:
 1. Convert the zoned time to UTC epoch milliseconds (accounting for offset)
@@ -309,7 +307,7 @@ When adding time to a ZonedDateTime, we:
 3. Convert back to local components
 4. Re-resolve the local time in the timezone (in case we crossed a DST boundary)
 
-{% highlight dafny %}
+```dafny
 function Plus(dt: ZonedDateTime, millisToAdd: int): Result<ZonedDateTime, string>
     requires IsValidZonedDateTime(dt)
     ensures Plus(dt, millisToAdd).Success? ==> IsValidZonedDateTime(Plus(dt, millisToAdd).value)
@@ -334,7 +332,7 @@ function Plus(dt: ZonedDateTime, millisToAdd: int): Result<ZonedDateTime, string
       else
         Failure("Result date/time is out of valid range")
   }
-{% endhighlight %}
+```
 
 ## Comparison
 
@@ -342,7 +340,7 @@ Both types provide lexicographic ordering and three-way comparison (-1, 0, 1).
 
 ### LocalDateTime comparison
 
-{% highlight dafny %}
+```dafny
 function CompareLocal(dt1: LocalDateTime, dt2: LocalDateTime): int
 {
   if dt1.year != dt2.year then
@@ -353,7 +351,7 @@ function CompareLocal(dt1: LocalDateTime, dt2: LocalDateTime): int
   else
     0
 }
-{% endhighlight %}
+```
 
 All comparison predicates (`IsBefore`, `IsAfter`, `IsEqual`) delegate to this single function, simplifying verification.
 
@@ -361,7 +359,7 @@ All comparison predicates (`IsBefore`, `IsAfter`, `IsEqual`) delegate to this si
 
 ### LocalDateTime formatting
 
-{% highlight dafny %}
+```dafny
 datatype DateFormat =
   | ISO8601                    // yyyy-MM-ddTHH:mm:ss.fff
   | DateOnly                   // yyyy-MM-dd
@@ -377,13 +375,13 @@ function Format(dt: LocalDateTime, format: DateFormat): string
         case TimeOnly => /* ... */
         case DateSlashDDMMYYYY => /* ... */
 }
-{% endhighlight %}
+```
 
 ### ZonedDateTime formatting
 
 ZonedDateTime formatting always includes an explicit offset suffix:
 
-{% highlight dafny %}
+```dafny
 datatype DateFormat = ISO8601 | DateOnly
 
 function ToStringSuffix(dt: ZonedDateTime): string
@@ -409,14 +407,14 @@ requires IsValidZonedDateTime(dt)
             OfInt(y) + "-" + DTUtils.PadWithZeros(m,2) + "-" +
             DTUtils.PadWithZeros(d,2) + ToStringSuffix(dt)
 }
-{% endhighlight %}
+```
 
 
 ## Testing and integration
 
 ### LocalDateTime tests
 
-{% highlight dafny %}
+```dafny
 method {:test} TestOfFunctionValidCases()
 {
   var result1 := LDT.Of(2023, 6, 15, 14, 30, 45, 123);
@@ -429,13 +427,13 @@ method {:test} TestOfFunctionValidCases()
   var leapYearResult := LDT.Of(2020, 2, 29, 0, 0, 0, 0);
   expect leapYearResult.Success?;
 }
-{% endhighlight %}
+```
 
 ### ZonedDateTime tests
 
 ZonedDateTime tests document DST behavior explicitly:
 
-{% highlight dafny %}
+```dafny
 method {:test} TestOfFunctionGapCase()
 {
     var zoneId: string := "PST8PDT";
@@ -451,7 +449,7 @@ method {:test} TestOfFunctionGapCase()
         expect format == "2025-03-09T03:00:00.000-07:00";
     }
 }
-{% endhighlight %}
+```
 
 These tests both demonstrate usage and lock down behavior so downstream users can depend on it.
 
@@ -459,14 +457,14 @@ These tests both demonstrate usage and lock down behavior so downstream users ca
 
 Both modules integrate with the Duration library for rich temporal arithmetic:
 
-{% highlight dafny %}
+```dafny
 function PlusDuration(dt: LocalDateTime, duration: Duration.Duration): Result<LocalDateTime, string>
 {
   var totalMillis := (duration.seconds as int) * (MILLISECONDS_PER_SECOND as int) +
                      (duration.millis as int);
   Plus(dt, totalMillis)
 }
-{% endhighlight %}
+```
 
 
 ## Platform interoperability
@@ -507,7 +505,7 @@ The `Std.Duration` module provides a focused, practical companion to LocalDateTi
 
 ### Core representation
 
-{% highlight dafny %}
+```dafny
 datatype Duration = Duration(
     seconds: int,
     millis: int
@@ -524,7 +522,7 @@ function FromMilliseconds(ms: int): Duration
     var millisValue := ms % MILLISECONDS_PER_SECOND_INT;
     Duration(secondsValue, millisValue)
 }
-{% endhighlight %}
+```
 
 By normalizing through total milliseconds, we ensure consistent handling. This internal representation provides the foundation for all subsequent operations.
 
@@ -532,7 +530,7 @@ By normalizing through total milliseconds, we ensure consistent handling. This i
 
 All duration arithmetic routes through milliseconds to prevent overflow and maintain precision:
 
-{% highlight dafny %}
+```dafny
 function Plus(d1: Duration, d2: Duration): Duration
 requires d1.seconds < DURATION_SECONDS_BOUND
 {
@@ -549,7 +547,7 @@ requires ToTotalMilliseconds(d1) >= ToTotalMilliseconds(d2)
     var ms2 := ToTotalMilliseconds(d2);
     FromMilliseconds(ms1 - ms2)
 }
-{% endhighlight %}
+```
 
 ### Parsing and formatting
 
@@ -559,17 +557,17 @@ Duration parsing follows ISO-8601: `PTxHyMz.wS` (for example, `PT2H30M45.500S` m
 
 Duration composes naturally with both LocalDateTime and ZonedDateTime:
 
-{% highlight dafny %}
+```dafny
 function EpochDifference(epoch1: int, epoch2: int): Duration
 {
     var diff := if epoch1 >= epoch2 then (epoch1 - epoch2) as int
                 else (epoch2 - epoch1) as int;
     FromMilliseconds(diff)
 }
-{% endhighlight %}
+```
 
 This enables seamless calculation of time deltas across date-time boundaries without precision loss.
 
 ## Acknowledgments
 
-We would like to extend our sincere gratitude to **Robin Salkeld**, **Olivier**, and **Michael**, our points of contact and mentors at AWS. Their guidance on API design, performance optimization, and proof stability was instrumental in bringing these libraries to the Dafny community.
+We would like to extend our sincere gratitude to **Robin Salkeld**, **Olivier Bouissou**, and **Mikael Mayer**, our points of contact and mentors at AWS. Their guidance on API design, performance optimization, and proof stability was instrumental in bringing these libraries to the Dafny community.
