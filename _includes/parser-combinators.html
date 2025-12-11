@@ -763,7 +763,7 @@ const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
 <p>
   The <code>Rec</code> combinator makes it possible to create recursive parsers - parsers that can call themselves. Instead of the usual balanced parentheses parsing example, let's create a
   fun example: parsing balanced payments where you will get exactly one apple A after each coin $ you find, but before
-  you buy an apple, you can have other transactions. You can also have multiple sequential transactions.
+  you buy an apple, you can have other transactions. You can also have multiple sequential transactions, but at the end you need to spend all your coins.
 </p>
 
 <pre><code class="parser-definition">const BalancedPayment: B&lt;string&gt; := Rec((transaction: B&lt;string&gt;) =&gt;
