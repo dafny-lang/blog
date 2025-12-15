@@ -1,0 +1,972 @@
+<style>
+  /* Styles for the interactive demo */
+  .demo-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+  }
+
+  .input-area {
+    width: 100%;
+    min-height: 2em;
+    font-family: monospace;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    overflow-y: hidden;
+  }
+
+  .output-container {
+    margin-top: 15px;
+  }
+
+  .result-display {
+    margin-bottom: 15px;
+  }
+
+  .demo-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .result-content {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 16px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    min-height: 80px;
+    max-height: 400px;
+    overflow-y: auto;
+    transition: all 0.2s ease;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
+  }
+
+  .result-content:empty::before {
+    content: "Formatted output will appear here";
+    color: #adb5bd;
+    font-style: italic;
+  }
+
+  .result-content.parsing {
+    position: relative;
+    color: transparent;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .result-content.parsing::after {
+    content: "Parsing...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .error-display-section {
+    margin-top: 10px;
+  }
+
+  .error-content {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-left: 4px solid #dc3545;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #721c24;
+    white-space: pre-wrap;
+  }
+
+  .error-content::before {
+    content: "Error:";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #721c24;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+  }
+
+  /* Preserve whitespace in parser output spans */
+  [id$="-parsed"],
+  [id$="-remaining"] {
+    white-space: pre-wrap;
+  }
+
+
+
+  /* Building block demo styling */
+  .demo-container .output-container {
+    margin-top: 10px;
+  }
+
+  .demo-container .output-container>div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .demo-container .output-container strong {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+  }
+
+  .demo-container [id$="-parsed"],
+  .demo-container [id$="-remaining"] {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    min-height: 20px;
+    display: block;
+    width: 100%;
+    max-width: none;
+    white-space: pre-wrap;
+    margin-top: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 200px;
+    word-break: break-all;
+    box-sizing: border-box;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
+  }
+
+  .demo-container .parse-result-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .demo-container button[id$="-parse-button"] {
+    align-self: flex-start;
+    margin-bottom: 15px;
+  }
+
+  .controls {
+    margin: 10px 0;
+  }
+
+  .controls label {
+    font-weight: 600;
+    margin-right: 8px;
+    font-size: 14px;
+  }
+
+  .controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+
+  button {
+    background-color: #337ab7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  button:hover {
+    background-color: #286090;
+  }
+
+  /* Hide parse buttons for live parsing */
+  button[id$="-parse-button"],
+  button[id="parse-button"] {
+    display: none;
+  }
+
+  /* Example button styles */
+  .example-buttons {
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .example-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: monospace;
+  }
+
+  .example-btn.positive {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .example-btn.positive:hover {
+    background-color: #c3e6cb;
+  }
+
+  .example-btn.negative {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .example-btn.negative:hover {
+    background-color: #f5c6cb;
+  }
+</style>
+
+<script>
+  // Auto-resize textarea function
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.max(textarea.scrollHeight, 40) + 'px';
+  }
+
+  // Debounce function for live parsing
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize auto-resize and live parsing for all textareas
+    document.querySelectorAll('textarea.input-area').forEach(textarea => {
+      // Initial resize
+      autoResize(textarea);
+
+      // Auto-resize on input
+      textarea.addEventListener('input', function () {
+        autoResize(this);
+
+        // Find associated parse button and trigger parsing
+        const container = this.closest('.demo-container');
+        if (container) {
+          const parseButton = container.querySelector('button[id$="-parse-button"], button[id="parse-button"]');
+          if (parseButton) {
+            // Debounced parsing for performance
+            const debouncedParse = debounce(() => parseButton.click(), 300);
+            debouncedParse();
+          }
+        }
+      });
+    });
+
+    // Initialize all example buttons
+    document.querySelectorAll('.example-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        // Check if this is an S-expression demo button (has data-example attribute)
+        if (this.hasAttribute('data-example')) {
+          const inputArea = document.getElementById('input-area');
+          const parseButton = document.getElementById('parse-button');
+
+          if (inputArea && parseButton) {
+            // Set the input value to the example
+            inputArea.value = this.getAttribute('data-example');
+            // Auto-resize the textarea
+            autoResize(inputArea);
+            // Trigger the parse button to format immediately
+            parseButton.click();
+          }
+          return;
+        }
+
+        // Handle building block demo buttons (existing logic)
+        const demoContainer = this.closest('.demo-container');
+        if (!demoContainer) {
+          console.warn('Demo container not found for button:', this);
+          return;
+        }
+
+        const input = demoContainer.querySelector('textarea.input-area, input.input-area');
+        const parseButton = demoContainer.querySelector('button[id$="-parse-button"]');
+
+        if (input && parseButton) {
+          // Set the input value to the button's text content
+          input.value = this.textContent;
+          // Auto-resize if it's a textarea
+          if (input.tagName === 'TEXTAREA') {
+            autoResize(input);
+          }
+          // Trigger the parse button
+          parseButton.click();
+        } else {
+          console.warn('Input or parse button not found in container:', {
+            input: !!input,
+            parseButton: !!parseButton,
+            container: demoContainer
+          });
+        }
+      });
+    });
+  });
+</script>
+
+<p>
+  Imagine you need to parse and format complex nested structures like this <a
+    href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank">LISP</a> factorial function:
+</p>
+
+<pre><code>(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))</code></pre>
+
+<p>
+  Most parsing approaches would require hundreds of lines of complex, error-prone code. Traditional parser generators
+  like <a href="https://www.antlr.org/" target="_blank">ANTLR</a> or <a href="http://www.ssw.uni-linz.ac.at/coco/"
+    target="_blank">Coco/R</a> involve separate compilation phases with grammar files and <a
+    href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">lexer</a> specifications. But with <a
+    href="https://en.wikipedia.org/wiki/Parser_combinator" target="_blank">parser combinators</a>, you
+  can build an elegant, working parser in just a few dozen lines. Even better - it compiles to JavaScript and runs in
+  your browser! Plus, it's available as a new Dafny standard library using <code>--standard-libraries</code>. Written in Dafny, these parser combinators have unique guarantees: they always terminate (even recursive ones) and never throw runtime exceptions. They're optimized enough for quick prototyping and can serve as specification language for more performance-critical implementations.
+</p>
+
+<h2>Interactive <a href="https://en.wikipedia.org/wiki/S-expression" target="_blank">S-Expression</a> Formatter</h2>
+
+<p>
+  Try it yourself! Enter any S-expression below and watch it get parsed and beautifully formatted:
+</p>
+
+<div class="demo-container">
+  <textarea id="input-area" class="input-area"
+    placeholder="Enter an S-expression here, e.g., (define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))"></textarea>
+
+  <div class="controls">
+    <button id="parse-button">Parse & Format</button>
+  </div>
+
+  <div class="example-buttons">
+    <button class="example-btn positive"
+      data-example="(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))">Factorial Function</button>
+    <button class="example-btn positive" data-example="(let ((x 5) (y 10)) (+ x y))">Let Binding</button>
+    <button class="example-btn positive" data-example="(lambda (x) (* x x))">Lambda Function</button>
+    <button class="example-btn positive" data-example="(list 1 2 3 4 5)">Simple List</button>
+    <button class="example-btn positive" data-example="(if (> x 0) (+ x 1) (- x 1))">Conditional</button>
+    <button class="example-btn positive" data-example="(map (lambda (x) (* x x)) (list 1 2 3 4))">Higher-Order
+      Function</button>
+    <button class="example-btn positive" data-example="; Fibonacci with comments
+(define (fib n)
+; Base cases
+(if (<= n 1)
+n
+; Recursive case
+(+ (fib (- n 1)) (fib (- n 2)))))">With Comments</button>
+  </div>
+
+  <div class="output-container">
+    <div class="result-display" id="result-section">
+      <div id="output-area" class="result-content">Formatted output will appear here</div>
+    </div>
+    <div class="error-display-section" id="error-section" style="display: none;">
+      <div id="error-display" class="error-content"></div>
+    </div>
+  </div>
+</div>
+
+<p>
+  This formatter handles nested structures, proper indentation, and error reporting—try adding an extra closing
+  parenthesis!—all built from simple, composable pieces using just <span id="parser-combinators-loc">23</span> lines of
+  parser combinators and <span id="datatypes-helpers-loc">239</span> lines of datatypes and helpers. How is this
+  possible? Let's explore the building blocks.
+</p>
+
+<h2>The Building Blocks</h2>
+
+<p>
+  <a href="https://en.wikipedia.org/wiki/Parser_combinator" target="_blank">Parser combinators</a> are <a
+    href="https://en.wikipedia.org/wiki/Higher-order_function" target="_blank">higher-order functions</a> that build
+  complex parsers from simple ones. Each parser returns a <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Parsers/Core/Parsers.dfy#L142">ParseResult</a>
+  with either the parsed value and remaining input, or an error. Let's see how they work:
+</p>
+
+<pre><code>import opened Std.Parsers.StringBuilders</code></pre>
+
+<h4>Character Testing (<code>CharTest</code>) - Parsing Anger</h4>
+
+<p>
+  Let's say we want to create a parser that parses one angry smiley. Without combinators, we'd write something like
+  this:
+</p>
+
+<pre><code class="parser-example">const AngerParser := (input: string) =>
+  if |input| >= 1 && (input[0] == '😠' || input[0] == '😡' || input[0] == '🤬' || input[0] == '😤') then
+    ParseSuccess(input[0], input[1..])
+  else
+    ParseFailure(Recoverable, FailureData("expected Angry Smiley", input, None))</code></pre>
+
+<p>
+  That's verbose and error-prone! The <code>CharTest</code> combinator makes this much cleaner by taking a predicate
+  function and handling all the boilerplate:
+</p>
+
+<pre><code class="parser-definition">const AngerParser := CharTest(
+  c => c == '😠'
+    || c == '😡'
+    || c == '🤬'
+    || c == '😤',
+  "Angry Smiley")</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">😠 I am angry!</button>
+    <button class="example-btn positive">😡Hello</button>
+    <button class="example-btn positive">🤬!!!</button>
+    <button class="example-btn positive">😤 Huffing!</button>
+    <button class="example-btn negative">😀 Happy</button>
+    <button class="example-btn negative">No emoji</button>
+  </div>
+
+  <textarea id="anger-input" class="input-area" placeholder="😠 I am angry!">😠 I am angry!</textarea>
+
+  <div class="output-container">
+    <button id="anger-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="anger-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="anger-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<p>
+  Notice how the combinator approach also generates nice error messages automatically! Try the last two examples above -
+  when parsing fails, you get clear feedback about what was expected. This is another advantage of combinators: they
+  handle both success and failure cases elegantly.
+</p>
+
+<h4>Repetition (Rep) - Parsing Joy</h4>
+
+<p>
+  The <code>Rep</code> combinator applies a parser zero or more times. Let's use it to parse sequences of joyful
+  characters:
+</p>
+
+<pre><code class="parser-definition">const JoyParser := CharTest(
+  c => c == '😀'
+    || c == '😃'
+    || c == '😄'
+    || c == '😁'
+    || c == '🥳',
+  "joy").Rep()</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">😀😃😄 Happy day!</button>
+    <button class="example-btn positive">😁😁😁😁🥳 So happy!</button>
+    <button class="example-btn positive">😀😃🥳😠😡 Joy then anger!</button>
+    <button class="example-btn positive">No joy here</button>
+    <button class="example-btn negative">😠😡 Angry</button>
+  </div>
+
+  <textarea id="joy-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
+
+  <div class="output-container">
+    <button id="joy-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="joy-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="joy-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Mapping (M) - Joy Score Calculator</h4>
+
+<p>
+  The <code>M</code> combinator transforms the result of a parser. Let's create a joy score calculator that gives 2
+  points for each joyful character:
+</p>
+
+<pre><code class="parser-definition">const JoyScoreParser := CharTest(
+  c => c == '😀'
+    || c == '😃'
+    || c == '😄'
+    || c == '😁'
+    || c == '🥳',
+  "joy").Rep().M(
+    joyString => |joyString| * 2
+  )</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Click an example or enter your own text:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">😀😃😄 Happy day! (6 points)</button>
+    <button class="example-btn positive">😁😁😁😁🥳 So happy! (10 points)</button>
+    <button class="example-btn positive">No joy here (0 points)</button>
+    <button class="example-btn negative">😠😡 Angry (0 points)</button>
+  </div>
+
+  <textarea id="joyscore-input" class="input-area" placeholder="😀😃😄 Happy day!">😀😃😄 Happy day!</textarea>
+
+  <div class="output-container">
+    <button id="joyscore-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="joyscore-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="joyscore-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Atoms - The Building Blocks of S-Expressions</h4>
+
+<p>
+  S-expressions are made of <strong>atoms</strong> (like <code>factorial</code>, <code>+</code>, <code>42</code>) and
+  <strong>lists</strong> (like <code>(+ 1 2)</code>).
+  Let's start by parsing atoms - any non-empty sequence (<code>Rep1</code>) of characters that isn't a parenthesis or semicolon:
+</p>
+
+<pre><code class="parser-definition">const AtomParser := CharTest(
+  c => c != '(' && c != ')' && c != ';' 
+    && c != ' ' && c != '\t' && c != '\n',
+  "atom character"
+).Rep1()</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Click an example or enter your own atoms:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">factorial (+ 1 2)</button>
+    <button class="example-btn positive">+ 42 hello</button>
+    <button class="example-btn positive">list-length remaining</button>
+    <button class="example-btn positive">42 more text</button>
+    <button class="example-btn positive">>= (test)</button>
+    <button class="example-btn negative">(not-an-atom</button>
+  </div>
+
+  <textarea id="atom-input" class="input-area" placeholder="factorial (+ 1 2)">factorial (+ 1 2)</textarea>
+
+  <div class="output-container">
+    <button id="atom-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="atom-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="atom-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Numbers vs Symbols - Choice in Action</h4>
+
+<p>
+  The letter <code>O</code> (choice) combinator tries parsers in sequence until one succeeds. Let's use it to distinguish
+  between numbers and symbols:
+</p>
+
+<pre><code class="parser-definition">const NumberOrSymbol := O([
+  CharTest(c => '0' <= c <= '9', "digit")
+    .Rep1()
+    .M(digits => "NUMBER:" + digits),
+  AtomParser.M(atom => "SYMBOL:" + atom)
+])</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> See how the parser chooses between numbers and symbols:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">42 + 3</button>
+    <button class="example-btn positive">factorial (n)</button>
+    <button class="example-btn positive">123 abc</button>
+    <button class="example-btn positive">+ 1 2</button>
+    <button class="example-btn positive">0 remaining</button>
+    <button class="example-btn positive">hello-world test</button>
+  </div>
+
+  <textarea id="choice-input" class="input-area" placeholder="42 + 3">42 + 3</textarea>
+
+  <div class="output-container">
+    <button id="choice-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="choice-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="choice-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Lists - Parsing S-Expression Structure</h4>
+
+<p>
+  S-expressions use parentheses to create lists. Let's build a parser that recognizes the start of a function call -
+  an opening parenthesis followed by a function name. The concatenation operators let us combine parsers:
+</p>
+<ul>
+  <li><code>I_I</code>: Keeps both results</li>
+  <li><code>e_I</code>: Keeps only the right result (discard left)</li>
+  <li><code>I_e</code>: Keeps only the left result (discard right)</li>
+</ul>
+
+<p>
+  The naming convention: <code>I</code> means "include" and <code>e</code> means "exclude". We'd prefer Scala-style
+  arrows like <code>&lt;~</code> and <code>~&gt;</code>, but Dafny identifiers can't start with underscores, so we use
+  this readable alternative.
+</p>
+
+<pre><code class="parser-definition">const ConcatDemo_I_I := S("(").I_I(AtomParser).M(
+  (pair: (string, string)) => 
+    "BOTH: (" + pair.0 + ", " + pair.1 + ")"
+)
+const ConcatDemo_e_I := S("(").e_I(AtomParser).M(
+  name => "RIGHT: " + name
+)
+const ConcatDemo_I_e := S("(").I_e(AtomParser).M(
+  paren => "LEFT: " + paren
+)</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Choose a concatenation operator and see how it affects the result:</p>
+
+  <div class="controls">
+    <label for="concat-selector">Concatenation Operator:</label>
+    <select id="concat-selector">
+      <option value="ConcatDemo_I_I">I_I (Keep both results)</option>
+      <option value="ConcatDemo_e_I" selected>e_I (Keep right, discard left)</option>
+      <option value="ConcatDemo_I_e">I_e (Keep left, discard right)</option>
+    </select>
+  </div>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">(+</button>
+    <button class="example-btn positive">(factorial</button>
+    <button class="example-btn positive">(if</button>
+    <button class="example-btn positive">(define</button>
+    <button class="example-btn positive">(lambda</button>
+    <button class="example-btn negative">no-paren</button>
+  </div>
+
+  <textarea id="function-input" class="input-area" placeholder="(+">(+</textarea>
+
+  <div class="output-container">
+    <button id="function-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="function-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="function-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Whitespace - The Invisible Glue</h4>
+
+<p>
+  S-expressions need <a href="https://en.wikipedia.org/wiki/Whitespace_character" target="_blank">whitespace</a> to
+  separate atoms. The built-in <code>WS</code> parser <a href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Parsers/String/StringParsers.dfy#L89" target="_blank">handles spaces (including unicode spaces), tabs, and newlines</a>.
+  Let's see how it works with our atoms:
+</p>
+
+<pre><code class="parser-definition">const AtomWithSpaces := AtomParser.I_e(WS)</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> See how whitespace gets consumed after parsing atoms:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">factorial </button>
+    <button class="example-btn positive">+ next</button>
+    <button class="example-btn positive">42
+      newline</button>
+    <button class="example-btn positive">hello world</button>
+    <button class="example-btn positive">no-space-after</button>
+    <button class="example-btn negative"> space-first</button>
+  </div>
+
+  <textarea id="whitespace-input" class="input-area" placeholder="factorial   ">factorial   </textarea>
+
+  <div class="output-container">
+    <button id="whitespace-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="whitespace-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="whitespace-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<h4>Recursion (Rec) - Balanced Payments</h4>
+
+<p>
+  The <code>Rec</code> combinator makes it possible to create recursive parsers - parsers that can call themselves. Instead of the usual balanced parentheses parsing example, let's create a
+  fun example: parsing balanced payments where you will get exactly one apple A after each coin $ you find, but before
+  you buy an apple, you can have other transactions. You can also have multiple sequential transactions, but at the end you need to spend all your coins.
+</p>
+
+<pre><code class="parser-definition">const BalancedPayment: B&lt;string&gt; := Rec((transaction: B&lt;string&gt;) =&gt;
+  O([
+    S("$").e_I(transaction).I_e(S("A")).M(
+      (transaction: string) =&gt; 
+        "COIN " + transaction + "APPLE! "
+    ).Rep().M((transactions: seq&lt;string&gt;) =&gt;
+       Std.Collections.Seq.Flatten(transactions)
+    ),
+    S("")
+  ])).End()</code></pre>
+
+<div class="demo-container">
+  <p><strong>Try it:</strong> Test balanced and unbalanced payment patterns:</p>
+
+  <div class="example-buttons">
+    <button class="example-btn positive">$A</button>
+    <button class="example-btn positive">$$AA</button>
+    <button class="example-btn positive">$$A$AA</button>
+    <button class="example-btn positive">$A$A$A</button>
+    <button class="example-btn negative">$AA$$A</button>
+    <button class="example-btn negative">A</button>
+    <button class="example-btn negative">$$A</button>
+    <button class="example-btn negative">$AA</button>
+  </div>
+
+  <textarea id="payment-input" class="input-area" placeholder="$A">$A</textarea>
+
+  <div class="output-container">
+    <button id="payment-parse-button">Parse</button>
+    <div class="parse-result-group">
+      <strong>Parsed:</strong>
+      <span id="payment-parsed"></span>
+    </div>
+    <div class="parse-result-group">
+      <strong>Remaining:</strong>
+      <span id="payment-remaining"></span>
+    </div>
+  </div>
+</div>
+
+<p>
+  Notice how <code>Rec</code> allows the parser to call itself! The <code>BalancedPayment</code> parser can contain another
+  <code>BalancedPayment</code>, creating nested structures. This is exactly how parentheses work in programming languages - each
+  opening parenthesis must have a matching closing one.
+</p>
+
+<p>
+  <strong>Important:</strong> Since Dafny programs must terminate, <code>Rec</code> includes built-in protection against
+  infinite recursion. If a recursive parser made no progress (doesn't consume any input), Dafny will return a parse error.
+</p>
+
+<p>
+ For parsers that might hit stack limits, Dafny also
+  provides <code>RecNoStack</code> - see the <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/examples/Parsers/SmtParser.dfy">SmtParser
+    example</a> for usage.
+</p>
+
+<h2>Building the Complete S-Expression Formatter</h2>
+
+<p>
+  From parsing angry emojis to balanced payments, you've seen how simple combinators compose into powerful parsers. The S-expression formatter combines these same building blocks.
+</p>
+
+<h3>The Data Structure</h3>
+
+<p>
+  Our S-expression parser uses a data structure that handles comments as first-class citizens:
+</p>
+
+<pre><code>datatype SExpr =
+  | Atom(name: string)
+  | List(items: seq&lt;SExpr&gt;)
+  | Comment(comment: string, underlyingNode: SExpr)</code></pre>
+
+<p>
+  The <code>Comment</code> variant wraps around other expressions, preserving the logical structure while keeping
+  comments attached to their relevant code.
+</p>
+
+<h3>The Core Parser</h3>
+
+<p>
+  The actual parser that powers the formatter above is surprisingly concise - just <span
+    id="parser-combinators-loc">20</span> lines! Here's the complete parser combinators code:
+</p>
+
+<pre><code data-parser="sexpr-main">  const noParensNoSpace :=
+    CharTest((c: char) =&gt;
+      c != &#39;(&#39; &amp;&amp; c != &#39;)&#39; &amp;&amp; c != &#39; &#39; &amp;&amp; c != &#39;\t&#39;
+      &amp;&amp; c != &#39;\n&#39; &amp;&amp; c != &#39;\r&#39;, &quot;atom character&quot;).Rep1()
+
+  const notNewline :=
+    CharTest((c: char) =&gt; c != &#39;\n&#39;, &quot;anything except newline&quot;)
+
+  const commentText: B&lt;string&gt; :=
+    S(&quot;;&quot;).e_I(notNewline.Rep()).I_e(O([S(&quot;\n&quot;), EOS.M(x =&gt; &quot;&quot;)]))
+
+  const parserSExpr: B&lt;SExpr&gt; :=
+    Rec(
+      (SExpr: B&lt;SExpr&gt;) =&gt;
+        O([ commentText.I_e(WS).I_I(SExpr).M(
+              (commentAndExpr: (string, SExpr)) =&gt;
+                Comment(commentAndExpr.0, commentAndExpr.1)),
+            S(&quot;(&quot;).e_I(WS).Then(
+              (r: string) =&gt; SExpr.I_e(WS).Rep().I_e(S(&quot;)&quot;)).I_e(WS)
+            ).M((r: seq&lt;SExpr&gt;) =&gt; List(r)),
+            noParensNoSpace.M((r: string) =&gt; Atom(r)).I_e(WS)]))
+
+  const p: B&lt;SExpr&gt; :=
+    parserSExpr.I_e(WS).End()
+
+  const topLevelParser: B&lt;TopLevelExpr&gt; :=
+    WS.e_I(parserSExpr.I_e(WS).Rep()).I_e(WS).End().M(
+      (items: seq&lt;SExpr&gt;) =&gt; TopLevel(items))</code></pre>
+
+<p>
+  You can see the <code>Rec</code> combinator in action here - just like in the balanced payment example, it allows the
+  parser to call itself to handle arbitrarily nested structures.
+</p>
+
+<h3>Syntactic Sugar</h3>
+
+<p>
+  The formatter generates syntactic sugar for common Lisp constructs (like <code>define</code> →
+  <code>function</code>, <code>if</code> → <code>if-then-else</code>, infix operators) for better readability. The full
+  implementation is in the <a href="https://github.com/dafny-lang/blog/assets/js/parsers/SExprParser.dfy">source code</a>.
+</p>
+
+<p>
+  No <a href="https://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">tokenization</a> step - the string flows
+  directly through the parser combinators, with each one consuming characters and building up the final <a
+    href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">syntax tree</a>. If that is scary, note that you can always create a parser to tokenize before creating a parser that builds the tree out of the tokens. Note also that <a href="https://github.com/dafny-lang/b3">B3</a> is a project that successfully used these parser combinators and does not have a lexer.
+</p>
+
+
+
+<!-- Load the required libraries and Dafny-compiled JavaScript -->
+<script src="/blog/assets/js/bignumber.js"></script>
+<script>
+  // Mock require() function for browser compatibility
+  window.require = function (module) {
+    switch (module) {
+      case 'bignumber.js':
+        return window.BigNumber;
+      case 'buffer':
+        return { Buffer: window.Buffer || {} };
+      case 'fs':
+        return {};
+      case 'path':
+        return {};
+      case 'process':
+        return { argv: [] };
+      default:
+        console.warn('Unhandled require() call for module:', module);
+        return {};
+    }
+  };
+  window.process = {
+    argv: [],
+    stdout: {
+      write: console.log
+    }
+  };
+</script>
+<script src="/blog/assets/js/parsers/parsers-combined.js"></script>
+<script src="/blog/assets/js/parsers/parser-integration.js"></script>
+
+<h2>Conclusion - The Power of Composition</h2>
+
+<p>
+  From basic character tests like <code>CharTest(c => c == '😠', "Angry Smiley")</code>, we built a complete S-expression
+  parser using simple combinators:
+</p>
+
+<ul>
+  <li><code>Rep()</code> for repetition</li>
+  <li><code>M()</code> for transformation</li>
+  <li><code>O([])</code> for choice</li>
+  <li><code>I_I</code>, <code>e_I</code>, <code>I_e</code> for concatenation</li>
+  <li><code>Rec()</code> for recursion</li>
+</ul>
+
+<p>
+  <strong>207 lines of verified, composable code</strong> that parses and emits beautiful syntactic sugar.
+  This is parser combinators: turning parsing from an arcane art into a compositional science.
+</p>
+
+<p>
+  Best of all, Dafny compiles to JavaScript, C#, Go, Python and Java - so your parser combinators work across platforms with
+  the same verified code.
+</p>
+
+<p>
+  Start with <code>CharTest</code>, add some combinators, and see where composition takes you. Explore more in the <a
+    href="https://github.com/dafny-lang/dafny/tree/master/Source/DafnyStandardLibraries/src/Std/Parsers/README.md">Dafny
+    Standard Libraries</a>.
+</p>
+
+<p>
+  Need to debug your parser combinators? Check out the <a
+    href="https://github.com/dafny-lang/dafny/blob/master/Source/DafnyStandardLibraries/src/Std/Parsers/DEBUGGING.md"
+    target="_blank">debugging guide</a> for tips on troubleshooting parser issues and understanding failure modes.
+</p>

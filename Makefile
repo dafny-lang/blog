@@ -27,6 +27,7 @@ generate:
 	python3 builders/madoko-gen.py brittleness
 	python3 builders/madoko-gen.py teaching-dafny --check
 	python3 builders/madoko-gen.py standard-libraries --check
+	node builders/parser-combinators-build.js
 
 watch-compelling:
 	node builders/verification-compelling-verify.js --watch _includes/verification-compelling-intro.html
